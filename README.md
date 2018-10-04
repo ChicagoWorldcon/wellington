@@ -26,10 +26,21 @@ Setup a default ruby for yourself
 2.5.1 >> ~/.ruby-version
 ```
 
+Install postgresql
+```bash
+brew install postgres@9.6
+brew services postgres@9.6 start
+```
+
 Install project dependencies
 ```bash
 gem install bundler
 bundle install
+```
+
+Setup your developemnt database
+```bash
+bundle exec rake db:create
 ```
 
 ## Linting
