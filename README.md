@@ -45,4 +45,6 @@ bundle exec rake db:create
 
 ## Linting
 
-Please use `rubocop-github`. It's better to be consistent, and this just seems like a good line in the sand.
+Please use `rubocop-github`. It's better to be consistent, and this just seems like a good line in the sand. There are
+plenty of nice [text editor integrations](https://rubocop.readthedocs.io/en/latest/integration_with_other_tools/) to
+get a quick feedback loop going.
