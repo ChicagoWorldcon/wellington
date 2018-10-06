@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
+require "rails_helper"
+
+RSpec.describe Charge, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
 end

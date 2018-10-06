@@ -14,7 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
+class CreateCharges < ActiveRecord::Migration[5.1]
+  def change
+    create_table :charges do |t|
+      t.integer :total_cents, null: false
+      t.json :stripe_response
+      t.string :comment, null: false
+      t.string :status, null: false
+      t.string :stripe_id, null: false
+      t.timestamps
+    end
+  end
 end

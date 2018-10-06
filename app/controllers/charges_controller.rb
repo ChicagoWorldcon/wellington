@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
+class ChargesController < ApplicationController
+  def index
+  end
 end
