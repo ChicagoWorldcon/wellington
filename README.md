@@ -52,7 +52,7 @@ get a quick feedback loop going.
 ## Running
 
 ```
-bundle exec rails server
+make start
 ```
 
 Then navigate to http://localhost:3000
