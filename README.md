@@ -51,7 +51,23 @@ get a quick feedback loop going.
 
 ## Running
 
+You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
+control and allows you to configure the project.
+
+Create a `.env` file with the following contents:
+
+```bash
+# Stripe keys
+STRIPE_PUBLIC_KEY=pk_test_zq022Drx7npYPVEtXAVMaOJT
+STRIPE_PRIVATE_KEY=sk_test_35SiP34s6qovtenwPPLguIyY
+
+# Mailer configuration
+REGISTRATION_ADMIN=registration@conzealand.nz
 ```
+
+Now start your server with
+
+```bash
 make start
 ```
 
