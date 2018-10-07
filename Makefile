@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Copyright 2018 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
-end
+start:
+	bundle exec rake db:migrate
+	$(shell sh -c 'cat .env | grep -v '^#' | xargs') bundle exec rails server

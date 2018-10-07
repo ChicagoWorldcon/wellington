@@ -14,7 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
+class Charge < ApplicationRecord
+  FAILED = "failed"
+  SUCCEEDED = "succeeded"
+
+  validates :comment, presence: true
+  validates :status, inclusion: {in: [FAILED, SUCCEEDED]}
+  validates :stripe_id, presence: true
+  validates :total_cents, presence: true, null: false
+
+  scope :failed, ->() { where(status: FAILED) }
+  scope :succeeded, ->() { where(status: SUCCEEDED) }
 end

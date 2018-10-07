@@ -14,7 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
+# Test cards are here: https://stripe.com/docs/testing
+class ChargesController < ApplicationController
+  def index
+  end
+
+  def create
+    service = ChargeCustomer.new(500, params[:stripeEmail], params[:stripeToken])
+    @payment = service.call
+    if !@payment
+      flash[:error] = service.error_message
+      redirect_to new_charge_path
+    end
+  end
 end

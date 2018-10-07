@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
-  resources :charges
-end
+# See https://stripe.com/docs/checkout/rails
+Rails.configuration.stripe = {
+  publishable_key: ENV["STRIPE_PUBLIC_KEY"],
+  secret_key: ENV["STRIPE_PRIVATE_KEY"],
+}
+
+Stripe.api_key = Rails.configuration.stripe[:secret_key]
