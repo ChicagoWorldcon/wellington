@@ -51,6 +51,26 @@ get a quick feedback loop going.
 
 ## Running
 
+You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
+control and allows you to configure the project.
+
+Create a `.env` file with the following contents:
+
+```bash
+# Stripe keys
+STRIPE_PUBLIC_KEY=pk_test_zq022Drx7npYPVEtXAVMaOJT
+STRIPE_PRIVATE_KEY=sk_test_35SiP34s6qovtenwPPLguIyY
+
+# Mailer configuration
+REGISTRATION_ADMIN=registration@conzealand.nz
+
+# Read - https://developer.mailchimp.com/documentation/mailchimp/guides/get-started-with-mailchimp-api-3/
+# Build - https://us19.admin.mailchimp.com/templates/
+# Generate Key - https://admin.mailchimp.com/account/api/
+MAILCHIMP_API_KEY=saif2Raiheiquu1maehohbae7eiTh5ai-us19
+```
+
+Then start your server with
 ```
 make start
 ```
