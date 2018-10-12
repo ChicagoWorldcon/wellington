@@ -39,7 +39,7 @@ group :development do
   gem "listen", ">= 3.0.5", "< 3.2"
   gem "pry"
   gem "pry-nav"
-  gem "rails-pry"
+  gem "pry-rails"
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
   gem "web-console", ">= 3.3.0" # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
