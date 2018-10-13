@@ -14,14 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Preview all emails at http://localhost:3000/rails/mailers/payment_mailer
-class PaymentMailer < ApplicationMailer
-  default from: ENV["EMAIL_PAYMENTS"]
-
-  def new_member(user:, membership:, charge:)
-    @user = user
-    @membership = membership
-    @charge = charge
-    mail(to: user.email)
-  end
+# https://guides.rubyonrails.org/action_mailer_basics.html
+Rails.application.config.action_mailer.tap do |action_mailer|
+  action_mailer.delivery_method = :smtp
+  action_mailer.smtp_settings = {
+    address:              ENV["SMTP_SERVER"],
+    port:                 ENV["SMTP_PORT"],
+    user_name:            ENV["SMTP_USER_NAME"],
+    password:             ENV["SMTP_PASSWORD"],
+    authentication:       "plain",
+    enable_starttls_auto: true
+  }
 end
