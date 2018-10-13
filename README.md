@@ -51,7 +51,30 @@ get a quick feedback loop going.
 
 ## Running
 
+You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
+control and allows you to configure the project.
+
+Create a `.env` file with the following contents:
+
+```bash
+# Stripe keys
+STRIPE_PUBLIC_KEY=pk_test_zq022Drx7npYPVEtXAVMaOJT
+STRIPE_PRIVATE_KEY=sk_test_35SiP34s6qovtenwPPLguIyY
+
+# Mailer configuration
+EMAIL_PAYMENTS=registration@conzealand.nz
+
+# Suggested you use SendGrid here, use an API key as your password
+# Generate them here https://app.sendgrid.com/settings/api_keys
+SMTP_SERVER=smtp.sendgrid.net
+SMTP_PORT=587
+SMTP_USER_NAME=apikey
+SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1eitoonah9tah5touliaGoo0eey7te9hiuF9h
 ```
+
+Now start your server with
+
+```bash
 make start
 ```
 

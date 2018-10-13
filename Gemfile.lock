@@ -101,6 +101,8 @@ GEM
       slop (~> 3.4)
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     public_suffix (3.0.3)
     puma (3.12.0)
     rack (2.0.5)
@@ -123,7 +125,6 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
-    rails-pry (0.0.1)
     railties (5.1.6)
       actionpack (= 5.1.6)
       activesupport (= 5.1.6)
@@ -232,9 +233,9 @@ DEPENDENCIES
   pg
   pry
   pry-nav
+  pry-rails
   puma (~> 3.7)
   rails (~> 5.1.6)
-  rails-pry
   rspec-rails
   rubocop-github
   sass-rails (~> 5.0)
