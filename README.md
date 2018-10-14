@@ -67,7 +67,7 @@ EMAIL_PAYMENTS=registration@conzealand.nz
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys
 SMTP_SERVER=smtp.sendgrid.net
-SMTP_PORT=587
+SMTP_PORT=465
 SMTP_USER_NAME=apikey
 SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1eitoonah9tah5touliaGoo0eey7te9hiuF9h
 ```
