@@ -14,6 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  has_many :purchases
+class CreatePurchases < ActiveRecord::Migration[5.1]
+  def change
+    create_table :purchases do |t|
+      t.references :membership, index: true, null: false, foreign_key: true
+      t.references :user, index: true, null: false, foreign_key: true
+      t.timestamps
+    end
+  end
 end
