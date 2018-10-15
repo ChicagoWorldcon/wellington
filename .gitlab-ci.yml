@@ -1,0 +1,17 @@
+# https://docs.gitlab.com/ee/ci/quick_start/
+before_script:
+  - apt-get update -qq && apt-get install -y -qq postgresql nodejs
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+  - service postgresql start
+  - bundle exec rake db:create db:schema:load
+
+rspec:
+  script:
+    - bundle exec rspec
+
+rubocop:
+  script:
+    - bundle exec rubocop

@@ -29,5 +29,5 @@
 /yarn-error.log
 .byebug_history
 
-# Stats from rspec runs
+# Timings per spec, good for debugging slow specs
 spec/examples.txt
