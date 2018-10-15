@@ -21,3 +21,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+Membership.create!(name: "Adult"       , price: 370)
+Membership.create!(name: "Young Adult" , price: 225)
+Membership.create!(name: "Unwaged"     , price: 225)
+Membership.create!(name: "Child"       , price: 105)
+Membership.create!(name: "Supporting"  , price: 75)
+Membership.create!(name: "Kid-in-tow"  , price: 0)
