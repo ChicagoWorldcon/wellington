@@ -27,17 +27,26 @@ RSpec.describe ChargeCustomer do
 
   subject(:command) { ChargeCustomer.new(membership, user, token) }
 
-  it "creates a new successful payment" do
-    expect(command.call).to be_truthy
-    expect(Charge.succeeded.count).to eq(1)
-    expect(Charge.last.stripe_id).to be_present
-  end
-
   it "creates a failed payment on card decline" do
     StripeMock.prepare_card_error(:card_declined)
     expect(command.call).to be_falsey
     expect(Charge.failed.count).to eq 1
     expect(Charge.last.stripe_id).to be_present
     expect(Charge.last.comment).to match(/Declined/i)
+  end
+
+  context "when payment succeeds" do
+    before do
+      expect(command.call).to be_truthy
+    end
+
+    it "creates a new successful charge" do
+      expect(Charge.succeeded.count).to eq(1)
+      expect(Charge.last.stripe_id).to be_present
+    end
+
+    it "is linked to our user" do
+      expect(user.reload.purchases).to include Charge.last.purchase
+    end
   end
 end

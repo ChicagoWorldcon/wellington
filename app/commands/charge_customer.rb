@@ -21,7 +21,8 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
   CURRENCY = "nzd"
 
   def call
-    @charge = Charge.new(stripe_id: token, total_cents: membership.price)
+    @purchase = Purchase.new(user: user, membership: membership)
+    @charge = Charge.new(purchase: @purchase, stripe_id: token, total_cents: membership.price)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -41,7 +42,11 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    @charge.save!
+    user.transaction do
+      @purchase.save!
+      @charge.save!
+    end
+
     return @charge.status == Charge::SUCCEEDED
   end
 
