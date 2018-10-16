@@ -22,7 +22,7 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
 
   def call
     @purchase = Purchase.new(user: user, membership: membership)
-    @charge = Charge.new(purchase: @purchase, stripe_id: token, total_cents: membership.price)
+    @charge = Charge.new(purchase: @purchase, stripe_id: token, cost: membership.price)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -37,7 +37,7 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
 
     if @stripe_charge.present?
       @charge.stripe_id       = @stripe_charge[:id]
-      @charge.total_cents     = @stripe_charge[:amount]
+      @charge.cost            = @stripe_charge[:amount]
       @charge.comment         = @stripe_charge[:description]
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end

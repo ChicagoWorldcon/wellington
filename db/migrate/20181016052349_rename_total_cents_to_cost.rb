@@ -14,17 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Charge < ApplicationRecord
-  FAILED = "failed"
-  SUCCEEDED = "succeeded"
-
-  belongs_to :purchase
-
-  validates :comment, presence: true
-  validates :status, inclusion: {in: [FAILED, SUCCEEDED]}
-  validates :stripe_id, presence: true
-  validates :cost, presence: true, null: false
-
-  scope :failed, ->() { where(status: FAILED) }
-  scope :succeeded, ->() { where(status: SUCCEEDED) }
+class RenameTotalCentsToCost < ActiveRecord::Migration[5.1]
+  def change
+    rename_column :charges, :total_cents, :cost
+  end
 end
