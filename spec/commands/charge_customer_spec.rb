@@ -21,11 +21,11 @@ RSpec.describe ChargeCustomer do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:amount) { 500 }
+  let(:membership) { Membership.create!(name: "Clubhouse", price: 500) }
   let(:user) { User.create!(email: "mister@fuffy-woofums.net") }
   let(:token) { stripe_helper.generate_card_token }
 
-  subject(:command) { ChargeCustomer.new(amount, user, token) }
+  subject(:command) { ChargeCustomer.new(membership, user, token) }
 
   it "creates a new successful payment" do
     expect(command.call).to be_truthy

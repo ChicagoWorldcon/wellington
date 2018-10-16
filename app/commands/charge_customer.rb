@@ -16,12 +16,12 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-ChargeCustomer = Struct.new(:amount, :user, :token) do
+ChargeCustomer = Struct.new(:membership, :user, :token) do
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
   def call
-    @charge = Charge.new(stripe_id: token, total_cents: amount)
+    @charge = Charge.new(stripe_id: token, total_cents: membership.price)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -68,7 +68,7 @@ ChargeCustomer = Struct.new(:amount, :user, :token) do
       description: STRIPE_CHARGE_DESCRIPTION,
       currency: CURRENCY,
       customer: @stripe_customer.id,
-      amount: amount,
+      amount: membership.price,
     )
   rescue Stripe::StripeError => e
     errors << e.message
