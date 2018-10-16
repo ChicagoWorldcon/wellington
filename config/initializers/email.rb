@@ -16,7 +16,6 @@
 
 # https://guides.rubyonrails.org/action_mailer_basics.html
 Rails.application.config.action_mailer.tap do |action_mailer|
-  action_mailer.delivery_method = :smtp
   action_mailer.raise_delivery_errors = true
   action_mailer.smtp_settings = {
     address:              ENV["SMTP_SERVER"],
