@@ -22,10 +22,10 @@ RSpec.describe ChargeCustomer do
   after { StripeMock.stop }
 
   let(:amount) { 500 }
-  let(:email) { "mister@fuffy-woofums.net" }
+  let(:user) { User.create!(email: "mister@fuffy-woofums.net") }
   let(:token) { stripe_helper.generate_card_token }
 
-  subject(:command) { ChargeCustomer.new(amount, email, token) }
+  subject(:command) { ChargeCustomer.new(amount, user, token) }
 
   it "creates a new successful payment" do
     expect(command.call).to be_truthy
@@ -38,6 +38,6 @@ RSpec.describe ChargeCustomer do
     expect(command.call).to be_falsey
     expect(Charge.failed.count).to eq 1
     expect(Charge.last.stripe_id).to be_present
-    expect(Charge.last.comment).to match /Declined/i
+    expect(Charge.last.comment).to match(/Declined/i)
   end
 end
