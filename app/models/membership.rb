@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class Membership < ApplicationRecord
-  has_many :purchases
+  has_many :charges
 
   validates :name, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }

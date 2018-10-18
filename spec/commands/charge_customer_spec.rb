@@ -46,7 +46,7 @@ RSpec.describe ChargeCustomer do
     end
 
     it "is linked to our user" do
-      expect(user.reload.purchases).to include Charge.last.purchase
+      expect(Charge.last.user).to eq user
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181016052349) do
+ActiveRecord::Schema.define(version: 20181018181600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,8 +23,10 @@ ActiveRecord::Schema.define(version: 20181016052349) do
     t.string "stripe_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "purchase_id"
-    t.index ["purchase_id"], name: "index_charges_on_purchase_id"
+    t.bigint "user_id", null: false
+    t.bigint "membership_id", null: false
+    t.index ["membership_id"], name: "index_charges_on_membership_id"
+    t.index ["user_id"], name: "index_charges_on_user_id"
   end
 
   create_table "memberships", force: :cascade do |t|
@@ -34,15 +36,6 @@ ActiveRecord::Schema.define(version: 20181016052349) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "purchases", force: :cascade do |t|
-    t.bigint "membership_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["membership_id"], name: "index_purchases_on_membership_id"
-    t.index ["user_id"], name: "index_purchases_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.datetime "created_at", null: false
@@ -50,7 +43,6 @@ ActiveRecord::Schema.define(version: 20181016052349) do
     t.index ["email"], name: "index_users_on_email"
   end
 
-  add_foreign_key "charges", "purchases"
-  add_foreign_key "purchases", "memberships"
-  add_foreign_key "purchases", "users"
+  add_foreign_key "charges", "memberships"
+  add_foreign_key "charges", "users"
 end

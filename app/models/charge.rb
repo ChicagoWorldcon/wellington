@@ -18,7 +18,8 @@ class Charge < ApplicationRecord
   FAILED = "failed"
   SUCCEEDED = "succeeded"
 
-  belongs_to :purchase
+  belongs_to :user
+  belongs_to :membership
 
   validates :comment, presence: true
   validates :status, inclusion: {in: [FAILED, SUCCEEDED]}

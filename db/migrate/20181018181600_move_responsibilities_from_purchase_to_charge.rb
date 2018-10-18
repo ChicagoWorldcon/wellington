@@ -14,8 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Purchase < ApplicationRecord
-  belongs_to :user
-  belongs_to :membership
-  has_many :charges
+class MoveResponsibilitiesFromPurchaseToCharge < ActiveRecord::Migration[5.1]
+  def up
+    remove_reference :charges, :purchase
+    drop_table :purchases, cascade: true
+    add_reference :charges, :user, foreign_key: true, index: true, null: false
+    add_reference :charges, :membership, foreign_key: true, index: true, null: false
+  end
 end
