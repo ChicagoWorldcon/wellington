@@ -1,9 +1,29 @@
+# frozen_string_literal: true
+
+# Copyright 2018 Matthew B. Gray
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
+require "factory_bot_rails"
+
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../../config/environment", __FILE__)
+
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+
 require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -58,4 +78,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Generator for models https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
+  config.include FactoryBot::Syntax::Methods
 end

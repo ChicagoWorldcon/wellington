@@ -22,7 +22,7 @@ RSpec.describe ChargeCustomer do
   after { StripeMock.stop }
 
   let(:membership) { Membership.create!(name: "Clubhouse", price: 500) }
-  let(:user) { User.create!(email: "mister@fuffy-woofums.net") }
+  let(:user) { create(:user) }
   let(:token) { stripe_helper.generate_card_token }
 
   subject(:command) { ChargeCustomer.new(membership, user, token) }
