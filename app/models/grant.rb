@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Membership < ApplicationRecord
-  has_many :charges
-  has_many :grants
+class Grant < ApplicationRecord
+  belongs_to :user
+  belongs_to :membership
 
-  validates :name, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :membership, presence: true
+  validates :user, presence: true
 end

@@ -14,10 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Membership < ApplicationRecord
-  has_many :charges
-  has_many :grants
-
-  validates :name, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+class CreateGrants < ActiveRecord::Migration[5.1]
+  def change
+    create_table :grants do |t|
+      t.references :user, foreign_key: true, index: true, null: false
+      t.references :membership, foreign_key: true, index: true, null: false
+      t.timestamps
+    end
+  end
 end

@@ -15,5 +15,6 @@
 # limitations under the License.
 
 class User < ApplicationRecord
+  has_many :grants
   has_many :charges
 end
