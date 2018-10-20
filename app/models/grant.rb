@@ -25,6 +25,9 @@ class Grant < ApplicationRecord
   validates :active_from, presence: true
   validate :active_timestamps_ordered
 
+  scope :active, ->() { active_at(Time.now) }
+  scope :active_at, ->(at) { where("active_from <= ? AND (active_to IS NULL OR ? <= active_to)", at, at) }
+
   def set_active_to
     self[:active_from] ||= Time.now
   end
