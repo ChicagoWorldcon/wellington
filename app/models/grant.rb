@@ -20,4 +20,18 @@ class Grant < ApplicationRecord
 
   validates :membership, presence: true
   validates :user, presence: true
+
+  after_initialize :set_active_to
+  validates :active_from, presence: true
+  validate :active_timestamps_ordered
+
+  def set_active_to
+    self[:active_from] ||= Time.now
+  end
+
+  def active_timestamps_ordered
+    return if self.active_from.nil? || self.active_to.nil?
+    return if self.active_from <= active_to
+    errors.add(:active_to, "cannot be before active_from")
+  end
 end
