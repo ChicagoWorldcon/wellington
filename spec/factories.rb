@@ -24,4 +24,9 @@ FactoryBot.define do
   factory :user do
     email { generate(:email) }
   end
+
+  factory :membership do
+    name { "Adult Membership" }
+    price { 300 }
+  end
 end
