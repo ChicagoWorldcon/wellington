@@ -15,14 +15,15 @@
 # limitations under the License.
 
 class TransferMembership
-  attr_reader :membership, :from, :to
+  attr_reader :membership, :user_from, :user_to
 
   def initialize(membership, from:, to:)
     @membership = membership
-    @from = from
-    @to = to
+    @user_from = from
+    @user_to = to
   end
 
   def call
+    Grant.create!(membership: membership, user: @user_to)
   end
 end

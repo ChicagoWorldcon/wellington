@@ -28,4 +28,8 @@ RSpec.describe TransferMembership do
   it "doesn't change the number of memberships overall" do
     expect { command.call }.to_not change { Membership.count }
   end
+
+  it "adds grant to buyer" do
+    expect { command.call }.to change { buyer.grants.count }.by 1
+  end
 end
