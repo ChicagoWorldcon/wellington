@@ -16,5 +16,7 @@
 
 class User < ApplicationRecord
   has_many :grants
-  has_many :charges
+  has_many :purchases
+
+  validates :email, presence: true
 end

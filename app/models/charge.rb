@@ -22,9 +22,11 @@ class Charge < ApplicationRecord
   belongs_to :membership
 
   validates :comment, presence: true
+  validates :cost, presence: true
+  validates :membership, presence: true
   validates :status, inclusion: {in: [FAILED, SUCCEEDED]}
   validates :stripe_id, presence: true
-  validates :cost, presence: true, null: false
+  validates :user, presence: true
 
   scope :failed, ->() { where(status: FAILED) }
   scope :succeeded, ->() { where(status: SUCCEEDED) }
