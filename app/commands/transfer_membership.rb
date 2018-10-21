@@ -15,15 +15,18 @@
 # limitations under the License.
 
 class TransferMembership
-  attr_reader :membership, :user_from, :user_to
+  attr_reader :membership, :sender, :receiver
 
   def initialize(membership, from:, to:)
     @membership = membership
-    @user_from = from
-    @user_to = to
+    @sender = from
+    @receiver = to
   end
 
   def call
-    Grant.create!(membership: membership, user: @user_to)
+    transfer_timestamp = Time.now
+    old_grant = sender.grants.find_by(membership: membership, active_to: nil)
+    old_grant.update!(active_to: transfer_timestamp)
+    new_grant = Grant.create!(active_from: transfer_timestamp, membership: membership, user: receiver)
   end
 end

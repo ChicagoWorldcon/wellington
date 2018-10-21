@@ -19,17 +19,22 @@ require "rails_helper"
 RSpec.describe TransferMembership do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
-  let(:membership) { create(:membership) }
+  let(:membership) { create(:membership, created_at: 1.week.ago) }
 
-  before { Grant.create!(user: seller, membership: membership) }
+  before { Grant.create!(user: seller, membership: membership, active_from: membership.created_at) }
 
-  let(:command) { TransferMembership.new(membership, from: seller, to: buyer) }
+  subject(:command) { TransferMembership.new(membership, from: seller, to: buyer) }
+  let(:soonish) { 1.minute.from_now } # hack, TransferMembership is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
     expect { command.call }.to_not change { Membership.count }
   end
 
   it "adds grant to buyer" do
-    expect { command.call }.to change { buyer.grants.count }.by 1
+    expect { command.call }.to change { buyer.grants.active_at(soonish).count }.by 1
+  end
+
+  it "deactivates grant on seller" do
+    expect { command.call }.to change { seller.grants.active_at(soonish).count }.by -1
   end
 end
