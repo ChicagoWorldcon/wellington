@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TransferMembership command makes old grants to membership inactive and sets up new grants for receiver
+# Truthy return means transfer was successful, otherwise check errors for explanation
 class TransferMembership
   attr_reader :membership, :sender, :receiver, :errors
 
