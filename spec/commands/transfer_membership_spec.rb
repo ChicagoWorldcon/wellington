@@ -37,4 +37,16 @@ RSpec.describe TransferMembership do
   it "deactivates grant on seller" do
     expect { command.call }.to change { seller.grants.active_at(soonish).count }.by -1
   end
+
+  context "when there's transactions close together" do
+    let(:this_instant) { Time.now }
+    before { expect(Time).to receive(:now).at_least(1).times.and_return(this_instant) }
+
+    it "doesn't let you transfer twice" do
+      expect(command.call).to be_truthy
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/not transferrable/i)
+      expect(Grant.count).to be 2
+    end
+  end
 end

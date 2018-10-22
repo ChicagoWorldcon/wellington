@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class TransferMembership
-  attr_reader :membership, :sender, :receiver
+  attr_reader :membership, :sender, :receiver, :errors
 
   def initialize(membership, from:, to:)
     @membership = membership
@@ -24,9 +24,31 @@ class TransferMembership
   end
 
   def call
-    transfer_timestamp = Time.now
-    old_grant = sender.grants.find_by(membership: membership, active_to: nil)
-    old_grant.update!(active_to: transfer_timestamp)
-    new_grant = Grant.create!(active_from: transfer_timestamp, membership: membership, user: receiver)
+    @errors = []
+    membership.transaction do
+      check_membership
+      return false if errors.any?
+
+      as_at = Time.now
+      old_grant.update!(active_to: as_at)
+      receiver.grants.create!(active_from: as_at, membership: membership)
+    end
+  end
+
+  private
+
+  def check_membership
+    if !old_grant.present?
+      errors << "membership not held"
+      return
+    end
+
+    if !old_grant.transferable?
+      errors << "grant is not transferrable"
+    end
+  end
+
+  def old_grant
+    @old_grant ||= sender.grants.active.find_by(membership: membership)
   end
 end

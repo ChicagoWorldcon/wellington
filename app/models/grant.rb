@@ -28,6 +28,12 @@ class Grant < ApplicationRecord
   scope :active, ->() { active_at(Time.now) }
   scope :active_at, ->(at) { where("active_from <= ? AND (active_to IS NULL OR ? <= active_to)", at, at) }
 
+  def transferable?
+    active_to.nil?
+  end
+
+  private
+
   def set_active_to
     self[:active_from] ||= Time.now
   end
