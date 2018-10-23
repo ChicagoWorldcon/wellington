@@ -18,30 +18,35 @@ require "rails_helper"
 
 RSpec.describe Grant, type: :model do
   let(:query) { UpgradesAvailable.new(from: from) }
-  subject(:call) { query.call }
 
-  context "when adult" do
-    let(:from) { :adult }
-    it { is_expected.to be_empty }
-  end
+  describe "#keys" do
+    subject(:keys) { query.call.keys }
 
-  context "when young adult" do
-    let(:from) { :unwaged }
-    it { is_expected.to include(:adult) }
-    it { is_expected.to include(:young_adult) }
-  end
+    context "when adult" do
+      let(:from) { :adult }
+      it { is_expected.to be_empty }
+    end
 
-  context "when unwaged adult" do
-    let(:from) { :young_adult }
-    it { is_expected.to include(:adult) }
-    it { is_expected.to include(:unwaged) }
-  end
+    context "when unwaged" do
+      let(:from) { :unwaged }
+      it { is_expected.to include(:adult) }
+      it { is_expected.to include(:young_adult) }
+      it { is_expected.to_not include(:child) }
+    end
 
-  context "when kid_in_tow" do
-    let(:from) { :supporting }
-    it { is_expected.to include(:adult) }
-    it { is_expected.to include(:young_adult) }
-    it { is_expected.to include(:unwaged) }
-    it { is_expected.to include(:child) }
+    context "when young adult" do
+      let(:from) { :young_adult }
+      it { is_expected.to include(:adult) }
+      it { is_expected.to include(:unwaged) }
+      it { is_expected.to_not include(:kid_in_tow) }
+    end
+
+    context "when kid_in_tow" do
+      let(:from) { :supporting }
+      it { is_expected.to include(:adult) }
+      it { is_expected.to include(:young_adult) }
+      it { is_expected.to include(:unwaged) }
+      it { is_expected.to include(:child) }
+    end
   end
 end

@@ -34,9 +34,8 @@ class UpgradesAvailable
 
   def call
     baseline = LEVELS[from]
-    options = LEVELS.select do |level, cost|
-      level != from && cost >= baseline
+    LEVELS.select do |name, cost|
+      name != from && cost >= baseline
     end
-    options.keys
   end
 end
