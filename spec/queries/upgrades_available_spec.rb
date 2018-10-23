@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe Grant, type: :model do
+RSpec.describe UpgradesAvailable do
   let(:query) { UpgradesAvailable.new(from: from) }
 
   describe "#keys" do
