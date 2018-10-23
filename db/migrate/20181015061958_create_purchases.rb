@@ -14,18 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Charge < ApplicationRecord
-  FAILED = "failed"
-  SUCCEEDED = "succeeded"
-
-  belongs_to :user
-  belongs_to :membership
-
-  validates :comment, presence: true
-  validates :status, inclusion: {in: [FAILED, SUCCEEDED]}
-  validates :stripe_id, presence: true
-  validates :cost, presence: true, null: false
-
-  scope :failed, ->() { where(status: FAILED) }
-  scope :succeeded, ->() { where(status: SUCCEEDED) }
+class CreatePurchases < ActiveRecord::Migration[5.1]
+  def change
+    create_table :purchases do |t|
+      t.references :membership, index: true, null: false, foreign_key: true
+      t.references :user, index: true, null: false, foreign_key: true
+      t.timestamps
+    end
+  end
 end

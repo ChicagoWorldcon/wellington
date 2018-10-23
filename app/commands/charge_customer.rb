@@ -16,12 +16,12 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-ChargeCustomer = Struct.new(:amount, :email, :token) do
+ChargeCustomer = Struct.new(:membership, :user, :token) do
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
   def call
-    @charge = Charge.new(stripe_id: token, total_cents: amount)
+    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.price)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -36,12 +36,13 @@ ChargeCustomer = Struct.new(:amount, :email, :token) do
 
     if @stripe_charge.present?
       @charge.stripe_id       = @stripe_charge[:id]
-      @charge.total_cents     = @stripe_charge[:amount]
+      @charge.cost            = @stripe_charge[:amount]
       @charge.comment         = @stripe_charge[:description]
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
     @charge.save!
+
     return @charge.status == Charge::SUCCEEDED
   end
 
@@ -56,7 +57,7 @@ ChargeCustomer = Struct.new(:amount, :email, :token) do
   private
 
   def create_stripe_customer
-    @stripe_customer = Stripe::Customer.create(email: email, source: token)
+    @stripe_customer = Stripe::Customer.create(email: user.email, source: token)
   rescue Stripe::StripeError => e
     errors << e.message
     @charge.stripe_response = json_to_hash(e.response)
@@ -68,7 +69,7 @@ ChargeCustomer = Struct.new(:amount, :email, :token) do
       description: STRIPE_CHARGE_DESCRIPTION,
       currency: CURRENCY,
       customer: @stripe_customer.id,
-      amount: amount,
+      amount: membership.price,
     )
   rescue Stripe::StripeError => e
     errors << e.message

@@ -20,7 +20,9 @@ class ChargesController < ApplicationController
   end
 
   def create
-    service = ChargeCustomer.new(500, params[:stripeEmail], params[:stripeToken])
+    membership = Membership.find_or_create_by!(name: "Clubhouse", price: 500)
+    user = User.find_or_create_by!(email: params[:stripeEmail])
+    service = ChargeCustomer.new(membership, user, params[:stripeToken])
     @payment = service.call
     if !@payment
       flash[:error] = service.error_message

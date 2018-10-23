@@ -14,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
+class Membership < ApplicationRecord
+  has_many :charges
+  has_many :grants
 
-RSpec.describe Charge, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  validates :name, presence: true
+  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end

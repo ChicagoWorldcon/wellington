@@ -58,8 +58,8 @@ Create a `.env` file with the following contents:
 
 ```bash
 # Stripe keys
-STRIPE_PUBLIC_KEY=pk_test_zq022Drx7npYPVEtXAVMaOJT
-STRIPE_PRIVATE_KEY=sk_test_35SiP34s6qovtenwPPLguIyY
+STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
+STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 
 # Mailer configuration
 EMAIL_PAYMENTS=registration@conzealand.nz
@@ -67,9 +67,9 @@ EMAIL_PAYMENTS=registration@conzealand.nz
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys
 SMTP_SERVER=smtp.sendgrid.net
-SMTP_PORT=587
+SMTP_PORT=465
 SMTP_USER_NAME=apikey
-SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1eitoonah9tah5touliaGoo0eey7te9hiuF9h
+SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
 ```
 
 Now start your server with

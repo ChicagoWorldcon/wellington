@@ -14,18 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Charge < ApplicationRecord
-  FAILED = "failed"
-  SUCCEEDED = "succeeded"
-
-  belongs_to :user
-  belongs_to :membership
-
-  validates :comment, presence: true
-  validates :status, inclusion: {in: [FAILED, SUCCEEDED]}
-  validates :stripe_id, presence: true
-  validates :cost, presence: true, null: false
-
-  scope :failed, ->() { where(status: FAILED) }
-  scope :succeeded, ->() { where(status: SUCCEEDED) }
+copy_pasta_keys = ENV.select { |variable, set_as| set_as.match(/copypasta/) }.keys
+if copy_pasta_keys.any?
+  puts "Badness detected, don't copy paste things. Please check the README and set these:"
+  puts copy_pasta_keys.to_sentence
+  exit 1
 end

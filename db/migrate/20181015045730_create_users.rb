@@ -14,8 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
-
-RSpec.describe PaymentMailer, type: :mailer do
-  pending "add some examples to (or delete) #{__FILE__}"
+class CreateUsers < ActiveRecord::Migration[5.1]
+  def change
+    create_table :users do |t|
+      t.string :email, null: false, index: true
+      t.timestamps
+    end
+  end
 end
