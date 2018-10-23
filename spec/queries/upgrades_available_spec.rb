@@ -49,4 +49,20 @@ RSpec.describe UpgradesAvailable do
       it { is_expected.to include(:child) }
     end
   end
+
+  context "checking the cost of upgrades" do
+    subject(:call) { query.call }
+
+    context "when young adult" do
+      let(:from) { :young_adult }
+
+      it "costs the difference when upgrading to adult" do
+        expect(subject[:adult]).to be 145_00
+      end
+
+      it "costs the same if switching to unwaged" do
+        expect(subject[:unwaged]).to be 0
+      end
+    end
+  end
 end
