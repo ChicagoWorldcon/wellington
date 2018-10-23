@@ -17,15 +17,16 @@
 require "rails_helper"
 
 RSpec.describe Grant, type: :model do
-  subject(:query) { UpgradesAvailable.new(from: from) }
+  let(:query) { UpgradesAvailable.new(from: from) }
+  subject(:call) { query.call }
 
   context "when adult" do
     let(:from) { :adult }
+    it { is_expected.to be_empty }
+  end
 
-    it { is_expected.to_not be_nil }
-
-    it "doesn't have upgrade options" do
-      expect(query.call).to be_empty
-    end
+  context "when young adult" do
+    let(:from) { :young_adult }
+    it { is_expected.to include(:adult) }
   end
 end

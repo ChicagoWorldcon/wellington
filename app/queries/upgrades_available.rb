@@ -38,11 +38,18 @@ class UpgradesAvailable
     },
   }
 
+  attr_reader :from
+
   def initialize(from:)
-    @from_kind = from
+    @from = from
   end
 
   def call
-    []
+    case from
+    when :young_adult
+      [:adult]
+    else
+      []
+    end
   end
 end
