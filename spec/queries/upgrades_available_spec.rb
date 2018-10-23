@@ -26,7 +26,22 @@ RSpec.describe Grant, type: :model do
   end
 
   context "when young adult" do
+    let(:from) { :unwaged }
+    it { is_expected.to include(:adult) }
+    it { is_expected.to include(:young_adult) }
+  end
+
+  context "when unwaged adult" do
     let(:from) { :young_adult }
     it { is_expected.to include(:adult) }
+    it { is_expected.to include(:unwaged) }
+  end
+
+  context "when kid_in_tow" do
+    let(:from) { :supporting }
+    it { is_expected.to include(:adult) }
+    it { is_expected.to include(:young_adult) }
+    it { is_expected.to include(:unwaged) }
+    it { is_expected.to include(:child) }
   end
 end

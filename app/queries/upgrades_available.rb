@@ -18,24 +18,12 @@
 # Upgrades are always available when they're of higher value
 class UpgradesAvailable
   LEVELS = {
-    adult: {
-      cost: 370_00
-    },
-    young_adult: {
-      cost: 225_00
-    },
-    unwaged: {
-      cost: 225_00
-    },
-    child: {
-      cost: 105_00
-    },
-    kid_in_tow: {
-      cost: 0
-    },
-    supporting: {
-      cost: 75_00
-    },
+    adult: 370_00,
+    young_adult: 225_00,
+    unwaged: 225_00,
+    child: 105_00,
+    kid_in_tow: 0,
+    supporting: 75_00,
   }
 
   attr_reader :from
@@ -45,11 +33,10 @@ class UpgradesAvailable
   end
 
   def call
-    case from
-    when :young_adult
-      [:adult]
-    else
-      []
+    baseline = LEVELS[from]
+    options = LEVELS.select do |level, cost|
+      level != from && cost >= baseline
     end
+    options.keys
   end
 end
