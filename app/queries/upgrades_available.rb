@@ -26,6 +26,14 @@ class UpgradesAvailable
     supporting: 75_00,
   }
 
+  PRESUPPORT_PRICES = {
+    silver_fern: PRICES[:adult] - 50_00,
+    kiwi: PRICES[:adult] - 150_00,
+    tuatara: 0,
+    pre_oppose: 0,
+    pre_support: 0,
+  }
+
   attr_reader :from
 
   def initialize(from:)
@@ -33,7 +41,7 @@ class UpgradesAvailable
   end
 
   def call
-    baseline = PRICES[from] || 0
+    baseline = PRICES[from] || PRESUPPORT_PRICES[from] || 0
 
     options = PRICES.select do |name, cost|
       name != from && cost >= baseline

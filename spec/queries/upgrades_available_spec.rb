@@ -55,6 +55,13 @@ RSpec.describe UpgradesAvailable do
       it { is_expected.to include(:adult) }
       it { is_expected.to_not include(:young_adult) }
     end
+
+    context "when kiwi" do
+      let(:from) { :kiwi }
+      it { is_expected.to include(:adult) }
+      it { is_expected.to include(:young_adult) }
+      it { is_expected.to_not include(:silver_fern) }
+    end
   end
 
   context "checking the cost of upgrades" do
