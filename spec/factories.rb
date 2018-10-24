@@ -26,7 +26,7 @@ FactoryBot.define do
   end
 
   factory :membership do
-    name { "Adult Membership" }
-    price { 300 }
+    level { "adult" }
+    worth { 300 }
   end
 end

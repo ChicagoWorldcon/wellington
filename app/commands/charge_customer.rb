@@ -21,7 +21,7 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
   CURRENCY = "nzd"
 
   def call
-    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.price)
+    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.worth)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -69,7 +69,7 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
       description: STRIPE_CHARGE_DESCRIPTION,
       currency: CURRENCY,
       customer: @stripe_customer.id,
-      amount: membership.price,
+      amount: membership.worth,
     )
   rescue Stripe::StripeError => e
     errors << e.message

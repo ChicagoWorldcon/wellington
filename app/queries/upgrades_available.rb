@@ -23,12 +23,12 @@ class UpgradesAvailable
     @from = from
   end
 
-  # FIXME This price lookup should actually come from what the user paid
+  # FIXME This price lookup should actually come from Membership.worth
   def call
     baseline = Membership::PRICES[from] || Membership::PRESUPPORT_PRICES[from] || 0
 
-    options = Membership::PRICES.select do |name, cost|
-      name != from && cost >= baseline
+    options = Membership::PRICES.select do |level, cost|
+      level != from && cost >= baseline
     end
 
     options.keys.each do |key|

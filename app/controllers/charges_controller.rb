@@ -20,7 +20,7 @@ class ChargesController < ApplicationController
   end
 
   def create
-    membership = Membership.find_or_create_by!(name: "Clubhouse", price: 500)
+    membership = Membership.find_or_create_by!(level: "adult", worth: 500)
     user = User.find_or_create_by!(email: params[:stripeEmail])
     service = ChargeCustomer.new(membership, user, params[:stripeToken])
     @payment = service.call
