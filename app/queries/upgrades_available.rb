@@ -17,23 +17,6 @@
 # UpgradesAvailable query defines what upgrades you can get to from your current membership
 # Upgrades are always available when they're of higher value
 class UpgradesAvailable
-  PRICES = {
-    adult: 370_00,
-    young_adult: 225_00,
-    unwaged: 225_00,
-    child: 105_00,
-    kid_in_tow: 0,
-    supporting: 75_00,
-  }
-
-  PRESUPPORT_PRICES = {
-    silver_fern: PRICES[:adult] - 50_00,
-    kiwi: PRICES[:adult] - 150_00,
-    tuatara: 0,
-    pre_oppose: 0,
-    pre_support: 0,
-  }
-
   attr_reader :from
 
   def initialize(from:)
@@ -42,9 +25,9 @@ class UpgradesAvailable
 
   # FIXME This price lookup should actually come from what the user paid
   def call
-    baseline = PRICES[from] || PRESUPPORT_PRICES[from] || 0
+    baseline = Membership::PRICES[from] || Membership::PRESUPPORT_PRICES[from] || 0
 
-    options = PRICES.select do |name, cost|
+    options = Membership::PRICES.select do |name, cost|
       name != from && cost >= baseline
     end
 
