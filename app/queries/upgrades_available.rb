@@ -17,7 +17,7 @@
 # UpgradesAvailable query defines what upgrades you can get to from your current membership
 # Upgrades are always available when they're of higher value
 class UpgradesAvailable
-  LEVELS = {
+  PRICES = {
     adult: 370_00,
     young_adult: 225_00,
     unwaged: 225_00,
@@ -33,9 +33,9 @@ class UpgradesAvailable
   end
 
   def call
-    baseline = LEVELS[from]
+    baseline = PRICES[from]
 
-    options = LEVELS.select do |name, cost|
+    options = PRICES.select do |name, cost|
       name != from && cost >= baseline
     end
 
