@@ -47,6 +47,13 @@ RSpec.describe UpgradesAvailable do
       it { is_expected.to include(:young_adult) }
       it { is_expected.to include(:unwaged) }
       it { is_expected.to include(:child) }
+      it { is_expected.to_not include(:silver_fern) }
+    end
+
+    context "when silver_fern" do
+      let(:from) { :silver_fern }
+      it { is_expected.to include(:adult) }
+      it { is_expected.to_not include(:young_adult) }
     end
   end
 

@@ -33,7 +33,7 @@ class UpgradesAvailable
   end
 
   def call
-    baseline = PRICES[from]
+    baseline = PRICES[from] || 0
 
     options = PRICES.select do |name, cost|
       name != from && cost >= baseline
