@@ -40,6 +40,7 @@ class UpgradesAvailable
     @from = from
   end
 
+  # FIXME This price lookup should actually come from what the user paid
   def call
     baseline = PRICES[from] || PRESUPPORT_PRICES[from] || 0
 
