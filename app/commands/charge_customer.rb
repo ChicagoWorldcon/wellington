@@ -20,16 +20,17 @@ class ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
-  attr_reader :membership, :user, :token
+  attr_reader :membership, :user, :token, :charge_amount
 
-  def initialize(membership, user, token)
+  def initialize(membership, user, token, charge_amount: nil)
     @membership = membership
     @user = user
     @token = token
+    @charge_amount = charge_amount || membership.worth
   end
 
   def call
-    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.worth)
+    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: charge_amount)
 
     create_stripe_customer
     create_stripe_charge unless errors.any?
@@ -77,7 +78,7 @@ class ChargeCustomer
       description: STRIPE_CHARGE_DESCRIPTION,
       currency: CURRENCY,
       customer: @stripe_customer.id,
-      amount: membership.worth,
+      amount: charge_amount,
     )
   rescue Stripe::StripeError => e
     errors << e.message
