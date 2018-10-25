@@ -22,7 +22,7 @@ class Membership < ApplicationRecord
     child: 105_00,
     kid_in_tow: 0,
     supporting: 75_00,
-  }.freeze
+  }.with_indifferent_access.freeze
 
   PRESUPPORT_PRICES = {
     silver_fern: PRICES[:adult] - 50_00,
@@ -30,7 +30,7 @@ class Membership < ApplicationRecord
     tuatara: 0,
     pre_oppose: 0,
     pre_support: 0,
-  }.freeze
+  }.with_indifferent_access.freeze
 
   has_many :charges
   has_many :grants

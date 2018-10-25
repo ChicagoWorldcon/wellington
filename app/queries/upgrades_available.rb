@@ -35,6 +35,6 @@ class UpgradesAvailable
       options[key] = options[key] - baseline
     end
 
-    options
+    options.freeze
   end
 end
