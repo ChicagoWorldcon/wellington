@@ -16,9 +16,17 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-ChargeCustomer = Struct.new(:membership, :user, :token) do
+class ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
+
+  attr_reader :membership, :user, :token
+
+  def initialize(membership, user, token)
+    @membership = membership
+    @user = user
+    @token = token
+  end
 
   def call
     @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.worth)
