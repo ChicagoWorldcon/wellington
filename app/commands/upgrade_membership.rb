@@ -26,7 +26,9 @@ class UpgradeMembership
 
   def call
     check_availability
-    errors.none?
+    return false if errors.any?
+
+    membership.update!(level: target_level)
   end
 
   def errors

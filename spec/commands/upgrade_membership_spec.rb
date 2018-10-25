@@ -20,22 +20,37 @@ RSpec.describe UpgradeMembership do
   subject(:command) { UpgradeMembership.new(membership, level) }
 
   context "when upgrade unavailable" do
-    let(:level) { :young_adult }
+    let(:level) { "young_adult" }
     let(:membership) { create(:membership, level: :adult) }
 
     it "returns false to indicate failure" do
       expect(subject.call).to be_falsey
       expect(subject.errors).to include(/cannot upgrade to young_adult/i)
     end
+
+    it "doesn't change membership level" do
+      expect { subject.call }.to_not change { membership.level }
+    end
   end
 
   context "when upgrade is available" do
-    let(:level) { :adult }
+    let(:level) { "adult" }
     let(:membership) { create(:membership, level: :young_adult) }
 
     it "returns true to indicate success" do
       expect(subject.call).to be_truthy
       expect(subject.errors).to be_empty
+    end
+
+    it "doens't change the number of memberships" do
+      membership
+      expect { subject.call }.to_not change { Membership.count }
+    end
+
+    it "changes membership level" do
+      expect { subject.call }
+        .to change { membership.level }
+        .from("young_adult").to("adult")
     end
   end
 end
