@@ -17,19 +17,25 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
-  subject(:command) { UpgradeMembership.new(membership, level).call }
+  subject(:command) { UpgradeMembership.new(membership, level) }
 
   context "when upgrade unavailable" do
     let(:level) { :young_adult }
     let(:membership) { create(:membership, level: :adult) }
 
-    it { is_expected.to be_falsey }
+    it "returns false to indicate failure" do
+      expect(subject.call).to be_falsey
+      expect(subject.errors).to include(/cannot upgrade to young_adult/i)
+    end
   end
 
   context "when upgrade is available" do
     let(:level) { :adult }
     let(:membership) { create(:membership, level: :young_adult) }
 
-    it { is_expected.to be_truthy }
+    it "returns true to indicate success" do
+      expect(subject.call).to be_truthy
+      expect(subject.errors).to be_empty
+    end
   end
 end

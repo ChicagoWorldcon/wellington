@@ -25,7 +25,21 @@ class UpgradeMembership
   end
 
   def call
-    options = UpgradesAvailable.new(from: membership.level).call
-    options.has_key?(target_level)
+    check_availability
+    errors.none?
+  end
+
+  def errors
+    @errors ||= []
+  end
+
+  private
+
+  # TODO get nicer user facing text for these membreship levels
+  def check_availability
+    prices = UpgradesAvailable.new(from: membership.level).call
+    if !prices.has_key?(target_level)
+      errors << "#{membership.level} cannot upgrade to #{target_level}"
+    end
   end
 end
