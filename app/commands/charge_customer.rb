@@ -30,13 +30,20 @@ class ChargeCustomer
   end
 
   def call
-    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: charge_amount)
+    @charge = Charge.new(
+      user: user,
+      membership: membership,
+      stripe_id: token,
+      cost: charge_amount,
+    )
 
-    create_stripe_customer
+    check_charge_amount
+    create_stripe_customer unless errors.any?
     create_stripe_charge unless errors.any?
 
     if errors.any?
       @charge.status = Charge::FAILED
+      @charge.comment = error_message
     elsif !@stripe_charge[:paid]
       @charge.status = Charge::FAILED
     else
@@ -65,12 +72,18 @@ class ChargeCustomer
 
   private
 
+  def check_charge_amount
+    if charge_amount > membership.worth
+      errors << "refusing to overpay for membership"
+    end
+  end
+
   def create_stripe_customer
     @stripe_customer = Stripe::Customer.create(email: user.email, source: token)
   rescue Stripe::StripeError => e
     errors << e.message
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment = "Failed to create Stripe::Customer - #{e.message}"
+    @charge.comment = "failed to create Stripe::Customer - #{e.message}"
   end
 
   def create_stripe_charge
@@ -83,7 +96,7 @@ class ChargeCustomer
   rescue Stripe::StripeError => e
     errors << e.message
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment =  "Failed to create Stripe::Charge - #{e.message}"
+    @charge.comment =  "failed to create Stripe::Charge - #{e.message}"
   end
 
   def json_to_hash(obj)

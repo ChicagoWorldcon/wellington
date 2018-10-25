@@ -80,4 +80,14 @@ RSpec.describe ChargeCustomer do
       end
     end
   end
+
+  context "when overpaying" do
+    let(:amount_paid) { membership.worth + 1 }
+    subject(:command) { ChargeCustomer.new(membership, user, token, charge_amount: amount_paid) }
+
+    it "refuses to purchase the membership" do
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/Overpay/i)
+    end
+  end
 end
