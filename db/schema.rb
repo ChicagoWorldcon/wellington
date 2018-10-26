@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181025182614) do
+ActiveRecord::Schema.define(version: 20181026015736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20181025182614) do
     t.integer "cost", null: false
     t.json "stripe_response"
     t.string "comment", null: false
-    t.string "status", null: false
+    t.string "state", null: false
     t.string "stripe_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

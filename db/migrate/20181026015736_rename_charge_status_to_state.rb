@@ -14,20 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Charge < ApplicationRecord
-  FAILED = "failed"
-  SUCCEEDED = "succeeded"
-
-  belongs_to :user
-  belongs_to :membership
-
-  validates :comment, presence: true
-  validates :cost, presence: true
-  validates :membership, presence: true
-  validates :state, inclusion: {in: [FAILED, SUCCEEDED]}
-  validates :stripe_id, presence: true
-  validates :user, presence: true
-
-  scope :failed, ->() { where(state: FAILED) }
-  scope :succeeded, ->() { where(state: SUCCEEDED) }
+class RenameChargeStatusToState < ActiveRecord::Migration[5.1]
+  def change
+    rename_column :charges, :status, :state
+  end
 end
