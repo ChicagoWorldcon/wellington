@@ -14,20 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Factories to simplify testing
-# see https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
-FactoryBot.define do
-  sequence :email do |n|
-    "fan-#{n}@convention.net"
-  end
-
-  factory :user do
-    email { generate(:email) }
-  end
-
-  factory :membership do
-    level { "adult" }
-    worth { 300 }
-    state { Membership::INSTALLMENT }
+class AddStateToMembership < ActiveRecord::Migration[5.1]
+  def change
+    add_column :memberships, :state, :string, null: false
   end
 end

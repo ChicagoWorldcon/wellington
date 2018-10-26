@@ -28,12 +28,18 @@ RSpec.describe ChargeCustomer do
   context "when paying for a membership" do
     subject(:command) { ChargeCustomer.new(membership, user, token) }
 
-    it "creates a failed payment on card decline" do
-      StripeMock.prepare_card_error(:card_declined)
-      expect(command.call).to be_falsey
-      expect(Charge.failed.count).to eq 1
-      expect(Charge.last.stripe_id).to be_present
-      expect(Charge.last.comment).to match(/Declined/i)
+    context "when payment fails" do
+      before do
+        StripeMock.prepare_card_error(:card_declined)
+        expect(command.call).to be_falsey
+      end
+
+      it "creates a failed payment on card decline" do
+        expect(Charge.failed.count).to eq 1
+        expect(Charge.last.stripe_id).to be_present
+        expect(Charge.last.comment).to match(/Declined/i)
+        expect(membership.state).to eq(Membership::INSTALLMENT)
+      end
     end
 
     context "when payment succeeds" do

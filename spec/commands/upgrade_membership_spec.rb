@@ -31,6 +31,10 @@ RSpec.describe UpgradeMembership do
     it "doesn't change membership level" do
       expect { subject.call }.to_not change { membership.level }
     end
+
+    it "doesn't create new charges" do
+      expect { subject.call }.to_not change { membership.charges.count }
+    end
   end
 
   context "when upgrade is available" do

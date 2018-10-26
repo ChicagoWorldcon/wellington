@@ -32,9 +32,15 @@ class Membership < ApplicationRecord
     pre_support: 0,
   }.with_indifferent_access.freeze
 
+  ACTIVE = "active"
+  DISABLED = "disabled"
+  INSTALLMENT = "installment"
+
   has_many :charges
   has_many :grants
 
+  # TODO inclusion in prices and presupport price options
   validates :level, presence: true
+  validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]
   validates :worth, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end
