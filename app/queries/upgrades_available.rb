@@ -25,9 +25,9 @@ class UpgradesAvailable
 
   # FIXME This price lookup should actually come from purchase.worth
   def call
-    baseline = Purchase::PRICES[from] || Purchase::PRESUPPORT_PRICES[from] || 0
+    baseline = Product::PRICES[from] || Product::PRESUPPORT_PRICES[from] || 0
 
-    options = Purchase::PRICES.select do |level, cost|
+    options = Product::PRICES.select do |level, cost|
       level != from && cost >= baseline
     end
 
