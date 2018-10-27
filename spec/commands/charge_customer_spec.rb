@@ -21,12 +21,12 @@ RSpec.describe ChargeCustomer do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:membership) { create(:membership) }
+  let(:purchase) { create(:purchase) }
   let(:user) { create(:user) }
   let(:token) { stripe_helper.generate_card_token }
 
-  context "when paying for a membership" do
-    subject(:command) { ChargeCustomer.new(membership, user, token) }
+  context "when paying for a purchase" do
+    subject(:command) { ChargeCustomer.new(purchase, user, token) }
 
     context "when payment fails" do
       before do
@@ -38,7 +38,7 @@ RSpec.describe ChargeCustomer do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
         expect(Charge.last.comment).to match(/Declined/i)
-        expect(membership.state).to eq(Membership::INSTALLMENT)
+        expect(purchase.state).to eq(Purchase::INSTALLMENT)
       end
     end
 
@@ -58,9 +58,9 @@ RSpec.describe ChargeCustomer do
     end
   end
 
-  context "when paying only part of a membership" do
-    let(:amount_paid) { membership.worth / 4 }
-    subject(:command) { ChargeCustomer.new(membership, user, token, charge_amount: amount_paid) }
+  context "when paying only part of a purchase" do
+    let(:amount_paid) { purchase.worth / 4 }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
       StripeMock.prepare_card_error(:card_declined)
@@ -85,38 +85,38 @@ RSpec.describe ChargeCustomer do
         expect(Charge.last.cost).to be(amount_paid)
       end
 
-      it "marks membership state as installment" do
-        expect(membership.state).to eq Membership::INSTALLMENT
+      it "marks purchase state as installment" do
+        expect(purchase.state).to eq Purchase::INSTALLMENT
       end
     end
   end
 
   context "when overpaying" do
-    let(:amount_paid) { membership.worth + 1 }
-    subject(:command) { ChargeCustomer.new(membership, user, token, charge_amount: amount_paid) }
+    let(:amount_paid) { purchase.worth + 1 }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
-    it "refuses to purchase the membership" do
+    it "refuses to purchase the purchase" do
       expect(command.call).to be_falsey
       expect(command.errors).to include(/Overpay/i)
     end
   end
 
-  context "when paying off a membership" do
-    let(:first_payment) { membership.worth / 4 }
-    let(:final_payment) { membership.worth - first_payment }
+  context "when paying off a purchase" do
+    let(:first_payment) { purchase.worth / 4 }
+    let(:final_payment) { purchase.worth - first_payment }
 
     it "transitions from installment to active" do
       expect {
-        ChargeCustomer.new(membership, user, token, charge_amount: first_payment).call
+        ChargeCustomer.new(purchase, user, token, charge_amount: first_payment).call
       }.to change { Charge.count }.by(1)
 
-      expect(membership.state).to eq Membership::INSTALLMENT
+      expect(purchase.state).to eq Purchase::INSTALLMENT
 
       expect {
-        ChargeCustomer.new(membership, user, token, charge_amount: final_payment).call
+        ChargeCustomer.new(purchase, user, token, charge_amount: final_payment).call
       }.to change { Charge.count }.by(1)
 
-      expect(membership.state).to eq Membership::ACTIVE
+      expect(purchase.state).to eq Purchase::ACTIVE
     end
   end
 end

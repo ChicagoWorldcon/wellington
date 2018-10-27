@@ -25,14 +25,14 @@ FactoryBot.define do
     email { generate(:email) }
   end
 
-  factory :membership do
+  factory :purchase do
     level { "adult" }
     worth { 300 }
-    state { Membership::ACTIVE }
+    state { Purchase::ACTIVE }
     created_at { 1.week.ago }
 
     trait :pay_as_you_go do
-      state { Membership::INSTALLMENT }
+      state { Purchase::INSTALLMENT }
     end
   end
 end

@@ -19,15 +19,15 @@ require "rails_helper"
 RSpec.describe TransferMembership do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
-  let(:membership) { create(:membership) }
+  let(:purchase) { create(:purchase) }
 
-  before { Claim.create!(user: seller, membership: membership, active_from: membership.created_at) }
+  before { Claim.create!(user: seller, purchase: purchase, active_from: purchase.created_at) }
 
-  subject(:command) { TransferMembership.new(membership, from: seller, to: buyer) }
+  subject(:command) { TransferMembership.new(purchase, from: seller, to: buyer) }
   let(:soonish) { 1.minute.from_now } # hack, TransferMembership is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
-    expect { command.call }.to_not change { Membership.count }
+    expect { command.call }.to_not change { Purchase.count }
   end
 
   it "adds claim to buyer" do
@@ -50,12 +50,12 @@ RSpec.describe TransferMembership do
     end
   end
 
-  context "when membership is pay by installment" do
-    let(:membership) { create(:membership, :pay_as_you_go) }
+  context "when purchase is pay by installment" do
+    let(:purchase) { create(:purchase, :pay_as_you_go) }
 
     it "doesn't let you transfer" do
       expect(command.call).to be_falsey
-      expect(command.errors).to include(/membership/i)
+      expect(command.errors).to include(/purchase/i)
     end
   end
 end

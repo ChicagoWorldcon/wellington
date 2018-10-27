@@ -20,19 +20,19 @@ class ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
-  attr_reader :membership, :user, :token, :charge_amount
+  attr_reader :purchase, :user, :token, :charge_amount
 
-  def initialize(membership, user, token, charge_amount: nil)
-    @membership = membership
+  def initialize(purchase, user, token, charge_amount: nil)
+    @purchase = purchase
     @user = user
     @token = token
-    @charge_amount = charge_amount || membership.worth
+    @charge_amount = charge_amount || purchase.worth
   end
 
   def call
     @charge = Charge.new(
       user: user,
-      membership: membership,
+      purchase: purchase,
       stripe_id: token,
       cost: charge_amount,
     )
@@ -57,12 +57,12 @@ class ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    membership.transaction do
+    purchase.transaction do
       @charge.save!
       if fully_paid?
-        membership.update!(state: Membership::ACTIVE)
+        purchase.update!(state: Purchase::ACTIVE)
       else
-        membership.update!(state: Membership::INSTALLMENT)
+        purchase.update!(state: Purchase::INSTALLMENT)
       end
     end
 
@@ -80,8 +80,8 @@ class ChargeCustomer
   private
 
   def check_charge_amount
-    if charge_amount > membership.worth
-      errors << "refusing to overpay for membership"
+    if charge_amount > purchase.worth
+      errors << "refusing to overpay for purchase"
     end
   end
 
@@ -113,6 +113,6 @@ class ChargeCustomer
   end
 
   def fully_paid?
-    membership.charges.successful.sum(:cost) >= membership.worth
+    purchase.charges.successful.sum(:cost) >= purchase.worth
   end
 end

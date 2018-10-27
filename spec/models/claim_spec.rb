@@ -18,11 +18,11 @@ require "rails_helper"
 
 RSpec.describe Claim, type: :model do
   let(:user) { create(:user) }
-  let(:membership) { create(:membership) }
+  let(:purchase) { create(:purchase) }
 
   describe "#valid?" do
     context "when called without active_from" do
-      subject(:claim) { Claim.create(user: user, membership: membership) }
+      subject(:claim) { Claim.create(user: user, purchase: purchase) }
 
       it { is_expected.to be_valid }
 
@@ -38,7 +38,7 @@ RSpec.describe Claim, type: :model do
     context "when called with active_from" do
       let(:sample_time) { 1.week.ago }
 
-      subject(:claim) { Claim.create(user: user, membership: membership, active_from: sample_time) }
+      subject(:claim) { Claim.create(user: user, purchase: purchase, active_from: sample_time) }
 
       it { is_expected.to be_valid }
 
@@ -53,7 +53,7 @@ RSpec.describe Claim, type: :model do
       let(:last_week) { Time.now - 1.week }
 
       it "is invalid when dates aren't ordered" do
-        claim = Claim.new(active_from: now, active_to: last_week, user: user, membership: membership)
+        claim = Claim.new(active_from: now, active_to: last_week, user: user, purchase: purchase)
         expect(claim).to_not be_valid
         expect(claim.errors.messages.keys).to_not include(:active_from)
         expect(claim.errors.messages.keys).to include(:active_to)
@@ -64,7 +64,7 @@ RSpec.describe Claim, type: :model do
   describe "#active_at" do
     context "with open ended #active_to" do
       let(:start) { 1.week.ago }
-      let!(:current_claim) { Claim.create!(user: user, membership: membership, active_from: start) }
+      let!(:current_claim) { Claim.create!(user: user, purchase: purchase, active_from: start) }
 
       it "doesn't set active_to" do
         expect(current_claim.active_to).to be_nil
@@ -86,7 +86,7 @@ RSpec.describe Claim, type: :model do
     context "when claim is closed setting #active_to" do
       let(:start) { 1.week.ago }
       let(:finish) { start + 3.days }
-      let!(:closed_claim) { Claim.create!(user: user, membership: membership, active_from: start, active_to: finish) }
+      let!(:closed_claim) { Claim.create!(user: user, purchase: purchase, active_from: start, active_to: finish) }
 
       it "is active when it's within the time range" do
         expect(Claim.active_at(start)).to include(closed_claim)

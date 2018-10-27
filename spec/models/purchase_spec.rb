@@ -16,24 +16,24 @@
 
 require "rails_helper"
 
-RSpec.describe Membership, type: :model do
+RSpec.describe Purchase, type: :model do
   context "when adult" do
-    subject(:model) { create(:membership, level: :adult, state: Membership::ACTIVE) }
+    subject(:model) { create(:purchase, level: :adult) }
     it { is_expected.to be_valid }
     it { is_expected.to be_transferable }
   end
 
   context "when not active as an adult" do
-    [Membership::INSTALLMENT, Membership::DISABLED].each do |inactive_state|
-      subject(:model) { create(:membership, level: :adult, state: inactive_state) }
+    [Purchase::INSTALLMENT, Purchase::DISABLED].each do |inactive_state|
+      subject(:model) { create(:purchase, level: :adult, state: inactive_state) }
       it { is_expected.to be_valid }
       it { is_expected.to_not be_transferable }
     end
   end
 
-  context "for presupport memberships" do
+  context "for presupport purchases" do
     %i(silver_fern kiwi tuatara).each do |presupport_level|
-      subject(:model) { create(:membership, level: presupport_level, state: Membership::ACTIVE) }
+      subject(:model) { create(:purchase, level: presupport_level) }
       it { is_expected.to be_valid }
       it { is_expected.to_not be_transferable }
     end

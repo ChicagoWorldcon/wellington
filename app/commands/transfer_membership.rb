@@ -14,47 +14,47 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TransferMembership command makes old claims to membership inactive and sets up new claim for receiver
+# TransferMembership command makes old claims to purchase inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
 class TransferMembership
-  attr_reader :membership, :sender, :receiver, :errors
+  attr_reader :purchase, :sender, :receiver, :errors
 
-  def initialize(membership, from:, to:)
-    @membership = membership
+  def initialize(purchase, from:, to:)
+    @purchase = purchase
     @sender = from
     @receiver = to
   end
 
   def call
     @errors = []
-    membership.transaction do
-      check_membership
+    purchase.transaction do
+      check_purchase
       return false if errors.any?
 
       as_at = Time.now
       old_claim.update!(active_to: as_at)
-      receiver.claims.create!(active_from: as_at, membership: membership)
+      receiver.claims.create!(active_from: as_at, purchase: purchase)
     end
   end
 
   private
 
-  def check_membership
+  def check_purchase
     if !old_claim.present?
-      errors << "membership not held"
-      return # bail, avoid leaking information about memberships
+      errors << "purchase not held"
+      return # bail, avoid leaking information about purchases
     end
 
     if !old_claim.transferable?
       errors << "claim is not transferable"
     end
 
-    if !membership.transferable?
-      errors << "membership is not transferable"
+    if !purchase.transferable?
+      errors << "purchase is not transferable"
     end
   end
 
   def old_claim
-    @old_claim ||= sender.claims.active.find_by(membership: membership)
+    @old_claim ||= sender.claims.active.find_by(purchase: purchase)
   end
 end

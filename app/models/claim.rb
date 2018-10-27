@@ -16,9 +16,9 @@
 
 class Claim < ApplicationRecord
   belongs_to :user
-  belongs_to :membership
+  belongs_to :purchase
 
-  validates :membership, presence: true
+  validates :purchase, presence: true
   validates :user, presence: true
 
   after_initialize :set_active_to

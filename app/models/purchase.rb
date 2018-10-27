@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Membership < ApplicationRecord
+class Purchase < ApplicationRecord
   PRICES = {
     adult: 370_00,
     young_adult: 225_00,

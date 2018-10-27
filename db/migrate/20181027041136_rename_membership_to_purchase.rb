@@ -14,27 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# UpgradesAvailable query defines what upgrades you can get to from your current membership
-# Upgrades are always available when they're of higher value
-class UpgradesAvailable
-  attr_reader :from
+class RenameMembershipToPurchase < ActiveRecord::Migration[5.1]
+  # Rails doesn't rename foreign keys for you, so we have to do these steps manually
+  def change
+    remove_foreign_key :claims,  :memberships
+    remove_foreign_key :charges, :memberships
+    rename_column      :claims,  :membership_id, :purchase_id
+    rename_column      :charges, :membership_id, :purchase_id
 
-  def initialize(from:)
-    @from = from
-  end
+    rename_table :memberships, :purchases
 
-  # FIXME This price lookup should actually come from purchase.worth
-  def call
-    baseline = Purchase::PRICES[from] || Purchase::PRESUPPORT_PRICES[from] || 0
-
-    options = Purchase::PRICES.select do |level, cost|
-      level != from && cost >= baseline
-    end
-
-    options.keys.each do |key|
-      options[key] = options[key] - baseline
-    end
-
-    options.freeze
+    add_foreign_key :claims,  :purchases, index: true
+    add_foreign_key :charges, :purchases, index: true
   end
 end
