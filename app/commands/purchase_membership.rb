@@ -14,10 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
+class PurchaseMembership
+  attr_reader :user, :product
 
-RSpec.describe Product, type: :model do
-   subject(:model) { create(:product, :adult) }
+  def initialize(user, product)
+    @user = user
+    @product = product
+  end
 
-   it { is_expected.to be_valid }
+  def call
+    true
+  end
 end

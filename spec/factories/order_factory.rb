@@ -21,7 +21,7 @@ FactoryBot.define do
 
     before(:create) do |order, _evaluator|
       order.purchase = create(:purchase)
-      order.product = create(:product)
+      order.product = create(:product, :adult)
     end
   end
 end

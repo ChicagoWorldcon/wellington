@@ -16,8 +16,14 @@
 
 require "rails_helper"
 
-RSpec.describe Product, type: :model do
-   subject(:model) { create(:product, :adult) }
+RSpec.describe PurchaseMembership do
+  let(:product) { create(:product, :adult) }
+  let(:user) { create(:user) }
+  let(:command) { PurchaseMembership.new(product, user) }
 
-   it { is_expected.to be_valid }
+  context "when successful" do
+    it "returns true" do
+      expect(command.call).to be_truthy
+    end
+  end
 end
