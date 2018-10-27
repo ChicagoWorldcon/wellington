@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe TransferMembership do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
-  let(:membership) { create(:membership, created_at: 1.week.ago) }
+  let(:membership) { create(:membership) }
 
   before { Grant.create!(user: seller, membership: membership, active_from: membership.created_at) }
 

@@ -57,7 +57,10 @@ class ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    @charge.save!
+    membership.transaction do
+      @charge.save!
+      membership.update!(state: Membership::INSTALLMENT)
+    end
 
     return @charge.state == Charge::SUCCEEDED
   end

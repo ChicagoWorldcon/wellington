@@ -28,6 +28,7 @@ FactoryBot.define do
   factory :membership do
     level { "adult" }
     worth { 300 }
-    state { Membership::INSTALLMENT }
+    state { Membership::ACTIVE }
+    created_at { 1.week.ago }
   end
 end
