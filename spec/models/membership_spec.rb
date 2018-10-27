@@ -30,4 +30,12 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not be_transferrable }
     end
   end
+
+  context "for presupport memberships" do
+    %i(silver_fern kiwi tuatara).each do |presupport_level|
+      subject(:model) { create(:membership, level: presupport_level, state: Membership::ACTIVE) }
+      it { is_expected.to be_valid }
+      it { is_expected.to_not be_transferrable }
+    end
+  end
 end
