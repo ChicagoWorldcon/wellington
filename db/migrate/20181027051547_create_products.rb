@@ -14,33 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Factories to simplify testing
-# see https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
-FactoryBot.define do
-  sequence :email do |n|
-    "fan-#{n}@convention.net"
-  end
-
-  factory :user do
-    email { generate(:email) }
-  end
-
-  factory :purchase do
-    level { "adult" }
-    worth { 300 }
-    state { Purchase::ACTIVE }
-    created_at { 1.week.ago }
-
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
+class CreateProducts < ActiveRecord::Migration[5.1]
+  def change
+    create_table :products do |t|
+      t.string :category, null: false
+      t.string :level, null: false
+      t.integer :price, null: false
+      t.datetime :active_from, null: false
+      t.datetime :active_to
+      t.timestamps
     end
-  end
-
-  factory :product do
-    category { :membership }
-    level { "adult" }
-    price { 300 }
-    active_from { 1.week.ago }
-    created_at { 1.week.ago }
   end
 end

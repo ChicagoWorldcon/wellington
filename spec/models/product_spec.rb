@@ -14,33 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Factories to simplify testing
-# see https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
-FactoryBot.define do
-  sequence :email do |n|
-    "fan-#{n}@convention.net"
-  end
+require "rails_helper"
 
-  factory :user do
-    email { generate(:email) }
-  end
+RSpec.describe Product, type: :model do
+   subject(:model) { create(:product) }
 
-  factory :purchase do
-    level { "adult" }
-    worth { 300 }
-    state { Purchase::ACTIVE }
-    created_at { 1.week.ago }
-
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
-    end
-  end
-
-  factory :product do
-    category { :membership }
-    level { "adult" }
-    price { 300 }
-    active_from { 1.week.ago }
-    created_at { 1.week.ago }
-  end
+   it { is_expected.to be_valid }
 end
