@@ -43,4 +43,8 @@ class Membership < ApplicationRecord
   validates :level, presence: true
   validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]
   validates :worth, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  def transferrable?
+    true
+  end
 end
