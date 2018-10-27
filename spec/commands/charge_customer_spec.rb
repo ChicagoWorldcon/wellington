@@ -84,6 +84,10 @@ RSpec.describe ChargeCustomer do
       it "is of the value passsed in" do
         expect(Charge.last.cost).to be(amount_paid)
       end
+
+      it "marks membership state as installment" do
+        expect(membership.state).to eq Membership::INSTALLMENT
+      end
     end
   end
 
@@ -94,6 +98,25 @@ RSpec.describe ChargeCustomer do
     it "refuses to purchase the membership" do
       expect(command.call).to be_falsey
       expect(command.errors).to include(/Overpay/i)
+    end
+  end
+
+  context "when paying off a membership" do
+    let(:first_payment) { membership.worth / 4 }
+    let(:final_payment) { membership.worth - first_payment }
+
+    it "transitions from installment to active" do
+      expect {
+        ChargeCustomer.new(membership, user, token, charge_amount: first_payment).call
+      }.to change { Charge.count }.by(1)
+
+      expect(membership.state).to eq Membership::INSTALLMENT
+
+      expect {
+        ChargeCustomer.new(membership, user, token, charge_amount: final_payment).call
+      }.to change { Charge.count }.by(1)
+
+      expect(membership.state).to eq Membership::ACTIVE
     end
   end
 end

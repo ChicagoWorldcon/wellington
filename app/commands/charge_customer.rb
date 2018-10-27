@@ -59,7 +59,11 @@ class ChargeCustomer
 
     membership.transaction do
       @charge.save!
-      membership.update!(state: Membership::INSTALLMENT)
+      if fully_paid?
+        membership.update!(state: Membership::ACTIVE)
+      else
+        membership.update!(state: Membership::INSTALLMENT)
+      end
     end
 
     return @charge.state == Charge::SUCCEEDED
@@ -106,5 +110,9 @@ class ChargeCustomer
     JSON.parse(obj.to_json)
   rescue
     {}
+  end
+
+  def fully_paid?
+    membership.charges.succeeded.sum(:cost) >= membership.worth
   end
 end
