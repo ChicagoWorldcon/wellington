@@ -15,6 +15,8 @@
 # limitations under the License.
 
 class Product < ApplicationRecord
+  include ActiveScopes
+
   PRICES = {
     adult: 370_00,
     young_adult: 225_00,

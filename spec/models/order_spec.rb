@@ -20,4 +20,20 @@ RSpec.describe Order, type: :model do
   subject(:model) { create(:order) }
 
   it { is_expected.to be_valid }
+
+  describe "#active_on" do
+    let(:order_placed_date) { 1.month.ago }
+    let(:order_invalidated_date) { order_placed_date + 1.week }
+    subject(:model) { create(:order, active_from: order_placed_date, active_to: order_invalidated_date) }
+
+    it "includes order within the boundary" do
+      expect(Order.active_at(order_placed_date)).to include(subject)
+      expect(Order.active_at(order_invalidated_date)).to include(subject)
+    end
+
+    it "excludes order when outside of boundary" do
+      expect(Order.active_at(order_placed_date - 1.second)).to_not include(subject)
+      expect(Order.active_at(order_invalidated_date + 1.second)).to_not include(subject)
+    end
+  end
 end

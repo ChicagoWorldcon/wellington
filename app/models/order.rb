@@ -15,7 +15,8 @@
 # limitations under the License.
 
 class Order < ApplicationRecord
-  validates :active_from, presence: true
+  include ActiveScopes
+
   validates :product, presence: true
   validates :purchase, presence: true
 

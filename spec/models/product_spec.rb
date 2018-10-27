@@ -17,7 +17,23 @@
 require "rails_helper"
 
 RSpec.describe Product, type: :model do
-   subject(:model) { create(:product, :adult) }
+  subject(:model) { create(:product, :adult) }
 
-   it { is_expected.to be_valid }
+  it { is_expected.to be_valid }
+
+  describe "#active_on" do
+    let(:product_placed_date) { 1.month.ago }
+    let(:product_invalidated_date) { product_placed_date + 1.week }
+    subject(:model) { create(:product, :adult, active_from: product_placed_date, active_to: product_invalidated_date) }
+
+    it "includes product within the boundary" do
+      expect(Product.active_at(product_placed_date)).to include(subject)
+      expect(Product.active_at(product_invalidated_date)).to include(subject)
+    end
+
+    it "excludes product when outside of boundary" do
+      expect(Product.active_at(product_placed_date - 1.second)).to_not include(subject)
+      expect(Product.active_at(product_invalidated_date + 1.second)).to_not include(subject)
+    end
+  end
 end
