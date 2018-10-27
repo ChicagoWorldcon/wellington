@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  has_many :claims
-  has_many :purchases
-
-  validates :email, presence: true
+class RenameGrantToClaim < ActiveRecord::Migration[5.1]
+  def change
+    rename_table :grants, :claims
+  end
 end

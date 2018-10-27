@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181026015736) do
+ActiveRecord::Schema.define(version: 20181027035935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,15 +29,15 @@ ActiveRecord::Schema.define(version: 20181026015736) do
     t.index ["user_id"], name: "index_charges_on_user_id"
   end
 
-  create_table "grants", force: :cascade do |t|
+  create_table "claims", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "membership_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "active_from", null: false
     t.datetime "active_to"
-    t.index ["membership_id"], name: "index_grants_on_membership_id"
-    t.index ["user_id"], name: "index_grants_on_user_id"
+    t.index ["membership_id"], name: "index_claims_on_membership_id"
+    t.index ["user_id"], name: "index_claims_on_user_id"
   end
 
   create_table "memberships", force: :cascade do |t|
@@ -57,6 +57,6 @@ ActiveRecord::Schema.define(version: 20181026015736) do
 
   add_foreign_key "charges", "memberships"
   add_foreign_key "charges", "users"
-  add_foreign_key "grants", "memberships"
-  add_foreign_key "grants", "users"
+  add_foreign_key "claims", "memberships"
+  add_foreign_key "claims", "users"
 end

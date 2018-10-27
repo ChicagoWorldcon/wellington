@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TransferMembership command makes old grants to membership inactive and sets up new grants for receiver
+# TransferMembership command makes old claims to membership inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
 class TransferMembership
   attr_reader :membership, :sender, :receiver, :errors
@@ -32,21 +32,21 @@ class TransferMembership
       return false if errors.any?
 
       as_at = Time.now
-      old_grant.update!(active_to: as_at)
-      receiver.grants.create!(active_from: as_at, membership: membership)
+      old_claim.update!(active_to: as_at)
+      receiver.claims.create!(active_from: as_at, membership: membership)
     end
   end
 
   private
 
   def check_membership
-    if !old_grant.present?
+    if !old_claim.present?
       errors << "membership not held"
       return # bail, avoid leaking information about memberships
     end
 
-    if !old_grant.transferable?
-      errors << "grant is not transferable"
+    if !old_claim.transferable?
+      errors << "claim is not transferable"
     end
 
     if !membership.transferable?
@@ -54,7 +54,7 @@ class TransferMembership
     end
   end
 
-  def old_grant
-    @old_grant ||= sender.grants.active.find_by(membership: membership)
+  def old_claim
+    @old_claim ||= sender.claims.active.find_by(membership: membership)
   end
 end

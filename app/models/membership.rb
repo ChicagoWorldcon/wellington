@@ -37,7 +37,7 @@ class Membership < ApplicationRecord
   INSTALLMENT = "installment"
 
   has_many :charges
-  has_many :grants
+  has_many :claims
 
   # TODO inclusion in prices and presupport price options
   validates :level, presence: true

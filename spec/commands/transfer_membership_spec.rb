@@ -21,7 +21,7 @@ RSpec.describe TransferMembership do
   let(:buyer) { create(:user) }
   let(:membership) { create(:membership) }
 
-  before { Grant.create!(user: seller, membership: membership, active_from: membership.created_at) }
+  before { Claim.create!(user: seller, membership: membership, active_from: membership.created_at) }
 
   subject(:command) { TransferMembership.new(membership, from: seller, to: buyer) }
   let(:soonish) { 1.minute.from_now } # hack, TransferMembership is relying on Time.now which is a very small time slice
@@ -30,12 +30,12 @@ RSpec.describe TransferMembership do
     expect { command.call }.to_not change { Membership.count }
   end
 
-  it "adds grant to buyer" do
-    expect { command.call }.to change { buyer.grants.active_at(soonish).count }.by 1
+  it "adds claim to buyer" do
+    expect { command.call }.to change { buyer.claims.active_at(soonish).count }.by 1
   end
 
-  it "deactivates grant on seller" do
-    expect { command.call }.to change { seller.grants.active_at(soonish).count }.by -1
+  it "deactivates claim on seller" do
+    expect { command.call }.to change { seller.claims.active_at(soonish).count }.by -1
   end
 
   context "when there's transactions close together" do
@@ -45,8 +45,8 @@ RSpec.describe TransferMembership do
     it "doesn't let you transfer twice" do
       expect(command.call).to be_truthy
       expect(command.call).to be_falsey
-      expect(command.errors).to include(/grant/i)
-      expect(Grant.count).to be 2
+      expect(command.errors).to include(/claim/i)
+      expect(Claim.count).to be 2
     end
   end
 
