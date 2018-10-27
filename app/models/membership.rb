@@ -45,6 +45,6 @@ class Membership < ApplicationRecord
   validates :worth, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   def transferrable?
-    true
+    state == ACTIVE
   end
 end

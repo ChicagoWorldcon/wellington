@@ -18,8 +18,16 @@ require "rails_helper"
 
 RSpec.describe Membership, type: :model do
   context "when adult" do
-    subject(:model) { create(:membership) }
+    subject(:model) { create(:membership, level: :adult, state: Membership::ACTIVE) }
     it { is_expected.to be_valid }
     it { is_expected.to be_transferrable }
+  end
+
+  context "when not active as an adult" do
+    [Membership::INSTALLMENT, Membership::DISABLED].each do |inactive_state|
+      subject(:model) { create(:membership, level: :adult, state: inactive_state) }
+      it { is_expected.to be_valid }
+      it { is_expected.to_not be_transferrable }
+    end
   end
 end
