@@ -38,6 +38,7 @@ class Purchase < ApplicationRecord
 
   has_many :charges
   has_many :claims
+  has_many :orders
 
   # TODO inclusion in prices and presupport price options
   validates :level, presence: true

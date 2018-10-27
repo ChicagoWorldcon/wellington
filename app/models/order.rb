@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Product < ApplicationRecord
+class Order < ApplicationRecord
   validates :active_from, presence: true
-  validates :category, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :level, presence: true
+  validates :product, presence: true
+  validates :purchase, presence: true
 
-  has_many :orders
+  belongs_to :product
+  belongs_to :purchase
 end

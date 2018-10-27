@@ -14,11 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Product < ApplicationRecord
-  validates :active_from, presence: true
-  validates :category, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :level, presence: true
+require 'rails_helper'
 
-  has_many :orders
+RSpec.describe Order, type: :model do
+  subject(:model) { create(:order) }
+
+  it { is_expected.to be_valid }
 end

@@ -43,4 +43,14 @@ FactoryBot.define do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
   end
+
+  factory :order do
+    active_from { 1.week.ago }
+    created_at { 1.week.ago }
+
+    before(:create) do |order, _evaluator|
+      order.purchase = create(:purchase)
+      order.product = create(:product)
+    end
+  end
 end
