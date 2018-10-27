@@ -30,5 +30,9 @@ FactoryBot.define do
     worth { 300 }
     state { Membership::ACTIVE }
     created_at { 1.week.ago }
+
+    trait :pay_as_you_go do
+      state { Membership::INSTALLMENT }
+    end
   end
 end

@@ -42,11 +42,15 @@ class TransferMembership
   def check_membership
     if !old_grant.present?
       errors << "membership not held"
-      return
+      return # bail, avoid leaking information about memberships
     end
 
     if !old_grant.transferable?
       errors << "grant is not transferrable"
+    end
+
+    if !membership.transferrable?
+      errors << "membership is not transferable"
     end
   end
 

@@ -45,8 +45,17 @@ RSpec.describe TransferMembership do
     it "doesn't let you transfer twice" do
       expect(command.call).to be_truthy
       expect(command.call).to be_falsey
-      expect(command.errors).to include(/not transferrable/i)
+      expect(command.errors).to include(/grant/i)
       expect(Grant.count).to be 2
+    end
+  end
+
+  context "when membership is pay by installment" do
+    let(:membership) { create(:membership, :pay_as_you_go) }
+
+    it "doesn't let you transfer" do
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/membership/i)
     end
   end
 end
