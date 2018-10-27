@@ -46,10 +46,10 @@ class TransferMembership
     end
 
     if !old_grant.transferable?
-      errors << "grant is not transferrable"
+      errors << "grant is not transferable"
     end
 
-    if !membership.transferrable?
+    if !membership.transferable?
       errors << "membership is not transferable"
     end
   end

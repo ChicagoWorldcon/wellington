@@ -44,7 +44,7 @@ class Membership < ApplicationRecord
   validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]
   validates :worth, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  def transferrable?
+  def transferable?
     state == ACTIVE && !PRESUPPORT_PRICES.has_key?(level)
   end
 end

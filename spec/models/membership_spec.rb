@@ -20,14 +20,14 @@ RSpec.describe Membership, type: :model do
   context "when adult" do
     subject(:model) { create(:membership, level: :adult, state: Membership::ACTIVE) }
     it { is_expected.to be_valid }
-    it { is_expected.to be_transferrable }
+    it { is_expected.to be_transferable }
   end
 
   context "when not active as an adult" do
     [Membership::INSTALLMENT, Membership::DISABLED].each do |inactive_state|
       subject(:model) { create(:membership, level: :adult, state: inactive_state) }
       it { is_expected.to be_valid }
-      it { is_expected.to_not be_transferrable }
+      it { is_expected.to_not be_transferable }
     end
   end
 
@@ -35,7 +35,7 @@ RSpec.describe Membership, type: :model do
     %i(silver_fern kiwi tuatara).each do |presupport_level|
       subject(:model) { create(:membership, level: presupport_level, state: Membership::ACTIVE) }
       it { is_expected.to be_valid }
-      it { is_expected.to_not be_transferrable }
+      it { is_expected.to_not be_transferable }
     end
   end
 end
