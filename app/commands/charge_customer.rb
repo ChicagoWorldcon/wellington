@@ -47,7 +47,7 @@ class ChargeCustomer
     elsif !@stripe_charge[:paid]
       @charge.state = Charge::FAILED
     else
-      @charge.state = Charge::SUCCEEDED
+      @charge.state = Charge::SUCCESSFUL
     end
 
     if @stripe_charge.present?
@@ -66,7 +66,7 @@ class ChargeCustomer
       end
     end
 
-    return @charge.state == Charge::SUCCEEDED
+    return @charge.state == Charge::SUCCESSFUL
   end
 
   def error_message
@@ -113,6 +113,6 @@ class ChargeCustomer
   end
 
   def fully_paid?
-    membership.charges.succeeded.sum(:cost) >= membership.worth
+    membership.charges.successful.sum(:cost) >= membership.worth
   end
 end

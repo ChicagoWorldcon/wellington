@@ -48,7 +48,7 @@ RSpec.describe ChargeCustomer do
       end
 
       it "creates a new successful charge" do
-        expect(Charge.succeeded.count).to eq(1)
+        expect(Charge.successful.count).to eq(1)
         expect(Charge.last.stripe_id).to be_present
       end
 
@@ -77,7 +77,7 @@ RSpec.describe ChargeCustomer do
       end
 
       it "creates a new successful charge" do
-        expect(Charge.succeeded.count).to eq(1)
+        expect(Charge.successful.count).to eq(1)
         expect(Charge.last.stripe_id).to be_present
       end
 

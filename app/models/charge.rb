@@ -16,7 +16,7 @@
 
 class Charge < ApplicationRecord
   FAILED = "failed"
-  SUCCEEDED = "succeeded"
+  SUCCESSFUL = "successful"
 
   belongs_to :user
   belongs_to :membership
@@ -24,10 +24,10 @@ class Charge < ApplicationRecord
   validates :comment, presence: true
   validates :cost, presence: true
   validates :membership, presence: true
-  validates :state, inclusion: {in: [FAILED, SUCCEEDED]}
+  validates :state, inclusion: {in: [FAILED, SUCCESSFUL]}
   validates :stripe_id, presence: true
   validates :user, presence: true
 
   scope :failed, ->() { where(state: FAILED) }
-  scope :succeeded, ->() { where(state: SUCCEEDED) }
+  scope :successful, ->() { where(state: SUCCESSFUL) }
 end
