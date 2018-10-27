@@ -15,32 +15,15 @@
 # limitations under the License.
 
 class Claim < ApplicationRecord
+  include ActiveScopes
+
   belongs_to :user
   belongs_to :purchase
 
   validates :purchase, presence: true
   validates :user, presence: true
 
-  after_initialize :set_active_to
-  validates :active_from, presence: true
-  validate :active_timestamps_ordered
-
-  scope :active, ->() { active_at(Time.now) }
-  scope :active_at, ->(at) { where("active_from <= ? AND (active_to IS NULL OR ? <= active_to)", at, at) }
-
   def transferable?
     active_to.nil?
-  end
-
-  private
-
-  def set_active_to
-    self[:active_from] ||= Time.now
-  end
-
-  def active_timestamps_ordered
-    return if self.active_from.nil? || self.active_to.nil?
-    return if self.active_from <= active_to
-    errors.add(:active_to, "cannot be before active_from")
   end
 end
