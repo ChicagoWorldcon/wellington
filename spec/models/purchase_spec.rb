@@ -36,6 +36,19 @@ RSpec.describe Purchase, type: :model do
     end
   end
 
+  context "with claim" do
+    subject(:model) { create(:purchase, :with_claim_from_user) }
+
+    it "has access ot the active claim" do
+      expect(model.claims.active.count).to eq 1
+      expect(model.active_claim).to eq model.claims.active.first
+    end
+
+    it "has access to user through active claims" do
+      expect(model.user).to eq model.claims.active.first.user
+    end
+  end
+
   context "when not active as an adult" do
     [Purchase::INSTALLMENT, Purchase::DISABLED].each do |inactive_state|
       subject(:model) { create(:purchase, level: :adult, state: inactive_state) }

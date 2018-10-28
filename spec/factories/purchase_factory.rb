@@ -30,5 +30,11 @@ FactoryBot.define do
         new_purchase.orders << create(:order, :with_product, purchase: new_purchase)
       end
     end
+
+    trait :with_claim_from_user do
+      after(:create) do |new_purchase, _evaluator|
+        new_purchase.claims << create(:claim, :with_user, purchase: new_purchase)
+      end
+    end
   end
 end
