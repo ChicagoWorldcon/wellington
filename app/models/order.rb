@@ -19,7 +19,7 @@ class Order < ApplicationRecord
 
   validates :product, presence: true
   validates :purchase, presence: true, uniqueness: {
-    # This order needs to be unique amonst active orders pointing to the same purchase
+    # There can't be other active orders against the same purchase
     conditions: -> { active }
   }
 

@@ -17,14 +17,16 @@
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
-  subject(:model) { create(:order) }
+  subject(:model) { create(:order, :with_purchase, :with_product) }
 
   it { is_expected.to be_valid }
 
   describe "#active_at" do
     let(:order_placed_at) { 1.month.ago }
     let(:order_upgraded_at) { order_placed_at + 1.week }
-    let!(:closed_order) { create(:order, active_from: order_placed_at, active_to: order_upgraded_at) }
+    let!(:closed_order) do
+      create(:order, :with_purchase, :with_product, active_from: order_placed_at, active_to: order_upgraded_at)
+    end
 
     subject(:scope) { Order.active_at(time) }
 
@@ -50,7 +52,7 @@ RSpec.describe Order, type: :model do
   end
 
   context "with multiple orders" do
-    let(:existing_order) { create(:order) }
+    let(:existing_order) { create(:order, :with_purchase, :with_product) }
     let(:new_purchase) { create(:purchase) }
     let(:another_product) { create(:product, :unwaged) }
 

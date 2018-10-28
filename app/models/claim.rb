@@ -21,7 +21,7 @@ class Claim < ApplicationRecord
   belongs_to :purchase
 
   validates :purchase, presence: true, uniqueness: {
-    # This claim needs to be unique amonst active claims pointing to the same purchase
+    # There can't be other active claims against the same purchase
     conditions: -> { active }
   }
   validates :user, presence: true
