@@ -23,6 +23,19 @@ RSpec.describe Purchase, type: :model do
     it { is_expected.to be_transferable }
   end
 
+  context "with order" do
+    subject(:model) { create(:purchase, :with_order_against_product) }
+
+    it "has access to the active order" do
+      expect(model.orders.active.count).to eq 1
+      expect(model.active_order).to eq model.orders.active.first
+    end
+
+    it "has access to purchase through active orders" do
+      expect(model.product).to eq model.orders.active.first.product
+    end
+  end
+
   context "when not active as an adult" do
     [Purchase::INSTALLMENT, Purchase::DISABLED].each do |inactive_state|
       subject(:model) { create(:purchase, level: :adult, state: inactive_state) }

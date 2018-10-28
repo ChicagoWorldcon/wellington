@@ -23,6 +23,10 @@ class Purchase < ApplicationRecord
   has_many :claims
   has_many :orders
 
+  # See Order's validations for :purchase, only one order active at a time
+  has_one :active_order, ->() { active }, class_name: "Order"
+  has_one :product, through: :active_order
+
   # TODO inclusion in prices and presupport price options
   validates :level, presence: true
   validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]

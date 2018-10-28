@@ -24,5 +24,11 @@ FactoryBot.define do
     trait :pay_as_you_go do
       state { Purchase::INSTALLMENT }
     end
+
+    trait :with_order_against_product do
+      after(:create) do |new_purchase, _evaluator|
+        new_purchase.orders << create(:order, :with_product, purchase: new_purchase)
+      end
+    end
   end
 end

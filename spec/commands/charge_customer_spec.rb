@@ -21,7 +21,7 @@ RSpec.describe ChargeCustomer do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:purchase) { create(:purchase) }
+  let(:purchase) { create(:purchase, :with_order_against_product) }
   let(:user) { create(:user) }
   let(:token) { stripe_helper.generate_card_token }
 
