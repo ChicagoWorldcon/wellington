@@ -37,7 +37,7 @@ RSpec.describe Order, type: :model do
     end
   end
 
-  describe "single order active per product" do
+  context "with multiple orders" do
     let(:existing_order) { create(:order) }
     let(:new_purchase) { create(:purchase) }
     let(:another_product) { create(:product, :unwaged) }
@@ -47,10 +47,21 @@ RSpec.describe Order, type: :model do
       expect(order).to be_valid
     end
 
-    it "doesn't let you create two active orders on the same purchse" do
-      expect(existing_order.product.level).to_not eq(another_product.level)
-      order = Order.new(purchase: existing_order.purchase, product: another_product)
-      expect(order).to_not be_valid
+    context "when against the same purchase" do
+      let(:new_order) { Order.new(purchase: existing_order.purchase, product: another_product) }
+      let(:transferred_at) { 1.minute.ago }
+
+      it "shows invalid where there are two active orders" do
+        expect(existing_order.product.level).to_not eq(another_product.level)
+        expect(new_order).to_not be_valid
+      end
+
+      it "shows vlaid if one of the two orders is inactive" do
+        expect(existing_order.product.level).to_not eq(another_product.level)
+        existing_order.update!(active_to: transferred_at)
+        new_order.update!(active_from: transferred_at)
+        expect(new_order).to be_valid
+      end
     end
   end
 end

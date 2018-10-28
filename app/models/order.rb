@@ -18,7 +18,10 @@ class Order < ApplicationRecord
   include ActiveScopes
 
   validates :product, presence: true
-  validates :purchase, presence: true, uniqueness: true
+  validates :purchase, presence: true, uniqueness: {
+    # This order needs to be unique amonst active orders pointing to the same purchase
+    conditions: -> { active }
+  }
 
   belongs_to :product
   belongs_to :purchase
