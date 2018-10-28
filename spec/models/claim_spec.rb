@@ -99,4 +99,9 @@ RSpec.describe Claim, type: :model do
       end
     end
   end
+
+  describe "factory" do
+    subject(:model) { create(:claim, :with_purchase, :with_user) }
+    it { is_expected.to be_valid }
+  end
 end
