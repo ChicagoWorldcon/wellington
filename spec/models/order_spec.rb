@@ -36,4 +36,21 @@ RSpec.describe Order, type: :model do
       expect(Order.active_at(order_invalidated_date + 1.second)).to_not include(subject)
     end
   end
+
+  describe "single order active per product" do
+    let(:existing_order) { create(:order) }
+    let(:new_purchase) { create(:purchase) }
+    let(:another_product) { create(:product, :unwaged) }
+
+    it "lets you create multiple orders of the same product" do
+      order = Order.new(purchase: new_purchase, product: existing_order.product)
+      expect(order).to be_valid
+    end
+
+    it "doesn't let you create two active orders on the same purchse" do
+      expect(existing_order.product.level).to_not eq(another_product.level)
+      order = Order.new(purchase: existing_order.purchase, product: another_product)
+      expect(order).to_not be_valid
+    end
+  end
 end

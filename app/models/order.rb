@@ -18,7 +18,7 @@ class Order < ApplicationRecord
   include ActiveScopes
 
   validates :product, presence: true
-  validates :purchase, presence: true
+  validates :purchase, presence: true, uniqueness: true
 
   belongs_to :product
   belongs_to :purchase
