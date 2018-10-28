@@ -104,4 +104,12 @@ RSpec.describe Claim, type: :model do
     subject(:model) { create(:claim, :with_purchase, :with_user) }
     it { is_expected.to be_valid }
   end
+
+  context "with multiple claims" do
+    it "lets a user have multiple claims" do
+      existing_claim = create(:claim, :with_purchase, :with_user)
+      new_claim = build(:claim, :with_purchase, user: existing_claim.user)
+      expect(new_claim).to be_valid
+    end
+  end
 end

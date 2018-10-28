@@ -18,13 +18,13 @@ FactoryBot.define do
   factory :claim do
 
     trait :with_purchase do
-      before(:create) do |claim, _evaluator|
+      after(:build) do |claim, _evaluator|
         claim.purchase = create(:purchase)
       end
     end
 
     trait :with_user do
-      before(:create) do |claim, _evaluator|
+      after(:build) do |claim, _evaluator|
         claim.user = create(:user)
       end
     end
