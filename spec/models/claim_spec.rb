@@ -118,10 +118,25 @@ RSpec.describe Claim, type: :model do
   end
 
   context "with multiple claims" do
+    let(:existing_claim) { create(:claim, :with_purchase, :with_user, active_from: 1.week.ago) }
+    let(:new_user) { create(:user) }
+    let(:transferred_at) { 1.minute.ago }
+
     it "lets a user have multiple claims" do
-      existing_claim = create(:claim, :with_purchase, :with_user)
       new_claim = build(:claim, :with_purchase, user: existing_claim.user)
       expect(new_claim).to be_valid
+    end
+
+    it "doen't let multiple users claim the same purchase" do
+      new_claim = build(:claim, :with_user, purchase: existing_claim.purchase)
+      expect(new_claim).to_not be_valid
+    end
+
+    it "allows other inactive claims on the same purchase" do
+      new_claim = build(:claim, :with_user, purchase: existing_claim.purchase)
+      existing_claim.update!(active_to: transferred_at)
+      new_claim.active_from = transferred_at
+      expect(existing_claim).to be_valid
     end
   end
 end
