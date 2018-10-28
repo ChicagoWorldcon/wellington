@@ -23,8 +23,11 @@ module ActiveScopes
     base.validate :active_timestamps_ordered
     base.validates :active_from, presence: true
 
+    # A transfer of ownership may happen at an instant, and from that moment the the new owner becomes the active party
+    # active_from is inclusive
+    # active_to is exclusive
     base.scope :active, ->() { active_at(Time.now) }
-    base.scope :active_at, ->(at) { where("active_from <= ? AND (active_to IS NULL OR ? <= active_to)", at, at) }
+    base.scope :active_at, ->(at) { where("active_from <= ? AND (active_to IS NULL OR ? < active_to)", at, at) }
 
     private
 

@@ -21,19 +21,31 @@ RSpec.describe Order, type: :model do
 
   it { is_expected.to be_valid }
 
-  describe "#active_on" do
-    let(:order_placed_date) { 1.month.ago }
-    let(:order_invalidated_date) { order_placed_date + 1.week }
-    subject(:model) { create(:order, active_from: order_placed_date, active_to: order_invalidated_date) }
+  describe "#active_at" do
+    let(:order_placed_at) { 1.month.ago }
+    let(:order_upgraded_at) { order_placed_at + 1.week }
+    let!(:closed_order) { create(:order, active_from: order_placed_at, active_to: order_upgraded_at) }
 
-    it "includes order within the boundary" do
-      expect(Order.active_at(order_placed_date)).to include(subject)
-      expect(Order.active_at(order_invalidated_date)).to include(subject)
+    subject(:scope) { Order.active_at(time) }
+
+    context "just before order was placed" do
+      let(:time) { order_placed_at - 1.second }
+      it { is_expected.to_not include(closed_order) }
     end
 
-    it "excludes order when outside of boundary" do
-      expect(Order.active_at(order_placed_date - 1.second)).to_not include(subject)
-      expect(Order.active_at(order_invalidated_date + 1.second)).to_not include(subject)
+    context "at the time the order was placed" do
+      let(:time) { order_placed_at }
+      it { is_expected.to include(closed_order) }
+    end
+
+    context "just before the order was upgraded" do
+      let(:time) { order_upgraded_at - 1.second }
+      it { is_expected.to include(closed_order) }
+    end
+
+    context "at the time the order was upgraded" do
+      let(:time) { order_upgraded_at }
+      it { is_expected.to_not include(closed_order) }
     end
   end
 

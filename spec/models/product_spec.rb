@@ -21,19 +21,31 @@ RSpec.describe Product, type: :model do
 
   it { is_expected.to be_valid }
 
-  describe "#active_on" do
-    let(:product_placed_date) { 1.month.ago }
-    let(:product_invalidated_date) { product_placed_date + 1.week }
-    subject(:model) { create(:product, :adult, active_from: product_placed_date, active_to: product_invalidated_date) }
+  describe "#active_at" do
+    let(:product_available_at) { 1.month.ago }
+    let(:product_inactive_from) { product_available_at + 1.week }
+    let!(:our_product) { create(:product, :adult, active_from: product_available_at, active_to: product_inactive_from) }
 
-    it "includes product within the boundary" do
-      expect(Product.active_at(product_placed_date)).to include(subject)
-      expect(Product.active_at(product_invalidated_date)).to include(subject)
+    subject(:scope) { Product.active_at(time) }
+
+    context "just before product is available" do
+      let(:time) { product_available_at - 1.second }
+      it { is_expected.to_not include(our_product) }
     end
 
-    it "excludes product when outside of boundary" do
-      expect(Product.active_at(product_placed_date - 1.second)).to_not include(subject)
-      expect(Product.active_at(product_invalidated_date + 1.second)).to_not include(subject)
+    context "as the product becomes available" do
+      let(:time) { product_available_at }
+      it { is_expected.to include(our_product) }
+    end
+
+    context "just before product becomes inactive" do
+      let(:time) { product_inactive_from - 1.second }
+      it { is_expected.to include(our_product) }
+    end
+
+    context "as the product becomes inactive" do
+      let(:time) { product_inactive_from }
+      it { is_expected.to_not include(our_product) }
     end
   end
 end

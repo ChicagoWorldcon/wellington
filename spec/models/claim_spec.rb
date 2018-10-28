@@ -83,19 +83,31 @@ RSpec.describe Claim, type: :model do
       end
     end
 
-    context "when claim is closed setting #active_to" do
+    describe "#active_at" do
       let(:start) { 1.week.ago }
       let(:finish) { start + 3.days }
       let!(:closed_claim) { Claim.create!(user: user, purchase: purchase, active_from: start, active_to: finish) }
 
-      it "is active when it's within the time range" do
-        expect(Claim.active_at(start)).to include(closed_claim)
-        expect(Claim.active_at(finish)).to include(closed_claim)
+      subject(:scope) { Claim.active_at(time) }
+
+      context "just before start of claim" do
+        let(:time) { start - 1.second }
+        it { is_expected.to_not include(closed_claim) }
       end
 
-      it "is inactive outside of time range" do
-        expect(Claim.active_at(start - 1.second)).to_not include(closed_claim)
-        expect(Claim.active_at(finish + 1.second)).to_not include(closed_claim)
+      context "at start of claim" do
+        let(:time) { start }
+        it { is_expected.to include(closed_claim) }
+      end
+
+      context "just before end of claim" do
+        let(:time) { finish - 1.second }
+        it { is_expected.to include(closed_claim) }
+      end
+
+      context "at the time the claim finishes" do
+        let(:time) { finish }
+        it { is_expected.to_not include(closed_claim) }
       end
     end
   end
