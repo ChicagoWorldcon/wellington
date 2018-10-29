@@ -16,8 +16,8 @@
 
 FactoryBot.define do
   factory :purchase do
-    level { "adult" }
-    worth { 300 }
+    level { "adult" } # TODO remove frrom purchase
+    worth { 300 } # TODO Remove from purchase
     state { Purchase::ACTIVE }
     created_at { 1.week.ago }
 

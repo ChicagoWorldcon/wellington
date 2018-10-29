@@ -22,7 +22,7 @@ FactoryBot.define do
 
     trait :adult do
       level { :adult }
-      price { 300 }
+      price { 340_00 }
     end
 
     trait :young_adult do
