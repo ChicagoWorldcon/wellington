@@ -40,4 +40,6 @@ class Product < ApplicationRecord
   validates :level, presence: true
 
   has_many :orders
+  has_many :active_orders, -> { active }, class_name: "Order"
+  has_many :purchases, through: :active_orders
 end

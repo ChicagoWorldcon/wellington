@@ -17,9 +17,20 @@
 require "rails_helper"
 
 RSpec.describe Product, type: :model do
-  subject(:model) { create(:product, :adult) }
+  subject(:model) { create(:product, :adult, :with_order_for_purchase) }
 
   it { is_expected.to be_valid }
+
+  describe "#active_purchases" do
+    it "can access purchases directly" do
+      expect(model.purchases.count).to be(1)
+    end
+
+    it "doesn't list purchases that become inactive" do
+      model.orders.update_all(active_to: 1.minute.ago)
+      expect(model.purchases.count).to be(0)
+    end
+  end
 
   describe "#active_at" do
     let(:product_available_at) { 1.month.ago }
