@@ -17,44 +17,29 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
-  subject(:command) { UpgradeMembership.new(purchase, level) }
+  subject(:command) { UpgradeMembership.new(purchase, to: upgrade_product) }
 
-  context "when upgrade unavailable" do
-    let(:level) { "young_adult" }
-    let(:purchase) { create(:purchase, level: :adult) }
+  context "when upgrade is unavailable" do
+    let(:product) { create(:product, :adult, :with_order_for_purchase) }
+    let(:purchase) { product.purchases.first }
+    let(:upgrade_product) { create(:product, :young_adult) }
 
     it "returns false to indicate failure" do
       expect(subject.call).to be_falsey
-      expect(subject.errors).to include(/cannot upgrade to young_adult/i)
     end
 
-    it "doesn't change purchase level" do
-      expect { subject.call }.to_not change { purchase.level }
+    it "incldues helpful error message" do
+      expect { subject.call }
+        .to change { subject.errors }
+        .to include(/cannot upgrade to young_adult/i)
+    end
+
+    it "doesn't change orders" do
+      expect { subject.call }.to_not change { purchase.orders }
     end
 
     it "doesn't create new charges" do
-      expect { subject.call }.to_not change { purchase.charges.count }
-    end
-  end
-
-  context "when upgrade is available" do
-    let(:level) { "adult" }
-    let(:purchase) { create(:purchase, level: :young_adult) }
-
-    it "returns true to indicate success" do
-      expect(subject.call).to be_truthy
-      expect(subject.errors).to be_empty
-    end
-
-    it "doens't change the number of memberships" do
-      purchase
-      expect { subject.call }.to_not change { Purchase.count }
-    end
-
-    it "changes purchase level" do
-      expect { subject.call }
-        .to change { purchase.level }
-        .from("young_adult").to("adult")
+      expect { subject.call }.to_not change { purchase.charges }
     end
   end
 end

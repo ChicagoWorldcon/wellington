@@ -31,11 +31,11 @@ RSpec.describe TransferMembership do
   end
 
   it "adds claim to buyer" do
-    expect { command.call }.to change { buyer.claims.active_at(soonish).count }.by 1
+    expect { command.call }.to change { buyer.claims.active_at(soonish).count }.by(1)
   end
 
   it "deactivates claim on seller" do
-    expect { command.call }.to change { seller.claims.active_at(soonish).count }.by -1
+    expect { command.call }.to change { seller.claims.active_at(soonish).count }.by(-1)
   end
 
   context "when there's transactions close together" do

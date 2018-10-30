@@ -34,6 +34,8 @@ class Product < ApplicationRecord
     pre_support: 0,
   }.with_indifferent_access.freeze
 
+  MEMBERSHIP = "membership"
+
   validates :active_from, presence: true
   validates :category, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -42,4 +44,8 @@ class Product < ApplicationRecord
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :purchases, through: :active_orders
+
+  def membership?
+    category == MEMBERSHIP
+  end
 end

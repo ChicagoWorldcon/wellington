@@ -22,6 +22,7 @@ RSpec.describe ChargeCustomer do
   after { StripeMock.stop }
 
   let(:purchase) { create(:purchase, :with_order_against_product) }
+  let(:product) { purchase.product }
   let(:user) { create(:user) }
   let(:token) { stripe_helper.generate_card_token }
 
@@ -59,7 +60,7 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when paying only part of a purchase" do
-    let(:amount_paid) { purchase.worth / 4 }
+    let(:amount_paid) { product.price / 4 }
     subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
@@ -92,7 +93,7 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when overpaying" do
-    let(:amount_paid) { purchase.worth + 1 }
+    let(:amount_paid) { product.price + 1 }
     subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "refuses to purchase the purchase" do
@@ -102,8 +103,8 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when paying off a purchase" do
-    let(:first_payment) { purchase.worth / 4 }
-    let(:final_payment) { purchase.worth - first_payment }
+    let(:first_payment) { product.price / 4 }
+    let(:final_payment) { product.price - first_payment }
 
     it "transitions from installment to active" do
       expect {

@@ -31,12 +31,9 @@ class Purchase < ApplicationRecord
   has_one :active_claim, -> () { active }, class_name: "Claim"
   has_one :user, through: :active_claim
 
-  # TODO inclusion in prices and presupport price options
-  validates :level, presence: true
   validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]
-  validates :worth, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   def transferable?
-    state == ACTIVE && !Product::PRESUPPORT_PRICES.has_key?(level)
+    state == ACTIVE
   end
 end

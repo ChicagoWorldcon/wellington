@@ -26,7 +26,7 @@ class ChargeCustomer
     @purchase = purchase
     @user = user
     @token = token
-    @charge_amount = charge_amount || purchase.worth
+    @charge_amount = charge_amount || product_cost
   end
 
   def call
@@ -80,7 +80,7 @@ class ChargeCustomer
   private
 
   def check_charge_amount
-    if charge_amount > purchase.worth
+    if charge_amount > product_cost
       errors << "refusing to overpay for purchase"
     end
   end
@@ -113,6 +113,10 @@ class ChargeCustomer
   end
 
   def fully_paid?
-    purchase.charges.successful.sum(:cost) >= purchase.worth
+    purchase.charges.successful.sum(:cost) >= product_cost
+  end
+
+  def product_cost
+    purchase.product.price
   end
 end

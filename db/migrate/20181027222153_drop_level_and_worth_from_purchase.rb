@@ -14,25 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :purchase do
-    state { Purchase::ACTIVE }
-    created_at { 1.week.ago }
-
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
-    end
-
-    trait :with_order_against_product do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_product, purchase: new_purchase)
-      end
-    end
-
-    trait :with_claim_from_user do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.claims << create(:claim, :with_user, purchase: new_purchase)
-      end
-    end
+class DropLevelAndWorthFromPurchase < ActiveRecord::Migration[5.1]
+  def change
+    remove_column :purchases, :level, :string, null: false
+    remove_column :purchases, :worth, :integer, null: false
   end
 end

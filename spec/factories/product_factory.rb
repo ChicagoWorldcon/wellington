@@ -50,6 +50,12 @@ FactoryBot.define do
       price { 75_00 }
     end
 
+    trait :silver_fern do
+      category { :pre_support }
+      level { :silver_fern }
+      price { 300 }
+    end
+
     trait :with_order_for_purchase do
       after(:create) do |new_product, _evaluator|
         new_product.orders << create(:order, :with_purchase, product: new_product)
