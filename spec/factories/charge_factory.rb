@@ -15,17 +15,14 @@
 # limitations under the License.
 
 FactoryBot.define do
-  factory :claim do
-    trait :with_purchase do
-      after(:build) do |claim, _evaluator|
-        claim.purchase = create(:purchase, :with_order_against_product)
-      end
-    end
+  factory :charge do
+    comment { "Factory Generated Charge" }
+    cost { 300 }
+    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
+    state { Charge::SUCCESSFUL }
 
-    trait :with_user do
-      after(:build) do |claim, _evaluator|
-        claim.user = create(:user)
-      end
+    trait(:failed) do
+      state { Charge::FAILED }
     end
   end
 end

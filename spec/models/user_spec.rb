@@ -14,18 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :claim do
-    trait :with_purchase do
-      after(:build) do |claim, _evaluator|
-        claim.purchase = create(:purchase, :with_order_against_product)
-      end
+require "rails_helper"
+
+RSpec.describe User, type: :model do
+  subject(:user) { create(:user, :with_purchase) }
+
+  it { is_expected.to be_valid }
+
+  # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
+  # the :with_purchase trait.
+  describe "user factory links" do
+    it "should be able to access purchase directly" do
+      expect(user.purchases).to include user.claims.active.first.purchase
     end
 
-    trait :with_user do
-      after(:build) do |claim, _evaluator|
-        claim.user = create(:user)
-      end
+    it "should have a charge equal to the price of the product" do
+      expect(user.charges.first.cost).to eq user.purchases.first.product.price
     end
   end
 end

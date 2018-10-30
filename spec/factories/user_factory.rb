@@ -21,5 +21,15 @@ FactoryBot.define do
 
   factory :user do
     email { generate(:email) }
+
+    trait :with_purchase do
+      after(:create) do |new_user|
+        claim = create(:claim, :with_purchase, user: new_user)
+        product_price = claim.purchase.product.price
+        charge = create(:charge, user: new_user, purchase: claim.purchase, cost: product_price)
+        new_user.claims << claim
+        new_user.charges << charge
+      end
+    end
   end
 end

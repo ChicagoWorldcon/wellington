@@ -15,8 +15,10 @@
 # limitations under the License.
 
 class User < ApplicationRecord
+  has_many :active_claims, -> { active }, class_name: "Claim"
+  has_many :charges
   has_many :claims
-  has_many :purchases
+  has_many :purchases, through: :active_claims
 
   validates :email, presence: true
 end
