@@ -21,38 +21,38 @@ FactoryBot.define do
     created_at { 1.week.ago }
 
     trait :adult do
-      level { :adult }
+      name { :adult }
       price { 340_00 }
     end
 
     trait :young_adult do
-      level { :young_adult }
+      name { :young_adult }
       price { 225_00 }
     end
 
     trait :unwaged do
-      level { :unwaged }
+      name { :unwaged }
       price { 225_00 }
     end
 
     trait :child do
-      level { :child }
+      name { :child }
       price { 105_00 }
     end
 
     trait :kid_in_tow do
-      level { :kid_in_tow }
+      name { :kid_in_tow }
       price { 0 }
     end
 
     trait :supporting do
-      level { :supporting }
+      name { :supporting }
       price { 75_00 }
     end
 
     trait :silver_fern do
       category { :pre_support }
-      level { :silver_fern }
+      name { :silver_fern }
       price { 300 }
     end
 

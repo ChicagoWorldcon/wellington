@@ -66,12 +66,12 @@ RSpec.describe Order, type: :model do
       let(:upgraded_at) { 1.minute.ago }
 
       it "shows invalid where there are two active orders" do
-        expect(existing_order.product.level).to_not eq(another_product.level)
+        expect(existing_order.product.name).to_not eq(another_product.name)
         expect(new_order).to_not be_valid
       end
 
       it "shows vlaid if one of the two orders is inactive" do
-        expect(existing_order.product.level).to_not eq(another_product.level)
+        expect(existing_order.product.name).to_not eq(another_product.name)
         existing_order.update!(active_to: upgraded_at)
         new_order.active_from = upgraded_at
         expect(new_order).to be_valid

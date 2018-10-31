@@ -39,7 +39,7 @@ class Product < ApplicationRecord
   validates :active_from, presence: true
   validates :category, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :level, presence: true
+  validates :name, presence: true
 
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"

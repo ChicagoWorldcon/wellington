@@ -27,8 +27,8 @@ class UpgradesAvailable
   def call
     baseline = Product::PRICES[from] || Product::PRESUPPORT_PRICES[from] || 0
 
-    options = Product::PRICES.select do |level, cost|
-      level != from && cost >= baseline
+    options = Product::PRICES.select do |product_name, cost|
+      product_name != from && cost >= baseline
     end
 
     options.keys.each do |key|
