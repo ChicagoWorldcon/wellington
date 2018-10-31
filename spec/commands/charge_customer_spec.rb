@@ -103,21 +103,54 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when paying off a purchase" do
-    let(:first_payment) { product.price / 4 }
-    let(:final_payment) { product.price - first_payment }
+    let(:partial_pay) { product.price / 4 }
+    let(:remainder) { product.price - partial_pay }
+    let(:overpay) { remainder + 1 } # just a cent over
 
-    it "transitions from installment to active" do
-      expect {
-        ChargeCustomer.new(purchase, user, token, charge_amount: first_payment).call
-      }.to change { Charge.count }.by(1)
+    before do
+      ChargeCustomer.new(purchase, user, token, charge_amount: partial_pay).call
+    end
 
-      expect(purchase.state).to eq Purchase::INSTALLMENT
+    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: remainder) }
 
-      expect {
-        ChargeCustomer.new(purchase, user, token, charge_amount: final_payment).call
-      }.to change { Charge.count }.by(1)
+    it { is_expected.to be_truthy }
 
-      expect(purchase.state).to eq Purchase::ACTIVE
+    it "transitions from installment" do
+      expect { command.call }
+        .to change { purchase.state }
+        .from(Purchase::INSTALLMENT).to(Purchase::ACTIVE)
+    end
+
+    it "creates a charge" do
+      expect { command.call }
+        .to change { Charge.count }
+        .by(1)
+    end
+
+    context "when choosing to overpay" do
+      subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: overpay) }
+
+      it "gives a polite error" do
+        expect(command.call).to be_falsey
+        expect(command.errors).to include(/Overpay/i)
+      end
+    end
+
+    context "with default behaviour" do
+      subject(:command) { ChargeCustomer.new(purchase, user, token) }
+
+      it { is_expected.to be_truthy }
+
+      it "transitions from installment" do
+        expect { command.call }
+          .to change { purchase.state }
+          .from(Purchase::INSTALLMENT).to(Purchase::ACTIVE)
+      end
+
+      it "only pays the price of the membership" do
+        command.call
+        expect(user.charges.successful.sum(:cost)).to eq product.price
+      end
     end
   end
 end
