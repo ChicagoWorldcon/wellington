@@ -28,10 +28,10 @@ module ActiveScopes
     base.scope :active_at, ->(moment) {
       where(
         %{
-          #{base.table_name}.active_from <= ?    -- where active_from is before, inclusive
-          AND (                                  -- and either
-            #{base.table_name}.active_to IS NULL -- is open ended
-            OR ? < #{base.table_name}.active_to  -- or is not yet closed, exclusive
+          #{base.quoted_table_name}.active_from <= ?    -- where active_from is before, inclusive
+          AND (                                         -- and either
+            #{base.quoted_table_name}.active_to IS NULL -- is open ended
+            OR ? < #{base.quoted_table_name}.active_to  -- or is not yet closed, exclusive
           )
         },
         moment,
