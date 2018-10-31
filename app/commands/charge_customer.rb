@@ -60,7 +60,7 @@ class ChargeCustomer
     purchase.transaction do
       @charge.save!
       if fully_paid?
-        purchase.update!(state: Purchase::ACTIVE)
+        purchase.update!(state: Purchase::PAID)
       else
         purchase.update!(state: Purchase::INSTALLMENT)
       end

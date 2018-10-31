@@ -118,7 +118,7 @@ RSpec.describe ChargeCustomer do
     it "transitions from installment" do
       expect { command.call }
         .to change { purchase.state }
-        .from(Purchase::INSTALLMENT).to(Purchase::ACTIVE)
+        .from(Purchase::INSTALLMENT).to(Purchase::PAID)
     end
 
     it "creates a charge" do
@@ -144,7 +144,7 @@ RSpec.describe ChargeCustomer do
       it "transitions from installment" do
         expect { command.call }
           .to change { purchase.state }
-          .from(Purchase::INSTALLMENT).to(Purchase::ACTIVE)
+          .from(Purchase::INSTALLMENT).to(Purchase::PAID)
       end
 
       it "only pays the price of the membership" do

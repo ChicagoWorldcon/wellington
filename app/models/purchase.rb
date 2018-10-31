@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class Purchase < ApplicationRecord
-  ACTIVE = "active"
+  PAID = "paid"
   DISABLED = "disabled"
   INSTALLMENT = "installment"
 
@@ -31,9 +31,9 @@ class Purchase < ApplicationRecord
   has_one :active_claim, -> () { active }, class_name: "Claim"
   has_one :user, through: :active_claim
 
-  validates :state, presence: true, inclusion: [ACTIVE, INSTALLMENT, DISABLED]
+  validates :state, presence: true, inclusion: [PAID, INSTALLMENT, DISABLED]
 
   def transferable?
-    state == ACTIVE
+    state == PAID
   end
 end

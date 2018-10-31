@@ -16,7 +16,7 @@
 
 FactoryBot.define do
   factory :purchase do
-    state { Purchase::ACTIVE }
+    state { Purchase::PAID }
     created_at { 1.week.ago }
 
     trait :pay_as_you_go do
