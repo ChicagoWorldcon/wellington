@@ -17,7 +17,7 @@
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
-  subject(:model) { create(:order, :with_purchase, :with_product) }
+  subject(:model) { create(:order, :with_purchase, :with_membership) }
 
   it { is_expected.to be_valid }
 
@@ -25,7 +25,7 @@ RSpec.describe Order, type: :model do
     let(:order_placed_at) { 1.month.ago }
     let(:order_upgraded_at) { order_placed_at + 1.week }
     let!(:closed_order) do
-      create(:order, :with_purchase, :with_product, active_from: order_placed_at, active_to: order_upgraded_at)
+      create(:order, :with_purchase, :with_membership, active_from: order_placed_at, active_to: order_upgraded_at)
     end
 
     subject(:scope) { Order.active_at(time) }
@@ -52,26 +52,26 @@ RSpec.describe Order, type: :model do
   end
 
   context "with multiple orders" do
-    let(:existing_order) { create(:order, :with_purchase, :with_product) }
+    let(:existing_order) { create(:order, :with_purchase, :with_membership) }
     let(:new_purchase) { create(:purchase) }
-    let(:another_product) { create(:product, :unwaged) }
+    let(:another_membership) { create(:membership, :unwaged) }
 
-    it "lets you create multiple orders of the same product" do
-      order = Order.new(purchase: new_purchase, product: existing_order.product)
+    it "lets you create multiple orders of the same membership" do
+      order = Order.new(purchase: new_purchase, membership: existing_order.membership)
       expect(order).to be_valid
     end
 
     context "when against the same purchase" do
-      let(:new_order) { Order.new(purchase: existing_order.purchase, product: another_product) }
+      let(:new_order) { Order.new(purchase: existing_order.purchase, membership: another_membership) }
       let(:upgraded_at) { 1.minute.ago }
 
       it "shows invalid where there are two active orders" do
-        expect(existing_order.product.name).to_not eq(another_product.name)
+        expect(existing_order.membership.name).to_not eq(another_membership.name)
         expect(new_order).to_not be_valid
       end
 
       it "shows vlaid if one of the two orders is inactive" do
-        expect(existing_order.product.name).to_not eq(another_product.name)
+        expect(existing_order.membership.name).to_not eq(another_membership.name)
         existing_order.update!(active_to: upgraded_at)
         new_order.active_from = upgraded_at
         expect(new_order).to be_valid

@@ -24,7 +24,7 @@ RSpec.describe Purchase, type: :model do
   end
 
   context "with order" do
-    subject(:model) { create(:purchase, :with_order_against_product) }
+    subject(:model) { create(:purchase, :with_order_against_membership) }
 
     it "has access to the active order" do
       expect(model.orders.active.count).to eq 1
@@ -32,7 +32,7 @@ RSpec.describe Purchase, type: :model do
     end
 
     it "has access to purchase through active orders" do
-      expect(model.product).to eq model.orders.active.first.product
+      expect(model.membership).to eq model.orders.active.first.membership
     end
   end
 

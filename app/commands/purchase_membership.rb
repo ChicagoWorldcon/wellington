@@ -14,20 +14,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# PurchaseMembership takes a user and a product and creates a claim and purchase for them.
+#       User ------------,
+#      /    \             \
+#     /      \             ^
+#    ^        ^          Offer
+# Charge     Claim       v    v
+#    v        v         /      \
+#     \      /         /        \
+#      \    /       Product   Membership
+#     Purchase         \        /
+#          \            \      /
+#           \            ^    ^
+#            `----------< Order
+#
+# PurchaseMembership takes a user and a membership and creates a claim and purchase for them.
 class PurchaseMembership
-  attr_reader :customer, :product
+  attr_reader :customer, :membership
 
-  def initialize(product, customer:)
+  def initialize(membership, customer:)
     @customer = customer
-    @product = product
+    @membership = membership
   end
 
   def call
     customer.transaction do
       as_at = Time.now
       purchase = Purchase.new
-      order = Order.new(active_from: as_at, product: product, purchase: purchase)
+      order = Order.new(active_from: as_at, membership: membership, purchase: purchase)
       claim = Claim.new(active_from: as_at, user: customer, purchase: purchase)
     end
   end

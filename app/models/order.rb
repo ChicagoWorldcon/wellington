@@ -17,12 +17,12 @@
 class Order < ApplicationRecord
   include ActiveScopes
 
-  validates :product, presence: true
+  validates :membership, presence: true
   validates :purchase, presence: true, uniqueness: {
     # There can't be other active orders against the same purchase
     conditions: -> { active }
   }
 
-  belongs_to :product
+  belongs_to :membership
   belongs_to :purchase
 end

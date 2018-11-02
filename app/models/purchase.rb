@@ -25,7 +25,7 @@ class Purchase < ApplicationRecord
 
   # See Order's validations for :purchase, only one order active at a time
   has_one :active_order, ->() { active }, class_name: "Order"
-  has_one :product, through: :active_order
+  has_one :membership, through: :active_order
 
   # See Claim's validations for :purchase, only one claim active at a time
   has_one :active_claim, -> () { active }, class_name: "Claim"

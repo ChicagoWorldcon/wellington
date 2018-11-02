@@ -28,8 +28,8 @@ RSpec.describe User, type: :model do
       expect(user.purchases).to include user.claims.active.first.purchase
     end
 
-    it "should have a charge equal to the price of the product" do
-      expect(user.charges.first.cost).to eq user.purchases.first.product.price
+    it "should have a charge equal to the price of the membership" do
+      expect(user.charges.first.cost).to eq user.purchases.first.membership.price
     end
   end
 end

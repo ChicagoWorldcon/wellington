@@ -17,9 +17,9 @@
 require "rails_helper"
 
 RSpec.describe PurchaseMembership do
-  let(:product) { create(:product, :adult) }
+  let(:membership) { create(:membership, :adult) }
   let(:user) { create(:user) }
-  let(:command) { PurchaseMembership.new(product, customer: user) }
+  let(:command) { PurchaseMembership.new(membership, customer: user) }
 
   context "when successful" do
     it "returns true" do
@@ -30,8 +30,8 @@ RSpec.describe PurchaseMembership do
       expect { command.call }.to change { user.claims.count }.by(1)
     end
 
-    xit "creates an order against the product" do
-      expect { command.call }.to change { product.count }.by(1)
+    xit "creates an order against the membership" do
+      expect { command.call }.to change { membership.count }.by(1)
     end
   end
 end

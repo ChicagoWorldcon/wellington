@@ -23,9 +23,9 @@ FactoryBot.define do
       state { Purchase::INSTALLMENT }
     end
 
-    trait :with_order_against_product do
+    trait :with_order_against_membership do
       after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_product, purchase: new_purchase)
+        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
       end
     end
 

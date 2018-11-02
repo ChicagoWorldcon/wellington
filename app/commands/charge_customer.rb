@@ -117,8 +117,8 @@ class ChargeCustomer
   end
 
   def amount_owed
-    product_cost = purchase.product.price
+    membership_cost = purchase.membership.price
     paid_so_far = purchase.charges.successful.sum(:cost)
-    product_cost - paid_so_far
+    membership_cost - paid_so_far
   end
 end

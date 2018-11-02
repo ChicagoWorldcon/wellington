@@ -21,8 +21,8 @@ RSpec.describe ChargeCustomer do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:purchase) { create(:purchase, :with_order_against_product) }
-  let(:product) { purchase.product }
+  let(:purchase) { create(:purchase, :with_order_against_membership) }
+  let(:membership) { purchase.membership }
   let(:user) { create(:user) }
   let(:token) { stripe_helper.generate_card_token }
 
@@ -60,7 +60,7 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when paying only part of a purchase" do
-    let(:amount_paid) { product.price / 4 }
+    let(:amount_paid) { membership.price / 4 }
     subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
@@ -93,7 +93,7 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when overpaying" do
-    let(:amount_paid) { product.price + 1 }
+    let(:amount_paid) { membership.price + 1 }
     subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "refuses to purchase the purchase" do
@@ -103,8 +103,8 @@ RSpec.describe ChargeCustomer do
   end
 
   context "when paying off a purchase" do
-    let(:partial_pay) { product.price / 4 }
-    let(:remainder) { product.price - partial_pay }
+    let(:partial_pay) { membership.price / 4 }
+    let(:remainder) { membership.price - partial_pay }
     let(:overpay) { remainder + 1 } # just a cent over
 
     before do
@@ -149,7 +149,7 @@ RSpec.describe ChargeCustomer do
 
       it "only pays the price of the membership" do
         command.call
-        expect(user.charges.successful.sum(:cost)).to eq product.price
+        expect(user.charges.successful.sum(:cost)).to eq membership.price
       end
     end
   end

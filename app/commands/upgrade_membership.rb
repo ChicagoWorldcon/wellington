@@ -17,11 +17,11 @@
 # UpgradeMembership command upgrades membership between two levels
 # Truthy return means upgrade was successful, otherwise check errors for explanation
 class UpgradeMembership
-  attr_reader :purchase, :to_product
+  attr_reader :purchase, :to_membership
 
   def initialize(purchase, to:)
     @purchase = purchase
-    @to_product = to
+    @to_membership = to
   end
 
   def call
@@ -43,12 +43,12 @@ class UpgradeMembership
 
   # TODO get nicer user facing text for these membreship levels
   def check_availability
-    prices = UpgradesAvailable.new(from: purchase.product.name).call
-    if !prices.has_key?(to_product.name)
-      errors << "#{purchase.product.name} cannot upgrade to #{to_product.name}"
+    prices = UpgradesAvailable.new(from: purchase.membership.name).call
+    if !prices.has_key?(to_membership.name)
+      errors << "#{purchase.membership.name} cannot upgrade to #{to_membership.name}"
     end
 
-    if !purchase.product.membership? || !to_product.membership?
+    if !purchase.membership.membership? || !to_membership.membership?
       errors << "only memberships can be upgraded"
     end
   end

@@ -25,10 +25,10 @@ class UpgradesAvailable
 
   # FIXME This price lookup should actually come from purchase.worth
   def call
-    baseline = Product::PRICES[from] || Product::PRESUPPORT_PRICES[from] || 0
+    baseline = Membership::PRICES[from] || Membership::PRESUPPORT_PRICES[from] || 0
 
-    options = Product::PRICES.select do |product_name, cost|
-      product_name != from && cost >= baseline
+    options = Membership::PRICES.select do |membership_name, cost|
+      membership_name != from && cost >= baseline
     end
 
     options.keys.each do |key|

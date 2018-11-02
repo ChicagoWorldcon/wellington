@@ -15,7 +15,7 @@
 # limitations under the License.
 
 FactoryBot.define do
-  factory :product do
+  factory :membership do
     category { :membership }
     active_from { 1.week.ago }
     created_at { 1.week.ago }
@@ -57,8 +57,8 @@ FactoryBot.define do
     end
 
     trait :with_order_for_purchase do
-      after(:create) do |new_product, _evaluator|
-        new_product.orders << create(:order, :with_purchase, product: new_product)
+      after(:create) do |new_membership, _evaluator|
+        new_membership.orders << create(:order, :with_purchase, membership: new_membership)
       end
     end
   end
