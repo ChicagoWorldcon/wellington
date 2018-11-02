@@ -16,7 +16,6 @@
 
 FactoryBot.define do
   factory :membership do
-    category { :membership }
     active_from { 1.week.ago }
     created_at { 1.week.ago }
 
@@ -51,7 +50,6 @@ FactoryBot.define do
     end
 
     trait :silver_fern do
-      category { :pre_support }
       name { :silver_fern }
       price { 300 }
     end
