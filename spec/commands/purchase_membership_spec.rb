@@ -19,11 +19,19 @@ require "rails_helper"
 RSpec.describe PurchaseMembership do
   let(:product) { create(:product, :adult) }
   let(:user) { create(:user) }
-  let(:command) { PurchaseMembership.new(product, user) }
+  let(:command) { PurchaseMembership.new(product, customer: user) }
 
   context "when successful" do
     it "returns true" do
       expect(command.call).to be_truthy
+    end
+
+    xit "creates a purchase and gives a claim to the user" do
+      expect { command.call }.to change { user.claims.count }.by(1)
+    end
+
+    xit "creates an order against the product" do
+      expect { command.call }.to change { product.count }.by(1)
     end
   end
 end
