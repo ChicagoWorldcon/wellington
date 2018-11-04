@@ -19,6 +19,15 @@ require "rails_helper"
 RSpec.describe UpgradesAvailable do
   let(:query) { UpgradesAvailable.new(from: from) }
 
+  let!(:adult)       { create(:membership, :adult) }
+  let!(:young_adult) { create(:membership, :young_adult) }
+  let!(:unwaged)     { create(:membership, :unwaged) }
+  let!(:child)       { create(:membership, :child) }
+  let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
+  let!(:supporting)  { create(:membership, :supporting) }
+  let!(:silver_fern) { create(:membership, :silver_fern) }
+  let!(:kiwi)        { create(:membership, :kiwi) }
+
   describe "#keys" do
     subject(:keys) { query.call.keys }
 
@@ -71,7 +80,7 @@ RSpec.describe UpgradesAvailable do
       let(:from) { "young_adult" }
 
       it "costs the difference when upgrading to adult" do
-        expect(subject[:adult]).to be 145_00
+        expect(subject[:adult]).to be(adult.price - young_adult.price)
       end
 
       it "costs the same if switching to unwaged" do

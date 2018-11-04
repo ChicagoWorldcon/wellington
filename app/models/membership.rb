@@ -17,23 +17,6 @@
 class Membership < ApplicationRecord
   include ActiveScopes
 
-  PRICES = {
-    adult: 370_00,
-    young_adult: 225_00,
-    unwaged: 225_00,
-    child: 105_00,
-    kid_in_tow: 0,
-    supporting: 75_00,
-  }.with_indifferent_access.freeze
-
-  PRESUPPORT_PRICES = {
-    silver_fern: PRICES[:adult] - 50_00,
-    kiwi: PRICES[:adult] - 150_00,
-    tuatara: 0,
-    pre_oppose: 0,
-    pre_support: 0,
-  }.with_indifferent_access.freeze
-
   validates :active_from, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :name, presence: true

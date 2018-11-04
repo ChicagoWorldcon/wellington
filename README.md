@@ -40,7 +40,7 @@ bundle install
 
 Setup your developemnt database
 ```bash
-bundle exec rake db:create
+bundle exec rake db:create db:seed
 ```
 
 ## Linting
@@ -49,7 +49,7 @@ Please use `rubocop-github`. It's better to be consistent, and this just seems l
 plenty of nice [text editor integrations](https://rubocop.readthedocs.io/en/latest/integration_with_other_tools/) to
 get a quick feedback loop going.
 
-## Running
+# Running
 
 You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
 control and allows you to configure the project.
@@ -79,3 +79,22 @@ make start
 ```
 
 Then navigate to http://localhost:3000
+
+## Condfiguring pricing
+
+Pricing is handled through Membership records. Creating new records creates new membreships on the shop so long as
+they're "active".
+
+For instance if I want to create an Adult membership that varies in price over time, I could do this by running the
+following code:
+
+```ruby
+# Note, dates and prices are examples. Please don't expect these as a reflection on real dates/prices.
+announcement = Date.parse("2018-08-25").midday
+price_change = (announcement + 6.months).midday
+venue_confirmation = Date.parse("2020-04-01").midday
+Membership.create!(name: :adult, active_from: announcement, active_to: price_change price: 400_00)
+Membership.create!(name: :adult, active_from: price_change, active_to: venue_confirmation price: 450_00)
+```
+
+For lots of examples of membership pricing and setup, please read `db/seeds.rb`.

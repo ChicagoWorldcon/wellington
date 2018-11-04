@@ -17,24 +17,18 @@
 # UpgradesAvailable query defines what upgrades you can get to from your current membership
 # Upgrades are always available when they're of higher value
 class UpgradesAvailable
-  attr_reader :from
+  attr_reader :membership
 
   def initialize(from:)
-    @from = from
+    @membership = Membership.find_by(name: from)
   end
 
-  # FIXME This price lookup should actually come from purchase.worth
   def call
-    baseline = Membership::PRICES[from] || Membership::PRESUPPORT_PRICES[from] || 0
-
-    options = Membership::PRICES.select do |membership_name, cost|
-      membership_name != from && cost >= baseline
+    upgrades = {}
+    options = Membership.active.where.not(name: membership.name).where("price >= ?", membership.price)
+    options.each do |option|
+      upgrades[option.name] = option.price - membership.price
     end
-
-    options.keys.each do |key|
-      options[key] = options[key] - baseline
-    end
-
-    options.freeze
+    upgrades.with_indifferent_access.freeze
   end
 end

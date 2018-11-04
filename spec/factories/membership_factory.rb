@@ -51,7 +51,14 @@ FactoryBot.define do
 
     trait :silver_fern do
       name { :silver_fern }
-      price { 300 }
+      price { 300_00 }
+      active_to { 1.day.ago }
+    end
+
+    trait :kiwi do
+      name { :kiwi }
+      price { 220_00 }
+      active_to { 1.day.ago }
     end
 
     trait :with_order_for_purchase do
