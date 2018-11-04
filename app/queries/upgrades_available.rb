@@ -17,16 +17,16 @@
 # UpgradesAvailable query defines what upgrades you can get to from your current membership
 # Upgrades are always available when they're of higher value
 class UpgradesAvailable
-  attr_reader :membership
+  attr_reader :current_membership
 
   def initialize(from:)
-    @membership = Membership.find_by(name: from)
+    @current_membership = Membership.find_by(name: from)
   end
 
   def call
     upgrades = {}
-    Membership.active.where("price > ?", membership.price).find_each do |upgrade|
-      upgrades[upgrade.name] = UpgradeOffer.new(from: membership, to: upgrade).price
+    Membership.active.where("price > ?", current_membership.price).find_each do |membership|
+      upgrades[membership] = UpgradeOffer.new(from: current_membership, to: membership).price
     end
     upgrades.with_indifferent_access.freeze
   end

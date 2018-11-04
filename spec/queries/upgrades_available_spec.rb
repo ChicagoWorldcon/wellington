@@ -38,38 +38,38 @@ RSpec.describe UpgradesAvailable do
 
     context "when unwaged" do
       let(:from) { "unwaged" }
-      it { is_expected.to include "adult" }
-      it { is_expected.to_not include "young_adult" }
-      it { is_expected.to_not include "child" }
+      it { is_expected.to include adult }
+      it { is_expected.to_not include young_adult }
+      it { is_expected.to_not include child }
     end
 
     context "when young adult" do
       let(:from) { "young_adult" }
-      it { is_expected.to include "adult" }
-      it { is_expected.to_not include "unwaged" }
-      it { is_expected.to_not include "kid_in_tow" }
+      it { is_expected.to include adult }
+      it { is_expected.to_not include unwaged }
+      it { is_expected.to_not include kid_in_tow }
     end
 
     context "when kid_in_tow" do
       let(:from) { "supporting" }
-      it { is_expected.to include "adult" }
-      it { is_expected.to include "young_adult" }
-      it { is_expected.to include "unwaged" }
-      it { is_expected.to include "child" }
-      it { is_expected.to_not include "silver_fern" }
+      it { is_expected.to include adult }
+      it { is_expected.to include young_adult }
+      it { is_expected.to include unwaged }
+      it { is_expected.to include child }
+      it { is_expected.to_not include silver_fern }
     end
 
     context "when silver_fern" do
       let(:from) { "silver_fern" }
-      it { is_expected.to include "adult" }
-      it { is_expected.to_not include "young_adult" }
+      it { is_expected.to include adult }
+      it { is_expected.to_not include young_adult }
     end
 
     context "when kiwi" do
       let(:from) { "kiwi" }
-      it { is_expected.to include "adult" }
-      it { is_expected.to include "young_adult" }
-      it { is_expected.to_not include "silver_fern" }
+      it { is_expected.to include adult }
+      it { is_expected.to include young_adult }
+      it { is_expected.to_not include silver_fern }
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe UpgradesAvailable do
       let(:from) { "young_adult" }
 
       it "costs the difference when upgrading to adult" do
-        expect(subject[:adult]).to be(adult.price - young_adult.price)
+        expect(subject[adult]).to be(adult.price - young_adult.price)
       end
     end
   end
