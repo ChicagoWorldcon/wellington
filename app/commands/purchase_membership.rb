@@ -14,18 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#       User ------------,
-#      /    \             \
-#     /      \             ^
-#    ^        ^          Offer
-# Charge     Claim       v    v
-#    v        v         /      \
-#     \      /         /        \
-#      \    /       Product   Membership
-#     Purchase         \        /
-#          \            \      /
-#           \            ^    ^
-#            `----------< Order
+#       User ---------,
+#      /   \           \
+#     /     \           ^
+#    ^       ^        Offer
+# Charge    Claim     v   v
+#    v       v       /     \
+#     \     /       /       \
+#      \   /    Product  Membership
+#     Purchase      \       /
+#         \          \     /
+#          \          ^   ^
+#           `--------< Order
 #
 # PurchaseMembership takes a user and a membership and creates a claim and purchase for them.
 class PurchaseMembership
@@ -39,9 +39,9 @@ class PurchaseMembership
   def call
     customer.transaction do
       as_at = Time.now
-      purchase = Purchase.new
-      order = Order.new(active_from: as_at, membership: membership, purchase: purchase)
-      claim = Claim.new(active_from: as_at, user: customer, purchase: purchase)
+      purchase = Purchase.installment.create!
+      order = Order.create!(active_from: as_at, membership: membership, purchase: purchase)
+      claim = Claim.create!(active_from: as_at, user: customer, purchase: purchase)
     end
   end
 end

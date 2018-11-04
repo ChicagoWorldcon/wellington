@@ -30,9 +30,7 @@ RSpec.describe UpgradesAvailable do
 
   describe "#keys" do
     let(:result) { query.call }
-    subject(:upgrade_options) {
-      result.map(&:to_membership)
-    }
+    subject(:upgrade_options) { result.map(&:to_membership) }
 
     context "when adult" do
       let(:from) { "adult" }

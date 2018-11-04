@@ -23,15 +23,16 @@ class Purchase < ApplicationRecord
   has_many :claims
   has_many :orders
 
-  # See Order's validations for :purchase, only one order active at a time
-  has_one :active_order, ->() { active }, class_name: "Order"
+  has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
+  has_one :active_order, ->() { active }, class_name: "Order" # See Order's validations, one order active at a time
   has_one :membership, through: :active_order
-
-  # See Claim's validations for :purchase, only one claim active at a time
-  has_one :active_claim, -> () { active }, class_name: "Claim"
   has_one :user, through: :active_claim
 
   validates :state, presence: true, inclusion: [PAID, INSTALLMENT, DISABLED]
+
+  scope :disabled, -> { where(state: DISABLED) }
+  scope :installment, -> { where(state: INSTALLMENT) }
+  scope :paid, -> { where(state: PAID) }
 
   def transferable?
     state == PAID
