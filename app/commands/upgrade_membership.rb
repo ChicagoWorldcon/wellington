@@ -43,8 +43,8 @@ class UpgradeMembership
 
   # TODO get nicer user facing text for these membership levels
   def check_availability
-    prices = UpgradesAvailable.new(from: purchase.membership.name).call
-    if !prices.has_key?(to_membership.name)
+    prices = UpgradesAvailable.new(from: purchase.membership.name, to: to_membership).call
+    if !prices.any?
       errors << "#{purchase.membership.name} cannot upgrade to #{to_membership.name}"
     end
   end

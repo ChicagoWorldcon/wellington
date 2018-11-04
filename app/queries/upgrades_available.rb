@@ -14,17 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# UpgradesAvailable query defines what upgrades you can get to from your current membership
-# Upgrades are always available when they're of higher value
+# UpgradesAvailable query defines what upgrades you can get to from your current membership Upgrades are always
+# available when they're of higher value. You can narrow your search by specifying a target membership with the to
+# keyword on initialize.
 class UpgradesAvailable
-  attr_reader :current_membership
+  attr_reader :current_membership, :target_membership
 
-  def initialize(from:)
+  def initialize(from:, to: nil)
     @current_membership = Membership.find_by(name: from)
+    @target_membership = to
   end
 
   def call
-    Membership.active.where("price > ?", current_membership.price).map do |membership|
+    options = Membership.active.where("price > ?", current_membership.price)
+    options = options.where(id: target_membership) if target_membership.present?
+    options.map do |membership|
       UpgradeOffer.new(from: current_membership, to: membership)
     end
   end
