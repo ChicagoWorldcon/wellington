@@ -39,14 +39,14 @@ RSpec.describe UpgradesAvailable do
     context "when unwaged" do
       let(:from) { "unwaged" }
       it { is_expected.to include "adult" }
-      it { is_expected.to include "young_adult" }
+      it { is_expected.to_not include "young_adult" }
       it { is_expected.to_not include "child" }
     end
 
     context "when young adult" do
       let(:from) { "young_adult" }
       it { is_expected.to include "adult" }
-      it { is_expected.to include "unwaged" }
+      it { is_expected.to_not include "unwaged" }
       it { is_expected.to_not include "kid_in_tow" }
     end
 
@@ -81,10 +81,6 @@ RSpec.describe UpgradesAvailable do
 
       it "costs the difference when upgrading to adult" do
         expect(subject[:adult]).to be(adult.price - young_adult.price)
-      end
-
-      it "costs the same if switching to unwaged" do
-        expect(subject[:unwaged]).to be 0
       end
     end
   end

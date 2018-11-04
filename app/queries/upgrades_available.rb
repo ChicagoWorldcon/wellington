@@ -25,8 +25,7 @@ class UpgradesAvailable
 
   def call
     upgrades = {}
-    options = Membership.active.where.not(name: membership.name).where("price >= ?", membership.price)
-    options.each do |option|
+    Membership.active.where("price > ?", membership.price).find_each do |option|
       upgrades[option.name] = option.price - membership.price
     end
     upgrades.with_indifferent_access.freeze
