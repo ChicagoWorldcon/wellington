@@ -24,10 +24,8 @@ class UpgradesAvailable
   end
 
   def call
-    upgrades = {}
-    Membership.active.where("price > ?", current_membership.price).find_each do |membership|
-      upgrades[membership] = UpgradeOffer.new(from: current_membership, to: membership).price
+    Membership.active.where("price > ?", current_membership.price).map do |membership|
+      UpgradeOffer.new(from: current_membership, to: membership)
     end
-    upgrades.with_indifferent_access.freeze
   end
 end

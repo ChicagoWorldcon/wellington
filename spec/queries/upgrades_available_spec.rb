@@ -29,7 +29,10 @@ RSpec.describe UpgradesAvailable do
   let!(:kiwi)        { create(:membership, :kiwi) }
 
   describe "#keys" do
-    subject(:keys) { query.call.keys }
+    let(:result) { query.call }
+    subject(:upgrade_options) {
+      result.map(&:to_membership)
+    }
 
     context "when adult" do
       let(:from) { "adult" }
@@ -74,13 +77,13 @@ RSpec.describe UpgradesAvailable do
   end
 
   context "checking the cost of upgrades" do
-    subject(:call) { query.call }
+    subject(:result) { query.call }
 
     context "when young adult" do
       let(:from) { "young_adult" }
 
       it "costs the difference when upgrading to adult" do
-        expect(subject[adult]).to be(adult.price - young_adult.price)
+        expect(result.first.price).to be(adult.price - young_adult.price)
       end
     end
   end
