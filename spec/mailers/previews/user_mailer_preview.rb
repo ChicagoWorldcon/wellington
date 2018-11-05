@@ -15,15 +15,15 @@
 # limitations under the License.
 
 class PaymentMailerPreview < ActionMailer::Preview
-  StubMembership = Struct.new(:type, :number)
+  StubPurchase = Struct.new(:type, :number)
   StubUser = Struct.new(:login_url)
   StubCharge = Struct.new(:id)
 
   def new_member
     # TODO Use models that represent this mailer
-    membership = StubMembership.new("Adult", 42)
+    purchase = StubPurchase.new("Adult", 42)
     user = StubUser.new("https://members-staging.conzealand.nz/login/test@conzealand.nz/pahJie3v")
     charge = StubCharge.new("stub-charge-1234")
-    PaymentMailer.new_member(user: user, membership: membership, charge: charge)
+    PaymentMailer.new_member(user: user, purchase: purchase, charge: charge)
   end
 end

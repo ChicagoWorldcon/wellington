@@ -14,19 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
-
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
-    end
+class DropLevelAndWorthFromPurchase < ActiveRecord::Migration[5.1]
+  def change
+    remove_column :purchases, :level, :string, null: false
+    remove_column :purchases, :worth, :integer, null: false
   end
 end

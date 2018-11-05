@@ -14,19 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
+class RenameMembershipToPurchase < ActiveRecord::Migration[5.1]
+  # Rails doesn't rename foreign keys for you, so we have to do these steps manually
+  def change
+    remove_foreign_key :claims,  :memberships
+    remove_foreign_key :charges, :memberships
+    rename_column      :claims,  :membership_id, :purchase_id
+    rename_column      :charges, :membership_id, :purchase_id
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
-    end
+    rename_table :memberships, :purchases
+
+    add_foreign_key :claims,  :purchases, index: true
+    add_foreign_key :charges, :purchases, index: true
   end
 end

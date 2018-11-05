@@ -14,14 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Membership < ApplicationRecord
-  include ActiveScopes
+class Purchase < ApplicationRecord
+  PAID = "paid"
+  DISABLED = "disabled"
+  INSTALLMENT = "installment"
 
-  validates :active_from, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :name, presence: true
-
+  has_many :charges
+  has_many :claims
   has_many :orders
-  has_many :active_orders, -> { active }, class_name: "Order"
-  has_many :purchases, through: :active_orders
+
+  # See Order's validations for :purchase, only one order active at a time
+  has_one :active_order, ->() { active }, class_name: "Order"
+  has_one :membership, through: :active_order
+
+  # See Claim's validations for :purchase, only one claim active at a time
+  has_one :active_claim, -> () { active }, class_name: "Claim"
+  has_one :user, through: :active_claim
+
+  validates :state, presence: true, inclusion: [PAID, INSTALLMENT, DISABLED]
+
+  def transferable?
+    state == PAID
+  end
 end

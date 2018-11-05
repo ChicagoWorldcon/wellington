@@ -14,19 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
+require "rails_helper"
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
+RSpec.describe User, type: :model do
+  subject(:user) { create(:user, :with_purchase) }
+
+  it { is_expected.to be_valid }
+
+  # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
+  # the :with_purchase trait.
+  describe "user factory links" do
+    it "should be able to access purchase directly" do
+      expect(user.purchases).to include user.claims.active.first.purchase
+    end
+
+    it "should have a charge equal to the price of the membership" do
+      expect(user.charges.first.cost).to eq user.purchases.first.membership.price
     end
   end
 end

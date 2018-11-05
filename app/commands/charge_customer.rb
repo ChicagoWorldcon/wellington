@@ -16,22 +16,38 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-ChargeCustomer = Struct.new(:membership, :user, :token) do
+class ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
-  def call
-    @charge = Charge.new(user: user, membership: membership, stripe_id: token, cost: membership.price)
+  attr_reader :purchase, :user, :token, :charge_amount
 
-    create_stripe_customer
+  def initialize(purchase, user, token, charge_amount: nil)
+    @purchase = purchase
+    @user = user
+    @token = token
+    @charge_amount = charge_amount || amount_owed
+  end
+
+  def call
+    @charge = Charge.new(
+      user: user,
+      purchase: purchase,
+      stripe_id: token,
+      cost: charge_amount,
+    )
+
+    check_charge_amount
+    create_stripe_customer unless errors.any?
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.status = Charge::FAILED
+      @charge.state = Charge::FAILED
+      @charge.comment = error_message
     elsif !@stripe_charge[:paid]
-      @charge.status = Charge::FAILED
+      @charge.state = Charge::FAILED
     else
-      @charge.status = Charge::SUCCEEDED
+      @charge.state = Charge::SUCCESSFUL
     end
 
     if @stripe_charge.present?
@@ -41,9 +57,16 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    @charge.save!
+    purchase.transaction do
+      @charge.save!
+      if fully_paid?
+        purchase.update!(state: Purchase::PAID)
+      else
+        purchase.update!(state: Purchase::INSTALLMENT)
+      end
+    end
 
-    return @charge.status == Charge::SUCCEEDED
+    return @charge.state == Charge::SUCCESSFUL
   end
 
   def error_message
@@ -56,12 +79,18 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
 
   private
 
+  def check_charge_amount
+    if charge_amount > amount_owed
+      errors << "refusing to overpay for purchase"
+    end
+  end
+
   def create_stripe_customer
     @stripe_customer = Stripe::Customer.create(email: user.email, source: token)
   rescue Stripe::StripeError => e
     errors << e.message
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment = "Failed to create Stripe::Customer - #{e.message}"
+    @charge.comment = "failed to create Stripe::Customer - #{e.message}"
   end
 
   def create_stripe_charge
@@ -69,17 +98,27 @@ ChargeCustomer = Struct.new(:membership, :user, :token) do
       description: STRIPE_CHARGE_DESCRIPTION,
       currency: CURRENCY,
       customer: @stripe_customer.id,
-      amount: membership.price,
+      amount: charge_amount,
     )
   rescue Stripe::StripeError => e
     errors << e.message
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment =  "Failed to create Stripe::Charge - #{e.message}"
+    @charge.comment =  "failed to create Stripe::Charge - #{e.message}"
   end
 
   def json_to_hash(obj)
     JSON.parse(obj.to_json)
   rescue
     {}
+  end
+
+  def fully_paid?
+    amount_owed <= 0
+  end
+
+  def amount_owed
+    membership_cost = purchase.membership.price
+    paid_so_far = purchase.charges.successful.sum(:cost)
+    membership_cost - paid_so_far
   end
 end

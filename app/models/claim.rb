@@ -14,19 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
+class Claim < ApplicationRecord
+  include ActiveScopes
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
-    end
+  belongs_to :user
+  belongs_to :purchase
+
+  validates :purchase, presence: true, uniqueness: {
+    # There can't be other active claims against the same purchase
+    conditions: -> { active }
+  }
+  validates :user, presence: true
+
+  def transferable?
+    active_to.nil?
   end
 end

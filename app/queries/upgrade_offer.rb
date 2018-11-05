@@ -14,19 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
+# UpgradeOffer holds information about a membership upgrade at a price
+class UpgradeOffer
+  attr_reader :from_membership, :to_membership
+
+  def initialize(from:, to:)
+    @from_membership = from
+    @to_membership = to
   end
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
-    end
+  def title
+    "Upgrade #{from_membership.name} to #{to_membership.name}"
+  end
+
+  def price
+    @price ||= to_membership.price - from_membership.price
   end
 end

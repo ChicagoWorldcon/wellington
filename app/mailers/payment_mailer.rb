@@ -18,9 +18,9 @@
 class PaymentMailer < ApplicationMailer
   default from: ENV["EMAIL_PAYMENTS"]
 
-  def new_member(user:, membership:, charge:)
+  def new_member(user:, purchase:, charge:)
     @user = user
-    @membership = membership
+    @purchase = purchase
     @charge = charge
     mail(to: user.email)
   end

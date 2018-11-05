@@ -14,10 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Grant < ApplicationRecord
-  belongs_to :user
-  belongs_to :membership
+FactoryBot.define do
+  factory :order do
+    active_from { 1.week.ago }
+    created_at { 1.week.ago }
 
-  validates :membership, presence: true
-  validates :user, presence: true
+    trait :with_purchase do
+      before(:create) do |order, _evaluator|
+        order.purchase = create(:purchase)
+      end
+    end
+
+    trait :with_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = create(:membership, :adult)
+      end
+    end
+  end
 end

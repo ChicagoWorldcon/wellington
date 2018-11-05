@@ -14,19 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
+require "rails_helper"
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
-    end
+RSpec.describe UpgradeOffer do
+  let(:silver_fern) { create(:membership, :silver_fern) }
+  let(:adult) { create(:membership, :adult) }
+
+  subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
+
+  it "shows price as the difference of memberships" do
+    expect(offer.price).to eq(adult.price - silver_fern.price)
   end
 end

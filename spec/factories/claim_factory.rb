@@ -14,19 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
-class ChargesController < ApplicationController
-  def index
-  end
+FactoryBot.define do
+  factory :claim do
+    trait :with_purchase do
+      after(:build) do |claim, _evaluator|
+        claim.purchase = create(:purchase, :with_order_against_membership)
+      end
+    end
 
-  def create
-    purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
-    user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
-    @payment = service.call
-    if !@payment
-      flash[:error] = service.error_message
-      redirect_to new_charge_path
+    trait :with_user do
+      after(:build) do |claim, _evaluator|
+        claim.user = create(:user)
+      end
     end
   end
 end
