@@ -26,12 +26,12 @@ RSpec.describe PurchaseMembership do
       expect(command.call).to be_truthy
     end
 
-    xit "creates a purchase and gives a claim to the user" do
-      expect { command.call }.to change { user.claims.count }.by(1)
+    it "creates a purchase and gives a claim to the user" do
+      expect { command.call }.to change { user.reload.active_claims.count }.by(1)
     end
 
-    xit "creates an order against the membership" do
-      expect { command.call }.to change { membership.count }.by(1)
+    it "creates an order against the membership" do
+      expect { command.call }.to change { membership.reload.active_orders.count }.by(1)
     end
   end
 end
