@@ -14,8 +14,82 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "csv"
+
 # ImportMembers takes a stream of text in CSV format and imports members
 ImportMembers = Struct.new(:input_stream) do
+  HEADINGS = [
+    "Timestamp",
+    "Given Name",
+    "Family Name",
+    "Display Given Name",
+    "Display Family Name",
+    "Display / Badge Name",
+    "Badge Subtitle",
+    "Address 1",
+    "Address 2",
+    "City",
+    "Province/State",
+    "Postal/Zip Code",
+    "Country",
+    "Email",
+    "Pre-Support Membership Status",
+    "GDPR Opt IN",
+    "Phone",
+    "SJ MemberID",
+    "Entered New From Site Selection",
+    "Listings",
+    "Share With Future Worldcons",
+    "No electronic publications",
+    "Paper Publications",
+    "Con Membership Status From Forms",
+    "Payment",
+    "Type",
+    "Currency",
+    "TRUE",
+    "Accessibility Services",
+    "Being on Program",
+    "Dealers",
+    "Selling at Art Show",
+    "Exhibiting",
+    "Performing",
+    "Notes",
+    "Faked Primary Key",
+    "NameAndCountry",
+    "CombinedName",
+    "Voted In Site Selection",
+    "GDPR on Email",
+    "MatchOnName",
+    "GDPR on Name",
+    "Voted in Site Selection",
+    "Full Member based on data import",
+    "Member combined data and form information",
+  ]
+
   def call
+    check_headings
+    errors.none?
+  end
+
+  def errors
+    @errors ||= []
+  end
+
+  private
+
+  def check_headings
+    if headings != HEADINGS
+      missing = HEADINGS - headings
+      excess = headings - HEADINGS
+      errors << "Headings don't match, missing #{missing.count} and got #{excess.count} surplus to requirements"
+    end
+  end
+
+  def headings
+    csv.first || []
+  end
+
+  def csv
+    CSV.parse(input_stream.read)
   end
 end

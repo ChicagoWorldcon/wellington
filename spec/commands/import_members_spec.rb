@@ -19,9 +19,14 @@ require "rails_helper"
 RSpec.describe ImportMembers do
   let(:input) { "" }
   let(:read_stream) { StringIO.new(input) }
-  subject(:call) { ImportMembers.new(read_stream).call }
+  subject(:command) { ImportMembers.new(read_stream) }
 
   it "imports nothing when the file is empty" do
-    expect { call }.to_not change { Membership.count }
+    expect { command.call }.to_not change { Membership.count }
+  end
+
+  it "fails without the right headings" do
+    expect(command.call).to be false
+    expect(command.errors).to include(/headings/i)
   end
 end
