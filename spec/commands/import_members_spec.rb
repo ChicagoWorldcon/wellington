@@ -17,6 +17,15 @@
 require "rails_helper"
 
 RSpec.describe ImportMembers do
+  let!(:adult)       { create(:membership, :adult) }
+  let!(:young_adult) { create(:membership, :young_adult) }
+  let!(:unwaged)     { create(:membership, :unwaged) }
+  let!(:child)       { create(:membership, :child) }
+  let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
+  let!(:supporting)  { create(:membership, :supporting) }
+  let!(:silver_fern) { create(:membership, :silver_fern) }
+  let!(:kiwi)        { create(:membership, :kiwi) }
+
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
   let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
@@ -65,7 +74,7 @@ RSpec.describe ImportMembers do
         "4410",
         "New Zealand",
         email_address,
-        "Kiwi",
+        kiwi.name,
         "NULL",
         "",
         "",
@@ -111,6 +120,11 @@ RSpec.describe ImportMembers do
       it "imports a member" do
         expect { command.call }.to change { User.count }.by(1)
         expect(User.last.email).to eq email_address
+      end
+
+      it "puts a new active order against that membership" do
+        expect { command.call }.to change { kiwi.reload.active_orders.count }.by(1)
+        expect(User.last.purchases).to eq(kiwi.purchases)
       end
     end
   end

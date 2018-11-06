@@ -77,8 +77,15 @@ class ImportMembers
     check_headings
     return false if errors.any?
 
-    table_body.each do |row_data|
-      User.create!(email: row_data[13])
+    User.transaction do
+      table_body.each do |row_data|
+        new_user = User.create!(email: row_data[13])
+        membership = Membership.find_by(name: row_data[14])
+        command = PurchaseMembership.new(membership, customer: new_user)
+        if !command.call
+          raise command.errors.to_sentence
+        end
+      end
     end
 
     errors.none?
