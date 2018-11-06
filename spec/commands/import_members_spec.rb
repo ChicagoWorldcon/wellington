@@ -19,6 +19,7 @@ require "rails_helper"
 RSpec.describe ImportMembers do
   let(:input) { "" }
   let(:read_stream) { StringIO.new(input) }
+  let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
   subject(:command) { ImportMembers.new(read_stream) }
 
   it "imports nothing when the file is empty" do
@@ -28,5 +29,14 @@ RSpec.describe ImportMembers do
   it "fails without the right headings" do
     expect(command.call).to be false
     expect(command.errors).to include(/headings/i)
+  end
+
+  context "when just the headings" do
+    let(:input) { "#{standard_headings}\n\n\n" }
+
+    it "fails complaining about the body" do
+      expect(command.call).to be false
+      expect(command.errors).to include(/body is empty/i)
+    end
   end
 end

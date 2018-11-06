@@ -16,8 +16,9 @@
 
 require "csv"
 
-# ImportMembers takes a stream of text in CSV format and imports members
-ImportMembers = Struct.new(:input_stream) do
+# ImportMembers takes a stream of text in CSV format and creates member records out of it. Check call return to see if
+# it succeeded or not, check errors to see why.
+class ImportMembers
   HEADINGS = [
     "Timestamp",
     "Given Name",
@@ -66,6 +67,12 @@ ImportMembers = Struct.new(:input_stream) do
     "Member combined data and form information",
   ]
 
+  attr_reader :input_stream
+
+  def initialize(input_stream)
+    @input_stream = input_stream
+  end
+
   def call
     check_headings
     errors.none?
@@ -83,13 +90,21 @@ ImportMembers = Struct.new(:input_stream) do
       excess = headings - HEADINGS
       errors << "Headings don't match, missing #{missing.count} and got #{excess.count} surplus to requirements"
     end
+
+    if table_body.empty?
+      errors << "Table body is empty"
+    end
   end
 
   def headings
     csv.first || []
   end
 
+  def table_body
+    csv[1..-1] || []
+  end
+
   def csv
-    CSV.parse(input_stream.read)
+    CSV.parse(input_stream.read) || []
   end
 end
