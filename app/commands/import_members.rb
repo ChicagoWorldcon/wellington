@@ -75,6 +75,12 @@ class ImportMembers
 
   def call
     check_headings
+    return false if errors.any?
+
+    table_body.each do |row_data|
+      User.create!(email: row_data[13])
+    end
+
     errors.none?
   end
 
@@ -92,7 +98,11 @@ class ImportMembers
     end
 
     if table_body.empty?
-      errors << "Table body is empty"
+      errors << "table body is empty"
+    end
+
+    if table_body.any?(&:empty?)
+      errors << "table body has empty rows"
     end
   end
 
@@ -105,6 +115,6 @@ class ImportMembers
   end
 
   def csv
-    CSV.parse(input_stream.read) || []
+    @csv ||= CSV.parse(input_stream.read) || []
   end
 end

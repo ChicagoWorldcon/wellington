@@ -17,8 +17,8 @@
 require "rails_helper"
 
 RSpec.describe ImportMembers do
-  let(:input) { "" }
-  let(:read_stream) { StringIO.new(input) }
+  let(:data) { "" }
+  let(:read_stream) { StringIO.new(data) }
   let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
   subject(:command) { ImportMembers.new(read_stream) }
 
@@ -32,11 +32,86 @@ RSpec.describe ImportMembers do
   end
 
   context "when just the headings" do
-    let(:input) { "#{standard_headings}\n\n\n" }
+    let(:data) { "#{standard_headings}\n\n\n" }
 
     it "fails complaining about the body" do
       expect(command.call).to be false
-      expect(command.errors).to include(/body is empty/i)
+      expect(command.errors).to include(/empty rows/i)
+    end
+  end
+
+  context "with import data" do
+    let(:data) do
+      CSV.generate do |csv|
+        csv << ImportMembers::HEADINGS
+        csv << member_row
+      end
+    end
+    let(:email_address) { "test@matthew.nz" }
+
+    let(:member_row) do
+      [
+        "09/02/2010 21:39:00",
+        "Skux",
+        "Pizazz",
+        "",
+        "",
+        "",
+        "",
+        "4001 Summerhill Drive #5-76",
+        "",
+        "Palmerston North",
+        "Manawatu",
+        "4410",
+        "New Zealand",
+        email_address,
+        "Kiwi",
+        "NULL",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "FALSE",
+        "FALSE",
+        "",
+        "",
+        "",
+        "",
+        "FALSE",
+        "FALSE",
+        "FALSE",
+        "FALSE",
+        "FALSE",
+        "FALSE",
+        "FALSE",
+        "",
+        "100003",
+        "",
+        "",
+        "HackermanNZA",
+        "Hackerman Matt",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "FALSE",
+        "NO",
+        "Kiwi",
+      ]
+    end
+
+    context "with one member" do
+      it "executes successfully" do
+        expect(command.call).to be_truthy
+        expect(command.errors).to be_empty
+      end
+
+      it "imports a member" do
+        expect { command.call }.to change { User.count }.by(1)
+        expect(User.last.email).to eq email_address
+      end
     end
   end
 end
