@@ -127,3 +127,8 @@ Membership.create!(name: :adult, active_from: price_change, active_to: venue_con
 ```
 
 For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
+
+## License
+
+This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
+file distributed with this project.

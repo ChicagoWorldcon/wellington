@@ -18,11 +18,6 @@ require "rails_helper"
 
 RSpec.describe ImportMembers do
   let!(:adult)       { create(:membership, :adult) }
-  let!(:young_adult) { create(:membership, :young_adult) }
-  let!(:unwaged)     { create(:membership, :unwaged) }
-  let!(:child)       { create(:membership, :child) }
-  let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
-  let!(:supporting)  { create(:membership, :supporting) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
 
