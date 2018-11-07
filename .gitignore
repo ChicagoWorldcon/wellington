@@ -28,3 +28,6 @@
 /node_modules
 /yarn-error.log
 .byebug_history
+
+# Stats from rspec runs
+spec/examples.txt
