@@ -14,16 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :charge do
-    comment { "Factory Generated Charge" }
-    cost { 300 }
-    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
-    state { Charge::STATE_SUCCESSFUL }
-    transfer { Charge::TRANSFER_STRIPE }
-
-    trait(:failed) do
-      state { Charge::STATE_FAILED }
-    end
+class AddMethodToCharge < ActiveRecord::Migration[5.1]
+  def change
+    add_column :charges, :transfer, :string, null: false
   end
 end

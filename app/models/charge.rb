@@ -17,17 +17,20 @@
 class Charge < ApplicationRecord
   STATE_FAILED = "failed"
   STATE_SUCCESSFUL = "successful"
+  TRANSFER_STRIPE = "stripe"
 
   belongs_to :user
   belongs_to :purchase
 
   validates :comment, presence: true
   validates :cost, presence: true
+  validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE]}
   validates :purchase, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
   validates :stripe_id, presence: true
   validates :user, presence: true
 
+  scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
   scope :failed, ->() { where(state: STATE_FAILED) }
   scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
 end

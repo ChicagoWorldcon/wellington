@@ -30,7 +30,7 @@ class ChargeCustomer
   end
 
   def call
-    @charge = Charge.new(
+    @charge = Charge.stripe.new(
       user: user,
       purchase: purchase,
       stripe_id: token,
