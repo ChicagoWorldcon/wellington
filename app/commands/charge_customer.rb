@@ -42,12 +42,12 @@ class ChargeCustomer
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.state = Charge::FAILED
+      @charge.state = Charge::STATE_FAILED
       @charge.comment = error_message
     elsif !@stripe_charge[:paid]
-      @charge.state = Charge::FAILED
+      @charge.state = Charge::STATE_FAILED
     else
-      @charge.state = Charge::SUCCESSFUL
+      @charge.state = Charge::STATE_SUCCESSFUL
     end
 
     if @stripe_charge.present?
@@ -66,7 +66,7 @@ class ChargeCustomer
       end
     end
 
-    return @charge.state == Charge::SUCCESSFUL
+    return @charge.state == Charge::STATE_SUCCESSFUL
   end
 
   def error_message

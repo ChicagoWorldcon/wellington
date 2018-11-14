@@ -19,10 +19,10 @@ FactoryBot.define do
     comment { "Factory Generated Charge" }
     cost { 300 }
     stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
-    state { Charge::SUCCESSFUL }
+    state { Charge::STATE_SUCCESSFUL }
 
     trait(:failed) do
-      state { Charge::FAILED }
+      state { Charge::STATE_FAILED }
     end
   end
 end

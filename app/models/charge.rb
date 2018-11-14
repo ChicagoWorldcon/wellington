@@ -15,8 +15,8 @@
 # limitations under the License.
 
 class Charge < ApplicationRecord
-  FAILED = "failed"
-  SUCCESSFUL = "successful"
+  STATE_FAILED = "failed"
+  STATE_SUCCESSFUL = "successful"
 
   belongs_to :user
   belongs_to :purchase
@@ -24,10 +24,10 @@ class Charge < ApplicationRecord
   validates :comment, presence: true
   validates :cost, presence: true
   validates :purchase, presence: true
-  validates :state, inclusion: {in: [FAILED, SUCCESSFUL]}
+  validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
   validates :stripe_id, presence: true
   validates :user, presence: true
 
-  scope :failed, ->() { where(state: FAILED) }
-  scope :successful, ->() { where(state: SUCCESSFUL) }
+  scope :failed, ->() { where(state: STATE_FAILED) }
+  scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
 end
