@@ -18,19 +18,25 @@ class Charge < ApplicationRecord
   STATE_FAILED = "failed"
   STATE_SUCCESSFUL = "successful"
   TRANSFER_STRIPE = "stripe"
+  TRANSFER_CASH = "cash"
 
   belongs_to :user
   belongs_to :purchase
 
   validates :comment, presence: true
   validates :cost, presence: true
-  validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE]}
   validates :purchase, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
-  validates :stripe_id, presence: true
+  validates :stripe_id, presence: true, if: :stripe_transfer?
+  validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE, TRANSFER_CASH]}
   validates :user, presence: true
 
   scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
+  scope :cash, ->() { where(transfer: TRANSFER_CASH) }
   scope :failed, ->() { where(state: STATE_FAILED) }
   scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
+
+  def stripe_transfer?
+    transfer == TRANSFER_STRIPE
+  end
 end

@@ -24,7 +24,8 @@ RSpec.describe ImportMembers do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
   let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
-  subject(:command) { ImportMembers.new(read_stream) }
+  let(:description) { "test stream" }
+  subject(:command) { ImportMembers.new(read_stream, description) }
 
   it "imports nothing when the file is empty" do
     expect { command.call }.to_not change { Membership.count }
@@ -120,6 +121,20 @@ RSpec.describe ImportMembers do
       it "puts a new active order against that membership" do
         expect { command.call }.to change { kiwi.reload.active_orders.count }.by(1)
         expect(User.last.purchases).to eq(kiwi.purchases)
+      end
+
+      context "after run" do
+        before do
+          command.call
+        end
+
+        it "creates a cash charge" do
+          expect(User.last.charges.successful.cash.count).to be(1)
+        end
+
+        it "describes the source of the import" do
+          expect(Charge.last.comment).to match(/row 2/i)
+        end
       end
     end
   end

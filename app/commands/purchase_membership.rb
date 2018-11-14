@@ -42,6 +42,7 @@ class PurchaseMembership
       purchase = Purchase.installment.create!
       order = Order.create!(active_from: as_at, membership: membership, purchase: purchase)
       claim = Claim.create!(active_from: as_at, user: customer, purchase: purchase)
+      purchase
     end
   end
 end

@@ -67,10 +67,11 @@ class ImportMembers
     "Member combined data and form information",
   ]
 
-  attr_reader :input_stream
+  attr_reader :input_stream, :description
 
-  def initialize(input_stream)
+  def initialize(input_stream, description)
     @input_stream = input_stream
+    @description = description
   end
 
   def call
@@ -78,11 +79,19 @@ class ImportMembers
     return false if errors.any?
 
     User.transaction do
-      table_body.each do |row_data|
+      table_body.each.with_index do |row_data, i|
+        line_number = i + 2 # header = line 1, index offset
         new_user = User.create!(email: row_data[13])
         membership = Membership.find_by(name: row_data[14])
         command = PurchaseMembership.new(membership, customer: new_user)
-        if !command.call
+        if new_purchase = command.call
+          Charge.cash.successful.create!(
+            user: new_user,
+            purchase: new_purchase,
+            cost: membership.price,
+            comment: "Import from row #{line_number} in #{description}",
+          )
+        else
           raise command.errors.to_sentence
         end
       end
