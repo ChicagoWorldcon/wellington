@@ -130,6 +130,7 @@ class ImportMembers
       membership = Membership.find_by(name: row_data[14])
       command = PurchaseMembership.new(membership, customer: new_user)
       if new_purchase = command.call
+        new_purchase.update!(state: Purchase::PAID)
         Charge.cash.successful.create!(
           user: new_user,
           purchase: new_purchase,

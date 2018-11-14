@@ -135,6 +135,10 @@ RSpec.describe ImportMembers do
         it "describes the source of the import" do
           expect(Charge.last.comment).to match(/row 2/i)
         end
+
+        it "sets membership to paid" do
+          expect(Purchase.last.state).to eq Purchase::PAID
+        end
       end
     end
   end
