@@ -34,7 +34,7 @@ class ChargeCustomer
       user: user,
       purchase: purchase,
       stripe_id: token,
-      cost: charge_amount,
+      amount: charge_amount,
     )
 
     check_charge_amount
@@ -52,7 +52,7 @@ class ChargeCustomer
 
     if @stripe_charge.present?
       @charge.stripe_id       = @stripe_charge[:id]
-      @charge.cost            = @stripe_charge[:amount]
+      @charge.amount          = @stripe_charge[:amount]
       @charge.comment         = @stripe_charge[:description]
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
@@ -118,7 +118,7 @@ class ChargeCustomer
 
   def amount_owed
     membership_cost = purchase.membership.price
-    paid_so_far = purchase.charges.successful.sum(:cost)
+    paid_so_far = purchase.charges.successful.sum(:amount)
     membership_cost - paid_so_far
   end
 end

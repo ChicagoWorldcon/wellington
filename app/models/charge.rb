@@ -23,8 +23,8 @@ class Charge < ApplicationRecord
   belongs_to :user
   belongs_to :purchase
 
+  validates :amount, presence: true
   validates :comment, presence: true
-  validates :cost, presence: true
   validates :purchase, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
   validates :stripe_id, presence: true, if: :stripe_transfer?

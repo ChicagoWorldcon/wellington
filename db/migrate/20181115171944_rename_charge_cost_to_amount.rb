@@ -14,22 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  sequence :email do |n|
-    "fan-#{n}@convention.net"
-  end
-
-  factory :user do
-    email { generate(:email) }
-
-    trait :with_purchase do
-      after(:create) do |new_user|
-        claim = create(:claim, :with_purchase, user: new_user)
-        membership_price = claim.purchase.membership.price
-        charge = create(:charge, user: new_user, purchase: claim.purchase, amount: membership_price)
-        new_user.claims << claim
-        new_user.charges << charge
-      end
-    end
+class RenameChargeCostToAmount < ActiveRecord::Migration[5.1]
+  def change
+    rename_column :charges, :cost, :amount
   end
 end

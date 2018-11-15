@@ -32,7 +32,7 @@ class ImportMembers::ProcessRow
       Charge.cash.successful.create!(
         user: new_user,
         purchase: new_purchase,
-        cost: membership.price,
+        amount: membership.price,
         comment: comment,
       )
     else

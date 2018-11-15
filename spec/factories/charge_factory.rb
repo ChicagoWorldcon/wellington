@@ -17,7 +17,7 @@
 FactoryBot.define do
   factory :charge do
     comment { "Factory Generated Charge" }
-    cost { 300 }
+    amount { 300 }
     stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
     state { Charge::STATE_SUCCESSFUL }
     transfer { Charge::TRANSFER_STRIPE }
