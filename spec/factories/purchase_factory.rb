@@ -15,10 +15,12 @@
 # limitations under the License.
 
 FactoryBot.define do
+  sequence(:next_membership_number)
+
   factory :purchase do
     state { Purchase::PAID }
     created_at { 1.week.ago }
-    membership_number { 1 }
+    membership_number { generate(:next_membership_number) }
 
     trait :pay_as_you_go do
       state { Purchase::INSTALLMENT }

@@ -21,6 +21,11 @@ RSpec.describe Purchase, type: :model do
     subject(:model) { create(:purchase) }
     it { is_expected.to be_valid }
     it { is_expected.to be_transferable }
+
+    it "enforces uniqueness on membership number" do
+      duplicate_membership = build(:purchase, membership_number: subject.membership_number)
+      expect(duplicate_membership).to_not be_valid
+    end
   end
 
   context "with order" do

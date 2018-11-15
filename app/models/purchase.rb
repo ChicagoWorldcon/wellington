@@ -28,7 +28,7 @@ class Purchase < ApplicationRecord
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
 
-  validates :membership_number, presence: true
+  validates :membership_number, presence: true, uniqueness: true
   validates :state, presence: true, inclusion: [PAID, INSTALLMENT, DISABLED]
 
   scope :disabled, -> { where(state: DISABLED) }
