@@ -80,10 +80,14 @@ class ImportMembers
 
     User.transaction do
       table_body.each.with_index do |row_data, i|
-        row_import = ProcessRow.new(row_data, i, "Import from row #{i+2} in #{description}")
+        row_import = ProcessRow.new(row_data, "Import from row #{i+2} in #{description}")
         if !row_import.call
-          raise row_import.errors
+          errors << "Error on row #{i+2}: #{row_import.error_message}"
         end
+      end
+
+      if errors.any?
+        raise ActiveRecord::Rollback, "Errors encountered while processing CSV"
       end
     end
 
@@ -122,24 +126,5 @@ class ImportMembers
 
   def csv
     @csv ||= CSV.parse(input_stream.read) || []
-  end
-
-  ProcessRow = Struct.new(:row_data, :row_index, :comment) do
-    def call
-      new_user = User.create!(email: row_data[13])
-      membership = Membership.find_by(name: row_data[14])
-      command = PurchaseMembership.new(membership, customer: new_user)
-      if new_purchase = command.call
-        new_purchase.update!(state: Purchase::PAID)
-        Charge.cash.successful.create!(
-          user: new_user,
-          purchase: new_purchase,
-          cost: membership.price,
-          comment: comment,
-        )
-      else
-        raise command.errors.to_sentence
-      end
-    end
   end
 end

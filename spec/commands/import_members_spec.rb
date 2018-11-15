@@ -17,10 +17,6 @@
 require "rails_helper"
 
 RSpec.describe ImportMembers do
-  let!(:adult)       { create(:membership, :adult) }
-  let!(:silver_fern) { create(:membership, :silver_fern) }
-  let!(:kiwi)        { create(:membership, :kiwi) }
-
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
   let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
@@ -49,97 +45,37 @@ RSpec.describe ImportMembers do
     let(:data) do
       CSV.generate do |csv|
         csv << ImportMembers::HEADINGS
-        csv << member_row
+        csv << row_1
+        csv << row_2
       end
     end
     let(:email_address) { "test@matthew.nz" }
+    let(:good_row_processor) { instance_double(ImportMembers::ProcessRow, call: true) }
+    let(:bad_row_processor) { instance_double(ImportMembers::ProcessRow, call: false, error_message: "gah") }
 
-    let(:member_row) do
-      [
-        "09/02/2010 21:39:00",
-        "Skux",
-        "Pizazz",
-        "",
-        "",
-        "",
-        "",
-        "4001 Summerhill Drive #5-76",
-        "",
-        "Palmerston North",
-        "Manawatu",
-        "4410",
-        "New Zealand",
-        email_address,
-        kiwi.name,
-        "NULL",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "FALSE",
-        "FALSE",
-        "",
-        "",
-        "",
-        "",
-        "FALSE",
-        "FALSE",
-        "FALSE",
-        "FALSE",
-        "FALSE",
-        "FALSE",
-        "FALSE",
-        "",
-        "100003",
-        "",
-        "",
-        "HackermanNZA",
-        "Hackerman Matt",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "FALSE",
-        "NO",
-        "Kiwi",
-      ]
+    let(:row_1) { ["1"] * ImportMembers::HEADINGS.count }
+    let(:row_2) { ["2"] * ImportMembers::HEADINGS.count }
+
+    it "calls ProcessRow" do
+      expect(ImportMembers::ProcessRow)
+        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+        .and_return(good_row_processor)
+      expect(ImportMembers::ProcessRow)
+        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+        .and_return(good_row_processor)
+      expect(command.call).to be_truthy
+      expect(command.errors).to be_empty
     end
 
-    context "with one member" do
-      it "executes successfully" do
-        expect(command.call).to be_truthy
-        expect(command.errors).to be_empty
-      end
-
-      it "imports a member" do
-        expect { command.call }.to change { User.count }.by(1)
-        expect(User.last.email).to eq email_address
-      end
-
-      it "puts a new active order against that membership" do
-        expect { command.call }.to change { kiwi.reload.active_orders.count }.by(1)
-        expect(User.last.purchases).to eq(kiwi.purchases)
-      end
-
-      context "after run" do
-        before do
-          command.call
-        end
-
-        it "creates a cash charge" do
-          expect(User.last.charges.successful.cash.count).to be(1)
-        end
-
-        it "describes the source of the import" do
-          expect(Charge.last.comment).to match(/row 2/i)
-        end
-
-        it "sets membership to paid" do
-          expect(Purchase.last.state).to eq Purchase::PAID
-        end
-      end
+    it "raises errors with buggy rows" do
+      expect(ImportMembers::ProcessRow)
+        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+        .and_return(good_row_processor)
+      expect(ImportMembers::ProcessRow)
+        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+        .and_return(bad_row_processor)
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/gah/i)
     end
   end
 end
