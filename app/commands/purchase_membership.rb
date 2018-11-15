@@ -29,6 +29,8 @@
 #
 # PurchaseMembership takes a user and a membership and creates a claim and purchase for them.
 class PurchaseMembership
+  FIRST_MEMBERSHIP_NUMER = 10
+
   attr_reader :customer, :membership
 
   def initialize(membership, customer:)
@@ -38,11 +40,23 @@ class PurchaseMembership
 
   def call
     customer.transaction do
+      Purchase.lock # pessimistic membership number uniqueness
       as_at = Time.now
-      purchase = Purchase.installment.create!
-      order = Order.create!(active_from: as_at, membership: membership, purchase: purchase)
-      claim = Claim.create!(active_from: as_at, user: customer, purchase: purchase)
+      purchase = Purchase.installment.create!(membership_number: next_membership_number)
+      Order.create!(active_from: as_at, membership: membership, purchase: purchase)
+      Claim.create!(active_from: as_at, user: customer, purchase: purchase)
       purchase
+    end
+  end
+
+  private
+
+  def next_membership_number
+    last_purchase = Purchase.order(:membership_number).last
+    if last_purchase.present?
+      last_purchase.membership_number + 1
+    else
+      FIRST_MEMBERSHIP_NUMER
     end
   end
 end
