@@ -2,11 +2,13 @@
 before_script:
   - apt-get update -qq && apt-get install -y -qq postgresql nodejs
   - ruby -v
+  - psql --version
   - which ruby
   - gem install bundler --no-ri --no-rdoc
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
   - service postgresql start
   - su postgres sh -c "createuser root"
+  - su postgres sh -c 'psql -c "ALTER USER root WITH SUPERUSER"'
   - bundle exec rake db:create db:schema:load
 
 rspec:
