@@ -1484,6 +1484,9 @@ a:focus {
 .form-note-m-group {
 	margin-top: -.5em;
 }
+.form-options {
+  margin-bottom: .5em;
+}
 label {
 	display: block;
 	margin-bottom: .5em;
@@ -1491,7 +1494,7 @@ label {
 legend {
 	border-bottom: 1px solid $light-blue;
 	font-size: 1.2em;
-	margin: 1.5em 0;
+	margin: 1.5em 0 1em;
 	padding: 1em 0 .25em 0;
 	width: 100%;
 }
@@ -1502,6 +1505,23 @@ legend {
 select {
 	height: 40px;
 	border-radius: 0 !important;
+}
+.form-options .form-control-m-radio,
+.form-options .form-control-m-checkbox {
+  display: inline-block;
+  min-height: 0;
+  width: 5%;
+  vertical-align: top;
+}
+.form-options label {
+  display: inline-block;
+  width: 80%;
+  vertical-align: top;
+}
+@media (min-width: 576px) {
+  .form-options label {
+    width: 90%;
+  }
 }
 /* -------------------------------
 /* PANELS
