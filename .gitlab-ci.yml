@@ -6,6 +6,7 @@ before_script:
   - gem install bundler --no-ri --no-rdoc
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
   - service postgresql start
+  - su postgres sh -c "createuser root"
   - bundle exec rake db:create db:schema:load
 
 rspec:
