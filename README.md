@@ -40,7 +40,7 @@ bundle install
 
 Setup your developemnt database
 ```bash
-bundle exec rake db:create db:seed
+bundle exec rake db:create db:schema:load db:seed
 ```
 
 ## Linting
