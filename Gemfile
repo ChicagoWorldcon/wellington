@@ -33,6 +33,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "rubocop-github"
   gem "selenium-webdriver"
+  gem "simplecov"
   gem "stripe-ruby-mock", require: "stripe_mock"
 end
 

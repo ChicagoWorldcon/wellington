@@ -31,3 +31,4 @@
 
 # Timings per spec, good for debugging slow specs
 spec/examples.txt
+coverage/
