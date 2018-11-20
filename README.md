@@ -2,6 +2,9 @@
 
 Holds information about members of worldcon.
 
+[![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
+[![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
+
 ## Install Steps
 
 This project depends on Ruby.
