@@ -19,44 +19,6 @@ require "csv"
 # ImportMembers takes a stream of text in CSV format and creates member records out of it. Check call return to see if
 # it succeeded or not, check errors to see why.
 class ImportMembers
-  HEADINGS = [
-    "Timestamp",
-    "Title",
-    "Title",
-    "Title",
-    "Full name",
-    "PreferredFirstname",
-    "PreferedLastname",
-    "BadgeTitle",
-    "BadgeSubtitle",
-    "Address Line1",
-    "Address Line2",
-    "City",
-    "Province/State",
-    "Postal/Zip Code",
-    "Country",
-    "Email Address",
-    "Listings",
-    "Use Real Name",
-    "Use Badge",
-    "Share detalis?",
-    "Share With Future Worldcons",
-    "No electronic publications",
-    "Paper Publications",
-    "Volunteering",
-    "Accessibility Services",
-    "Being on Program",
-    "Dealers",
-    "Selling at Art Show",
-    "Exhibiting",
-    "Performing",
-    "Notes",
-    "Import Key",
-    "Pre-Support Status",
-    "Membership Status",
-    "Master Membership Status",
-  ]
-
   attr_reader :input_stream, :description
 
   def initialize(input_stream, description)
@@ -91,9 +53,10 @@ class ImportMembers
   private
 
   def check_headings
-    if headings != HEADINGS
-      missing = HEADINGS - headings
-      excess = headings - HEADINGS
+    expected = ProcessRow::HEADINGS
+    if headings != expected
+      missing = expected - headings
+      excess = headings - expected
       errors << "Headings don't match, missing #{missing.count} and got #{excess.count} surplus to requirements"
     end
 

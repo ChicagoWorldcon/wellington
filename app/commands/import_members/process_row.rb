@@ -15,6 +15,44 @@
 # limitations under the License.
 
 class ImportMembers::ProcessRow
+  HEADINGS = [
+    "Timestamp",
+    "Title",
+    "Title",
+    "Title",
+    "Full name",
+    "PreferredFirstname",
+    "PreferedLastname",
+    "BadgeTitle",
+    "BadgeSubtitle",
+    "Address Line1",
+    "Address Line2",
+    "City",
+    "Province/State",
+    "Postal/Zip Code",
+    "Country",
+    "Email Address",
+    "Listings",
+    "Use Real Name",
+    "Use Badge",
+    "Share detalis?",
+    "Share With Future Worldcons",
+    "No electronic publications",
+    "Paper Publications",
+    "Volunteering",
+    "Accessibility Services",
+    "Being on Program",
+    "Dealers",
+    "Selling at Art Show",
+    "Exhibiting",
+    "Performing",
+    "Notes",
+    "Import Key",
+    "Pre-Support Status",
+    "Membership Status",
+    "Master Membership Status",
+  ]
+
   attr_reader :row_data, :comment
 
   def initialize(row_data, comment)

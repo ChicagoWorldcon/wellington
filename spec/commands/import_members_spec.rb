@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe ImportMembers do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
-  let(:standard_headings) { ImportMembers::HEADINGS.join(",") }
+  let(:standard_headings) { ImportMembers::ProcessRow::HEADINGS.join(",") }
   let(:description) { "test stream" }
   subject(:command) { ImportMembers.new(read_stream, description) }
 
@@ -44,7 +44,7 @@ RSpec.describe ImportMembers do
   context "with import data" do
     let(:data) do
       CSV.generate do |csv|
-        csv << ImportMembers::HEADINGS
+        csv << ImportMembers::ProcessRow::HEADINGS
         csv << row_1
         csv << row_2
       end
@@ -53,8 +53,8 @@ RSpec.describe ImportMembers do
     let(:good_row_processor) { instance_double(ImportMembers::ProcessRow, call: true) }
     let(:bad_row_processor) { instance_double(ImportMembers::ProcessRow, call: false, error_message: "gah") }
 
-    let(:row_1) { ["1"] * ImportMembers::HEADINGS.count }
-    let(:row_2) { ["2"] * ImportMembers::HEADINGS.count }
+    let(:row_1) { ["1"] * ImportMembers::ProcessRow::HEADINGS.count }
+    let(:row_2) { ["2"] * ImportMembers::ProcessRow::HEADINGS.count }
 
     it "calls ProcessRow" do
       expect(ImportMembers::ProcessRow)
