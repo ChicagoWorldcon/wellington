@@ -19,61 +19,48 @@ RSpec.describe ImportMembers::ProcessRow do
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
 
-  let(:email_address) { "test@matthew.nz" }
+  let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
 
   subject(:command) { ImportMembers::ProcessRow.new(row_values, my_comment) }
 
   let(:row_values) do
     [
-      "09/02/2010 21:39:00",
-      "Skux",
-      "Pizazz",
-      "",
-      "",
-      "",
-      "",
-      "4001 Summerhill Drive #5-76",
-      "",
-      "Palmerston North",
-      "Manawatu",
-      "4410",
-      "New Zealand",
-      email_address,
-      kiwi.name,
-      "NULL",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "FALSE",
-      "FALSE",
-      "",
-      "",
-      "",
-      "",
-      "FALSE",
-      "FALSE",
-      "FALSE",
-      "FALSE",
-      "FALSE",
-      "FALSE",
-      "FALSE",
-      "",
-      "100003",
-      "",
-      "",
-      "HackermanNZA",
-      "Hackerman Matt",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "FALSE",
-      "NO",
-      "Kiwi",
+      "8/19/2018 10:04:55",             # Timestamp
+      "",                               # Title
+      "",                               # Title
+      "",                               # Title
+      Faker::FunnyName.three_word_name, # Full name
+      Faker::Name.first_name,           # PreferredFirstname
+      Faker::Name.last_name,            # PreferedLastname
+      Faker::Superhero.name,            # BadgeTitle
+      Faker::Superhero.descriptor,      # BadgeSubtitle
+      Faker::Address.street_address,    # Address Line1
+      Faker::Address.secondary_address, # Address Line2
+      Faker::Address.city,              # City
+      Faker::Address.state,             # Province/State
+      Faker::Address.zip_code,          # Postal/Zip Code
+      Faker::Address.country,           # Country
+      email_address,                    # Email Address
+      "Given and Last",                 # Listings
+      "",                               # Use Real Name
+      "",                               # Use Badge
+      "",                               # Share detalis?
+      "Yes",                            # Share With Future Worldcons
+      "FALSE",                          # No electronic publications
+      "TRUE",                           # Paper Publications
+      "FALSE",                          # Volunteering
+      "TRUE",                           # Accessibility Services
+      "FALSE",                          # Being on Program
+      "FALSE",                          # Dealers
+      "TRUE",                           # Selling at Art Show
+      "FALSE",                          # Exhibiting
+      "TRUE",                           # Performing
+      "Enjoys long walks by the sea",   # Notes
+      "1324",                           # Import Key
+      "Silver Fern Pre-Support",        # Pre-Support Status
+      "Silver Fern Pre-Support",        # Membership Status
+      "",                               # Master Membership Status
     ]
   end
 
@@ -89,8 +76,8 @@ RSpec.describe ImportMembers::ProcessRow do
     end
 
     it "puts a new active order against that membership" do
-      expect { command.call }.to change { kiwi.reload.active_orders.count }.by(1)
-      expect(User.last.purchases).to eq(kiwi.purchases)
+      expect { command.call }.to change { silver_fern.reload.active_orders.count }.by(1)
+      expect(User.last.purchases).to eq(silver_fern.purchases)
     end
 
     context "after run" do

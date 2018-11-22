@@ -51,7 +51,19 @@ class ImportMembers::ProcessRow
     "Pre-Support Status",
     "Membership Status",
     "Master Membership Status",
-  ]
+  ].freeze
+
+  MEMBERSHIP_LOOKUP = {
+    "Adult Attending":          "adult",
+    "Child Attending":          "child",
+    "Kiwi Pre-Support":         "kiwi",
+    "Pre-Opposing":             "pre_oppose",
+    "Pre-Supporting":           "pre_support",
+    "Silver Fern Pre-Support":  "silver_fern",
+    "Supporting":               "supporting",
+    "Tuatara Pre-Support":      "tuatara",
+    "Young Adult Attending":    "young_adult",
+  }.with_indifferent_access.freeze
 
   attr_reader :row_data, :comment
 
@@ -61,21 +73,27 @@ class ImportMembers::ProcessRow
   end
 
   def call
-    new_user = User.create!(email: row_data[13])
-    membership = Membership.find_by(name: row_data[14])
-    command = PurchaseMembership.new(membership, customer: new_user)
-
-    if new_purchase = command.call
-      new_purchase.update!(state: Purchase::PAID)
-      Charge.cash.successful.create!(
-        user: new_user,
-        purchase: new_purchase,
-        amount: membership.price,
-        comment: comment,
-      )
-    else
-      errors << command.error_message
+    new_user = User.new(email: cell_for("Email Address"))
+    if !new_user.valid?
+      errors << new_user.errors.full_messages.to_sentence
+      return false
     end
+
+    command = PurchaseMembership.new(membership, customer: new_user)
+    new_purchase = command.call
+
+    if !new_purchase
+      errors << command.error_message
+      return false
+    end
+
+    new_purchase.update!(state: Purchase::PAID)
+    Charge.cash.successful.create!(
+      user: new_user,
+      purchase: new_purchase,
+      amount: membership.price,
+      comment: comment,
+    )
 
     errors.none?
   end
@@ -86,5 +104,18 @@ class ImportMembers::ProcessRow
 
   def error_message
     errors.to_sentence
+  end
+
+  private
+
+  def membership
+    import_string = cell_for("Membership Status")
+    membership_name = MEMBERSHIP_LOOKUP[import_string] || import_string
+    Membership.find_by(name: membership_name)
+  end
+
+  def cell_for(column)
+    offset = HEADINGS.index(column)
+    row_data[offset]
   end
 end
