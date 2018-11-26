@@ -15,27 +15,28 @@
 # limitations under the License.
 
 FactoryBot.define do
-  sequence(:next_membership_number)
+  factory :detail do
+    address_line_1 { Faker::Address.street_address }
+    country { Faker::Address.city }
+    full_name { Faker::VentureBros.character }
+    publication_format { Detail::PAPERPUBS_ELECTRONIC }
 
-  factory :purchase do
-    state { Purchase::PAID }
-    created_at { 1.week.ago }
-    membership_number { generate(:next_membership_number) }
-
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
-    end
-
-    trait :with_order_against_membership do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
+    trait :with_claim do
+      after(:build) do |new_detail, _evaluator|
+        new_detail.claim = create(:claim, :with_user, :with_purchase)
       end
     end
 
-    trait :with_claim_from_user do
-      after(:build) do |new_purchase, _evaluator|
-        new_purchase.claims << create(:claim, :with_user, :with_purchase)
-      end
+    trait :paperpubs_mail do
+      publication_format { Detail::PAPERPUBS_MAIL }
+    end
+
+    trait :paperpubs_all do
+      publication_format { Detail::PAPERPUBS_BOTH }
+    end
+
+    trait :paperpubs_none do
+      publication_format { Detail::PAPERPUBS_NONE }
     end
   end
 end

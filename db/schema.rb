@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181115172836) do
+ActiveRecord::Schema.define(version: 20181126181026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,35 @@ ActiveRecord::Schema.define(version: 20181115172836) do
     t.datetime "active_to"
     t.index ["purchase_id"], name: "index_claims_on_purchase_id"
     t.index ["user_id"], name: "index_claims_on_user_id"
+  end
+
+  create_table "details", force: :cascade do |t|
+    t.bigint "claim_id", null: false
+    t.string "import_key"
+    t.string "full_name", null: false
+    t.string "preferred_first_name"
+    t.string "prefered_last_name"
+    t.string "badgetitle"
+    t.string "badgesubtitle"
+    t.string "address_line_1", null: false
+    t.string "address_line_2"
+    t.string "city"
+    t.string "province"
+    t.string "postal"
+    t.string "country", null: false
+    t.string "publication_format"
+    t.boolean "show_in_listings"
+    t.boolean "share_with_future_worldcons"
+    t.boolean "interest_volunteering"
+    t.boolean "interest_accessibility_services"
+    t.boolean "interest_being_on_program"
+    t.boolean "interest_dealers"
+    t.boolean "interest_selling_at_art_show"
+    t.boolean "interest_exhibiting"
+    t.boolean "interest_performing"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["claim_id"], name: "index_details_on_claim_id"
   end
 
   create_table "memberships", force: :cascade do |t|
