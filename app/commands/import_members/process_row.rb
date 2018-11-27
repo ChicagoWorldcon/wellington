@@ -79,23 +79,53 @@ class ImportMembers::ProcessRow
       return false
     end
 
-    command = PurchaseMembership.new(membership, customer: new_user)
-    new_purchase = command.call
-
+    new_purchase = PurchaseMembership.new(membership, customer: new_user).call
     if !new_purchase
-      errors << command.error_message
+      errors << "could not purchase membership"
       return false
     end
 
-    new_purchase.update!(state: Purchase::PAID)
-    Charge.cash.successful.create!(
-      user: new_user,
-      purchase: new_purchase,
-      amount: membership.price,
-      comment: comment,
+    details = Detail.new(
+      claim:                            new_purchase.active_claim,
+      import_key:                       cell_for("Import Key"),
+      full_name:                        cell_for("Full name"),
+      preferred_first_name:             cell_for("PreferredFirstname"),
+      prefered_last_name:               cell_for("PreferedLastname"),
+      badgetitle:                       cell_for("BadgeTitle"),
+      badgesubtitle:                    cell_for("BadgeSubtitle"),
+      address_line_1:                   cell_for("Address Line1"),
+      address_line_2:                   cell_for("Address Line2"),
+      city:                             cell_for("City"),
+      province:                         cell_for("Province/State"),
+      postal:                           cell_for("Postal/Zip Code"),
+      country:                          cell_for("Country"),
+      publication_format:               preferred_publication_format,
+      show_in_listings:                 cell_for("Listings"),
+      share_with_future_worldcons:      cell_for("Share With Future Worldcons"),
+      interest_volunteering:            cell_for("Volunteering"),
+      interest_accessibility_services:  cell_for("Accessibility Services"),
+      interest_being_on_program:        cell_for("Being on Program"),
+      interest_dealers:                 cell_for("Dealers"),
+      interest_selling_at_art_show:     cell_for("Selling at Art Show"),
+      interest_exhibiting:              cell_for("Exhibiting"),
+      interest_performing:              cell_for("Performing"),
     )
 
-    errors.none?
+    if !details.valid?
+      errors << details.errors.full_messages.to_sentence
+      return false
+    end
+
+    new_purchase.transaction do
+      new_purchase.update!(state: Purchase::PAID)
+      details.save!
+      Charge.cash.successful.create!(
+        user: new_user,
+        purchase: new_purchase,
+        amount: membership.price,
+        comment: comment,
+      )
+    end
   end
 
   def errors
@@ -107,6 +137,40 @@ class ImportMembers::ProcessRow
   end
 
   private
+
+  def preferred_publication_format
+    if electronic_paperpubs? && mail_paperpubs?
+      Detail::PAPERPUBS_BOTH
+    elsif electronic_paperpubs?
+      Detail::PAPERPUBS_ELECTRONIC
+    elsif mail_paperpubs?
+      Detail::PAPERPUBS_MAIL
+    else
+      Detail::NONE
+    end
+  end
+
+  def electronic_paperpubs?
+    case cell_for("No electronic publications")
+    when "TRUE"
+      true
+    when "FALSE"
+      false
+    else
+      errors << cell_for("Invalid input '#{cell_for("No electronic publications")}' for 'No electronic publications'")
+    end
+  end
+
+  def mail_paperpubs?
+    case cell_for("Paper Publications")
+    when "TRUE"
+      true
+    when "FALSE"
+      false
+    else
+      errors << cell_for("Invalid input '#{cell_for("Paper Publications")}' for 'Paper Publications'")
+    end
+  end
 
   def membership
     import_string = cell_for("Membership Status")

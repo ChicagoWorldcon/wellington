@@ -24,6 +24,8 @@ RSpec.describe ImportMembers::ProcessRow do
 
   subject(:command) { ImportMembers::ProcessRow.new(row_values, my_comment) }
 
+  let(:import_key) { "brilliant-import-key" }
+
   let(:row_values) do
     [
       "8/19/2018 10:04:55",             # Timestamp
@@ -57,7 +59,7 @@ RSpec.describe ImportMembers::ProcessRow do
       "FALSE",                          # Exhibiting
       "TRUE",                           # Performing
       "Enjoys long walks by the sea",   # Notes
-      "1324",                           # Import Key
+      import_key,                       # Import Key
       "Silver Fern Pre-Support",        # Pre-Support Status
       "Silver Fern Pre-Support",        # Membership Status
       "",                               # Master Membership Status
@@ -80,6 +82,11 @@ RSpec.describe ImportMembers::ProcessRow do
       expect(User.last.purchases).to eq(silver_fern.purchases)
     end
 
+    it "creates detail record from row" do
+      expect { command.call }.to change { Detail.count }.by(1)
+      expect(Detail.last.import_key).to eq import_key
+    end
+
     context "after run" do
       before do
         command.call
@@ -95,6 +102,10 @@ RSpec.describe ImportMembers::ProcessRow do
 
       it "sets membership to paid" do
         expect(Purchase.last.state).to eq Purchase::PAID
+      end
+
+      it "links through from the user's claim" do
+        expect(Claim.last.detail.import_key).to eq Detail.last.import_key
       end
     end
   end
