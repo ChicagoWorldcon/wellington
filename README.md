@@ -141,9 +141,9 @@ make start
 
 Then navigate to http://localhost:3000
 
-## Condfiguring pricing
+## Configuring pricing
 
-Pricing is handled through Membership records. Creating new records creates new membreships on the shop so long as
+Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
 they're "active".
 
 For instance if I want to create an Adult membership that varies in price over time, I could do this by running the
