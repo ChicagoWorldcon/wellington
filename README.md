@@ -40,7 +40,36 @@ bundle install
 
 Setup your developemnt database
 ```bash
-bundle exec rake db:create db:seed
+bundle exec rake db:create db:schema:load db:seed
+```
+
+## Ruby is being painful! Halp!
+
+Here's something that'll reset things for yah in OSX:
+
+```bash
+sudo rm -rf ~/.gem ~/.rubies
+ruby-install ruby-2.5.1
+
+# Check installed rubies
+cd $conzealand_checkout
+ruby -v
+> ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin18]
+which ruby
+> /Users/mbgray/.rubies/ruby-2.5.1/bin/ruby
+which gem
+> /Users/mbgray/.rubies/ruby-2.5.1/bin/gem
+
+# Bundle things
+cd $conzealand_checkout
+gem install bundler
+bundle install
+
+# tests = <3
+git checkout origin/8-import-presupporters
+bundle exec rspec
+> Finished in 1.8 seconds (files took 5.27 seconds to load)
+> 105 examples, 0 failures
 ```
 
 ## Linting
