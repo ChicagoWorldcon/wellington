@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Order, type: :model do
   subject(:model) { create(:order, :with_purchase, :with_membership) }

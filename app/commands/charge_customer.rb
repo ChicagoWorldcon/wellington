@@ -30,11 +30,11 @@ class ChargeCustomer
   end
 
   def call
-    @charge = Charge.new(
+    @charge = Charge.stripe.new(
       user: user,
       purchase: purchase,
       stripe_id: token,
-      cost: charge_amount,
+      amount: charge_amount,
     )
 
     check_charge_amount
@@ -42,17 +42,17 @@ class ChargeCustomer
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.state = Charge::FAILED
+      @charge.state = Charge::STATE_FAILED
       @charge.comment = error_message
     elsif !@stripe_charge[:paid]
-      @charge.state = Charge::FAILED
+      @charge.state = Charge::STATE_FAILED
     else
-      @charge.state = Charge::SUCCESSFUL
+      @charge.state = Charge::STATE_SUCCESSFUL
     end
 
     if @stripe_charge.present?
       @charge.stripe_id       = @stripe_charge[:id]
-      @charge.cost            = @stripe_charge[:amount]
+      @charge.amount          = @stripe_charge[:amount]
       @charge.comment         = @stripe_charge[:description]
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
@@ -66,7 +66,7 @@ class ChargeCustomer
       end
     end
 
-    return @charge.state == Charge::SUCCESSFUL
+    return @charge.state == Charge::STATE_SUCCESSFUL
   end
 
   def error_message
@@ -118,7 +118,7 @@ class ChargeCustomer
 
   def amount_owed
     membership_cost = purchase.membership.price
-    paid_so_far = purchase.charges.successful.sum(:cost)
+    paid_so_far = purchase.charges.successful.sum(:amount)
     membership_cost - paid_so_far
   end
 end

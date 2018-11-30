@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
-  timeout: <%= ENV["DB_TIMEOUT"] || 8000 %>
+FactoryBot.define do
+  factory :charge do
+    comment { "Factory Generated Charge" }
+    amount { 300 }
+    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
+    state { Charge::STATE_SUCCESSFUL }
+    transfer { Charge::TRANSFER_STRIPE }
 
-development:
-  <<: *default
-  database: worldcon_development
-
-test:
-  <<: *default
-  database: worldcon_test
-
-staging:
-  <<: *default
-  database: worldcon_staging
-
-production:
-  <<: *default
-  database: worldcon_production
+    trait(:failed) do
+      state { Charge::STATE_FAILED }
+    end
+  end
+end

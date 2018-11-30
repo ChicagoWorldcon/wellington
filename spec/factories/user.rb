@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
-  timeout: <%= ENV["DB_TIMEOUT"] || 8000 %>
+FactoryBot.define do
+  sequence :email do |n|
+    "fan-#{n}@convention.net"
+  end
 
-development:
-  <<: *default
-  database: worldcon_development
+  factory :user do
+    email { generate(:email) }
 
-test:
-  <<: *default
-  database: worldcon_test
-
-staging:
-  <<: *default
-  database: worldcon_staging
-
-production:
-  <<: *default
-  database: worldcon_production
+    trait :with_purchase do
+      after(:create) do |new_user|
+        claim = create(:claim, :with_purchase, user: new_user)
+        membership_price = claim.purchase.membership.price
+        charge = create(:charge, user: new_user, purchase: claim.purchase, amount: membership_price)
+        new_user.claims << claim
+        new_user.charges << charge
+      end
+    end
+  end
+end

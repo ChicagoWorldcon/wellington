@@ -2,6 +2,9 @@
 
 Holds information about members of worldcon.
 
+[![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
+[![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
+
 ## Install Steps
 
 This project depends on Ruby.
@@ -72,6 +75,35 @@ bundle exec rspec
 > 105 examples, 0 failures
 ```
 
+## Ruby is being painful! Halp!
+
+Here's something that'll reset things for yah in OSX:
+
+```bash
+sudo rm -rf ~/.gem ~/.rubies
+ruby-install ruby-2.5.1
+
+# Check installed rubies
+cd $conzealand_checkout
+ruby -v
+> ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin18]
+which ruby
+> /Users/mbgray/.rubies/ruby-2.5.1/bin/ruby
+which gem
+> /Users/mbgray/.rubies/ruby-2.5.1/bin/gem
+
+# Bundle things
+cd $conzealand_checkout
+gem install bundler
+bundle install
+
+# tests = <3
+git checkout origin/8-import-presupporters
+bundle exec rspec
+> Finished in 1.8 seconds (files took 5.27 seconds to load)
+> 105 examples, 0 failures
+```
+
 ## Linting
 
 Please use `rubocop-github`. It's better to be consistent, and this just seems like a good line in the sand. There are
@@ -109,9 +141,9 @@ make start
 
 Then navigate to http://localhost:3000
 
-## Condfiguring pricing
+## Configuring pricing
 
-Pricing is handled through Membership records. Creating new records creates new membreships on the shop so long as
+Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
 they're "active".
 
 For instance if I want to create an Adult membership that varies in price over time, I could do this by running the
@@ -127,3 +159,8 @@ Membership.create!(name: :adult, active_from: price_change, active_to: venue_con
 ```
 
 For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
+
+## License
+
+This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
+file distributed with this project.

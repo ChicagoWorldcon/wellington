@@ -19,6 +19,7 @@ class Claim < ApplicationRecord
 
   belongs_to :user
   belongs_to :purchase
+  has_one :detail
 
   validates :purchase, presence: true, uniqueness: {
     # There can't be other active claims against the same purchase

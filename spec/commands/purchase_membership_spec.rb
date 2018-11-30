@@ -33,5 +33,11 @@ RSpec.describe PurchaseMembership do
     it "creates an order against the membership" do
       expect { command.call }.to change { membership.reload.active_orders.count }.by(1)
     end
+
+    it "increments membership numbers" do
+      command.call
+      command.call
+      expect(Purchase.second.membership_number - Purchase.first.membership_number).to be 1
+    end
   end
 end

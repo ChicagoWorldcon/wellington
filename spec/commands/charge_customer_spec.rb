@@ -69,7 +69,7 @@ RSpec.describe ChargeCustomer do
       expect(Charge.failed.count).to eq 1
       expect(Charge.last.stripe_id).to be_present
       expect(Charge.last.comment).to match(/Declined/i)
-      expect(Charge.last.cost).to be(amount_paid)
+      expect(Charge.last.amount).to be(amount_paid)
     end
 
     context "when payment succeeds" do
@@ -83,7 +83,7 @@ RSpec.describe ChargeCustomer do
       end
 
       it "is of the value passsed in" do
-        expect(Charge.last.cost).to be(amount_paid)
+        expect(Charge.last.amount).to be(amount_paid)
       end
 
       it "marks purchase state as installment" do
@@ -149,7 +149,7 @@ RSpec.describe ChargeCustomer do
 
       it "only pays the price of the membership" do
         command.call
-        expect(user.charges.successful.sum(:cost)).to eq membership.price
+        expect(user.charges.successful.sum(:amount)).to eq membership.price
       end
     end
   end

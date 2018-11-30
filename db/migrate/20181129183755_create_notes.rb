@@ -14,15 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :charge do
-    comment { "Factory Generated Charge" }
-    cost { 300 }
-    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
-    state { Charge::SUCCESSFUL }
-
-    trait(:failed) do
-      state { Charge::FAILED }
+class CreateNotes < ActiveRecord::Migration[5.1]
+  def change
+    create_table :notes do |t|
+      t.references :user, index: true, null: false, foreign_key: true
+      t.string :content, null: false
+      t.timestamps
     end
   end
 end

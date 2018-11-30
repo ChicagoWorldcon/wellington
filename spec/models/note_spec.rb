@@ -14,25 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :purchase do
-    state { Purchase::PAID }
-    created_at { 1.week.ago }
+require "rails_helper"
 
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
-    end
-
-    trait :with_order_against_membership do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
-      end
-    end
-
-    trait :with_claim_from_user do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.claims << create(:claim, :with_user, purchase: new_purchase)
-      end
-    end
-  end
+RSpec.describe Note, type: :model do
+  subject(:model) { create(:note, :with_user) }
+  it { is_expected.to be_valid }
 end

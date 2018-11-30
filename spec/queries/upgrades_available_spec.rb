@@ -74,7 +74,7 @@ RSpec.describe UpgradesAvailable do
     end
   end
 
-  context "checking the cost of upgrades" do
+  context "checking the amount of upgrades" do
     subject(:result) { query.call }
 
     context "when young adult" do

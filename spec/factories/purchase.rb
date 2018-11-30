@@ -14,22 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
+FactoryBot.define do
+  sequence(:next_membership_number)
 
-RSpec.describe User, type: :model do
-  subject(:user) { create(:user, :with_purchase) }
+  factory :purchase do
+    state { Purchase::PAID }
+    created_at { 1.week.ago }
+    membership_number { generate(:next_membership_number) }
 
-  it { is_expected.to be_valid }
-
-  # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
-  # the :with_purchase trait.
-  describe "user factory links" do
-    it "should be able to access purchase directly" do
-      expect(user.purchases).to include user.claims.active.first.purchase
+    trait :pay_as_you_go do
+      state { Purchase::INSTALLMENT }
     end
 
-    it "should have a charge equal to the price of the membership" do
-      expect(user.charges.first.amount).to eq user.purchases.first.membership.price
+    trait :with_order_against_membership do
+      after(:create) do |new_purchase, _evaluator|
+        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
+      end
+    end
+
+    trait :with_claim_from_user do
+      after(:build) do |new_purchase, _evaluator|
+        new_purchase.claims << create(:claim, :with_user, :with_purchase)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
-  timeout: <%= ENV["DB_TIMEOUT"] || 8000 %>
-
-development:
-  <<: *default
-  database: worldcon_development
-
-test:
-  <<: *default
-  database: worldcon_test
-
-staging:
-  <<: *default
-  database: worldcon_staging
-
-production:
-  <<: *default
-  database: worldcon_production
+class SetupMembershipNumber < ActiveRecord::Migration[5.1]
+  def change
+    add_column :purchases, :membership_number, :integer, null: false, unique: true
+  end
+end

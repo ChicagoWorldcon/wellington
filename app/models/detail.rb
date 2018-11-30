@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2018 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
-  timeout: <%= ENV["DB_TIMEOUT"] || 8000 %>
+class Detail < ApplicationRecord
+  PAPERPUBS_ELECTRONIC = "electronic_only"
+  PAPERPUBS_MAIL = "mail_only"
+  PAPERPUBS_BOTH = "both"
+  PAPERPUBS_NONE = "none"
 
-development:
-  <<: *default
-  database: worldcon_development
+  belongs_to :claim
 
-test:
-  <<: *default
-  database: worldcon_test
-
-staging:
-  <<: *default
-  database: worldcon_staging
-
-production:
-  <<: *default
-  database: worldcon_production
+  validates :address_line_1, presence: true
+  validates :claim, presence: true
+  validates :country, presence: true
+  validates :full_name, presence: true
+  validates :publication_format, inclusion: { in: [PAPERPUBS_ELECTRONIC, PAPERPUBS_MAIL, PAPERPUBS_BOTH, PAPERPUBS_NONE] }
+end
