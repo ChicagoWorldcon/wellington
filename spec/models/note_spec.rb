@@ -14,12 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  has_many :active_claims, -> { active }, class_name: "Claim"
-  has_many :charges
-  has_many :claims
-  has_many :notes
-  has_many :purchases, through: :active_claims
+require "rails_helper"
 
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+RSpec.describe Note, type: :model do
+  subject(:model) { create(:note, :with_user) }
+  it { is_expected.to be_valid }
 end

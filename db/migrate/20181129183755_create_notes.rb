@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  has_many :active_claims, -> { active }, class_name: "Claim"
-  has_many :charges
-  has_many :claims
-  has_many :notes
-  has_many :purchases, through: :active_claims
-
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+class CreateNotes < ActiveRecord::Migration[5.1]
+  def change
+    create_table :notes do |t|
+      t.references :user, index: true, null: false, foreign_key: true
+      t.string :content, null: false
+      t.timestamps
+    end
+  end
 end
