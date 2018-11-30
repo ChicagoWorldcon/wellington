@@ -25,6 +25,7 @@ RSpec.describe ImportMembers::ProcessRow do
   subject(:command) { ImportMembers::ProcessRow.new(row_values, my_comment) }
 
   let(:import_key) { "brilliant-import-key" }
+  let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
 
   let(:row_values) do
     [
@@ -58,7 +59,7 @@ RSpec.describe ImportMembers::ProcessRow do
       "TRUE",                           # Selling at Art Show
       "FALSE",                          # Exhibiting
       "TRUE",                           # Performing
-      "Enjoys long walks by the sea",   # Notes
+      spreadsheet_notes,                # Notes
       import_key,                       # Import Key
       "Silver Fern Pre-Support",        # Pre-Support Status
       "Silver Fern Pre-Support",        # Membership Status
@@ -106,6 +107,10 @@ RSpec.describe ImportMembers::ProcessRow do
 
       it "links through from the user's claim" do
         expect(Claim.last.detail.import_key).to eq Detail.last.import_key
+      end
+
+      it "stores notes on that record" do
+        expect(Note.last.content).to eq spreadsheet_notes
       end
     end
   end
