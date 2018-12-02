@@ -57,7 +57,11 @@ class ImportKansaMembersRow
       return false
     end
 
-    command = PurchaseMembership.new(membership, customer: new_user)
+    note = cell_for("Notes")
+    new_user.notes.build(content: note) if !note.nil?
+
+    membership_number = cell_for("Membership Number")
+    command = PurchaseMembership.new(membership, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
     if !new_purchase

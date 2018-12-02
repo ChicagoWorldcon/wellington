@@ -88,6 +88,14 @@ RSpec.describe ImportKansaMembersRow do
       it "sets membership to paid" do
         expect(Purchase.last.state).to eq Purchase::PAID
       end
+
+      it "sets the membership number" do
+        expect(Purchase.last.membership_number).to eq member_number
+      end
+
+      it "set the user note" do
+        expect(User.last.notes.first.content).to eq note
+      end
     end
   end
 end
