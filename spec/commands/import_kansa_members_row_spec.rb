@@ -23,6 +23,8 @@ RSpec.describe ImportKansaMembersRow do
   let(:stripe_payment_id) { "ch_1D0MiPEaQ9ZgIF2tWbUtFOnz" }
   let(:charge_amount) { 37000 }
   let(:payment_comment) { "Imported payment of #{charge_amount} paid by charge #{stripe_payment_id}" }
+  let(:note) { "Enjoys long walks on the beach" }
+  let(:member_number) { 7474 }
 
   subject(:command) { ImportKansaMembersRow.new(row_values, my_comment) }
 
@@ -35,30 +37,14 @@ RSpec.describe ImportKansaMembersRow do
       Faker::Superhero.descriptor,      # BadgeSubtitle
       Faker::Address.street_address,    # Address Line1
       Faker::Address.secondary_address, # Address Line2
-      Faker::Address.city,              # City
-      Faker::Address.state,             # Province/State
-      Faker::Address.zip_code,          # Postal/Zip Code
       Faker::Address.country,           # Country
       email_address,                    # Email Address
-      "",                               # Use Real Name
-      "",                               # Use Badge
-      "",                               # Share detalis?
-      "Yes",                            # Share With Future Worldcons
-      "FALSE",                          # No electronic publications
-      "TRUE",                           # Paper Publications
-      "FALSE",                          # Volunteering
-      "TRUE",                           # Accessibility Services
-      "FALSE",                          # Being on Program
-      "FALSE",                          # Dealers
-      "TRUE",                           # Selling at Art Show
-      "FALSE",                          # Exhibiting
-      "TRUE",                           # Performing
-      "Enjoys long walks by the sea",   # Notes
-      "1324",                           # Import Key
+      note,                             # Notes
       "Silver Fern Pre-Support",        # Membership Status
       stripe_payment_id,                # Stripe Payment ID
       charge_amount,                    # Charge Amount
       payment_comment,                  # Payment Comment
+      member_number,                    # Member Number
     ]
   end
 
