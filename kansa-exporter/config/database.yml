@@ -1,4 +1,3 @@
-# host: 'localhost'
 adapter: 'postgresql'
 database: 'api'
 encoding: 'utf8'

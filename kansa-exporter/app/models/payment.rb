@@ -1,4 +1,6 @@
-class Payment < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Payment < ApplicationRecord
   self.table_name = "payments"
   self.inheritance_column = "not_a_column"
 

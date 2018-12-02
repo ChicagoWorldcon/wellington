@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildPersonRow
   ExportError = Class.new(StandardError)
 
@@ -28,7 +30,7 @@ class BuildPersonRow
   def to_row
     raise(ExportError, "Person##{person.id} has multiple successful payments") if person.payments.succeeded.count > 1
     raise(ExportError, "Person##{person.id} is missing a payment") if payment.nil?
-    raise(ExportError, "Person##{person.id} payment does not match membership") unless person.membership === payment.type
+    raise(ExportError, "Person##{person.id} payment does not match membership") unless person.membership == payment.type
     raise(ExportError, "Person##{person.id} payment is not in NZD") unless payment.currency == "nzd"
 
     [
