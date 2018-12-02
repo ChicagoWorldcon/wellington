@@ -1,0 +1,6 @@
+# host: 'localhost'
+adapter: 'postgresql'
+database: 'api'
+encoding: 'utf8'
+pool: 5
+schema_search_path: 'kansa'
