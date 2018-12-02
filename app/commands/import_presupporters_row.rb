@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ImportMembers::ProcessRow
+class ImportPresupportersRow
   HEADINGS = [
     "Timestamp",
     "Title",
@@ -51,6 +51,8 @@ class ImportMembers::ProcessRow
     "Pre-Support Status",
     "Membership Status",
     "Master Membership Status",
+    "Stripe Payment ID",
+    "Charge Amount"
   ].freeze
 
   MEMBERSHIP_LOOKUP = {

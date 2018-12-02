@@ -16,9 +16,9 @@
 
 require "csv"
 
-# ImportMembers takes a stream of text in CSV format and creates member records out of it. Check call return to see if
+# ImportPresupporters takes a stream of text in CSV format and creates member records out of it. Check call return to see if
 # it succeeded or not, check errors to see why.
-class ImportMembers
+class ImportPresupporters
   attr_reader :input_stream, :description
 
   def initialize(input_stream, description)
@@ -32,7 +32,7 @@ class ImportMembers
 
     User.transaction do
       table_body.each.with_index do |row_data, i|
-        row_import = ProcessRow.new(row_data, "Import from row #{i+2} in #{description}")
+        row_import = ImportPresupportersRow.new(row_data, "Import from row #{i+2} in #{description}")
         if !row_import.call
           errors << "Error on row #{i+2}: #{row_import.error_message}"
         end
@@ -53,7 +53,7 @@ class ImportMembers
   private
 
   def check_headings
-    expected = ProcessRow::HEADINGS
+    expected = ImportPresupportersRow::HEADINGS
     if headings != expected
       missing = expected - headings
       excess = headings - expected

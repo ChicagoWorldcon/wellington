@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-RSpec.describe ImportMembers::ProcessRow do
+RSpec.describe ImportPresupportersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
@@ -22,7 +22,7 @@ RSpec.describe ImportMembers::ProcessRow do
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
 
-  subject(:command) { ImportMembers::ProcessRow.new(row_values, my_comment) }
+  subject(:command) { ImportPresupportersRow.new(row_values, my_comment) }
 
   let(:import_key) { "brilliant-import-key" }
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
