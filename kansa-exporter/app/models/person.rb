@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Person < ApplicationRecord
+class Person < ActiveRecord::Base # rubocop:disable GitHub/RailsApplicationRecord
   self.table_name = "people"
 
   has_many :payments

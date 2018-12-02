@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PaymentType < ApplicationRecord
+class PaymentType < ActiveRecord::Base # rubocop:disable GitHub/RailsApplicationRecord
   self.table_name = "payment_types"
   self.primary_key = "key"
 

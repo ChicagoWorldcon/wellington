@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Daypass < ApplicationRecord
+class Daypass < ActiveRecord::Base # rubocop:disable GitHub/RailsApplicationRecord
   belongs_to :person
 end
