@@ -51,8 +51,6 @@ class ImportPresupportersRow
     "Pre-Support Status",
     "Membership Status",
     "Master Membership Status",
-    "Stripe Payment ID",
-    "Charge Amount"
   ].freeze
 
   MEMBERSHIP_LOOKUP = {
