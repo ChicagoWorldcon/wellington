@@ -13,12 +13,6 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues) and we
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 
-# Linting
-
-Please use `rubocop-github`. It's better to be consistent, and this just seems like a good line in the sand. There are
-plenty of nice [text editor integrations](https://rubocop.readthedocs.io/en/latest/integration_with_other_tools/) to
-get a quick feedback loop going while you work.
-
 # Getting Started
 
 This project depends on [Ruby](http://ruby-lang.org/) and [PostgreSQL](https://www.postgresql.org/).
@@ -37,8 +31,8 @@ issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to
 create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
 
 Once you've got Ruby and Postgres setup, you're ready to get the rest of the project setup. We depend on [Ruby
-Gems](https://rubygems.org/) and manage these dependencies through [bundler](https://bundler.io/) which uses our
-`Gemfile` and `Gemfile.lock` to determine what gem versions are installed. You can install these by running:
+Gems](https://rubygems.org/) and manage these dependencies through [bundler](https://bundler.io/). You can install these
+dependencies by running:
 
 ```sh
 gem install bundler
@@ -116,6 +110,10 @@ Membership.create!(name: :adult, active_from: price_change, active_to: venue_con
 ```
 
 For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
+
+# Contributing
+
+If you'd like to contribute, please read our [CONTRIBUTING.md](CONTRIBUTING.md)
 
 # License
 
