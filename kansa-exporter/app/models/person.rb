@@ -18,4 +18,8 @@ class Person < ActiveRecord::Base # rubocop:disable GitHub/RailsApplicationRecor
   self.table_name = "people"
 
   has_many :payments
+
+  def admin?
+    membership == "Helper"
+  end
 end

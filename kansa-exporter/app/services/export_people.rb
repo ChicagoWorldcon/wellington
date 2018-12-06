@@ -22,6 +22,8 @@ class ExportPeople
       csv << BuildPersonRow::HEADINGS
 
       Person.order(:id).find_each do |person|
+        next if person.admin?
+
         builder = BuildPersonRow.new(person)
         csv << builder.to_row
       end
