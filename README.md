@@ -17,19 +17,23 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues) and we
 
 This project depends on [Ruby](http://ruby-lang.org/) and [PostgreSQL](https://www.postgresql.org/).
 
-We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine.
+If you're running OSX, we setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
+run into troubles getting this working on Linux or Windows, you can ask for help by [raising an
+issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get those platforms working, please
+create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
+
+We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. Instructions on installing
+postgres can be found on the [postgres download](https://www.postgresql.org/download/) page. It's recommend to use
+a method which uses package management like apt, homebrew or chocolatey.
 
 Ruby versions matter a bit more. This project only maintains against a single version is set in the
 [.ruby-version file](.ruby-version) at the base of this repository. When present, this file auto configures ruby
 management tools such as [rbenv](https://github.com/rbenv/rbenv#readme) and
 [chruby](https://github.com/postmodern/chruby#readme) to figure out which ruby to use and where to find it's installed
-gems. You can find out more about all the ways to install ruby from the official [installing
-ruby](https://www.ruby-lang.org/en/documentation/installation) page.
+gems.
 
-If you're running OSX, we setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
-run into troubles getting this working on Linux or Windows, you can ask for help by [raising an
-issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get those platforms working, please
-create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
+Install ruby from the official [installing ruby](https://www.ruby-lang.org/en/documentation/installation) page. It's
+also recommended to use a method that's under package management.
 
 Once you've got Ruby and Postgres setup, we can go on to installing project dependencies. We depend on [Ruby
 Gems](https://rubygems.org/) and manage these dependencies through [bundler](https://bundler.io/). You can install these
