@@ -40,18 +40,19 @@ gem install bundler
 bundle install
 ```
 
-We have rake tasks and you can use these to get our development and test databases up and running
+We have rake tasks and you can use these to get our development and test databases up and running. To list all rake
+tasks inluded in the project, run:
+
+```
+bundle exec rake -T
+```
+
+This is the smallest set of tasks you'll need to run to get this project working:
 
 ```sh
 bundle exec rake db:create       # Creates the database
 bundle exec rake db:schema:load  # Loads tables from db/schema.rb
 bundle exec rake db:seed         # Seeds our developemnt database
-```
-
-To list all rake tasks inluded in the project, run:
-
-```
-bundle exec rake -T
 ```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
