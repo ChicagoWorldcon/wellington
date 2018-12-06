@@ -20,7 +20,7 @@ This project depends on [Ruby](http://ruby-lang.org/) and [PostgreSQL](https://w
 We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine.
 
 Ruby versions matter a bit more. This project only maintains against a single version is set in the
-[.ruby-version](.ruby-version) file at the base of this repository. When present, this file auto configures ruby
+[.ruby-version file](.ruby-version) at the base of this repository. When present, this file auto configures ruby
 management tools such as [rbenv](https://github.com/rbenv/rbenv#readme) and
 [chruby](https://github.com/postmodern/chruby#readme) to figure out which ruby to use and where to find it's installed
 gems. You can find out more about all the ways to install ruby from the official [installing
@@ -48,7 +48,11 @@ bundle exec rake db:schema:load  # Loads tables from db/schema.rb
 bundle exec rake db:seed         # Seeds our developemnt database
 ```
 
-To list all rake tasks inluded in the project, run `bundle exec rake -T`.
+To list all rake tasks inluded in the project, run:
+
+```
+bundle exec rake -T
+```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
 check everything is working. Run the tests with:
@@ -70,7 +74,7 @@ Then navigating to http://localhost:3000
 You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
 control and allows you to configure the project.
 
-Create a `.env` file with the following contents:
+Create an .env file with the following contents:
 
 ```bash
 # Stripe keys
