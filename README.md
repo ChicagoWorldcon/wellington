@@ -1,8 +1,7 @@
 # Worldcon Members Management
 
 Kiora and welcome to the [2020-wellington](https://gitlab.com/worldcon/2020-wellington) source code repository. This
-site hosts and tracks changes to code that used for managing Members of the [CoNZealand](https://conzealand.nz/)
-conference.
+site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) conference.
 
 The work itself was inspired by the [Kansa](https://github.com/maailma/kansa) project which was built largely by [Eemeli
 Aro](https://github.com/eemeli) for [Worldcon 75](https://www.worldcon.fi/).
@@ -48,6 +47,8 @@ bundle exec rake db:create       # Creates the database
 bundle exec rake db:schema:load  # Loads tables from db/schema.rb
 bundle exec rake db:seed         # Seeds our developemnt database
 ```
+
+To list all rake tasks inluded in the project, run `bundle exec rake -T`.
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
 check everything is working. Run the tests with:
