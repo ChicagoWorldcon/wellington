@@ -26,7 +26,7 @@ management tools such as [rbenv](https://github.com/rbenv/rbenv#readme) and
 gems. You can find out more about all the ways to install ruby from the official [installing
 ruby](https://www.ruby-lang.org/en/documentation/installation) page.
 
-If you're running OSX, I've setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
+If you're running OSX, we setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
 run into troubles getting this working on Linux or Windows, you can ask for help by [raising an
 issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get those platforms working, please
 create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
@@ -101,8 +101,7 @@ Then navigate to http://localhost:3000
 Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
 they're "active" at the current time. This is managed by setting `active_from` and `active_to` fields.
 
-For instance if I want to create an Adult membership that varies in price over time, I could do this by running the
-following code:
+For instance, to create an Adult membership that varies in price over time, do this by running the following code:
 
 ```ruby
 # Note, dates and prices are examples. Please don't expect these as a reflection on real dates/prices.
