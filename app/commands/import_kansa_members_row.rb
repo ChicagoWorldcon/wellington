@@ -30,7 +30,7 @@ class ImportKansaMembersRow
     "Stripe Payment ID",
     "Charge Amount",
     "Payment Comment",
-    "Membership Number",
+    "Member Number",
   ].freeze
 
   MEMBERSHIP_LOOKUP = {
@@ -62,7 +62,7 @@ class ImportKansaMembersRow
     note = cell_for("Notes")
     new_user.notes.build(content: note) if !note.nil?
 
-    membership_number = cell_for("Membership Number")
+    membership_number = cell_for("Member Number")
     command = PurchaseMembership.new(membership, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
