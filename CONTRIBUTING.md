@@ -29,10 +29,15 @@ contributors to follow so that we can have a chance of keeping on top of things.
 * Make commits of logical and atomic units. Ideally, no commit should break tests. Commits are a story which talk about
   how you went about doing your work.
 * Do check your files with linting rules, either by running `rubocop` or by getting an editor plugin
-* [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change. For example: `Rework
-  guide, move OSX specific instructions into it's own file, issue #16`
+* [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change. For example
+  ```
+  Rework guide, move OSX specific instructions into it's own file, issue #1
+  ```
 * Trivial changes that are not specific to issues don't need this. Please instead mention `(docs)`, `(maint)`, or
-  `(packaging)` as appropriate. For example: `Rework guide, move OSX specific instructions into it's own file (docs)`
+  `(packaging)` as appropriate. For example
+  ```
+  Rework guide, move OSX specific instructions into it's own file (docs)
+  ```
 
 ## Linting
 
