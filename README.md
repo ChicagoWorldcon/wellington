@@ -1,121 +1,85 @@
 # Worldcon Members Management
 
-Holds information about members of worldcon.
+Kiora and welcome to the [2020-wellington](https://gitlab.com/worldcon/2020-wellington) source code repository. This
+site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) conference.
+
+The work itself was inspired by the [Kansa](https://github.com/maailma/kansa) project which was built largely by [Eemeli
+Aro](https://github.com/eemeli) for [Worldcon 75](https://www.worldcon.fi/).
+
+What you'll find in this project is a series of compromises that we felt struck a balance with features and
+functionality. If you have an interest in making your convention or future conventions better do feel free to reach out
+by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be happy to talk it over.
 
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 
-## Install Steps
+# Getting Started
 
-This project depends on Ruby.
+This project depends on [Ruby](http://ruby-lang.org/) and [PostgreSQL](https://www.postgresql.org/).
 
-One way to get this version of ruby is using [ruby-install](https://github.com/postmodern/ruby-install).
+If you're running OSX, we setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
+run into troubles getting this working on Linux or Windows, you can ask for help by [raising an
+issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get those platforms working, please
+create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
 
-Here's how I'd do this on OSX.
+We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. Instructions on installing
+postgres can be found on the [postgres download](https://www.postgresql.org/download/) page. It's recommend to use
+a method which uses package management like apt, homebrew or chocolatey.
+
+Ruby versions matter a bit more. This project only maintains against a single version is set in the
+[.ruby-version file](.ruby-version) at the base of this repository. When present, this file auto configures ruby
+management tools such as [rbenv](https://github.com/rbenv/rbenv#readme) and
+[chruby](https://github.com/postmodern/chruby#readme) to figure out which ruby to use and where to find it's installed
+gems.
+
+Install ruby from the official [installing ruby](https://www.ruby-lang.org/en/documentation/installation) page. It's
+also recommended to use a method that's under package management.
+
+Once you've got Ruby and Postgres setup, we can go on to installing project dependencies. We depend on [Ruby
+Gems](https://rubygems.org/) and manage these dependencies through [bundler](https://bundler.io/). You can install these
+dependencies by running:
+
 ```sh
-brew install chruby
-brew install ruby-install
-ruby-install ruby 2.5.1
-```
-
-Add this to your `~/.bash_profile` or `~/.zshrc`
-```bash
-source /usr/local/share/chruby/chruby.sh
-source /usr/local/share/chruby/auto.sh
-```
-
-Setup a default ruby for yourself
-```bash
-2.5.1 >> ~/.ruby-version
-```
-
-Install postgresql
-```bash
-brew install postgres@9.6
-brew services postgres@9.6 start
-```
-
-Install project dependencies
-```bash
 gem install bundler
 bundle install
 ```
 
-Setup your developemnt database
-```bash
-bundle exec rake db:create db:schema:load db:seed
+We have rake tasks and you can use these to get our development and test databases up and running. To list all rake
+tasks inluded in the project, run:
+
+```
+bundle exec rake -T
 ```
 
-## Ruby is being painful! Halp!
+This is the smallest set of tasks you'll need to run to get this project working:
 
-Here's something that'll reset things for yah in OSX:
+```sh
+bundle exec rake db:create       # Creates the database
+bundle exec rake db:schema:load  # Loads tables from db/schema.rb
+bundle exec rake db:seed         # Seeds our developemnt database
+```
 
-```bash
-sudo rm -rf ~/.gem ~/.rubies
-ruby-install ruby-2.5.1
+We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
+check everything is working. Run the tests with:
 
-# Check installed rubies
-cd $conzealand_checkout
-ruby -v
-> ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin18]
-which ruby
-> /Users/mbgray/.rubies/ruby-2.5.1/bin/ruby
-which gem
-> /Users/mbgray/.rubies/ruby-2.5.1/bin/gem
-
-# Bundle things
-cd $conzealand_checkout
-gem install bundler
-bundle install
-
-# tests = <3
-git checkout origin/8-import-presupporters
+```sh
 bundle exec rspec
-> Finished in 1.8 seconds (files took 5.27 seconds to load)
-> 105 examples, 0 failures
 ```
 
-## Ruby is being painful! Halp!
+If you want to see what this project would look like on the web, you can do this by running a rails server:
 
-Here's something that'll reset things for yah in OSX:
-
-```bash
-sudo rm -rf ~/.gem ~/.rubies
-ruby-install ruby-2.5.1
-
-# Check installed rubies
-cd $conzealand_checkout
-ruby -v
-> ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin18]
-which ruby
-> /Users/mbgray/.rubies/ruby-2.5.1/bin/ruby
-which gem
-> /Users/mbgray/.rubies/ruby-2.5.1/bin/gem
-
-# Bundle things
-cd $conzealand_checkout
-gem install bundler
-bundle install
-
-# tests = <3
-git checkout origin/8-import-presupporters
-bundle exec rspec
-> Finished in 1.8 seconds (files took 5.27 seconds to load)
-> 105 examples, 0 failures
+```sh
+bundle exec rails server
 ```
 
-## Linting
+Then navigating to http://localhost:3000
 
-Please use `rubocop-github`. It's better to be consistent, and this just seems like a good line in the sand. There are
-plenty of nice [text editor integrations](https://rubocop.readthedocs.io/en/latest/integration_with_other_tools/) to
-get a quick feedback loop going.
-
-# Running
+# Production Secrets
 
 You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
 control and allows you to configure the project.
 
-Create a `.env` file with the following contents:
+Create an .env file with the following contents:
 
 ```bash
 # Stripe keys
@@ -141,13 +105,12 @@ make start
 
 Then navigate to http://localhost:3000
 
-## Configuring pricing
+# Configuring pricing
 
 Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
-they're "active".
+they're "active" at the current time. This is managed by setting `active_from` and `active_to` fields.
 
-For instance if I want to create an Adult membership that varies in price over time, I could do this by running the
-following code:
+For instance, to create an Adult membership that varies in price over time, do this by running the following code:
 
 ```ruby
 # Note, dates and prices are examples. Please don't expect these as a reflection on real dates/prices.
@@ -160,7 +123,21 @@ Membership.create!(name: :adult, active_from: price_change, active_to: venue_con
 
 For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
 
-## License
+# Contributing
+
+If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
+
+# Contacting us, Mentoring and Growth
+
+You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
+
+If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
+team members.
+
+If you want to be involved in this project but don't know the best way to help out, we'd love to have you! Just ask and
+we can set something up to help you.
+
+# License
 
 This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
 file distributed with this project.
