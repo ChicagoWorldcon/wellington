@@ -45,7 +45,7 @@ few guidelines that we need our contributors to follow so that we can have a cha
   docs: Rework guide, move OSX specific instructions into it's own file
   ```
 
-## Licensing: Legal
+## Licensing: Legal stuff that helps us share our work
 
 This project is distributed under the Apache licence. We do this because it's an open licence that allows us to release
 our work without worrying about legal liability, patient infringement and other stuff that gets in the way of writing
