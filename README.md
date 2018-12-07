@@ -8,7 +8,7 @@ Aro](https://github.com/eemeli) for [Worldcon 75](https://www.worldcon.fi/).
 
 What you'll find in this project is a series of compromises that we felt struck a balance with features and
 functionality. If you have an interest in making your convention or future conventions better do feel free to reach out
-by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues) and we'll be happy to talk it over.
+by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be happy to talk it over.
 
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
@@ -126,6 +126,16 @@ For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
 # Contributing
 
 If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
+
+## Contacting us, mentoring and growth
+
+You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
+
+If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
+team members.
+
+If you want to be involved in this project but don't know the best way to help out, we'd love to have you! Just ask and
+we can set something up to help you.
 
 # License
 
