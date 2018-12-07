@@ -32,7 +32,7 @@ few guidelines that we need our contributors to follow so that we can have a cha
       ```
 * Make commits of logical and atomic units. Ideally, no commit should break tests.
 * Write tests for your work. They need not be exhaustive, but they do need to describe the behaviour of our application.
-  Find examples of other specs in the [spec directory](tree/master/spec).
+  Find examples of other specs in the [spec directory](spec).
 * Do check your files with linting rules, either by running `rubocop` or by getting an [editor
   plugin](https://docs.rubocop.org/en/latest/integration_with_other_tools/) which runs rubocop for you.
 * [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change. For example
@@ -62,7 +62,8 @@ need to do this for files you authored, please don't do this for generated files
 If you're modifying files in this project, please make sure you add yourself to the top of the file in the Apache
 boilerplate.
 
-If you're creating a new file in this project, please add the following boilerplate comment in the top of your new files
+If you're creating a new file in this project, please add the following boilerplate comment in the top of your new
+files:
 
 > Copyright [year] [author name]
 >
