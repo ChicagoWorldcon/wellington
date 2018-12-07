@@ -43,6 +43,8 @@ class ImportKansaMembersRow
     "Supporting":               "supporting",
     "Tuatara Pre-Support":      "tuatara",
     "Young Adult Attending":    "young_adult",
+    "Adult":                    "adult",
+    "Supporter":                "supporting"
   }.with_indifferent_access.freeze
 
   attr_reader :row_data, :comment
