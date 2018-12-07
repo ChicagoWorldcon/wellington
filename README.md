@@ -127,7 +127,7 @@ For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
 
 If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
 
-## Contacting us, mentoring and growth
+# Contacting us, Mentoring and Growth
 
 You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
 
