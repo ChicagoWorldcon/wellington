@@ -47,16 +47,16 @@ few guidelines that we need our contributors to follow so that we can have a cha
 
 ## Licensing: Legal stuff that helps us share our work
 
-This project is distributed under the Apache licence. We do this because it's an open licence that allows us to release
+This project is distributed under the Apache license. We do this because it's an open license that allows us to release
 our work without worrying about legal liability, patient infringement and other stuff that gets in the way of writing
 code for our convention.
 
 To do this, we need to maintain some boilerplate text in our files.
 
-New contributors should add their name to the [LICENCE](LICENCE) file in the root of this project. Try put your name in
+New contributors should add their name to the [LICENSE](LICENSE) file in the root of this project. Try put your name in
 alphabetical order, and mention the current year.
 
-Modifying existing files will require modifying their licence at the top to include your name and the year. You only
+Modifying existing files will require modifying their license at the top to include your name and the year. You only
 need to do this for files you authored, please don't do this for generated files.
 
 If you're modifying files in this project, please make sure you add yourself to the top of the file in the Apache
