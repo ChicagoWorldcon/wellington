@@ -16,12 +16,12 @@
 
 require "rails_helper"
 
-RSpec.describe ImportMembers do
+RSpec.describe ImportKansaMembers do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
-  let(:standard_headings) { ImportMembers::ProcessRow::HEADINGS.join(",") }
+  let(:standard_headings) { ImportKansaMembersRow::HEADINGS.join(",") }
   let(:description) { "test stream" }
-  subject(:command) { ImportMembers.new(read_stream, description) }
+  subject(:command) { ImportKansaMembers.new(read_stream, description) }
 
   it "imports nothing when the file is empty" do
     expect { command.call }.to_not change { Membership.count }
@@ -44,23 +44,23 @@ RSpec.describe ImportMembers do
   context "with import data" do
     let(:data) do
       CSV.generate do |csv|
-        csv << ImportMembers::ProcessRow::HEADINGS
+        csv << ImportKansaMembersRow::HEADINGS
         csv << row_1
         csv << row_2
       end
     end
     let(:email_address) { "test@matthew.nz" }
-    let(:good_row_processor) { instance_double(ImportMembers::ProcessRow, call: true) }
-    let(:bad_row_processor) { instance_double(ImportMembers::ProcessRow, call: false, error_message: "gah") }
+    let(:good_row_processor) { instance_double(ImportKansaMembersRow, call: true) }
+    let(:bad_row_processor) { instance_double(ImportKansaMembersRow, call: false, error_message: "gah") }
 
-    let(:row_1) { ["1"] * ImportMembers::ProcessRow::HEADINGS.count }
-    let(:row_2) { ["2"] * ImportMembers::ProcessRow::HEADINGS.count }
+    let(:row_1) { ["1"] * ImportKansaMembersRow::HEADINGS.count }
+    let(:row_2) { ["2"] * ImportKansaMembersRow::HEADINGS.count }
 
     it "calls ProcessRow" do
-      expect(ImportMembers::ProcessRow)
+      expect(ImportKansaMembersRow)
         .to receive(:new).with(row_1, "Import from row 2 in #{description}")
         .and_return(good_row_processor)
-      expect(ImportMembers::ProcessRow)
+      expect(ImportKansaMembersRow)
         .to receive(:new).with(row_2, "Import from row 3 in #{description}")
         .and_return(good_row_processor)
       expect(command.call).to be_truthy
@@ -68,10 +68,10 @@ RSpec.describe ImportMembers do
     end
 
     it "raises errors with buggy rows" do
-      expect(ImportMembers::ProcessRow)
+      expect(ImportKansaMembersRow)
         .to receive(:new).with(row_1, "Import from row 2 in #{description}")
         .and_return(good_row_processor)
-      expect(ImportMembers::ProcessRow)
+      expect(ImportKansaMembersRow)
         .to receive(:new).with(row_2, "Import from row 3 in #{description}")
         .and_return(bad_row_processor)
       expect(command.call).to be_falsey

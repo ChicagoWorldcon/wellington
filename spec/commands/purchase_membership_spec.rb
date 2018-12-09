@@ -17,9 +17,10 @@
 require "rails_helper"
 
 RSpec.describe PurchaseMembership do
+  let(:membership_number) { nil }
   let(:membership) { create(:membership, :adult) }
   let(:user) { create(:user) }
-  let(:command) { PurchaseMembership.new(membership, customer: user) }
+  let(:command) { PurchaseMembership.new(membership, customer: user, membership_number: membership_number) }
 
   context "when successful" do
     it "returns true" do
@@ -34,10 +35,22 @@ RSpec.describe PurchaseMembership do
       expect { command.call }.to change { membership.reload.active_orders.count }.by(1)
     end
 
-    it "increments membership numbers" do
-      command.call
-      command.call
-      expect(Purchase.second.membership_number - Purchase.first.membership_number).to be 1
+    context "when given a membership number" do
+      let(:membership_number) { 7480 }
+
+      it "sets the membership number" do
+        command.call
+
+        expect(Purchase.last.membership_number).to eq membership_number
+      end
+    end
+
+    context "when not given a membership number" do
+      it "increments membership numbers" do
+        command.call
+        command.call
+        expect(Purchase.second.membership_number - Purchase.first.membership_number).to be 1
+      end
     end
   end
 end

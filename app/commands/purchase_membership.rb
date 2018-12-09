@@ -31,18 +31,19 @@
 class PurchaseMembership
   FIRST_MEMBERSHIP_NUMER = 10
 
-  attr_reader :customer, :membership
+  attr_reader :customer, :membership, :membership_number
 
-  def initialize(membership, customer:)
+  def initialize(membership, customer:, membership_number: nil)
     @customer = customer
     @membership = membership
+    @membership_number = membership_number
   end
 
   def call
     customer.transaction do
       Purchase.lock # pessimistic membership number uniqueness
       as_at = Time.now
-      purchase = Purchase.installment.create!(membership_number: next_membership_number)
+      purchase = Purchase.installment.create!(membership_number: (membership_number || next_membership_number))
       Order.create!(active_from: as_at, membership: membership, purchase: purchase)
       Claim.create!(active_from: as_at, user: customer, purchase: purchase)
       purchase
