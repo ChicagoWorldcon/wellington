@@ -26,6 +26,8 @@ RSpec.describe ImportPresupportersRow do
 
   let(:import_key) { "brilliant-import-key" }
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
+  let(:paper_pubs) { "TRUE" }
+  let(:no_electonic_publications) { "FALSE" }
 
   let(:row_values) do
     [
@@ -50,8 +52,8 @@ RSpec.describe ImportPresupportersRow do
       "",                               # Use Badge
       "",                               # Share detalis?
       "Yes",                            # Share With Future Worldcons
-      "FALSE",                          # No electronic publications
-      "TRUE",                           # Paper Publications
+      no_electonic_publications,        # No electronic publications
+      paper_pubs,                       # Paper Publications
       "FALSE",                          # Volunteering
       "TRUE",                           # Accessibility Services
       "FALSE",                          # Being on Program
@@ -86,6 +88,35 @@ RSpec.describe ImportPresupportersRow do
     it "creates detail record from row" do
       expect { command.call }.to change { Detail.count }.by(1)
       expect(Detail.last.import_key).to eq import_key
+    end
+
+    describe "#preferred_publication_format" do
+      before { command.call }
+      subject { Detail.last.publication_format }
+
+      context "when electronic and mail" do
+        let(:paper_pubs) { "TRUE" }
+        let(:no_electonic_publications) { "FALSE" }
+        it { is_expected.to eq(Detail::PAPERPUBS_BOTH) }
+      end
+
+      context "when mail only" do
+        let(:paper_pubs) { "TRUE" }
+        let(:no_electonic_publications) { "TRUE" }
+        it { is_expected.to eq(Detail::PAPERPUBS_MAIL) }
+      end
+
+      context "when electronic only" do
+        let(:paper_pubs) { "FALSE" }
+        let(:no_electonic_publications) { "FALSE" }
+        it { is_expected.to eq(Detail::PAPERPUBS_ELECTRONIC) }
+      end
+
+      context "when opting out of paper pubs" do
+        let(:paper_pubs) { "FALSE" }
+        let(:no_electonic_publications) { "TRUE" }
+        it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
+      end
     end
 
     context "after run" do
