@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "rails_helper"
+
 RSpec.describe ImportPresupportersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
