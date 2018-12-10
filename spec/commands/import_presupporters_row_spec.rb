@@ -146,4 +146,25 @@ RSpec.describe ImportPresupportersRow do
       end
     end
   end
+
+  context "when email address is empty" do
+    let(:email_address) { "" }
+
+    it "fails with errors" do
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/email/i)
+    end
+
+    context "when fallback account specified" do
+      let(:fallback) { "fallback@conzealand.nz" }
+      subject(:command) { ImportPresupportersRow.new(row_values, my_comment, fallback_email: fallback) }
+
+      it { is_expected.to be_truthy }
+
+      it "suceeds and assigns to that account" do
+        expect(command.call).to be_truthy
+        expect(User.last.email).to eq(fallback)
+      end
+    end
+  end
 end
