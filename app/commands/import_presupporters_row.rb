@@ -151,16 +151,16 @@ class ImportPresupportersRow
     elsif mail_paperpubs?
       Detail::PAPERPUBS_MAIL
     else
-      Detail::NONE
+      Detail::PAPERPUBS_NONE
     end
   end
 
   def electronic_paperpubs?
     case cell_for("No electronic publications")
     when "TRUE"
-      true
-    when "FALSE"
       false
+    when "FALSE"
+      true
     else
       errors << cell_for("Invalid input '#{cell_for("No electronic publications")}' for 'No electronic publications'")
     end
