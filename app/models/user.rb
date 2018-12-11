@@ -23,5 +23,5 @@ class User < ApplicationRecord
   has_many :notes
   has_many :purchases, through: :active_claims
 
-  validates :email, presence: true, format: Devise.email_regexp
+  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
 end
