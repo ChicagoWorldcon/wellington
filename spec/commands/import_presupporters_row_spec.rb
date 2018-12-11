@@ -71,6 +71,21 @@ RSpec.describe ImportPresupportersRow do
     ]
   end
 
+  context "when two rows have the same email adderss" do
+    before do
+      expect(ImportPresupportersRow.new(row_values, my_comment).call).to be_truthy
+      expect(ImportPresupportersRow.new(row_values, my_comment).call).to be_truthy
+    end
+
+    it "only creates the one user" do
+      expect(User.count).to be(1)
+    end
+
+    it "creates two sets of detail rows" do
+      expect(Detail.count).to be(2)
+    end
+  end
+
   context "with one member" do
     it "executes successfully" do
       expect(command.call).to be_truthy
