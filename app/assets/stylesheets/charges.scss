@@ -1,78 +1,76 @@
-/*
- * Copyright 2018 Matthew B. Gray
- * Copyright 2018 Rosanna Gray
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Matthew B. Gray
+// Copyright 2018 Rosanna Gray
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // Place all the styles related to the Charges controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-/* ========================================================================= */
-/*  CONZEALAND MEMBERSHIP SIGN UP PAGE STYLES					         			
-/* =========================================================================
-1. BASE
+// =========================================================================
+// CONZEALAND MEMBERSHIP SIGN UP PAGE STYLES
+// =========================================================================
 
-2. COMPONENTS
+// 1. BASE
+//
+// 2. COMPONENTS
+//
+// 3. MODULES
+//
+// 4. LAYOUT
+//
+// 5. STATE AND UTILITIES
+//
+// 6. 3RD PARTY OVERRIDES
 
-3. MODULES
+// =========================================================================
+// BASE
+// =========================================================================
 
-4. LAYOUT
+// -------------------------------
+// VARIABLES
+// -------------------------------
 
-5. STATE AND UTILITIES
+// Colours
+$black: #000; $blue: #034acc; $charcoal: #505050; $grey: #ccc; $light-blue: #6798f7; $light-grey: #e1e1e1; $red:
+#e93f36; $white: #fff;
 
-6. 3RD PARTY OVERRIDES
-*/
-/* ========================================================================= */
-/* BASE
-/* ========================================================================= */
-/* -------------------------------
-/* VARIABLES 
-/* ------------------------------- */
-/* Colours */
-$black: #000;
-$blue: #034acc;
-$charcoal: #505050;
-$grey: #ccc;
-$light-blue: #6798f7;
-$light-grey: #e1e1e1;
-$red: #e93f36;
-$white: #fff;
-
-/* Fonts */
+// Fonts
 $font-stack: 'Open Sans', sans-serif;
 
-/* -------------------------------
-/* MIXINS
-/* ------------------------------- */
+// -------------------------------
+// MIXINS
+// -------------------------------
+
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
   border-radius: $radius;
 }
-/* -------------------------------
-/* THIRD PARTY 
-/* ------------------------------- */
-/*!
- * Bootstrap Grid v4.1.2 (https://getbootstrap.com/)
- * Copyright 2011-2018 The Bootstrap Authors
- * Copyright 2011-2018 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+
+// -------------------------------
+// THIRD PARTY
+// -------------------------------
+
+// * Bootstrap Grid v4.1.2 (https://getbootstrap.com/)
+// * Copyright 2011-2018 The Bootstrap Authors
+// * Copyright 2011-2018 Twitter, Inc.
+// * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+
 @-ms-viewport {
   width: device-width;
 }
+
 .container {
   width: 100%;
   padding-right: 15px;
@@ -1337,9 +1335,11 @@ $font-stack: 'Open Sans', sans-serif;
     margin-left: 91.6666666667%;
   }
 }
-/* -------------------------------
-/* BASE STYLES
-/* ------------------------------- */
+
+// -------------------------------
+// BASE STYLES
+// -------------------------------
+
 * {
     box-sizing: border-box;
 }
@@ -1410,67 +1410,76 @@ h6, .h6-like {
     margin-bottom: 0.9375em;
 }
 
-/* ========================================================================= */
-/* COMPONENTS
-/* ========================================================================= */
-/* -------------------------------
-/* BUTTONS
-/* ------------------------------- */
+// =========================================================================
+// COMPONENTS
+// =========================================================================
+
+// -------------------------------
+// BUTTONS
+// -------------------------------
+
 .btn {
-	background: $light-blue;
-	color: $black;
-	@include border-radius(5px);
-	border: 0;
-	cursor: pointer;
-	padding: 1em;
-	font-weight: bold;
-	font-size: 1em;
-	text-transform: uppercase;
+  background: $light-blue;
+  color: $black;
+  @include border-radius(5px);
+  border: 0;
+  cursor: pointer;
+  padding: 1em;
+  font-weight: bold;
+  font-size: 1em;
+  text-transform: uppercase;
 }
 .btn:hover,
 .btn:focus {
-	background-color: $blue;
-	color: $white;
-	-webkit-transition: background-color .2s ease-in;
-	-moz-transition: background-color .2s ease-in;
-	-o-transition: background-color .2s ease-in;
-	transition: background-color .2s ease-in;
+  background-color: $blue;
+  color: $white;
+  -webkit-transition: background-color .2s ease-in;
+  -moz-transition: background-color .2s ease-in;
+  -o-transition: background-color .2s ease-in;
+  transition: background-color .2s ease-in;
 }
 .btn:focus {
-	outline: 1px dotted $white;
+  outline: 1px dotted $white;
 }
 .btn-m-full-width {
-	width: 100%;
+  width: 100%;
 }
-/* -------------------------------
-/* LINKS
-/* ------------------------------- */
+
+// -------------------------------
+// LINKS
+// -------------------------------
+
 a {
-	color: $light-blue;
+  color: $light-blue;
 }
 a:hover,
 a:focus {
-	color: $light-grey;
-	text-decoration: underline;
+  color: $light-grey;
+  text-decoration: underline;
 }
 a:focus {
-	outline: 1px dotted $white;
+  outline: 1px dotted $white;
 }
-/* -------------------------------
-/* LOGO
-/* ------------------------------- */
+
+// -------------------------------
+// LOGO
+// -------------------------------
+
 .logo img {
-	max-width: 700px;
+  max-width: 700px;
 }
-/* ========================================================================= */
-/* MODULES
-/* ========================================================================= */
-/* -------------------------------
-/* FORM
-/* ------------------------------- */
+
+// =========================================================================
+// MODULES
+// =========================================================================
+
+// -------------------------------
+// FORM
+// -------------------------------
+
 .form-control {
-	min-height: 40px;
-	background: none;
+  min-height: 40px;
+  background: none;
     border-width: 2px;
     border-style: solid;
     border-color: $light-grey;
@@ -1481,47 +1490,47 @@ a:focus {
     padding: .2em .5em;
 }
 .form-control:focus {
-	border: 2px solid $light-blue;
+  border: 2px solid $light-blue;
 }
 .form-control-m-error {
-	border-color: $red;
+  border-color: $red;
 }
 .form-error {
-	color: lighten($red, 20%);
-	margin-top: .5em;
+  color: lighten($red, 20%);
+  margin-top: .5em;
 }
 .form-group {
-	margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 .form-note {
-	font-size: .9em;
-	color: $light-grey;
-	margin-top: 1em;
+  font-size: .9em;
+  color: $light-grey;
+  margin-top: 1em;
 }
 .form-note-m-group {
-	margin-top: -.5em;
+  margin-top: -.5em;
 }
 .form-options {
   margin-bottom: .5em;
 }
 label {
-	display: block;
-	margin-bottom: .5em;
+  display: block;
+  margin-bottom: .5em;
 }
 legend {
-	border-bottom: 1px solid $light-blue;
-	font-size: 1.2em;
-	margin: 1.5em 0 1em;
-	padding: 1em 0 .25em 0;
-	width: 100%;
+  border-bottom: 1px solid $light-blue;
+  font-size: 1.2em;
+  margin: 1.5em 0 1em;
+  padding: 1em 0 .25em 0;
+  width: 100%;
 }
 .required {
-	color: $red;
-	font-size: 1.5em;
+  color: $red;
+  font-size: 1.5em;
 }
 select {
-	height: 40px;
-	border-radius: 0 !important;
+  height: 40px;
+  border-radius: 0 !important;
 }
 .form-options .form-control-m-radio,
 .form-options .form-control-m-checkbox {
@@ -1540,56 +1549,67 @@ select {
     width: 90%;
   }
 }
-/* -------------------------------
-/* PANELS
-/* ------------------------------- */
-/* Default panel */
+
+// -------------------------------
+// PANELS
+// -------------------------------
+
+// Default panel
 .l-panel {
-	background: rgba(0,0,0, .7);
-	-webkit-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
-	-moz-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
-	box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
-	padding: 1.5em;
-	margin-bottom: 1.5em;
+  background: rgba(0,0,0, .7);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  padding: 1.5em;
+  margin-bottom: 1.5em;
 }
-/* Membership Type panel */
+// Membership Type panel
 .l-panel-m-membership-types--list {
-	margin-left: 1em;
+  margin-left: 1em;
 }
 .l-panel-m-membership-types--list .h6-like {
-	margin-bottom: .3em;
+  margin-bottom: .3em;
 }
 .l-panel-m-membership-types--list p {
-	color: $light-blue;
+  color: $light-blue;
 }
-/* ========================================================================= */
-/* LAYOUT
-/* ========================================================================= */
-/* -------------------------------
-/* HEADER
-/* ------------------------------- */
+
+// =========================================================================
+// LAYOUT
+// =========================================================================
+
+// -------------------------------
+// HEADER
+// -------------------------------
+
 header {
-	background: rgba(0,0,0,.7);
-	margin-bottom: 1.5em;
-	padding: .5em 0 1.5em;
+  background: rgba(0,0,0,.7);
+  margin-bottom: 1.5em;
+  padding: .5em 0 1.5em;
 }
-/* -------------------------------
-/* FOOTER
-/* ------------------------------- */
+
+// -------------------------------
+// FOOTER
+// -------------------------------
+
 footer {
-	background: rgba(0,0,0,.7);
-	padding: 1.5em 0;
-	text-align: center;
+  background: rgba(0,0,0,.7);
+  padding: 1.5em 0;
+  text-align: center;
 }
-/* -------------------------------
-/* MAIN CONTENT
-/* ------------------------------- */
+
+// -------------------------------
+// MAIN CONTENT
+// -------------------------------
+
 .l-main {
-	padding-bottom: 5em;
+  padding-bottom: 5em;
 }
-/* -------------------------------
-/* VERTICAL SPACING
-/* ------------------------------- */
+
+// -------------------------------
+// VERTICAL SPACING
+// -------------------------------
+
 .l-v-spacing {
     margin-bottom: 1.5em;
 }
@@ -1602,13 +1622,15 @@ footer {
 .l-v-spacing-m-wide-both {
     margin: 2.5em 0;
 }
-/* ========================================================================= */
-/* STATE & UTILITIES 
-/* ========================================================================= */
+
+// =========================================================================
+// STATE & UTILITIES 
+// =========================================================================
+
 .img-responsive {
-	display: block;
-	height: auto;
-	max-width: 100%;
+  display: block;
+  height: auto;
+  max-width: 100%;
 }
 .s-hidden {
     display: none;
@@ -1623,6 +1645,7 @@ footer {
     position: absolute;
     width: 1px;
 }
-/* --------------------------------------------------------------------- */
-/* 3RD PARTY OVERRIDES
-/* --------------------------------------------------------------------- */
+
+// ---------------------------------------------------------------------
+// 3RD PARTY OVERRIDES
+// ---------------------------------------------------------------------
