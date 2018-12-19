@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,12 +35,20 @@ RSpec.describe PurchaseMembership do
       expect { command.call }.to change { membership.reload.active_orders.count }.by(1)
     end
 
+    it "doesn't charge customer" do
+      expect { command.call }.to_not change { Charge.count }
+    end
+
+    it "sets purchase to installment" do
+      command.call
+      expect(Purchase.last.state).to eq(Purchase::INSTALLMENT)
+    end
+
     context "when given a membership number" do
       let(:membership_number) { 7480 }
 
       it "sets the membership number" do
         command.call
-
         expect(Purchase.last.membership_number).to eq membership_number
       end
     end
