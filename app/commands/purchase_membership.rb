@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 #
 # PurchaseMembership takes a user and a membership and creates a claim and purchase for them.
 class PurchaseMembership
-  FIRST_MEMBERSHIP_NUMER = 10
+  FIRST_MEMBERSHIP_NUMER = 100
 
   attr_reader :customer, :membership, :membership_number
 

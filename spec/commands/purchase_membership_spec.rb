@@ -44,6 +44,11 @@ RSpec.describe PurchaseMembership do
       expect(Purchase.last.state).to eq(Purchase::INSTALLMENT)
     end
 
+    it "gives us room to add guest of honor and staff" do
+      command.call
+      expect(Purchase.last.membership_number).to eq(100)
+    end
+
     context "when given a membership number" do
       let(:membership_number) { 7480 }
 
