@@ -16,36 +16,35 @@
 
 source "https://rubygems.org"
 
-gem "jbuilder", "~> 2.5" # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "pg"
-gem "puma", "~> 3.7"
-gem "rails", "~> 5.1.6"
-gem "sass-rails", "~> 5.0"
-gem "sqlite3"
-gem "stripe"
-gem "turbolinks", "~> 5"
-gem "uglifier", ">= 1.3.0"
+gem "jbuilder", "~> 2.5"   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "pg"                   # postgres driver
+gem "puma", "~> 3.7"       # http server for rack
+gem "rails", "~> 5.1.6"    # framework for building websites <3
+gem "sass-rails", "~> 5.0" # sass compiler for an easier way to manage large stylesheets
+gem "stripe"               # payment provider
+gem "turbolinks", "~> 5"   # html pages with the feeling of ajax
+gem "uglifier", ">= 1.3.0" # for minifying javascript and css
 
 group :development, :test do
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code to stop execution and get a debugger console
-  gem "capybara", "~> 2.13" # Adds support for Capybara system testing and selenium driver
-  gem "factory_bot_rails"
-  gem "faker"
-  gem "rspec-rails"
-  gem "rubocop-github"
-  gem "selenium-webdriver"
-  gem "simplecov"
-  gem "stripe-ruby-mock", require: "stripe_mock"
+  gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
+  gem "capybara", "~> 2.13"                           # Adds support for Capybara system testing and selenium driver
+  gem "factory_bot_rails"                             # reusable model construction for tests
+  gem "faker"                                         # fun common strings fro testing
+  gem "rspec-rails"                                   # testing framework
+  gem "rubocop-github"                                # ruby ilnting to keep things clean
+  gem "selenium-webdriver"                            # brower based full stack testing
+  gem "simplecov"                                     # tracks test coverage
+  gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
 end
 
 group :development do
-  gem "listen", ">= 3.0.5", "< 3.2"
-  gem "pry"
-  gem "pry-nav"
-  gem "pry-rails"
-  gem "spring"
-  gem "spring-watcher-listen", "~> 2.0.0"
-  gem "web-console", ">= 3.3.0" # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
+  gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
+  gem "pry"                               # nicer debugger, use 'binding.pry'
+  gem "pry-nav"                           # adds 'step' and 'next' to pry
+  gem "pry-rails"                         # sets pry as your rails console
+  gem "spring"                            # keeps track of files, only recompiles what's hcanged
+  gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
+  gem "web-console", ">= 3.3.0"           # Access an IRB console on exception pages or with <%= console %> in code
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
