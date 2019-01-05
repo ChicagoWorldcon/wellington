@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,4 +22,15 @@ class User < ApplicationRecord
   has_many :purchases, through: :active_claims
 
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+
+  def login_token(secret)
+    JWT.encode(login_info, secret, "HS256")
+  end
+
+  def login_info
+    {
+      exp: 1.hour.from_now.to_i,
+      email: email,
+    }
+  end
 end

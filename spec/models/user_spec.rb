@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,5 +31,11 @@ RSpec.describe User, type: :model do
     it "should have a charge equal to the price of the membership" do
       expect(user.charges.first.amount).to eq user.purchases.first.membership.price
     end
+  end
+
+  describe "#login_token" do
+    let(:secret) { "flubber" }
+    subject(:jwt_token) { user.login_token(secret) }
+    it { is_expected.to_not be_nil }
   end
 end

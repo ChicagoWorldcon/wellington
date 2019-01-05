@@ -1,6 +1,6 @@
 # frozen-string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 source "https://rubygems.org"
 
 gem "jbuilder", "~> 2.5"   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "pg"                   # postgres driver
 gem "puma", "~> 3.7"       # http server for rack
 gem "rails", "~> 5.1.6"    # framework for building websites <3
