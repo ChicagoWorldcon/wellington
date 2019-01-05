@@ -27,6 +27,11 @@ class User < ApplicationRecord
     JWT.encode(login_info, secret, "HS256")
   end
 
+  def self.lookup_token!(secret, jwt_token:)
+    login_info = JWT.decode(jwt_token, secret, "HS256")
+    User.find_by(email: login_info.first["email"])
+  end
+
   def login_info
     {
       exp: 1.hour.from_now.to_i,

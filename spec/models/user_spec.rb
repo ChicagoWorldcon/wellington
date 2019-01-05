@@ -37,5 +37,55 @@ RSpec.describe User, type: :model do
     let(:secret) { "flubber" }
     subject(:jwt_token) { user.login_token(secret) }
     it { is_expected.to_not be_nil }
+
+    context "when used with User#lookup_token!" do
+      it "finds the original user" do
+        expect(User.lookup_token!(secret, jwt_token: jwt_token)).to eq(user)
+      end
+    end
+  end
+
+  describe "User#lookup_token!" do
+    let(:secret) { "flubber" }
+    let(:token) { JWT.encode(login_info, secret, "HS256") }
+
+    context "with expired token" do
+      let(:login_info) do
+        {
+          exp: 1.second.ago.to_i,
+          email: user.email,
+        }
+      end
+
+      it "raises exception" do
+        expect { User.lookup_token!(secret, jwt_token: token) }.to raise_error(JWT::ExpiredSignature)
+      end
+    end
+
+    context "with unfound user" do
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: "never gonna give you up",
+        }
+      end
+
+      it "returns nil" do
+        expect(User.lookup_token!(secret, jwt_token: token)).to be_nil
+      end
+    end
+
+    context "with credentials of legit user" do
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: user.email,
+        }
+      end
+
+      it "returns nil" do
+        expect(User.lookup_token!(secret, jwt_token: token)).to eq(user)
+      end
+    end
   end
 end
