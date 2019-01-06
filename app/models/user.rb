@@ -15,6 +15,8 @@
 # limitations under the License.
 
 class User < ApplicationRecord
+  TOKEN_DURATION = 10.minutes
+
   has_many :active_claims, -> { active }, class_name: "Claim"
   has_many :charges
   has_many :claims
@@ -34,7 +36,7 @@ class User < ApplicationRecord
 
   def login_info
     {
-      exp: 1.hour.from_now.to_i,
+      exp: (Time.now + TOKEN_DURATION).to_i,
       email: email,
     }
   end
