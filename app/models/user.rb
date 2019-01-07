@@ -27,7 +27,7 @@ class User < ApplicationRecord
   has_many :notes
   has_many :purchases, through: :active_claims
 
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, presence: true, format: Devise.email_regexp
 
   # TODO Extract #login_token and #lookup_token! to devise strategy based on database_authenticatable
   def login_token(secret)
