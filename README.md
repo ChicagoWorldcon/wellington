@@ -79,15 +79,21 @@ Then navigating to http://localhost:3000
 You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
 control and allows you to configure the project.
 
-Create an .env file with the following contents:
+Create an .env file using this template. Please replace fields with your own values or the application will explode with
+copy pasta errors ;-):
 
 ```bash
-# Stripe keys
+# Stripe keys for payment
+# Generate them here https://dashboard.stripe.com/account/apikeys
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 
-# Mailer configuration
+# Con specific mailer configuration
 EMAIL_PAYMENTS=registration@conzealand.nz
+
+# Auth secrets
+# Generate them with `bundle exec rails secret`
+JWT_SECRET=838734faa9b935c1f8b68846e37aed9096cc9fb746copypastaf856594409a11b1086535e468edb2e5bbc18482b386b6264ada38703dcdefd94a291ab5a95eb5
 
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys

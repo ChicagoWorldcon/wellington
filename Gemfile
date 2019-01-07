@@ -16,6 +16,7 @@
 
 source "https://rubygems.org"
 
+gem "devise"               # authentication solution for Rails with Warden
 gem "jbuilder", "~> 2.5"   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "pg"                   # postgres driver

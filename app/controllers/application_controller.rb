@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,4 +16,16 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+
+  before_action :authenticate_user_from_token!
+
+  private
+
+  def authenticate_user_from_token!
+    if params[:token].present?
+      raise "Missing JWT_SECRET" unless ENV["JWT_SECRET"].present?
+      user = User.lookup_token!(ENV["JWT_SECRET"], jwt_token: params[:token])
+      sign_in user, store: false
+    end
+  end
 end

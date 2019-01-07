@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <%
 # Copyright 2019 Matthew B. Gray
 #
@@ -16,17 +14,19 @@
 # limitations under the License.
 %>
 
-<html>
-  <head>
-    <title>Conzealand</title>
-    <%= csrf_meta_tags %>
+<h2>Resend confirmation instructions</h2>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+  <%= devise_error_messages! %>
 
-  <body>
-    <%= render "layouts/alerts" %>
-    <%= yield %>
-  </body>
-</html>
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Resend confirmation instructions" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>

@@ -15,6 +15,10 @@
 # limitations under the License.
 
 class User < ApplicationRecord
+  # database_authenticatable only used for #destroy_user_session_path helper and generated controller action
+  # this model prefers short lived JWT tokens to user chosen passwords for simplicity
+  devise :trackable, :database_authenticatable
+
   TOKEN_DURATION = 10.minutes
 
   has_many :active_claims, -> { active }, class_name: "Claim"
@@ -25,6 +29,7 @@ class User < ApplicationRecord
 
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
+  # TODO Extract #login_token and #lookup_token! to devise strategy based on database_authenticatable
   def login_token(secret)
     JWT.encode(login_info, secret, "HS256")
   end
