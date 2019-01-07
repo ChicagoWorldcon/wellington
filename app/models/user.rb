@@ -19,8 +19,6 @@ class User < ApplicationRecord
   # this model prefers short lived JWT tokens to user chosen passwords for simplicity
   devise :trackable, :database_authenticatable
 
-  TOKEN_DURATION = 10.minutes
-
   has_many :active_claims, -> { active }, class_name: "Claim"
   has_many :charges
   has_many :claims
@@ -29,20 +27,13 @@ class User < ApplicationRecord
 
   validates :email, presence: true, format: Devise.email_regexp
 
-  # TODO Extract #login_token and #lookup_token! to devise strategy based on database_authenticatable
   def login_token(secret)
-    JWT.encode(login_info, secret, "HS256")
+    Rails.logger.warn("Depricated call to User#login_token, this will be removed in the future")
+    LoginToken.new(email: email, secret: secret).login_token(secret)
   end
 
   def self.lookup_token!(secret, jwt_token:)
-    login_info = JWT.decode(jwt_token, secret, "HS256")
-    User.find_by(email: login_info.first["email"])
-  end
-
-  def login_info
-    {
-      exp: (Time.now + TOKEN_DURATION).to_i,
-      email: email,
-    }
+    Rails.logger.warn("Depricated call to User#lookup_token!, this will be removed in the future")
+    LoginToken.lookup_token!(secret, jwt_token: jwt_token)
   end
 end

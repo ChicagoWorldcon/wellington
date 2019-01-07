@@ -18,6 +18,8 @@
 # See https://guides.rubyonrails.org/active_model_basics.html
 # TODO Consider reworking this as a devise model based on database_authenticatable
 class LoginToken
+  TOKEN_DURATION = 10.minutes
+
   include ActiveModel::Model
 
   attr_accessor :email
@@ -27,10 +29,18 @@ class LoginToken
   validates :secret, presence: true
 
   def login_token(secret)
-    User.new(email: email).login_token(secret)
+    JWT.encode(login_info, secret, "HS256")
   end
 
   def self.lookup_token!(secret, jwt_token:)
-    User.lookup_token!(secret, jwt_token: jwt_token)
+    login_info = JWT.decode(jwt_token, secret, "HS256")
+    User.find_by(email: login_info.first["email"])
+  end
+
+  def login_info
+    {
+      exp: (Time.now + TOKEN_DURATION).to_i,
+      email: email,
+    }
   end
 end
