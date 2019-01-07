@@ -25,4 +25,12 @@ class LoginToken
 
   validates :email, presence: true, format: Devise.email_regexp
   validates :secret, presence: true
+
+  def login_token(secret)
+    User.new(email: email).login_token(secret)
+  end
+
+  def self.lookup_token!(secret, jwt_token:)
+    User.lookup_token!(secret, jwt_token: jwt_token)
+  end
 end

@@ -19,6 +19,7 @@ require "rails_helper"
 RSpec.describe LoginToken do
   let(:good_secret) { "you'll never find the treasure" }
   let(:good_email) { "willy_wönka@chocolate_factory.nz" }
+  let(:user) { create(:user) }
 
   subject(:model) { LoginToken.new(email: good_email, secret: good_secret) }
   it { is_expected.to be_valid }
@@ -36,5 +37,63 @@ RSpec.describe LoginToken do
   context "with bad email" do
     subject(:model) { LoginToken.new(email: "not @good.net", secret: good_secret) }
     it { is_expected.to_not be_valid }
+  end
+
+  describe "#login_token" do
+    let(:secret) { "flubber" }
+    let(:model) { LoginToken.new(email: user.email, secret: secret) }
+
+    subject(:encoded_token) { model.login_token(secret) }
+    it { is_expected.to_not be_nil }
+
+    context "when used with LoginToken#lookup_token!" do
+      it "finds the original user" do
+        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to eq(user)
+      end
+    end
+  end
+
+  describe "LoginToken#lookup_token!" do
+    let(:secret) { "flubber" }
+    let(:encoded_token) { JWT.encode(login_info, secret, "HS256") }
+
+    context "with expired token" do
+      let(:login_info) do
+        {
+          exp: 1.second.ago.to_i,
+          email: user.email,
+        }
+      end
+
+      it "raises exception" do
+        expect { LoginToken.lookup_token!(secret, jwt_token: encoded_token) }.to raise_error(JWT::ExpiredSignature)
+      end
+    end
+
+    context "with unfound user" do
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: "never gonna give you up",
+        }
+      end
+
+      it "returns nil" do
+        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to be_nil
+      end
+    end
+
+    context "with credentials of legit user" do
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: user.email,
+        }
+      end
+
+      it "returns nil" do
+        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to eq(user)
+      end
+    end
   end
 end
