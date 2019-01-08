@@ -26,14 +26,4 @@ class User < ApplicationRecord
   has_many :purchases, through: :active_claims
 
   validates :email, presence: true, format: Devise.email_regexp
-
-  def login_token(secret)
-    Rails.logger.warn("Depricated call to User#login_token, this will be removed in the future")
-    LoginToken.new(email: email, secret: secret).login_token(secret)
-  end
-
-  def self.lookup_token!(secret, jwt_token:)
-    Rails.logger.warn("Depricated call to User#lookup_token!, this will be removed in the future")
-    LoginToken.lookup_token!(secret, jwt_token: jwt_token)
-  end
 end
