@@ -15,9 +15,7 @@
 # limitations under the License.
 
 class User < ApplicationRecord
-  # database_authenticatable only used for #destroy_user_session_path helper and generated controller action
-  # this model prefers short lived JWT tokens to user chosen passwords for simplicity
-  devise :trackable, :database_authenticatable
+  devise :trackable
 
   has_many :active_claims, -> { active }, class_name: "Claim"
   has_many :charges

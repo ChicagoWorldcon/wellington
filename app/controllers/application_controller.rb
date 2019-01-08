@@ -16,16 +16,4 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-
-  before_action :authenticate_user_from_token!
-
-  private
-
-  def authenticate_user_from_token!
-    if params[:token].present?
-      raise "Missing JWT_SECRET" unless ENV["JWT_SECRET"].present?
-      user = LoginToken.decode_and_lookup!(ENV["JWT_SECRET"], jwt_token: params[:token])
-      sign_in user, store: false
-    end
-  end
 end

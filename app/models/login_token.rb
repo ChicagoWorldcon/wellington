@@ -29,7 +29,7 @@ class LoginToken
   validates :secret, presence: true
 
   def self.decode_and_lookup!(secret, jwt_token:)
-    self.decode(secret: secret, token: jwt_token).user
+    self.decode(secret: secret, token: jwt_token).find_user
   end
 
   def self.decode(secret:, token:)
@@ -41,7 +41,7 @@ class LoginToken
     JWT.encode(login_info, secret, "HS256")
   end
 
-  def user
+  def find_user
     User.find_by(email: email)
   end
 
