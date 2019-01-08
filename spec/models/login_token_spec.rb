@@ -70,7 +70,7 @@ RSpec.describe LoginToken do
       end
     end
 
-    context "with unfound user" do
+    context "with invalid email address" do
       let(:login_info) do
         {
           exp: 10.seconds.from_now.to_i,
@@ -80,6 +80,21 @@ RSpec.describe LoginToken do
 
       it "returns nil" do
         expect(LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token)).to be_nil
+      end
+    end
+
+    context "with new user" do
+      let(:new_email) { "aaa@aaa.aaa" }
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: new_email,
+        }
+      end
+
+      it "returns nil" do
+        expect { LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token) }.to change { User.count }.by(1)
+        expect(User.last.email).to eq(new_email)
       end
     end
 

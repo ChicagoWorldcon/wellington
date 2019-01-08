@@ -25,7 +25,7 @@ class LoginTokensController < ApplicationController
       flash[:notice] = @token.errors.full_messages.to_sentence
       redirect_to new_login_token_path
     else
-      user = @token.find_user
+      user = @token.find_or_create_user
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
       redirect_to "/"
