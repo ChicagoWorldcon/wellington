@@ -39,21 +39,21 @@ RSpec.describe LoginToken do
     it { is_expected.to_not be_valid }
   end
 
-  describe "#login_token" do
+  describe "#encode" do
     let(:secret) { "flubber" }
     let(:model) { LoginToken.new(email: user.email, secret: secret) }
 
-    subject(:encoded_token) { model.login_token }
+    subject(:encoded_token) { model.encode }
     it { is_expected.to_not be_nil }
 
-    context "when used with LoginToken#lookup_token!" do
+    context "when used with LoginToken#decode_and_lookup!" do
       it "finds the original user" do
-        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to eq(user)
+        expect(LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token)).to eq(user)
       end
     end
   end
 
-  describe "LoginToken#lookup_token!" do
+  describe "LoginToken#decode_and_lookup!" do
     let(:secret) { "flubber" }
     let(:encoded_token) { JWT.encode(login_info, secret, "HS256") }
 
@@ -66,7 +66,7 @@ RSpec.describe LoginToken do
       end
 
       it "raises exception" do
-        expect { LoginToken.lookup_token!(secret, jwt_token: encoded_token) }.to raise_error(JWT::ExpiredSignature)
+        expect { LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token) }.to raise_error(JWT::ExpiredSignature)
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe LoginToken do
       end
 
       it "returns nil" do
-        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to be_nil
+        expect(LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token)).to be_nil
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe LoginToken do
       end
 
       it "returns nil" do
-        expect(LoginToken.lookup_token!(secret, jwt_token: encoded_token)).to eq(user)
+        expect(LoginToken.decode_and_lookup!(secret, jwt_token: encoded_token)).to eq(user)
       end
     end
   end

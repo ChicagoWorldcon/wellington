@@ -28,11 +28,11 @@ class LoginToken
   validates :email, presence: true, format: Devise.email_regexp
   validates :secret, presence: true
 
-  def login_token
+  def encode
     JWT.encode(login_info, secret, "HS256")
   end
 
-  def self.lookup_token!(secret, jwt_token:)
+  def self.decode_and_lookup!(secret, jwt_token:)
     login_info = JWT.decode(jwt_token, secret, "HS256")
     User.find_by(email: login_info.first["email"])
   end
