@@ -43,7 +43,7 @@ RSpec.describe LoginToken do
     let(:secret) { "flubber" }
     let(:model) { LoginToken.new(email: user.email, secret: secret) }
 
-    subject(:encoded_token) { model.login_token(secret) }
+    subject(:encoded_token) { model.login_token }
     it { is_expected.to_not be_nil }
 
     context "when used with LoginToken#lookup_token!" do

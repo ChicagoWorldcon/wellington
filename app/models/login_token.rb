@@ -28,7 +28,7 @@ class LoginToken
   validates :email, presence: true, format: Devise.email_regexp
   validates :secret, presence: true
 
-  def login_token(secret)
+  def login_token
     JWT.encode(login_info, secret, "HS256")
   end
 
