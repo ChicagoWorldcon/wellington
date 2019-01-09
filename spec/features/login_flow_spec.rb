@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe LoginTokensController, type: :feature do
+RSpec.describe "Login Flow", type: :feature do
   include Warden::Test::Helpers
   after(:each) { Warden.test_reset! }
 
@@ -24,7 +24,7 @@ RSpec.describe LoginTokensController, type: :feature do
   let(:email_input) { "input[name=email]" }
   let(:submit_button) { "input[type=submit]" }
 
-  describe "#new" do
+  context "when visiting new_login_token_path" do
     it "lets me sign in" do
       visit new_login_token_path
       expect(page).to have_css(email_input)
