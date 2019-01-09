@@ -16,6 +16,7 @@
 
 class LoginTokensController < ApplicationController
   def new
+    redirect_to root_path if signed_in?
     @token = LoginToken.new
   end
 
@@ -28,7 +29,7 @@ class LoginTokensController < ApplicationController
       user = @token.find_or_create_user
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
-      redirect_to "/"
+      redirect_to root_path
     end
   end
 

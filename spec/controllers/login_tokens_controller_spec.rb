@@ -17,14 +17,26 @@
 require "rails_helper"
 
 RSpec.describe LoginTokensController, type: :feature do
+  include Warden::Test::Helpers
+  after(:each) { Warden.test_reset! }
+
+  let(:user) { create(:user) }
   let(:email_input) { "input[name=email]" }
   let(:submit_button) { "input[type=submit]" }
 
   describe "#new" do
     it "lets me sign in" do
-      visit "/login_tokens/new"
+      visit new_login_token_path
       expect(page).to have_css(email_input)
       expect(page).to have_css(submit_button)
+    end
+
+    it "redirects to root when signed in" do
+      login_as(user)
+      visit new_login_token_path
+      expect(page).to have_current_path(root_path)
+      expect(page).to_not have_css(email_input)
+      expect(page).to_not have_css(submit_button)
     end
   end
 end
