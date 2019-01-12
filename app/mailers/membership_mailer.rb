@@ -19,6 +19,6 @@ class MembershipMailer < ApplicationMailer
 
   def login_link(token:, email:)
     @token = token
-    mail(to: email)
+    mail(to: email, subject: "CoNZealand Login Link")
   end
 end
