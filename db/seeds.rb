@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,3 +33,12 @@ Membership.create!(name: :unwaged     , active_from: announcement , price: 225_0
 Membership.create!(name: :child       , active_from: announcement , price: 105_00)
 Membership.create!(name: :kid_in_tow  , active_from: announcement , price: 0)
 Membership.create!(name: :supporting  , active_from: announcement , price: 75_00)
+
+# Sample users and details
+100.times do |count|
+  puts "Seeding #{count} of 100 users" if count % 10 == 0
+  user = FactoryBot.create(:user, :with_purchase)
+  user.active_claims.each do |claim|
+    claim.update!(detail: FactoryBot.create(:detail, claim: claim))
+  end
+end

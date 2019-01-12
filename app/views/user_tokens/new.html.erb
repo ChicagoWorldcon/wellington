@@ -14,4 +14,8 @@
 # limitations under the License.
 %>
 
-<%= yield %>
+<%= form_for(UserToken.new) do |f| %>
+  <%= label_tag(:email, "Email:") %>
+  <%= text_field_tag(:email) %>
+  <%= submit_tag("Send Login Link") %>
+<% end %>

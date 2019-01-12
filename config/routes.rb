@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,15 @@
 # limitations under the License.
 
 Rails.application.routes.draw do
-  root "charges#index"
+  root to: "charges#index"
+
+  # For people who were imported from Kansa and may have an old login link
+  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
+
   resources :charges
+  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
+    get :logout, on: :collection
+  end
+
+  devise_for :users
 end

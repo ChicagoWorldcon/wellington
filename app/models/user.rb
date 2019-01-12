@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
 # limitations under the License.
 
 class User < ApplicationRecord
+  devise :trackable
+
   has_many :active_claims, -> { active }, class_name: "Claim"
   has_many :charges
   has_many :claims
   has_many :notes
   has_many :purchases, through: :active_claims
 
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, presence: true, format: Devise.email_regexp
 end

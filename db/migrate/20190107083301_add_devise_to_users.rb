@@ -1,4 +1,5 @@
-<%
+# frozen_string_literal: true
+
 # Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-%>
 
-<%= yield %>
+class AddDeviseToUsers < ActiveRecord::Migration[5.1]
+  def change
+    change_table :users do |t|
+      # Trackable
+      t.integer  :sign_in_count, default: 0, null: false
+      t.datetime :current_sign_in_at
+      t.datetime :last_sign_in_at
+      t.inet     :current_sign_in_ip
+      t.inet     :last_sign_in_ip
+    end
+  end
+end

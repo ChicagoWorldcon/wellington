@@ -39,8 +39,8 @@ few guidelines that we need our contributors to follow so that we can have a cha
   ```
   issue #1: Rework guide, move OSX specific instructions into it's own file
   ```
-* Trivial changes that are not specific to issues don't need this. Please instead mention `(docs)`, `(maint)`, or
-  `(packaging)` as appropriate. For example
+* Trivial changes that are not specific to issues don't need this. Please instead mention "docs", "maint", or
+  "packaging" as appropriate. For example
   ```
   docs: Rework guide, move OSX specific instructions into it's own file
   ```
