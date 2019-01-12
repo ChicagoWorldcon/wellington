@@ -36,6 +36,7 @@ class LoginTokensController < ApplicationController
   def create
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
     if send_link_command.call
+      flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
       redirect_to root_path
     else
       flash[:notice] = send_link_command.errors.to_sentence
