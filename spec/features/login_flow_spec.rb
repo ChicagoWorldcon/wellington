@@ -39,4 +39,10 @@ RSpec.describe "Login Flow", type: :feature do
       expect(page).to_not have_css(submit_button)
     end
   end
+
+  it "shows kansa user's 'expired' message" do
+    visit "/login/willy_wonka@chocolate_factory.nz/DsfS3123"
+    expect(page).to have_current_path(new_login_token_path)
+    expect(page).to have_content(/expired/i)
+  end
 end

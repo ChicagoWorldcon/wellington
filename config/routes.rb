@@ -17,6 +17,9 @@
 Rails.application.routes.draw do
   root to: "charges#index"
 
+  # For people who were imported from Kansa and may have an old login link
+  get "/login/:email/:key", to: "login_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
+
   resources :charges
   resources :login_tokens, only: [:new, :show, :create], id: /[^\/]+/
 
