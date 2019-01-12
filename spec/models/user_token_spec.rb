@@ -16,19 +16,19 @@
 
 require "rails_helper"
 
-RSpec.describe LoginToken do
+RSpec.describe UserToken do
   let(:good_email) { "willy_wönka@chocolate_factory.nz" }
 
-  subject(:model) { LoginToken.new(email: good_email) }
+  subject(:model) { UserToken.new(email: good_email) }
   it { is_expected.to be_valid }
 
   context "missing email" do
-    subject(:model) { LoginToken.new(email: "") }
+    subject(:model) { UserToken.new(email: "") }
     it { is_expected.to_not be_valid }
   end
 
   context "with bad email" do
-    subject(:model) { LoginToken.new(email: "not @good.net") }
+    subject(:model) { UserToken.new(email: "not @good.net") }
     it { is_expected.to_not be_valid }
   end
 end

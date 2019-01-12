@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class LoginTokensController < ApplicationController
+class UserTokensController < ApplicationController
   def new
     redirect_to root_path if signed_in?
-    @token = LoginToken.new
+    @token = UserToken.new
   end
 
   def show
@@ -30,7 +30,7 @@ class LoginTokensController < ApplicationController
     else
       error_message = lookup_user_query.errors.to_sentence.humanize
       flash[:notice] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
-      redirect_to new_login_token_path
+      redirect_to new_user_token_path
     end
   end
 
@@ -41,14 +41,14 @@ class LoginTokensController < ApplicationController
       redirect_to root_path
     else
       flash[:notice] = send_link_command.errors.to_sentence
-      redirect_to new_login_token_path
+      redirect_to new_user_token_path
     end
   end
 
   def kansa_login_link
     sign_out(current_user) if signed_in?
     flash[:notice] = "That login link has expired. Please send another link, or email us at registrations@conzealand.nz"
-    redirect_to new_login_token_path
+    redirect_to new_user_token_path
   end
 
   def logout

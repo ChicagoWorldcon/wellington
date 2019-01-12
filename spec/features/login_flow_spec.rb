@@ -24,16 +24,16 @@ RSpec.describe "Login Flow", type: :feature do
   let(:email_input) { "input[name=email]" }
   let(:submit_button) { "input[type=submit]" }
 
-  context "when visiting new_login_token_path" do
+  context "when visiting new_user_token_path" do
     it "lets me sign in" do
-      visit new_login_token_path
+      visit new_user_token_path
       expect(page).to have_css(email_input)
       expect(page).to have_css(submit_button)
     end
 
     it "redirects to root when signed in" do
       login_as(user)
-      visit new_login_token_path
+      visit new_user_token_path
       expect(page).to have_current_path(root_path)
       expect(page).to_not have_css(email_input)
       expect(page).to_not have_css(submit_button)
@@ -42,7 +42,7 @@ RSpec.describe "Login Flow", type: :feature do
 
   it "shows kansa user's 'expired' message" do
     visit "/login/willy_wonka@chocolate_factory.nz/DsfS3123"
-    expect(page).to have_current_path(new_login_token_path)
+    expect(page).to have_current_path(new_user_token_path)
     expect(page).to have_content(/expired/i)
   end
 end

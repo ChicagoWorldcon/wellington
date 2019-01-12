@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe LoginTokensController, type: :controller do
+RSpec.describe UserTokensController, type: :controller do
   include Warden::Test::Helpers
 
   let(:user) { create(:user) }
@@ -24,7 +24,7 @@ RSpec.describe LoginTokensController, type: :controller do
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
   describe "#show" do
     let(:user) { create(:user) }
-    let(:login_token) { "asdf" }
+    let(:user_token) { "asdf" }
 
     context "when secret is not set" do
       before do
@@ -37,12 +37,12 @@ RSpec.describe LoginTokensController, type: :controller do
       end
 
       it "doesn't login" do
-        get :show, params: { id: login_token }
+        get :show, params: { id: user_token }
         expect(response).to have_http_status(302)
       end
 
       it "sets flash error" do
-        get :show, params: { id: login_token }
+        get :show, params: { id: user_token }
         expect(flash[:notice]).to match(/secret/i)
       end
     end
