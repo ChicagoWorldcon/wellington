@@ -21,26 +21,25 @@ class LoginTokensController < ApplicationController
   end
 
   def show
-    @token = LoginToken.decode(token: params[:id], secret: secret)
-    if !@token.valid?
-      flash[:notice] = @token.errors.full_messages.to_sentence
-      redirect_to new_login_token_path
-    else
-      user = @token.find_or_create_user
+    lookup_user_query = Token::LookupOrCreateUser.new(token: params[:id], secret: secret)
+    user = lookup_user_query.call
+    if user.present?
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
       redirect_to root_path
+    else
+      flash[:notice] = lookup_user_query.errors.to_sentence
+      redirect_to new_login_token_path
     end
   end
 
   def create
-    @token = LoginToken.new(email: params[:email], secret: secret)
-    if !@token.valid?
-      flash[:notice] = @token.errors.full_messages.to_sentence
-      redirect_to new_login_token_path
-    else
-      flash[:notice] = "Emailed #{@token.email} with https://localhost:3000/login_tokens/#{@token.encode}"
+    send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
+    if send_link_command.call
       redirect_to root_path
+    else
+      flash[:notice] = send_link_command.errors.to_sentence
+      redirect_to new_login_token_path
     end
   end
 
@@ -48,6 +47,6 @@ class LoginTokensController < ApplicationController
 
   # Check README.md if this fails for you
   def secret
-    ENV["JWT_SECRET"] or raise "Cannot find JWT_SECRET in Environment"
+    ENV["JWT_SECRET"]
   end
 end

@@ -16,19 +16,30 @@
 
 require "rails_helper"
 
-RSpec.describe LoginToken do
-  let(:good_email) { "willy_wönka@chocolate_factory.nz" }
+RSpec.describe LoginTokensController, type: :controller do
+  describe "#show" do
+    let(:user) { create(:user) }
+    let(:login_token) { "asdf" }
 
-  subject(:model) { LoginToken.new(email: good_email) }
-  it { is_expected.to be_valid }
+    context "when secret is not set" do
+      before do
+        @jwt_secret = ENV["JWT_SECRET"]
+        ENV["JWT_SECRET"] = nil
+      end
 
-  context "missing email" do
-    subject(:model) { LoginToken.new(email: "") }
-    it { is_expected.to_not be_valid }
-  end
+      after do
+        ENV["JWT_SECRET"] = @jwt_secret
+      end
 
-  context "with bad email" do
-    subject(:model) { LoginToken.new(email: "not @good.net") }
-    it { is_expected.to_not be_valid }
+      it "doesn't login" do
+        get :show, params: { id: login_token }
+        expect(response).to have_http_status(302)
+      end
+
+      it "sets flash error" do
+        get :show, params: { id: login_token }
+        expect(flash[:notice]).to match(/secret/i)
+      end
+    end
   end
 end

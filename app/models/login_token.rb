@@ -16,43 +16,11 @@
 
 # Token is an ActiveModel and isn't stored but is rather used to represent token based authentication
 # See https://guides.rubyonrails.org/active_model_basics.html
+
 # TODO Consider reworking this as a devise model based on database_authenticatable
 class LoginToken
-  TOKEN_DURATION = 10.minutes
-
   include ActiveModel::Model
 
   attr_accessor :email
-  attr_accessor :secret
-
   validates :email, presence: true, format: Devise.email_regexp
-  validates :secret, presence: true
-
-  def self.decode_and_lookup!(secret, jwt_token:)
-    self.decode(secret: secret, token: jwt_token).find_or_create_user
-  end
-
-  def self.decode(secret:, token:)
-    login_info = JWT.decode(token, secret, "HS256")
-    LoginToken.new(secret: secret, email: login_info.first["email"])
-  end
-
-  def encode
-    JWT.encode(login_info, secret, "HS256")
-  end
-
-  def find_or_create_user
-    if valid?
-      User.find_or_create_by(email: email)
-    else
-      nil
-    end
-  end
-
-  def login_info
-    {
-      exp: (Time.now + TOKEN_DURATION).to_i,
-      email: email,
-    }
-  end
 end
