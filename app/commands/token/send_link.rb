@@ -30,7 +30,7 @@ class Token::SendLink
     check_secret
 
     encode_token if errors.none?
-    email_link if errors.none?
+    async_email_link if errors.none?
     errors.none?
   end
 
@@ -64,7 +64,7 @@ class Token::SendLink
     errors << "failed to encode JWT token"
   end
 
-  def email_link
-    MembershipMailer.login_link(email: email, token: @token)
+  def async_email_link
+    MembershipMailer.login_link(email: email, token: @token).deliver_later
   end
 end

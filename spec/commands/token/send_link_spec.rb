@@ -24,7 +24,7 @@ RSpec.describe Token::SendLink do
   describe "#call" do
     it "sends email" do
       service = Token::SendLink.new(email: good_email, secret: good_secret)
-      expect(MembershipMailer).to receive(:login_link).and_return(true)
+      expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
       expect(service.call).to be_truthy
     end
 
