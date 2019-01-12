@@ -84,6 +84,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   # Setup helpers for things like #login_as
+  config.include Devise::Test::ControllerHelpers, type: :controller
   include Warden::Test::Helpers
   config.before(:each) do
     Warden.test_reset!

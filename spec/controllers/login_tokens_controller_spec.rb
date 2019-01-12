@@ -17,6 +17,11 @@
 require "rails_helper"
 
 RSpec.describe LoginTokensController, type: :controller do
+  include Warden::Test::Helpers
+
+  let(:user) { create(:user) }
+
+  # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
   describe "#show" do
     let(:user) { create(:user) }
     let(:login_token) { "asdf" }
@@ -40,6 +45,13 @@ RSpec.describe LoginTokensController, type: :controller do
         get :show, params: { id: login_token }
         expect(flash[:notice]).to match(/secret/i)
       end
+    end
+  end
+
+  describe "#logout" do
+    it "signs the current user out" do
+      sign_in(user)
+      expect { get :logout }.to change { controller.current_user }.to(nil)
     end
   end
 end

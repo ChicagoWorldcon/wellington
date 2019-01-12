@@ -21,7 +21,9 @@ Rails.application.routes.draw do
   get "/login/:email/:key", to: "login_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
 
   resources :charges
-  resources :login_tokens, only: [:new, :show, :create], id: /[^\/]+/
+  resources :login_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
+    get :logout, on: :collection
+  end
 
   devise_for :users
 end

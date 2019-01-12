@@ -46,9 +46,17 @@ class LoginTokensController < ApplicationController
   end
 
   def kansa_login_link
-    sign_out current_user if signed_in?
+    sign_out(current_user) if signed_in?
     flash[:notice] = "That login link has expired. Please send another link, or email us at registrations@conzealand.nz"
     redirect_to new_login_token_path
+  end
+
+  def logout
+    if signed_in?
+      flash[:notice] = "Signed out #{current_user.email}"
+      sign_out(current_user)
+    end
+    redirect_to root_path
   end
 
   private
