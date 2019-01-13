@@ -117,7 +117,7 @@ class ImportPresupportersRow
         interest_selling_at_art_show:     cell_for("Selling at Art Show"),
         interest_exhibiting:              cell_for("Exhibiting"),
         interest_performing:              cell_for("Performing"),
-      )
+      ).as_import
 
       if !details.valid?
         errors << details.errors.full_messages.to_sentence
