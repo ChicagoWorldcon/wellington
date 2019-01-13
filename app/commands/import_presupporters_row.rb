@@ -82,6 +82,11 @@ class ImportPresupportersRow
         return false
       end
 
+      if !membership.present?
+        errors << "missing membership level"
+        return false
+      end
+
       new_purchase = PurchaseMembership.new(membership, customer: new_user).call
       if !new_purchase
         errors << "could not purchase membership"
