@@ -88,4 +88,12 @@ RSpec.describe ImportPresupporters do
       expect { command }.to raise_error(ArgumentError)
     end
   end
+
+  context "when default address already in use" do
+    before { create(:user, email: my_fallback_email) }
+
+    it "executes successfully" do
+      expect(command).to be_truthy
+    end
+  end
 end
