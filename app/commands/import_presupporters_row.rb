@@ -67,10 +67,15 @@ class ImportPresupportersRow
 
   attr_reader :row_data, :comment, :fallback_email
 
-  def initialize(row_data, comment, fallback_email: nil)
+  def initialize(row_data, comment:, fallback_email:)
     @row_data = row_data
     @comment = comment
     @fallback_email = fallback_email
+
+    default_user = User.new(email: fallback_email)
+    if !default_user.valid?
+      raise ArgumentError, "Default user has errors, please fix: #{default_user.errors.full_messages.to_sentence}"
+    end
   end
 
   def call

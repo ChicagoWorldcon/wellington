@@ -23,8 +23,9 @@ RSpec.describe ImportPresupportersRow do
 
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
+  let(:fallback_email) { "fallback@conzealand.nz" }
 
-  subject(:command) { ImportPresupportersRow.new(row_values, my_comment) }
+  subject(:command) { ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email) }
 
   let(:import_key) { "brilliant-import-key" }
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
@@ -73,8 +74,8 @@ RSpec.describe ImportPresupportersRow do
 
   context "when two rows have the same email adderss" do
     before do
-      expect(ImportPresupportersRow.new(row_values, my_comment).call).to be_truthy
-      expect(ImportPresupportersRow.new(row_values, my_comment).call).to be_truthy
+      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
+      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
     end
 
     it "only creates the one user" do
@@ -163,23 +164,10 @@ RSpec.describe ImportPresupportersRow do
   end
 
   context "when email address is empty" do
-    let(:email_address) { "" }
+    let(:fallback_email) { "" }
 
     it "fails with errors" do
-      expect(command.call).to be_falsey
-      expect(command.errors).to include(/email/i)
-    end
-
-    context "when fallback account specified" do
-      let(:fallback) { "fallback@conzealand.nz" }
-      subject(:command) { ImportPresupportersRow.new(row_values, my_comment, fallback_email: fallback) }
-
-      it { is_expected.to be_truthy }
-
-      it "suceeds and assigns to that account" do
-        expect(command.call).to be_truthy
-        expect(User.last.email).to eq(fallback)
-      end
+      expect { command }.to raise_error(ArgumentError)
     end
   end
 end
