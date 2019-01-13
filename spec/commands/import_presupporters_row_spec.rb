@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -160,14 +160,6 @@ RSpec.describe ImportPresupportersRow do
           it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
         end
       end
-    end
-  end
-
-  context "when email address is empty" do
-    let(:fallback_email) { "" }
-
-    it "fails with errors" do
-      expect { command }.to raise_error(ArgumentError)
     end
   end
 end
