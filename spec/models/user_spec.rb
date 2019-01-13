@@ -32,4 +32,16 @@ RSpec.describe User, type: :model do
       expect(user.charges.first.amount).to eq user.purchases.first.membership.price
     end
   end
+
+  context "duplicate email addresses" do
+    let(:double_up_email) { "pants-optional@perfect-underwear.co.uk" }
+    let(:first_user) { create(:user, email: double_up_email) }
+    let(:second_user) { build(:user, email: double_up_email) }
+
+    it "doens't let the second user sign up" do
+      expect(first_user).to be_valid
+      expect(second_user).to_not be_valid
+      expect(second_user.errors[:email]).to include(/taken/i)
+    end
+  end
 end

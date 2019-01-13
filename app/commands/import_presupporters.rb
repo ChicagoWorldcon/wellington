@@ -19,11 +19,12 @@ require "csv"
 # ImportPresupporters takes a stream of text in CSV format and creates member records out of it. Check call return to see if
 # it succeeded or not, check errors to see why.
 class ImportPresupporters
-  attr_reader :input_stream, :description
+  attr_reader :input_stream, :description, :fallback_email
 
-  def initialize(input_stream, description)
+  def initialize(input_stream, description:, fallback_email:)
     @input_stream = input_stream
     @description = description
+    @fallback_email = fallback_email
   end
 
   def call
@@ -32,7 +33,10 @@ class ImportPresupporters
 
     User.transaction do
       table_body.each.with_index do |row_data, i|
-        row_import = ImportPresupportersRow.new(row_data, "Import from row #{i+2} in #{description}")
+        row_import = ImportPresupportersRow.new(row_data,
+          comment: "Import from row #{i+2} in #{description}",
+          fallback_email: fallback_email
+        )
         if !row_import.call
           errors << "Error on row #{i+2}: #{row_import.error_message}"
         end

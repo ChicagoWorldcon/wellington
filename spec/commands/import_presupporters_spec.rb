@@ -20,8 +20,10 @@ RSpec.describe ImportPresupporters do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
   let(:standard_headings) { ImportPresupportersRow::HEADINGS.join(",") }
-  let(:description) { "test stream" }
-  subject(:command) { ImportPresupporters.new(read_stream, description) }
+  let(:my_description) { "test stream" }
+  let(:my_fallback_email) { Faker::Internet.email }
+
+  subject(:command) { ImportPresupporters.new(read_stream, description: my_description, fallback_email: my_fallback_email) }
 
   it "imports nothing when the file is empty" do
     expect { command.call }.to_not change { Membership.count }
@@ -58,10 +60,10 @@ RSpec.describe ImportPresupporters do
 
     it "calls ProcessRow" do
       expect(ImportPresupportersRow)
-        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+        .to receive(:new)
         .and_return(good_row_processor)
       expect(ImportPresupportersRow)
-        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+        .to receive(:new)
         .and_return(good_row_processor)
       expect(command.call).to be_truthy
       expect(command.errors).to be_empty
@@ -69,10 +71,10 @@ RSpec.describe ImportPresupporters do
 
     it "raises errors with buggy rows" do
       expect(ImportPresupportersRow)
-        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+        .to receive(:new)
         .and_return(good_row_processor)
       expect(ImportPresupportersRow)
-        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+        .to receive(:new)
         .and_return(bad_row_processor)
       expect(command.call).to be_falsey
       expect(command.errors).to include(/gah/i)
