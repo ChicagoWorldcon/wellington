@@ -36,8 +36,6 @@ RSpec.describe ImportPresupportersRow do
     [
       "8/19/2018 10:04:55",             # Timestamp
       "",                               # Title
-      "",                               # Title
-      "",                               # Title
       Faker::FunnyName.three_word_name, # Full name
       Faker::Name.first_name,           # PreferredFirstname
       Faker::Name.last_name,            # PreferedLastname

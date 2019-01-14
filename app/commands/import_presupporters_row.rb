@@ -19,8 +19,6 @@ class ImportPresupportersRow
   HEADINGS = [
     "Timestamp",
     "Title",
-    "Title",
-    "Title",
     "Full name",
     "PreferredFirstname",
     "PreferedLastname",
