@@ -37,6 +37,7 @@ class ImportKansaMembersRow
   MEMBERSHIP_LOOKUP = {
     "Adult Attending":          "adult",
     "Child Attending":          "child",
+    "Child":                    "child",
     "Kiwi Pre-Support":         "kiwi",
     "Pre-Opposing":             "pre_oppose",
     "Pre-Supporting":           "pre_support",
