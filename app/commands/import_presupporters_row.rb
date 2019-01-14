@@ -191,7 +191,7 @@ class ImportPresupportersRow
   def email_address
     lookup = cell_for("Email Address")
     if lookup.present?
-      lookup
+      lookup.downcase.strip
     else
       fallback_email
     end
