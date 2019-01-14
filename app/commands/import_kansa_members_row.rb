@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 #
-# Copyright 2018 Matthew B. Gray, 2018 Andrew Esler
+# Copyright 2018 Andrew Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,7 +66,13 @@ class ImportKansaMembersRow
     new_user.notes.build(content: note) if !note.nil?
 
     membership_number = cell_for("Member Number")
-    command = PurchaseMembership.new(membership, customer: new_user, membership_number: membership_number)
+    membership_record = lookup_membership
+    if !membership_record.present?
+      errors << "can't find membership_record"
+      return false
+    end
+
+    command = PurchaseMembership.new(membership_record, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
     if !new_purchase
@@ -95,10 +102,10 @@ class ImportKansaMembersRow
 
   private
 
-  def membership
+  def lookup_membership
     import_string = cell_for("Membership Status")
     membership_name = MEMBERSHIP_LOOKUP[import_string] || import_string
-    Membership.find_by!(name: membership_name)
+    Membership.find_by(name: membership_name)
   end
 
   def cell_for(column)
