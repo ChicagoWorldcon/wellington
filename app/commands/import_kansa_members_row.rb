@@ -57,14 +57,14 @@ class ImportKansaMembersRow
   end
 
   def call
-    new_user = User.new(email: cell_for("Email Address"))
+    new_user = User.find_or_create_by(email: cell_for("Email Address"))
     if !new_user.valid?
       errors << new_user.errors.full_messages.to_sentence
       return false
     end
 
     note = cell_for("Notes")
-    new_user.notes.build(content: note) if !note.nil?
+    new_user.notes.create!(content: note) if note.present?
 
     membership_number = cell_for("Member Number")
     membership_record = lookup_membership
