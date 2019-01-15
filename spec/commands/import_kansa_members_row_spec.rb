@@ -67,6 +67,16 @@ RSpec.describe ImportKansaMembersRow do
       expect(User.last.purchases).to eq(silver_fern.purchases)
     end
 
+    it "inserts detail rows" do
+      expect { command.call }.to change { Detail.count }.by(1)
+    end
+
+    it "inserts notes rows" do
+      expect { command.call }.to change { Note.count }.by(1)
+      expect(Note.last.content).to eq note
+    end
+
+
     context "after run" do
       before do
         command.call
