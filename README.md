@@ -51,12 +51,18 @@ tasks inluded in the project, run:
 bundle exec rake -T
 ```
 
-This is the smallest set of tasks you'll need to run to get this project working:
+This is the smallest set of tasks you'll need to run to get this project working on your developer environment:
 
 ```sh
 bundle exec rake db:create       # Creates the database
 bundle exec rake db:schema:load  # Loads tables from db/schema.rb
 bundle exec rake db:seed         # Seeds our developemnt database
+```
+
+You might find these two scripts useful for working on the project
+```sh
+bundle exec rake dev:generate:users # Generate sample users with purchases
+bundle exec rake dev:napalm         # Reset database and reapply patches since master on your current branch
 ```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
