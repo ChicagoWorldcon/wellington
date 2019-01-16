@@ -50,21 +50,21 @@ class BuildPersonRow
     raise(ExportError, "Person##{person.id} payment is not in NZD") unless payment.currency == "nzd"
 
     [
-      person.legal_name, # "Full name",
-      person.public_first_name, # "PreferredFirstname",
-      person.public_last_name, # "PreferedLastname",
-      person.badge_name, # "BadgeTitle",
-      person.badge_subtitle, # "BadgeSubtitle",
-      person.city, # "Address Line1",
-      person.state, # "Address Line2",
-      person.country, # "Country",
-      person.email, # "Email Address",
-      "Imported from kansa. People##{person.id}", # "Notes",
-      person.membership, # "Membership Status",
-      payment.stripe_charge_id, # "Stripe Payment ID",
-      payment.amount, # "Charge Amount"
-      payment_comment, # "Payment Comment"
-      person.member_number + MEMBER_NUMBER_OFFSET # "Member Number"
+      person.legal_name,                           # "Full name",
+      person.public_first_name,                    # "PreferredFirstname",
+      person.public_last_name,                     # "PreferedLastname",
+      person.badge_name,                           # "BadgeTitle",
+      person.badge_subtitle,                       # "BadgeSubtitle",
+      person.city,                                 # "Address Line1",
+      person.state,                                # "Address Line2",
+      person.country,                              # "Country",
+      person.email,                                # "Email Address",
+      "Imported from kansa. People##{person.id}",  # "Notes",
+      person.membership,                           # "Membership Status",
+      payment.stripe_charge_id,                    # "Stripe Payment ID",
+      payment.amount,                              # "Charge Amount"
+      payment_comment,                             # "Payment Comment"
+      person.member_number + MEMBER_NUMBER_OFFSET, # "Member Number"
     ]
   end
 
