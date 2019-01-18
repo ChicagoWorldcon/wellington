@@ -115,6 +115,8 @@ class ImportPresupportersRow
         interest_selling_at_art_show:     cell_for("Selling at Art Show"),
         interest_exhibiting:              cell_for("Exhibiting"),
         interest_performing:              cell_for("Performing"),
+        created_at:                       import_date,
+        updated_at:                       import_date,
       ).as_import
 
       if !details.valid?
@@ -125,15 +127,21 @@ class ImportPresupportersRow
       new_purchase.transaction do
         new_purchase.update!(state: Purchase::PAID)
         details.save!
+
         if cell_for("Notes").present?
           new_user.notes.create!(content: cell_for("Notes"))
         end
+
         Charge.cash.successful.create!(
           user: new_user,
           purchase: new_purchase,
           amount: membership.price,
           comment: comment,
         )
+
+        new_purchase.update!(created_at: import_date, updated_at: import_date)
+        new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
       end
     end
   end
@@ -194,6 +202,16 @@ class ImportPresupportersRow
       lookup.downcase.strip
     else
       fallback_email
+    end
+  end
+
+  def import_date
+    return @import_date if @import_date.present?
+
+    if cell_for("Timestamp").present?
+      @import_date = cell_for("Timestamp").to_datetime
+    else
+      @import_date = DateTime.now
     end
   end
 
