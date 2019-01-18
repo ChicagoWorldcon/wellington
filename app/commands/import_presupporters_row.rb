@@ -128,9 +128,8 @@ class ImportPresupportersRow
         new_purchase.update!(state: Purchase::PAID)
         details.save!
 
-        if cell_for("Notes").present?
-          new_user.notes.create!(content: cell_for("Notes"))
-        end
+        new_user.notes.create!(content: comment)
+        new_user.notes.create!(content: cell_for("Notes")) if cell_for("Notes").present?
 
         Charge.cash.successful.create!(
           user: new_user,
