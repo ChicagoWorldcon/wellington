@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ RSpec.describe ImportKansaMembersRow do
   let(:payment_comment) { "Imported payment of #{charge_amount} paid by charge #{stripe_payment_id}" }
   let(:note) { "Enjoys long walks on the beach" }
   let(:member_number) { 7474 }
+  let(:created_at) { "2018-08-19T00:39:07Z" }
 
   subject(:command) { ImportKansaMembersRow.new(row_values, my_comment) }
 
@@ -48,6 +49,7 @@ RSpec.describe ImportKansaMembersRow do
       charge_amount,                    # Charge Amount
       payment_comment,                  # Payment Comment
       member_number,                    # Member Number
+      created_at,                       # Created At
     ]
   end
 
@@ -75,7 +77,6 @@ RSpec.describe ImportKansaMembersRow do
       expect { command.call }.to change { Note.count }.by(1)
       expect(Note.last.content).to eq note
     end
-
 
     context "after run" do
       before do
@@ -108,6 +109,26 @@ RSpec.describe ImportKansaMembersRow do
 
       it "set the user note" do
         expect(User.last.notes.first.content).to eq note
+      end
+
+      it "set created_at on purchase dates based on spreadsheet" do
+        expect(Detail.last.created_at).to be < 1.week.ago
+        expect(Order.last.created_at).to be < 1.week.ago
+        expect(Charge.last.created_at).to be < 1.week.ago
+        expect(Purchase.last.created_at).to be < 1.week.ago
+        expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+      end
+
+      it "doesn't set user created_at based on spreadsheet" do
+        expect(User.last.created_at).to be > 1.minute.ago
+      end
+
+      context "when created_at is not set" do
+        let(:created_at) { "" }
+
+        it "just uses the current date" do
+          expect(Purchase.last.created_at).to be > 1.minute.ago
+        end
       end
     end
   end

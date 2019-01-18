@@ -32,6 +32,7 @@ class ImportKansaMembersRow
     "Charge Amount",
     "Payment Comment",
     "Member Number",
+    "Created At",
   ].freeze
 
   MEMBERSHIP_LOOKUP = {
@@ -92,6 +93,8 @@ class ImportKansaMembersRow
       address_line_2:                   cell_for("Address Line2"),
       country:                          cell_for("Country"),
       publication_format:               Detail::PAPERPUBS_ELECTRONIC,
+      created_at:                       import_date,
+      updated_at:                       import_date,
     ).as_import
 
     if !details.valid?
@@ -109,6 +112,10 @@ class ImportKansaMembersRow
         stripe_id: cell_for("Stripe Payment ID"),
         comment: cell_for("Payment Comment"),
       )
+
+      new_purchase.update!(created_at: import_date, updated_at: import_date)
+      new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+      new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
     end
 
     errors.none?
@@ -133,5 +140,15 @@ class ImportKansaMembersRow
   def cell_for(column)
     offset = HEADINGS.index(column)
     row_data[offset]
+  end
+
+  def import_date
+    return @import_date if @import_date.present?
+
+    if cell_for("Created At").present?
+      @import_date = cell_for("Created At").to_datetime
+    else
+      @import_date = DateTime.now
+    end
   end
 end

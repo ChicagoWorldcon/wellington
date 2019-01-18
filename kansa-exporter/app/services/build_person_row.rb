@@ -34,7 +34,8 @@ class BuildPersonRow
     "Stripe Payment ID",
     "Charge Amount",
     "Payment Comment",
-    "Member Number"
+    "Member Number",
+    "Created At",
   ].freeze
 
   attr_reader :person
@@ -65,6 +66,7 @@ class BuildPersonRow
       payment.amount,                              # "Charge Amount"
       payment_comment,                             # "Payment Comment"
       person.member_number + MEMBER_NUMBER_OFFSET, # "Member Number"
+      payment.created&.iso8601,                    # "Created At"
     ]
   end
 

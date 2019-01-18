@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Andrew Esler
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ RSpec.describe BuildPersonRow do
       let(:person) { build(:person, id: 421) }
       let(:payment) { build(:payment) }
       let(:bump_membership_number) { 100 }
+      let(:dately_looking_string) { /\A\d\d\d\d-\d\d-\d\d/ }
 
       before do
         allow(service).to receive(:payment).and_return(payment)
@@ -74,6 +75,7 @@ RSpec.describe BuildPersonRow do
           payment.amount,
           "kansa payment##{payment.id} for #{payment.amount.to_f / 100}#{payment.currency.upcase} paid with token #{payment.stripe_token} for #{payment.type} (#{payment.category})",
           person.member_number + bump_membership_number,
+          dately_looking_string,
         ]
       end
     end
