@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Andrew Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@
 
 class BuildPersonRow
   ExportError = Class.new(StandardError)
+  MEMBER_NUMBER_OFFSET = 100
 
   HEADINGS = [
     "Full name",
@@ -32,7 +34,8 @@ class BuildPersonRow
     "Stripe Payment ID",
     "Charge Amount",
     "Payment Comment",
-    "Member Number"
+    "Member Number",
+    "Created At",
   ].freeze
 
   attr_reader :person
@@ -48,21 +51,22 @@ class BuildPersonRow
     raise(ExportError, "Person##{person.id} payment is not in NZD") unless payment.currency == "nzd"
 
     [
-      person.legal_name, # "Full name",
-      person.public_first_name, # "PreferredFirstname",
-      person.public_last_name, # "PreferedLastname",
-      person.badge_name, # "BadgeTitle",
-      person.badge_subtitle, # "BadgeSubtitle",
-      person.city, # "Address Line1",
-      person.state, # "Address Line2",
-      person.country, # "Country",
-      person.email, # "Email Address",
-      "Imported from kansa. People##{person.id}", # "Notes",
-      person.membership, # "Membership Status",
-      payment.stripe_charge_id, # "Stripe Payment ID",
-      payment.amount, # "Charge Amount"
-      payment_comment, # "Payment Comment"
-      person.member_number # "Member Number"
+      person.legal_name,                           # "Full name",
+      person.public_first_name,                    # "PreferredFirstname",
+      person.public_last_name,                     # "PreferedLastname",
+      person.badge_name,                           # "BadgeTitle",
+      person.badge_subtitle,                       # "BadgeSubtitle",
+      person.city,                                 # "Address Line1",
+      person.state,                                # "Address Line2",
+      person.country,                              # "Country",
+      person.email,                                # "Email Address",
+      "Imported from kansa. People##{person.id}",  # "Notes",
+      person.membership,                           # "Membership Status",
+      payment.stripe_charge_id,                    # "Stripe Payment ID",
+      payment.amount,                              # "Charge Amount"
+      payment_comment,                             # "Payment Comment"
+      person.member_number + MEMBER_NUMBER_OFFSET, # "Member Number"
+      payment.created&.iso8601,                    # "Created At"
     ]
   end
 

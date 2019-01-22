@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -78,6 +78,22 @@ RSpec.describe ImportPresupporters do
         .and_return(bad_row_processor)
       expect(command.call).to be_falsey
       expect(command.errors).to include(/gah/i)
+    end
+  end
+
+  context "when email address is empty" do
+    let(:my_fallback_email) { "" }
+
+    it "fails with errors" do
+      expect { command }.to raise_error(ArgumentError)
+    end
+  end
+
+  context "when default address already in use" do
+    before { create(:user, email: my_fallback_email) }
+
+    it "executes successfully" do
+      expect(command).to be_truthy
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,12 +31,11 @@ RSpec.describe ImportPresupportersRow do
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
   let(:paper_pubs) { "TRUE" }
   let(:no_electonic_publications) { "FALSE" }
+  let(:timestamp) { "2017-10-11" }
 
   let(:row_values) do
     [
-      "8/19/2018 10:04:55",             # Timestamp
-      "",                               # Title
-      "",                               # Title
+      timestamp,                        # Timestamp
       "",                               # Title
       Faker::FunnyName.three_word_name, # Full name
       Faker::Name.first_name,           # PreferredFirstname
@@ -160,14 +159,26 @@ RSpec.describe ImportPresupportersRow do
           it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
         end
       end
-    end
-  end
 
-  context "when email address is empty" do
-    let(:fallback_email) { "" }
+      it "set created_at on purchase dates based on spreadsheet" do
+        expect(Detail.last.created_at).to be < 1.week.ago
+        expect(Order.last.created_at).to be < 1.week.ago
+        expect(Charge.last.created_at).to be < 1.week.ago
+        expect(Purchase.last.created_at).to be < 1.week.ago
+        expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+      end
 
-    it "fails with errors" do
-      expect { command }.to raise_error(ArgumentError)
+      it "doesn't set user created_at based on spreadsheet" do
+        expect(User.last.created_at).to be > 1.minute.ago
+      end
+
+      context "when created_at is not set" do
+        let(:timestamp) { "" }
+
+        it "just uses the current date" do
+          expect(Purchase.last.created_at).to be > 1.minute.ago
+        end
+      end
     end
   end
 end

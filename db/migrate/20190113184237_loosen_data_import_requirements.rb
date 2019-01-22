@@ -14,24 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Detail < ApplicationRecord
-  PAPERPUBS_ELECTRONIC = "electronic_only"
-  PAPERPUBS_MAIL = "mail_only"
-  PAPERPUBS_BOTH = "both"
-  PAPERPUBS_NONE = "none"
-
-  belongs_to :claim
-
-  attr_reader :for_import
-
-  validates :address_line_1, presence: true, unless: :for_import
-  validates :claim, presence: true
-  validates :country, presence: true, unless: :for_import
-  validates :full_name, presence: true
-  validates :publication_format, inclusion: { in: [PAPERPUBS_ELECTRONIC, PAPERPUBS_MAIL, PAPERPUBS_BOTH, PAPERPUBS_NONE] }
-
-  def as_import
-    @for_import = true
-    self
+class LoosenDataImportRequirements < ActiveRecord::Migration[5.1]
+  def change
+    change_column_null :details, :country, true
+    change_column_null :details, :address_line_1, true
   end
 end

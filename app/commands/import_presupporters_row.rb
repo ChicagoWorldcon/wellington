@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray, 2018 Andrew Esler
+# Copyright 2018 Andrew Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +18,6 @@
 class ImportPresupportersRow
   HEADINGS = [
     "Timestamp",
-    "Title",
-    "Title",
     "Title",
     "Full name",
     "PreferredFirstname",
@@ -71,11 +70,6 @@ class ImportPresupportersRow
     @row_data = row_data
     @comment = comment
     @fallback_email = fallback_email
-
-    default_user = User.new(email: fallback_email)
-    if !default_user.valid?
-      raise ArgumentError, "Default user has errors, please fix: #{default_user.errors.full_messages.to_sentence}"
-    end
   end
 
   def call
@@ -83,6 +77,11 @@ class ImportPresupportersRow
       new_user = User.find_or_create_by(email: email_address)
       if !new_user.valid?
         errors << new_user.errors.full_messages.to_sentence
+        return false
+      end
+
+      if !membership.present?
+        errors << "missing membership level"
         return false
       end
 
@@ -116,7 +115,9 @@ class ImportPresupportersRow
         interest_selling_at_art_show:     cell_for("Selling at Art Show"),
         interest_exhibiting:              cell_for("Exhibiting"),
         interest_performing:              cell_for("Performing"),
-      )
+        created_at:                       import_date,
+        updated_at:                       import_date,
+      ).as_import
 
       if !details.valid?
         errors << details.errors.full_messages.to_sentence
@@ -126,15 +127,20 @@ class ImportPresupportersRow
       new_purchase.transaction do
         new_purchase.update!(state: Purchase::PAID)
         details.save!
-        if cell_for("Notes").present?
-          new_user.notes.create!(content: cell_for("Notes"))
-        end
+
+        new_user.notes.create!(content: comment)
+        new_user.notes.create!(content: cell_for("Notes")) if cell_for("Notes").present?
+
         Charge.cash.successful.create!(
           user: new_user,
           purchase: new_purchase,
           amount: membership.price,
           comment: comment,
         )
+
+        new_purchase.update!(created_at: import_date, updated_at: import_date)
+        new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
       end
     end
   end
@@ -192,9 +198,19 @@ class ImportPresupportersRow
   def email_address
     lookup = cell_for("Email Address")
     if lookup.present?
-      lookup
+      lookup.downcase.strip
     else
       fallback_email
+    end
+  end
+
+  def import_date
+    return @import_date if @import_date.present?
+
+    if cell_for("Timestamp").present?
+      @import_date = cell_for("Timestamp").to_datetime
+    else
+      @import_date = DateTime.now
     end
   end
 
