@@ -1,0 +1,59 @@
+<!doctype html>
+
+<%#
+  Copyright (c) 2018 Rosanna Gray
+  Copyright (c) 2019 Matthew B. Gray
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%>
+
+<html lang="en">
+<head>
+  <title>CoNZealand</title>
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Conzealand is a conference for science fiction enthusiasts.">
+  <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
+</head>
+<body>
+  <header role="banner">
+    <div class="container l-wrapper">
+      <a href="https://conzealand.nz" class="logo">
+        <img src="https://maailma.github.io/kansa-client/conzealand/img/conzealand-logo.svg" alt="CoNZealand" class="img-responsive">
+      </a>
+    </div>
+  </header>
+
+  <div class="l-main" role="main">
+    <div class="container l-wrapper">
+      <%= yield %>
+    </div>
+  </div>
+
+  <footer role="contentinfo">
+    <div class="container l-wrapper">
+      &copy; CoNZealand 2019. Contact <a href="mailto:registration@conzealand.nz" target="_blank">registration@conzealand.nz</a>
+    </div>
+  </footer>
+</body>
+</html>
