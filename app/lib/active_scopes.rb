@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,6 +38,16 @@ module ActiveScopes
         moment,
       )
     }
+
+    def active?
+      active_at?(Time.now)
+    end
+
+    def active_at?(moment)
+      return false if moment < active_from # inactive before it became active
+      return false if active_to.present? && active_to <= moment # inactive on or after moment
+      true
+    end
 
     private
 

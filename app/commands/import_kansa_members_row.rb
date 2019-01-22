@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 #
-# Copyright 2018 Matthew B. Gray, 2018 Andrew Esler
+# Copyright 2018 Andrew Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,11 +32,13 @@ class ImportKansaMembersRow
     "Charge Amount",
     "Payment Comment",
     "Member Number",
+    "Created At",
   ].freeze
 
   MEMBERSHIP_LOOKUP = {
     "Adult Attending":          "adult",
     "Child Attending":          "child",
+    "Child":                    "child",
     "Kiwi Pre-Support":         "kiwi",
     "Pre-Opposing":             "pre_oppose",
     "Pre-Supporting":           "pre_support",
@@ -55,17 +58,23 @@ class ImportKansaMembersRow
   end
 
   def call
-    new_user = User.new(email: cell_for("Email Address"))
+    new_user = User.find_or_create_by(email: cell_for("Email Address"))
     if !new_user.valid?
       errors << new_user.errors.full_messages.to_sentence
       return false
     end
 
     note = cell_for("Notes")
-    new_user.notes.build(content: note) if !note.nil?
+    new_user.notes.create!(content: note) if note.present?
 
     membership_number = cell_for("Member Number")
-    command = PurchaseMembership.new(membership, customer: new_user, membership_number: membership_number)
+    membership_record = lookup_membership
+    if !membership_record.present?
+      errors << "can't find membership_record"
+      return false
+    end
+
+    command = PurchaseMembership.new(membership_record, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
     if !new_purchase
@@ -73,14 +82,41 @@ class ImportKansaMembersRow
       return false
     end
 
-    new_purchase.update!(state: Purchase::PAID)
-    Charge.stripe.successful.create!(
-      user: new_user,
-      purchase: new_purchase,
-      amount: cell_for("Charge Amount"),
-      stripe_id: cell_for("Stripe Payment ID"),
-      comment: cell_for("Payment Comment"),
-    )
+    details = Detail.new(
+      claim:                            new_purchase.active_claim,
+      full_name:                        cell_for("Full name"),
+      preferred_first_name:             cell_for("PreferredFirstname"),
+      prefered_last_name:               cell_for("PreferedLastname"),
+      badgetitle:                       cell_for("BadgeTitle"),
+      badgesubtitle:                    cell_for("BadgeSubtitle"),
+      address_line_1:                   cell_for("Address Line1"),
+      address_line_2:                   cell_for("Address Line2"),
+      country:                          cell_for("Country"),
+      publication_format:               Detail::PAPERPUBS_ELECTRONIC,
+      created_at:                       import_date,
+      updated_at:                       import_date,
+    ).as_import
+
+    if !details.valid?
+      errors << details.errors.full_messages.to_sentence
+      return false
+    end
+
+    new_purchase.transaction do
+      new_purchase.update!(state: Purchase::PAID)
+      details.save!
+      Charge.stripe.successful.create!(
+        user: new_user,
+        purchase: new_purchase,
+        amount: cell_for("Charge Amount"),
+        stripe_id: cell_for("Stripe Payment ID"),
+        comment: cell_for("Payment Comment"),
+      )
+
+      new_purchase.update!(created_at: import_date, updated_at: import_date)
+      new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+      new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
+    end
 
     errors.none?
   end
@@ -95,14 +131,24 @@ class ImportKansaMembersRow
 
   private
 
-  def membership
+  def lookup_membership
     import_string = cell_for("Membership Status")
     membership_name = MEMBERSHIP_LOOKUP[import_string] || import_string
-    Membership.find_by!(name: membership_name)
+    Membership.find_by(name: membership_name)
   end
 
   def cell_for(column)
     offset = HEADINGS.index(column)
     row_data[offset]
+  end
+
+  def import_date
+    return @import_date if @import_date.present?
+
+    if cell_for("Created At").present?
+      @import_date = cell_for("Created At").to_datetime
+    else
+      @import_date = DateTime.now
+    end
   end
 end

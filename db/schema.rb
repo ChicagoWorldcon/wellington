@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190107083301) do
+ActiveRecord::Schema.define(version: 20190113184237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,12 +49,12 @@ ActiveRecord::Schema.define(version: 20190107083301) do
     t.string "prefered_last_name"
     t.string "badgetitle"
     t.string "badgesubtitle"
-    t.string "address_line_1", null: false
+    t.string "address_line_1"
     t.string "address_line_2"
     t.string "city"
     t.string "province"
     t.string "postal"
-    t.string "country", null: false
+    t.string "country"
     t.string "publication_format"
     t.boolean "show_in_listings"
     t.boolean "share_with_future_worldcons"

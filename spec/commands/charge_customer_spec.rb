@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ RSpec.describe ChargeCustomer do
 
   context "when paying only part of a purchase" do
     let(:amount_paid) { membership.price / 4 }
+    let(:amount_left) { membership.price - amount_paid }
     subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
@@ -88,6 +89,29 @@ RSpec.describe ChargeCustomer do
 
       it "marks purchase state as installment" do
         expect(purchase.state).to eq Purchase::INSTALLMENT
+      end
+
+      context "then membership pricing changes" do
+        before do
+          price_changed_at = 30.minutes.ago
+          membership.update!(active_to: price_changed_at)
+          expect(membership).to_not be_active_at(price_changed_at)
+
+          new_membership = membership.dup               # based on attrs from existing membership
+          new_membership.active_from = price_changed_at # starts from price change
+          new_membership.active_to = nil                # open ended
+          new_membership.price = membership.price + 100 # price is $1 more
+          new_membership.save!
+
+          expect(new_membership).to be_active_at(price_changed_at)
+          expect(membership.price).to be < new_membership.price
+        end
+
+        it "pays off the membership at the original price" do
+          success = ChargeCustomer.new(purchase, user, token, charge_amount: amount_left).call
+          expect(success).to be_truthy
+          expect(purchase.state).to eq(Purchase::PAID)
+        end
       end
     end
   end

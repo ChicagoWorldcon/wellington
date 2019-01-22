@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray, 2018 Andrew Esler
+# Copyright 2019 Matthew B. Gray, 2018 Andrew Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,14 @@ class ImportPresupporters
     @input_stream = input_stream
     @description = description
     @fallback_email = fallback_email
+
+    # Check our default user for errors
+    if !User.where(email: fallback_email).exists?
+      default_user = User.new(email: fallback_email)
+      if !default_user.valid?
+        raise ArgumentError, "Default user has errors, please fix: #{default_user.errors.full_messages.to_sentence}"
+      end
+    end
   end
 
   def call
