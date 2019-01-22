@@ -16,14 +16,14 @@
 
 require "rails_helper"
 
-RSpec.describe ImportPresupporters do
+RSpec.describe Import::Presupporters do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
-  let(:standard_headings) { ImportPresupportersRow::HEADINGS.join(",") }
+  let(:standard_headings) { Import::PresupportersRow::HEADINGS.join(",") }
   let(:my_description) { "test stream" }
   let(:my_fallback_email) { Faker::Internet.email }
 
-  subject(:command) { ImportPresupporters.new(read_stream, description: my_description, fallback_email: my_fallback_email) }
+  subject(:command) { Import::Presupporters.new(read_stream, description: my_description, fallback_email: my_fallback_email) }
 
   it "imports nothing when the file is empty" do
     expect { command.call }.to_not change { Membership.count }
@@ -46,23 +46,23 @@ RSpec.describe ImportPresupporters do
   context "with import data" do
     let(:data) do
       CSV.generate do |csv|
-        csv << ImportPresupportersRow::HEADINGS
+        csv << Import::PresupportersRow::HEADINGS
         csv << row_1
         csv << row_2
       end
     end
     let(:email_address) { "test@matthew.nz" }
-    let(:good_row_processor) { instance_double(ImportPresupportersRow, call: true) }
-    let(:bad_row_processor) { instance_double(ImportPresupportersRow, call: false, error_message: "gah") }
+    let(:good_row_processor) { instance_double(Import::PresupportersRow, call: true) }
+    let(:bad_row_processor) { instance_double(Import::PresupportersRow, call: false, error_message: "gah") }
 
-    let(:row_1) { ["1"] * ImportPresupportersRow::HEADINGS.count }
-    let(:row_2) { ["2"] * ImportPresupportersRow::HEADINGS.count }
+    let(:row_1) { ["1"] * Import::PresupportersRow::HEADINGS.count }
+    let(:row_2) { ["2"] * Import::PresupportersRow::HEADINGS.count }
 
     it "calls ProcessRow" do
-      expect(ImportPresupportersRow)
+      expect(Import::PresupportersRow)
         .to receive(:new)
         .and_return(good_row_processor)
-      expect(ImportPresupportersRow)
+      expect(Import::PresupportersRow)
         .to receive(:new)
         .and_return(good_row_processor)
       expect(command.call).to be_truthy
@@ -70,10 +70,10 @@ RSpec.describe ImportPresupporters do
     end
 
     it "raises errors with buggy rows" do
-      expect(ImportPresupportersRow)
+      expect(Import::PresupportersRow)
         .to receive(:new)
         .and_return(good_row_processor)
-      expect(ImportPresupportersRow)
+      expect(Import::PresupportersRow)
         .to receive(:new)
         .and_return(bad_row_processor)
       expect(command.call).to be_falsey

@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe ImportKansaMembersRow do
+RSpec.describe Import::KansaMembersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
@@ -30,7 +30,7 @@ RSpec.describe ImportKansaMembersRow do
   let(:member_number) { 7474 }
   let(:created_at) { "2018-08-19T00:39:07Z" }
 
-  subject(:command) { ImportKansaMembersRow.new(row_values, my_comment) }
+  subject(:command) { Import::KansaMembersRow.new(row_values, my_comment) }
 
   let(:row_values) do
     [

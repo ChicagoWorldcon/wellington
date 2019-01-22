@@ -18,7 +18,7 @@ require "csv"
 
 # ImportKansaMemberss takes a stream of text in CSV format and creates member records out of it. Check call return to see if
 # it succeeded or not, check errors to see why.
-class ImportKansaMembers
+class Import::KansaMembers
   attr_reader :input_stream, :description
 
   def initialize(input_stream, description)
@@ -32,7 +32,7 @@ class ImportKansaMembers
 
     User.transaction do
       table_body.each.with_index do |row_data, i|
-        row_import = ImportKansaMembersRow.new(row_data, "Import from row #{i+2} in #{description}")
+        row_import = Import::KansaMembersRow.new(row_data, "Import from row #{i+2} in #{description}")
         if !row_import.call
           errors << "Error on row #{i+2}: #{row_import.error_message}"
         end
@@ -53,7 +53,7 @@ class ImportKansaMembers
   private
 
   def check_headings
-    expected = ImportKansaMembersRow::HEADINGS
+    expected = Import::KansaMembersRow::HEADINGS
     if headings != expected
       missing = expected - headings
       excess = headings - expected

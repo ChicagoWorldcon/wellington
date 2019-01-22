@@ -21,7 +21,7 @@ namespace :import do
   desc "Imports from conzealand Kansa spreadsheet export. Override file location by setting KANSA_SRC env var"
   task kansa: :environment do
     kansa_csv = File.open(ENV["KANSA_SRC"] || DEFAULT_KANSA_CSV)
-    kansa_importer = ImportKansaMembers.new(File.open(kansa_csv), "Exported from Kansa")
+    kansa_importer = Import::KansaMembers.new(File.open(kansa_csv), "Exported from Kansa")
     if !kansa_importer.call
       puts "Kansa members failed to import with these errors..."
       puts kansa_importer.errors.each { |e| puts e }
@@ -31,7 +31,7 @@ namespace :import do
   desc "Imports from conzealand presupporters spreadsheet. Override file location by setting PRESUPPORT_SRC env var"
   task presupporters: :environment do
     presupport_csv = File.open(ENV["PRESUPPORT_SRC"] || DEFAULT_PRESUPPORT_SRC)
-    presupport_importer = ImportPresupporters.new(presupport_csv, description: "CoNZealand master members list, sheet 2", fallback_email: "registrations@conzealand.nz")
+    presupport_importer = Import::Presupporters.new(presupport_csv, description: "CoNZealand master members list, sheet 2", fallback_email: "registrations@conzealand.nz")
     if !presupport_importer.call
       puts "Presupporters failed to import with these errors..."
       presupport_importer.errors.each { |e| puts e }

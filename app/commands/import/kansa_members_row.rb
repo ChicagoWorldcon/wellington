@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ImportKansaMembersRow
+class Import::KansaMembersRow
   HEADINGS = [
     "Full name",
     "PreferredFirstname",

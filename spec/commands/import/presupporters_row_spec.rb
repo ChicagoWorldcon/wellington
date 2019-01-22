@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe ImportPresupportersRow do
+RSpec.describe Import::PresupportersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
@@ -25,7 +25,7 @@ RSpec.describe ImportPresupportersRow do
   let(:my_comment) { "suite comment" }
   let(:fallback_email) { "fallback@conzealand.nz" }
 
-  subject(:command) { ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email) }
+  subject(:command) { Import::PresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email) }
 
   let(:import_key) { "brilliant-import-key" }
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
@@ -73,8 +73,8 @@ RSpec.describe ImportPresupportersRow do
 
   context "when two rows have the same email adderss" do
     before do
-      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
-      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
+      expect(Import::PresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
+      expect(Import::PresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
     end
 
     it "only creates the one user" do
