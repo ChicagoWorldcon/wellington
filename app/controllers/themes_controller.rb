@@ -14,9 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root "charges#index"
+# ThemesController allows users to browse and work on Themes for their con without
+# needing to browse around the entire con website. From here you get a feel for how things will render
+class ThemesController < ApplicationController
+  LAYOUTS = "app/views/layouts"
 
-  resources :charges
-  resources :themes
+  layout -> { params[:id] }, only: :show
+
+  def index
+    layouts = Dir.each_child("#{Rails.root}/#{LAYOUTS}").to_a
+    html_layouts = layouts.select { |file| file.match(/html/) }
+    @themes = html_layouts.map { |file| file.gsub(/\.html.*/, "") }
+  end
+
+  def show
+  end
 end
