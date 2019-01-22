@@ -15,7 +15,13 @@
 # limitations under the License.
 
 Rails.application.routes.draw do
-  root "charges#index"
+  root to: "charges#index"
+
+  devise_for :users
+  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
+  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
+    get :logout, on: :collection
+  end
 
   resources :charges
   resources :themes

@@ -65,16 +65,22 @@ class ImportPresupportersRow
     "Young Adult Attending":    "young_adult",
   }.with_indifferent_access.freeze
 
-  attr_reader :row_data, :comment
+  attr_reader :row_data, :comment, :fallback_email
 
-  def initialize(row_data, comment)
+  def initialize(row_data, comment:, fallback_email:)
     @row_data = row_data
     @comment = comment
+    @fallback_email = fallback_email
+
+    default_user = User.new(email: fallback_email)
+    if !default_user.valid?
+      raise ArgumentError, "Default user has errors, please fix: #{default_user.errors.full_messages.to_sentence}"
+    end
   end
 
   def call
     Claim.transaction do
-      new_user = User.new(email: cell_for("Email Address"))
+      new_user = User.find_or_create_by(email: email_address)
       if !new_user.valid?
         errors << new_user.errors.full_messages.to_sentence
         return false
@@ -181,6 +187,15 @@ class ImportPresupportersRow
     import_string = cell_for("Membership Status")
     membership_name = MEMBERSHIP_LOOKUP[import_string] || import_string
     Membership.find_by(name: membership_name)
+  end
+
+  def email_address
+    lookup = cell_for("Email Address")
+    if lookup.present?
+      lookup
+    else
+      fallback_email
+    end
   end
 
   def cell_for(column)

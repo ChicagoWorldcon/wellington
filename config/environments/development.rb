@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,6 +44,12 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
   config.action_mailer.delivery_method = :smtp
+
+  # Advice from rails g devise:install
+  config.action_mailer.default_url_options = {
+    host: "localhost",
+    port: 3000
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

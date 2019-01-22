@@ -26,153 +26,35 @@
     <div class="col-12 col-md-8">
       <div class="l-panel">
         <h2>Sign Up</h2>
-        <form action="" method="post" class="form form-m-membership" id="membership-form">
-          <p>
-            This purchase will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our payment processor.
-          </p>
-          <fieldset>
-            <legend>Member Details</legend>
-            <div class="form-group">
-            <label for="membership-type">Membership type</label>
-            <select id="membership-type" name="MembershipType" class="form-control">
-              <option value="" disabled>--Please choose an option--</option>
-              <option value="Supporter">Supporter</option>
-              <option value="Kid In Tow">Kid-In-Tow</option>
-              <option value="Child">Child</option>
-              <option value="Young Adult">Young Adult</option>
-              <option value="Unwaged">Unwaged</option>
-              <option value="Adult">Adult</option>
-            </select>
-            </div>
-            <div class="form-group">
-              <label for="member-legal-name">Legal Name <span class="required">*</span></label>
-              <input type="text" name="MemberLegalName" id="member-legal-name" class="form-control form-control-m-error" required>
-              <p class="form-error">
-                Form error example - Please enter your legal name.
-              </p>
-              <p class="form-note">
-                This is the name that appears on your official ID. We will need to check your ID at registration.
-              </p>
-            </div>
-            <fieldset class="l-v-spacing">
-              <div class="row">
-                <div class="col-12 col-md-6">
-                  <div class="form-group">
-                    <label for="member-first-name">First Name <span class="required">*</span></label>
-                    <input type="text" name="MemberFirstName" id="member-first-name" class="form-control" required>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-group">
-                    <label for="member-last-name">Last Name <span class="required">*</span></label>
-                    <input type="text" name="MemberLastName" id="member-last-name" class="form-control" required>
-                  </div>
-                </div>
-              </div>
-              <p class="form-note form-note-m-group">
-                This is the name you would like to be addressed by. If it is left blank, you will be addressed by your legal name.
-              </p>
-            </fieldset>
-            <div class="form-group">
-              <label for="member-badge-name">Badge Name</label>
-              <input type="text" name="MemberBadgeName" id="member-badge-name" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="member-badge-subtitle">Badge Subtitle</label>
-              <input type="text" name="MemberBadgeSubtitle" id="member-badge-subtitle" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="member-email">Email <span class="required">*</span></label>
-              <input type="email" name="MemberEmail" id="member-email" class="form-control" required>
-              <p class="form-note">
-                How we'll get in touch with you before the con, and where we'll send important information about the Hugo Awards and Worldcon Site Selection.
-              </p>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>Address</legend>
-            <p class="form-note form-note-m-group">Where do you get your mail? This should match your credit card address, if you use one.</p>
-            <div class="form-group">
-              <label for="member-address-line1">Address Line 1 <span class="required">*</span></label>
-              <input type="text" name="MemberAddressLine1" id="member-address-line1" class="form-control"required>
-            </div>
-            <div class="form-group">
-              <label for="member-address-line2">Address Line 2</label>
-              <input type="text" name="MemberAddressLine2" id="member-address-line2" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="member-country">Country <span class="required">*</span></label>
-              <input type="text" name="MemberCountry" id="member-country" class="form-control" required>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>Other Details</legend>
-            <p class="form-note form-note-m-group">
-              Select an option - Radio buttons example
-            </p>
-            <div class="form-group">
-              <div class="form-options">
-                <input type="radio" id="radio-option-1" name="RadioGroup" value="Option 1" class="form-control form-control-m-radio">
-                <label for="radio-option-1">Option 1</label>
-              </div>
-              <div class="form-options">
-                <input type="radio" id="radio-option-2" name="RadioGroup" value="Option 2" class="form-control form-control-m-radio">
-                <label for="radio-option-2">Option 2</label>
-              </div>
-              <div class="form-options">
-                <input type="radio" id="radio-option-3" name="RadioGroup" value="Option 3" class="form-control form-control-m-radio">
-                <label for="radio-option-2">Option 3</label>
-              </div>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>Other Details</legend>
-            <p class="form-note form-note-m-group">
-              Select multiple options - Checkboxes example
-            </p>
-            <div class="form-group">
-              <div class="form-options">
-                <input type="checkbox" id="checkbox-option-1" name="CheckboxGroup" value="Option 1" class="form-control form-control-m-checkbox">
-                <label for="checkbox-option-1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</label>
-              </div>
-              <div class="form-options">
-                <input type="checkbox" id="checkbox-option-2" name="CheckboxGroup" value="Option 2" class="form-control form-control-m-checkbox">
-                <label for="checkbox-option-1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</label>
-              </div>
-              <div class="form-options">
-                <input type="checkbox" id="checkbox-option-3" name="CheckboxGroup" value="Option 3" class="form-control form-control-m-checkbox">
-                <label for="checkbox-option-3">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</label>
-              </div>
-            </div>
-          </fieldset>
-          <div class="l-v-spacing-both">
-            <div class="form-group">
-            <input type="submit" value="Sign Up" class="btn btn-m-full-width">
-          </div>
-          </div>
-        </form>
-      </div>
-    </div>
 
-    <div class="col-12 col-md-4">
-      <div class="l-panel l-panel-m-membership-types">
-        <h3>Membership Types</h3>
-        <ul class="l-panel-m-membership-types--list">
-          <li><h4 class="h6-like">Adult Membership</h4></li>
-          <li><h4 class="h6-like">Young Adult Membership</h4>
-            <p>born after 2000</p>
-          </li>
-          <li><h4 class="h6-like">Unwaged Membership</h4>
-            <p>NZ residents only</p>
-          </li>
-          <li><h4 class="h6-like">Child Membership</h4>
-            <p>born after 2005</p>
-          </li>
-          <li><h4 class="h6-like">Kid-in-tow</h4>
-            <p>born after 2015</p>
-          </li>
-          <li><h4 class="h6-like">Supporting Membership</h4></li>
-        </ul>
+        <p>
+          <% if user_signed_in? %>
+            Logged in as <%= current_user.email %>. <%= link_to("Log out", logout_user_tokens_path) %>
+          <% else %>
+            <%= link_to("Log in", new_user_token_path) %>
+          <% end %>
+        </p>
+
+        <% if flash[:error].present? %>
+          <div id="error_explanation">
+            <p><%= flash[:error] %></p>
+          </div>
+        <% end %>
+
+        <%= form_tag(charges_path, html: { class: "form form-m-membership", id: "membership-form" }) do %>
+          <article>
+            <label class="amount">
+              <span>Amount: $5.00</span>
+            </label>
+          </article>
+
+          <script src="https://checkout.stripe.com/checkout.js"
+            class="stripe-button"
+            data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+            data-description="Payment"
+            data-amount="500"
+            data-locale="auto"></script>
+        <% end %>
       </div>
     </div>
   </div>

@@ -4,7 +4,7 @@ before_script:
   - ruby -v
   - psql --version
   - which ruby
-  - gem install bundler --no-ri --no-rdoc
+  - gem install bundler --no-document
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
   - service postgresql start
   - su postgres sh -c "createuser root"

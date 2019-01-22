@@ -23,8 +23,9 @@ RSpec.describe ImportPresupportersRow do
 
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
+  let(:fallback_email) { "fallback@conzealand.nz" }
 
-  subject(:command) { ImportPresupportersRow.new(row_values, my_comment) }
+  subject(:command) { ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email) }
 
   let(:import_key) { "brilliant-import-key" }
   let(:spreadsheet_notes) { "Enjoys long walks by the sea" }
@@ -71,6 +72,21 @@ RSpec.describe ImportPresupportersRow do
     ]
   end
 
+  context "when two rows have the same email adderss" do
+    before do
+      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
+      expect(ImportPresupportersRow.new(row_values, comment: my_comment, fallback_email: fallback_email).call).to be_truthy
+    end
+
+    it "only creates the one user" do
+      expect(User.count).to be(1)
+    end
+
+    it "creates two sets of detail rows" do
+      expect(Detail.count).to be(2)
+    end
+  end
+
   context "with one member" do
     it "executes successfully" do
       expect(command.call).to be_truthy
@@ -90,35 +106,6 @@ RSpec.describe ImportPresupportersRow do
     it "creates detail record from row" do
       expect { command.call }.to change { Detail.count }.by(1)
       expect(Detail.last.import_key).to eq import_key
-    end
-
-    describe "#preferred_publication_format" do
-      before { command.call }
-      subject { Detail.last.publication_format }
-
-      context "when electronic and mail" do
-        let(:paper_pubs) { "TRUE" }
-        let(:no_electonic_publications) { "FALSE" }
-        it { is_expected.to eq(Detail::PAPERPUBS_BOTH) }
-      end
-
-      context "when mail only" do
-        let(:paper_pubs) { "TRUE" }
-        let(:no_electonic_publications) { "TRUE" }
-        it { is_expected.to eq(Detail::PAPERPUBS_MAIL) }
-      end
-
-      context "when electronic only" do
-        let(:paper_pubs) { "FALSE" }
-        let(:no_electonic_publications) { "FALSE" }
-        it { is_expected.to eq(Detail::PAPERPUBS_ELECTRONIC) }
-      end
-
-      context "when opting out of paper pubs" do
-        let(:paper_pubs) { "FALSE" }
-        let(:no_electonic_publications) { "TRUE" }
-        it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
-      end
     end
 
     context "after run" do
@@ -145,6 +132,42 @@ RSpec.describe ImportPresupportersRow do
       it "stores notes on that record" do
         expect(Note.last.content).to eq spreadsheet_notes
       end
+
+      describe "#preferred_publication_format" do
+        subject { Detail.last.publication_format }
+
+        context "when electronic and mail" do
+          let(:paper_pubs) { "TRUE" }
+          let(:no_electonic_publications) { "FALSE" }
+          it { is_expected.to eq(Detail::PAPERPUBS_BOTH) }
+        end
+
+        context "when mail only" do
+          let(:paper_pubs) { "TRUE" }
+          let(:no_electonic_publications) { "TRUE" }
+          it { is_expected.to eq(Detail::PAPERPUBS_MAIL) }
+        end
+
+        context "when electronic only" do
+          let(:paper_pubs) { "FALSE" }
+          let(:no_electonic_publications) { "FALSE" }
+          it { is_expected.to eq(Detail::PAPERPUBS_ELECTRONIC) }
+        end
+
+        context "when opting out of paper pubs" do
+          let(:paper_pubs) { "FALSE" }
+          let(:no_electonic_publications) { "TRUE" }
+          it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
+        end
+      end
+    end
+  end
+
+  context "when email address is empty" do
+    let(:fallback_email) { "" }
+
+    it "fails with errors" do
+      expect { command }.to raise_error(ArgumentError)
     end
   end
 end
