@@ -28,11 +28,7 @@
         <h2>Sign Up</h2>
 
         <p>
-          <% if user_signed_in? %>
-            Logged in as <%= current_user.email %>. <%= link_to("Log out", logout_user_tokens_path) %>
-          <% else %>
-            <%= link_to("Log in", new_user_token_path) %>
-          <% end %>
+          <%= render "/shared/current_user_options" %>
         </p>
 
         <% if flash[:error].present? %>
