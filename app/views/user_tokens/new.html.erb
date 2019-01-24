@@ -18,4 +18,8 @@
   <%= label_tag(:email, "Email:") %>
   <%= text_field_tag(:email) %>
   <%= submit_tag("Send Login Link") %>
+
+  <% if Rails.env.development? %>
+    <%= submit_tag(UserTokensController::BYPASS_AUTH) %>
+  <% end %>
 <% end %>
