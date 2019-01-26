@@ -17,6 +17,13 @@
 require "rails_helper"
 
 RSpec.describe MembershipOffer do
-  subject(:model) { described_class.new }
+  subject(:model) { described_class.new(membership) }
+  let!(:membership) { create(:membership, :adult) }
+
   it { is_expected.to_not be_nil }
+
+  describe "#self.options" do
+    subject(:options) { MembershipOffer.options }
+    it { is_expected.to_not be_empty }
+  end
 end
