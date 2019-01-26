@@ -22,6 +22,13 @@ RSpec.describe MembershipOffer do
 
   it { is_expected.to_not be_nil }
 
+  describe "#to_s" do
+    subject(:to_s) { model.to_s }
+    it { is_expected.to match(/adult/i) }
+    it { is_expected.to match(/\$\d+\.\d+/) }
+    it { is_expected.to match(/NZD/) }
+  end
+
   describe "#self.options" do
     subject(:options) { MembershipOffer.options }
     it { is_expected.to_not be_empty }

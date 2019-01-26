@@ -15,6 +15,7 @@
 # limitations under the License.
 
 class MembershipOffer
+
   attr_reader :membership
 
   def self.options
@@ -22,5 +23,15 @@ class MembershipOffer
   end
 
   def initialize(membership)
+    @membership = membership
+  end
+
+  def to_s
+    "#{membership} (#{formatted_price})"
+  end
+
+  # TODO Extract to i18n
+  def formatted_price
+    "$%.2f NZD" % (membership.price * 1.0 / 100)
   end
 end

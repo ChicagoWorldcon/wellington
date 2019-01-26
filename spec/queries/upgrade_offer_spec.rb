@@ -32,6 +32,13 @@ RSpec.describe UpgradeOffer do
     expect(offer.price).to eq(adult.price - silver_fern.price)
   end
 
+  describe "#to_s" do
+    subject(:to_s) { offer.to_s }
+    it { is_expected.to match(/silver fern/i) }
+    it { is_expected.to match(/\$\d+\.\d+/i) }
+    it { is_expected.to match(/NZD/i) }
+  end
+
   describe "#from" do
     let(:upgrade_offers) { UpgradeOffer.from(current_membership) }
     subject(:upgrade_offer_strings) { upgrade_offers.map(&:to_s) }

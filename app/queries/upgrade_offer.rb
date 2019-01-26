@@ -32,7 +32,12 @@ class UpgradeOffer
   end
 
   def to_s
-    "Upgrade #{from_membership} to #{to_membership}"
+    "Upgrade #{from_membership} to #{to_membership} (#{formatted_price})"
+  end
+
+  # TODO Extract to i18n
+  def formatted_price
+    "$%.2f NZD" % (price * 1.0 / 100)
   end
 
   def price
