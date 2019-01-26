@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe NewMembershipOffer do
+RSpec.describe MembershipOffer do
   subject(:model) { described_class.new }
   it { is_expected.to_not be_nil }
 end
