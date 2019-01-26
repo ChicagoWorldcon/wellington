@@ -26,4 +26,5 @@ Rails.application.routes.draw do
   resources :charges
   resources :themes
   resources :memberships
+  resources :purchases
 end

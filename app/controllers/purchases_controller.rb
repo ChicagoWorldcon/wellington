@@ -14,23 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class MembershipOffer
-  attr_reader :membership
-
-  def self.options
-    Membership.active.map { |m| MembershipOffer.new(m) }
-  end
-
-  def initialize(membership)
-    @membership = membership
-  end
-
-  def to_s
-    "#{membership} (#{formatted_price})"
-  end
-
-  # TODO Extract to i18n
-  def formatted_price
-    "$%.2f NZD" % (membership.price * 1.0 / 100)
+class PurchasesController < ApplicationController
+  def new
+    @offers = MembershipOffer.options
+    @purchase = Purchase.new
+    @detail = Detail.new
+    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o, o.humanize] }
   end
 end

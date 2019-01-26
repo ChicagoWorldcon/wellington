@@ -14,23 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class MembershipOffer
-  attr_reader :membership
+require "rails_helper"
 
-  def self.options
-    Membership.active.map { |m| MembershipOffer.new(m) }
-  end
+RSpec.describe PurchasesController, type: :controller do
 
-  def initialize(membership)
-    @membership = membership
-  end
-
-  def to_s
-    "#{membership} (#{formatted_price})"
-  end
-
-  # TODO Extract to i18n
-  def formatted_price
-    "$%.2f NZD" % (membership.price * 1.0 / 100)
-  end
 end
