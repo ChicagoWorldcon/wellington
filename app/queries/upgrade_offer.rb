@@ -18,8 +18,12 @@
 class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
-  def self.from(membership)
-    []
+  def self.from(current_membership, target_membership: nil)
+    options = Membership.active.where("price > ?", current_membership.price)
+    options = options.where(id: target_membership) if target_membership.present?
+    options.map do |membership|
+      UpgradeOffer.new(from: current_membership, to: membership)
+    end
   end
 
   def initialize(from:, to:)
@@ -28,7 +32,7 @@ class UpgradeOffer
   end
 
   def title
-    "Upgrade #{from_membership.name} to #{to_membership.name}"
+    "Upgrade #{from_membership} to #{to_membership}"
   end
 
   def price

@@ -31,7 +31,7 @@ RSpec.describe UpgradeMembership do
     it "incldues helpful error message" do
       expect { subject.call }
         .to change { subject.errors }
-        .to include(/cannot upgrade to young_adult/i)
+        .to include(/cannot upgrade to young adult/i)
     end
 
     it "doesn't change orders" do

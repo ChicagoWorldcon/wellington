@@ -17,8 +17,14 @@
 require "rails_helper"
 
 RSpec.describe UpgradeOffer do
+  let!(:adult)       { create(:membership, :adult) }
+  let!(:young_adult) { create(:membership, :young_adult) }
+  let!(:unwaged)     { create(:membership, :unwaged) }
+  let!(:child)       { create(:membership, :child) }
+  let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
+  let!(:supporting)  { create(:membership, :supporting) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
-  let!(:adult) { create(:membership, :adult) }
+  let!(:kiwi)        { create(:membership, :kiwi) }
 
   subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
 
@@ -27,9 +33,48 @@ RSpec.describe UpgradeOffer do
   end
 
   describe "#from" do
-    context "adult membership" do
-      subject(:offers) { UpgradeOffer.from(adult) }
+    let(:upgrade_offers) { UpgradeOffer.from(current_membership) }
+    subject(:upgrade_offer_titles) { upgrade_offers.map(&:title) }
+
+    context "when adult" do
+      let(:current_membership) { adult }
       it { is_expected.to be_empty }
+    end
+
+    context "when unwaged" do
+      let(:current_membership) { unwaged }
+      it { is_expected.to include /adult/i }
+      it { is_expected.to_not include /young adult/i }
+      it { is_expected.to_not include /child/i }
+    end
+
+    context "when young adult" do
+      let(:current_membership) { young_adult }
+      it { is_expected.to include /adult/i }
+      it { is_expected.to_not include /unwaged/i }
+      it { is_expected.to_not include /kid in tow/i }
+    end
+
+    context "when kid_in_tow" do
+      let(:current_membership) { supporting }
+      it { is_expected.to include /adult/i }
+      it { is_expected.to include /young adult/i }
+      it { is_expected.to include /unwaged/i }
+      it { is_expected.to include /child/i }
+      it { is_expected.to_not include /silver fern/i }
+    end
+
+    context "when silver_fern" do
+      let(:current_membership) { silver_fern }
+      it { is_expected.to include /adult/i }
+      it { is_expected.to_not include /young adult/i }
+    end
+
+    context "when kiwi" do
+      let(:current_membership) { kiwi }
+      it { is_expected.to include /adult/i }
+      it { is_expected.to include /young adult/i }
+      it { is_expected.to_not include /silver fern/i }
     end
   end
 end
