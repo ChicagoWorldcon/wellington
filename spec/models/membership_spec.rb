@@ -59,4 +59,9 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not include(our_membership) }
     end
   end
+
+  describe "#to_s" do
+    subject(:to_s) { create(:membership, :kid_in_tow).to_s }
+    it { is_expected.to eq "Kid in tow" }
+  end
 end

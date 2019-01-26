@@ -24,4 +24,10 @@ class Membership < ApplicationRecord
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :purchases, through: :active_orders
+
+  scope :by_price, ->() { order(:price) }
+
+  def to_s
+    name.humanize
+  end
 end
