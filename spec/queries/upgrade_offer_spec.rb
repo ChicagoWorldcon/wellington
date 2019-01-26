@@ -43,38 +43,38 @@ RSpec.describe UpgradeOffer do
 
     context "when unwaged" do
       let(:current_membership) { unwaged }
-      it { is_expected.to include /adult/i }
-      it { is_expected.to_not include /young adult/i }
-      it { is_expected.to_not include /child/i }
+      it { is_expected.to include(/adult/i) }
+      it { is_expected.to_not include(/young adult/i) }
+      it { is_expected.to_not include(/child/i) }
     end
 
     context "when young adult" do
       let(:current_membership) { young_adult }
-      it { is_expected.to include /adult/i }
-      it { is_expected.to_not include /unwaged/i }
-      it { is_expected.to_not include /kid in tow/i }
+      it { is_expected.to include(/adult/i) }
+      it { is_expected.to_not include(/unwaged/i) }
+      it { is_expected.to_not include(/kid in tow/i) }
     end
 
     context "when kid_in_tow" do
       let(:current_membership) { supporting }
-      it { is_expected.to include /adult/i }
-      it { is_expected.to include /young adult/i }
-      it { is_expected.to include /unwaged/i }
-      it { is_expected.to include /child/i }
-      it { is_expected.to_not include /silver fern/i }
+      it { is_expected.to include(/adult/i) }
+      it { is_expected.to include(/young adult/i) }
+      it { is_expected.to include(/unwaged/i) }
+      it { is_expected.to include(/child/i) }
+      it { is_expected.to_not include(/silver fern/i) }
     end
 
     context "when silver_fern" do
       let(:current_membership) { silver_fern }
-      it { is_expected.to include /adult/i }
-      it { is_expected.to_not include /young adult/i }
+      it { is_expected.to include(/adult/i) }
+      it { is_expected.to_not include(/young adult/i) }
     end
 
     context "when kiwi" do
       let(:current_membership) { kiwi }
-      it { is_expected.to include /adult/i }
-      it { is_expected.to include /young adult/i }
-      it { is_expected.to_not include /silver fern/i }
+      it { is_expected.to include(/adult/i) }
+      it { is_expected.to include(/young adult/i) }
+      it { is_expected.to_not include(/silver fern/i) }
     end
   end
 end
