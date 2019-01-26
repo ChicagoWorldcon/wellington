@@ -34,7 +34,7 @@ RSpec.describe UpgradeOffer do
 
   describe "#from" do
     let(:upgrade_offers) { UpgradeOffer.from(current_membership) }
-    subject(:upgrade_offer_titles) { upgrade_offers.map(&:title) }
+    subject(:upgrade_offer_strings) { upgrade_offers.map(&:to_s) }
 
     context "when adult" do
       let(:current_membership) { adult }

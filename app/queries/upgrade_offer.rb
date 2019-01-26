@@ -31,7 +31,7 @@ class UpgradeOffer
     @to_membership = to
   end
 
-  def title
+  def to_s
     "Upgrade #{from_membership} to #{to_membership}"
   end
 
