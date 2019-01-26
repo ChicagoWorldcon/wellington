@@ -17,12 +17,19 @@
 require "rails_helper"
 
 RSpec.describe UpgradeOffer do
-  let(:silver_fern) { create(:membership, :silver_fern) }
-  let(:adult) { create(:membership, :adult) }
+  let!(:silver_fern) { create(:membership, :silver_fern) }
+  let!(:adult) { create(:membership, :adult) }
 
   subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
 
   it "shows price as the difference of memberships" do
     expect(offer.price).to eq(adult.price - silver_fern.price)
+  end
+
+  describe "#from" do
+    context "adult membership" do
+      subject(:offers) { UpgradeOffer.from(adult) }
+      it { is_expected.to be_empty }
+    end
   end
 end

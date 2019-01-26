@@ -18,6 +18,10 @@
 class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
+  def self.from(membership)
+    []
+  end
+
   def initialize(from:, to:)
     @from_membership = from
     @to_membership = to
