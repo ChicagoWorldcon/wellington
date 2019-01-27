@@ -33,17 +33,17 @@
               payment processor.
             </p>
 
-            <fieldset>
+            <fieldset class="l-v-spacing">
               <legend>Membership Details</legend>
 
               <div class="form-group">
-                <label for="membership-type">Membership type</span></label>
-                <%= select_tag(:membership_type, options_for_select(@offers), class: "form-control") %>
+                <label for="membership_type">Membership type</span></label>
+                <%= select_tag(:membership_type, options_for_select(@offers), class: "form-control", id: "membership_type") %>
               </div>
 
               <fieldset class="l-v-spacing">
-                <label for="full_name">Legal Name <span class="required">*</span></label>
-                <%= detail.text_field(:full_name, required: true, class: "form-control") %>
+                <label for="full_name">Legal Name (required)</label>
+                <%= detail.text_field(:full_name, required: true, class: "form-control", id: "full_name") %>
               </fieldset>
               <p class="form-note form-note-m-group">
                 This is the name that appears on your official ID. We will need to check your ID at registration.
@@ -54,13 +54,13 @@
                   <div class="col-12 col-md-6">
                     <div class="form-group">
                       <label for="preferred_first_name">Public First Name</span></label>
-                      <%= detail.text_field(:preferred_first_name, class: "form-control") %>
+                      <%= detail.text_field(:preferred_first_name, class: "form-control", id: "preferred_first_name") %>
                     </div>
                   </div>
                   <div class="col-12 col-md-6">
                     <div class="form-group">
                       <label for="prefered_last_name">Public Last Name</label>
-                      <%= detail.text_field(:prefered_last_name, class: "form-control") %>
+                      <%= detail.text_field(:prefered_last_name, class: "form-control", id: "prefered_last_name") %>
                     </div>
                   </div>
                 </div>
@@ -72,53 +72,53 @@
 
               <div class="form-group">
                 <label for="badgetitle">Badge Name</label>
-                <%= detail.text_field(:badgetitle, class: "form-control") %>
+                <%= detail.text_field(:badgetitle, class: "form-control", id: "badgetitle") %>
               </div>
 
               <div class="form-group">
                 <label for="badgesubtitle">Badge Subtitle</label>
-                <%= detail.text_field(:badgesubtitle, class: "form-control") %>
+                <%= detail.text_field(:badgesubtitle, class: "form-control", id: "badgesubtitle") %>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:show_in_listings, class: "form-control form-control-m-checkbox") %>
+                <%= detail.check_box(:show_in_listings, class: "form-control form-control-m-checkbox", id: "show_in_listings") %>
                 <label for="show_in_listings">Show name in listings?</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:share_with_future_worldcons, class: "form-control form-control-m-checkbox") %>
+                <%= detail.check_box(:share_with_future_worldcons, class: "form-control form-control-m-checkbox", id: "share_with_future_worldcons") %>
                 <label for="share_with_future_worldcons">Share with future worldcons?</label>
               </div>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="l-v-spacing">
               <legend>Address and Contact Information</legend>
               <p class="form-note form-note-m-group">
                 Where do you get your mail? This should match your credit card address, if you use one.
               </p>
 
               <div class="form-group">
-                <label for="address_line_1">Address Line 1 <span class="required">*</span></label>
-                <%= detail.text_field(:address_line_1, required: true, class: "form-control") %>
+                <label for="address_line_1">Address Line 1 (required)</label>
+                <%= detail.text_field(:address_line_1, required: true, class: "form-control", id: "address_line_1") %>
               </div>
 
               <div class="form-group">
                 <label for="address_line_2">Address Line 2</label>
-                <%= detail.text_field(:address_line_2, class: "form-control") %>
+                <%= detail.text_field(:address_line_2, class: "form-control", id: "address_line_2") %>
               </div>
 
               <div class="form-group">
                 <label for="city">City</label>
-                <%= detail.text_field(:city, class: "form-control") %>
+                <%= detail.text_field(:city, class: "form-control", id: "city") %>
               </div>
 
-              <fieldset class="l-v-spacing">
+              <fieldset>
                 <div class="row">
                   <div class="col-12 col-md-6">
                     <div class="form-group">
                       <div class="form-group">
                         <label for="province">Province</label>
-                        <%= detail.text_field(:province, class: "form-control") %>
+                        <%= detail.text_field(:province, class: "form-control", id: "province") %>
                       </div>
                     </div>
                   </div>
@@ -126,20 +126,20 @@
                     <div class="form-group">
                       <div class="form-group">
                         <label for="postal">Post code</label>
-                        <%= detail.text_field(:postal, class: "form-control") %>
+                        <%= detail.text_field(:postal, class: "form-control", id: "postal") %>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="country">Country</label>
-                  <%= detail.text_field(:country, class: "form-control") %>
+                  <label for="country">Country (required)</label>
+                  <%= detail.text_field(:country, required: true, class: "form-control", id: "country") %>
                 </div>
               </fieldset>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="l-v-spacing">
               <legend>Additional Options</legend>
               <p class="form-note form-note-m-group">
                 This is how we know if you want to be contacted about specific things. We ask these questions to help us
@@ -147,38 +147,38 @@
               </p>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_volunteering, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in volunteering before or at the convention</label>
+                <%= detail.check_box(:interest_volunteering, class: "form-control form-control-m-checkbox", id: "interest_volunteering") %>
+                <label for="interest_volunteering">I am interested in volunteering before or at the convention</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_accessibility_services, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I would like information on disability or accessibility services at CoNZealand</label>
+                <%= detail.check_box(:interest_accessibility_services, class: "form-control form-control-m-checkbox", id: "interest_accessibility_services") %>
+                <label for="interest_accessibility_services">I would like information on disability or accessibility services at CoNZealand</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_being_on_program, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in being a program participant</label>
+                <%= detail.check_box(:interest_being_on_program, class: "form-control form-control-m-checkbox", id: "interest_being_on_program") %>
+                <label for="interest_being_on_program">I am interested in being a program participant</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_dealers, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in vending in the Dealers Room</label>
+                <%= detail.check_box(:interest_dealers, class: "form-control form-control-m-checkbox", id: "interest_dealers") %>
+                <label for="interest_dealers">I am interested in vending in the Dealers Room</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_selling_at_art_show, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in selling my art in the art show</label>
+                <%= detail.check_box(:interest_selling_at_art_show, class: "form-control form-control-m-checkbox", id: "interest_selling_at_art_show") %>
+                <label for="interest_selling_at_art_show">I am interested in selling my art in the art show</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_exhibiting, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in exhibiting at the convention</label>
+                <%= detail.check_box(:interest_exhibiting, class: "form-control form-control-m-checkbox", id: "interest_exhibiting") %>
+                <label for="interest_exhibiting">I am interested in exhibiting at the convention</label>
               </div>
 
               <div class="form-options">
-                <%= detail.check_box(:interest_performing, class: "form-control form-control-m-checkbox") %>
-                <label for="show_in_listings">I am interested in performing at the convention</label>
+                <%= detail.check_box(:interest_performing, class: "form-control form-control-m-checkbox", id: "interest_performing") %>
+                <label for="interest_performing">I am interested in performing at the convention</label>
               </div>
             </fieldset>
 
