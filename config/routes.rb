@@ -27,4 +27,6 @@ Rails.application.routes.draw do
   resources :themes
   resources :memberships
   resources :purchases
+
+  mount(LetterOpenerWeb::Engine, at: "/letter_opener") if Rails.env.development?
 end
