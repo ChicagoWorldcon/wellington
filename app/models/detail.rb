@@ -16,9 +16,16 @@
 
 class Detail < ApplicationRecord
   PAPERPUBS_ELECTRONIC = "electronic_only"
-  PAPERPUBS_MAIL = "mail_only"
-  PAPERPUBS_BOTH = "both"
+  PAPERPUBS_MAIL = "post_only"
+  PAPERPUBS_BOTH = "electronic_and_post"
   PAPERPUBS_NONE = "none"
+
+  PAPERPUBS_OPTIONS = [
+    PAPERPUBS_ELECTRONIC,
+    PAPERPUBS_MAIL,
+    PAPERPUBS_BOTH,
+    PAPERPUBS_NONE
+  ].freeze
 
   belongs_to :claim
 
@@ -28,7 +35,7 @@ class Detail < ApplicationRecord
   validates :claim, presence: true
   validates :country, presence: true, unless: :for_import
   validates :full_name, presence: true
-  validates :publication_format, inclusion: { in: [PAPERPUBS_ELECTRONIC, PAPERPUBS_MAIL, PAPERPUBS_BOTH, PAPERPUBS_NONE] }
+  validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import
     @for_import = true
