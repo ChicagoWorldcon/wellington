@@ -47,7 +47,8 @@ class Import::KansaMembersRow
     "Tuatara Pre-Support":      "tuatara",
     "Young Adult Attending":    "young_adult",
     "Adult":                    "adult",
-    "Supporter":                "supporting"
+    "Supporter":                "supporting",
+    "Unwaged":                  "unwaged",
   }.with_indifferent_access.freeze
 
   attr_reader :row_data, :comment
@@ -87,8 +88,8 @@ class Import::KansaMembersRow
       full_name:                        cell_for("Full name"),
       preferred_first_name:             cell_for("PreferredFirstname"),
       prefered_last_name:               cell_for("PreferedLastname"),
-      badgetitle:                       cell_for("BadgeTitle"),
-      badgesubtitle:                    cell_for("BadgeSubtitle"),
+      badge_title:                      cell_for("BadgeTitle"),
+      badge_subtitle:                   cell_for("BadgeSubtitle"),
       address_line_1:                   cell_for("Address Line1"),
       address_line_2:                   cell_for("Address Line2"),
       country:                          cell_for("Country"),
