@@ -40,6 +40,7 @@ group :development, :test do
 end
 
 group :development do
+  gem "letter_opener_web"
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
   gem "pry"                               # nicer debugger, use 'binding.pry'
   gem "pry-nav"                           # adds 'step' and 'next' to pry
@@ -47,7 +48,6 @@ group :development do
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # Access an IRB console on exception pages or with <%= console %> in code
-  gem "letter_opener_web"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
