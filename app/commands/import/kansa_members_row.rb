@@ -87,7 +87,7 @@ class Import::KansaMembersRow
       claim:                            new_purchase.active_claim,
       full_name:                        cell_for("Full name"),
       preferred_first_name:             cell_for("PreferredFirstname"),
-      prefered_last_name:               cell_for("PreferedLastname"),
+      preferred_last_name:              cell_for("PreferedLastname"),
       badge_title:                      cell_for("BadgeTitle"),
       badge_subtitle:                   cell_for("BadgeSubtitle"),
       address_line_1:                   cell_for("Address Line1"),
