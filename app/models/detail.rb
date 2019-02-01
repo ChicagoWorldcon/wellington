@@ -15,10 +15,11 @@
 # limitations under the License.
 
 class Detail < ApplicationRecord
-  PAPERPUBS_ELECTRONIC = "electronic_only"
-  PAPERPUBS_MAIL = "post_only"
-  PAPERPUBS_BOTH = "electronic_and_post"
-  PAPERPUBS_NONE = "none"
+  # TODO Move this to i18n
+  PAPERPUBS_ELECTRONIC = "send_me_email"
+  PAPERPUBS_MAIL = "send_me_post"
+  PAPERPUBS_BOTH = "send_me_email_and_post"
+  PAPERPUBS_NONE = "no_paper_pubs"
 
   PAPERPUBS_OPTIONS = [
     PAPERPUBS_ELECTRONIC,
