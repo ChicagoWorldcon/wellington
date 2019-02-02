@@ -42,4 +42,12 @@ class Detail < ApplicationRecord
     @for_import = true
     self
   end
+
+  def to_s
+    if preferred_first_name.present? || preferred_last_name.present?
+      "#{preferred_first_name} #{preferred_last_name}".strip
+    else
+      "#{full_name}"
+    end
+  end
 end
