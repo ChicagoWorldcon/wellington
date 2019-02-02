@@ -15,7 +15,14 @@
 # limitations under the License.
 
 class PurchasesController < ApplicationController
-  before_action :lookup_purchase, except: :new
+  before_action :lookup_purchase, only: :show
+
+  def index
+    # TODO(issue #24) list all members for people not logged in
+    # TODO(issue #23) list all members and details for support
+    raise ActiveRecord::RecordNotFound unless Rails.env.development?
+    @purchases = Purchase.includes(:user, :membership)
+  end
 
   def new
     @detail = Detail.new
