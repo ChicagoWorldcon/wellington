@@ -35,7 +35,7 @@ class Detail < ApplicationRecord
   validates :address_line_1, presence: true, unless: :for_import
   validates :claim, presence: true
   validates :country, presence: true, unless: :for_import
-  validates :full_name, presence: true
+  validates :legal_name, presence: true
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import
@@ -47,7 +47,7 @@ class Detail < ApplicationRecord
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}".strip
     else
-      "#{full_name}"
+      "#{legal_name}"
     end
   end
 end
