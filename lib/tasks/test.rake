@@ -32,6 +32,7 @@ namespace :test do
           next if file.in?(%w(LICENSE db/schema.rb))
           next if file.match(/\.lock/)
           next if !FileTest.exist?(file)
+          next if file.match("app/assets/images/")
 
           lines = File.open(file, "r").read.lines
           if lines.none? { |l| l.match(/Copyright #{current_year} .*#{author}/) }
