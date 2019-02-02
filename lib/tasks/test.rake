@@ -34,8 +34,7 @@ namespace :test do
           next if !FileTest.exist?(file)
           next if file.match("app/assets/images/")
 
-          lines = File.open(file, "r").read.lines
-          if lines.none? { |l| l.match(/Copyright #{current_year} .*#{author}/) }
+          if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
             exit_code = 1 # Fail on CI
             puts "Please add 'Copyright #{current_year} #{author}' to '#{file}'"
           end
@@ -49,10 +48,10 @@ namespace :test do
     task license: :authors do
       exit_code = 0 # Pass on CI
       current_year = Date.today.year
-      licence_lines = File.open("LICENSE", "r").read.lines
+      licence = File.readlines("LICENSE")
 
       @authors.each do |author|
-        if licence_lines.none? { |l| l.match(/Copyright #{current_year} .*#{author}/) }
+        if licence.grep(/Copyright #{current_year} .*#{author}/).none?
           puts "Please add 'Copyright #{current_year} #{author}' to the LICENSE file"
         end
       end
