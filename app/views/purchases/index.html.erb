@@ -37,14 +37,21 @@
           </p>
           <%= render template: "/user_tokens/new" %>
         <% else %>
-          TODO list purchases here
+          <p>You have <%= @my_purcahses.count %> memberships</p>
+          <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
+            <p>
+              <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase) %>
+              for <%= purchase.active_claim.detail %>. <%= purchase.state %>,
+              paid <%= purchase.charges.successful.sum(:amount) %> cents
+            </p>
+          <% end %>
         <% end %>
       </div>
     </div>
   </div>
 </section>
 
-<% if @purchases.present? %>
+<% if @everyones_purchases.present? %>
   <section class="l-section">
     <div class="row">
       <div class="col-12 col-md-12">
@@ -59,7 +66,7 @@
               <th>Member Name</th>
               <th>Membership level</th>
             </thead>
-            <%= @purchases.find_each(batch_size: 100) do |purchase| %>
+            <%= @everyones_purchases.find_each(batch_size: 100) do |purchase| %>
               <tbody>
                 <tr>
                   <td><%= purchase.membership_number %></td>

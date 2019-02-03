@@ -17,11 +17,18 @@
 class PurchasesController < ApplicationController
   before_action :lookup_purchase, only: :show
 
+  # TODO(issue #24) list all members for people not logged in
+  # TODO(issue #23) list all members and details for support
   def index
-    # TODO(issue #24) list all members for people not logged in
-    # TODO(issue #23) list all members and details for support
-    raise ActiveRecord::RecordNotFound unless Rails.env.development?
-    @purchases = Purchase.includes(:user, :membership)
+    if current_user.present?
+      @my_purcahses = Purchase.joins(:user).where(users: {id: current_user})
+      @my_purcahses = @my_purcahses.joins(:membership)
+      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
+    end
+
+    if Rails.env.development?
+      @everyones_purchases = Purchase.includes(:user).joins(:membership)
+    end
   end
 
   def new
