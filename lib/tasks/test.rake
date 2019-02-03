@@ -58,11 +58,11 @@ namespace :test do
         puts "This is based on your git commit name"
         puts "You can change this for this repsitory by running:"
         puts
-        puts " git config user.name \"Your Full Name\""
+        puts "    git config user.name \"Your Full Name\""
         puts
         puts "or in all your git projects with"
         puts
-        puts "  git config -g user.name \"Your Full Name\""
+        puts "    git config --global user.name \"Your Full Name\""
 
         exit 1 # Fails CI
       end
