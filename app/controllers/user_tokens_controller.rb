@@ -15,8 +15,6 @@
 # limitations under the License.
 
 class UserTokensController < ApplicationController
-  BYPASS_AUTH = "Become User"
-
   def new
     redirect_to root_path if signed_in?
     @token = UserToken.new
@@ -37,16 +35,6 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    if bypass_auth?
-      user = User.find_or_create_by(email: params[:email])
-      if user.valid?
-        sign_in user
-        flash[:notice] = "God mode, logged in as #{user.email}"
-      end
-      redirect_to root_path
-      return
-    end
-
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
@@ -76,9 +64,5 @@ class UserTokensController < ApplicationController
   # Check README.md if this fails for you
   def secret
     ENV["JWT_SECRET"]
-  end
-
-  def bypass_auth?
-    Rails.env.development? && params[:commit] == BYPASS_AUTH
   end
 end
