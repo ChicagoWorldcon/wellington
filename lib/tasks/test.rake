@@ -16,17 +16,14 @@
 
 namespace :test do
   namespace :branch do
-    desc "Finds all authors on the current branch"
-    task :authors do
-      @authors = `git log origin/master... --format="%an" | sort | uniq`.lines.map(&:chomp)
-    end
-
     desc "Checks all authors in the branch have the correct copyrights"
-    task copyright: :authors do
-      exit_code = 0 # Pass on CI
+    task :copyright do
+      clear_attribution = true # Pass on CI
       current_year = Date.today.year
+      authors = `git log origin/master... --format="%an" | sort | uniq`.lines.map(&:chomp)
 
-      @authors.each do |author|
+      # Check to see files authored by people in the branch contain their Git usernames
+      authors.each do |author|
         authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
           next if file.in?(%w(LICENSE db/schema.rb))
@@ -35,28 +32,40 @@ namespace :test do
           next if file.match("app/assets/images/")
 
           if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
-            exit_code = 1 # Fail on CI
-            puts "Please add 'Copyright #{current_year} #{author}' to '#{file}'"
+            clear_attribution = false # Fail on CI
+            puts "Missing 'Copyright #{current_year} #{author}' from '#{file}'"
           end
         end
       end
 
-      exit exit_code
-    end
-
-    desc "Checks all authors in the branch have updated the licence file"
-    task license: :authors do
-      exit_code = 0 # Pass on CI
-      current_year = Date.today.year
+      # Special case file, if you work in this repository, you need to make sure you mention our name in the LICENSE
+      # file with the current year.
       licence = File.readlines("LICENSE")
-
-      @authors.each do |author|
+      authors.each do |author|
         if licence.grep(/Copyright #{current_year} .*#{author}/).none?
-          puts "Please add 'Copyright #{current_year} #{author}' to the LICENSE file"
+          clear_attribution = false
+          puts "Missing 'Copyright #{current_year} #{author}' in LICENSE file"
         end
       end
 
-      exit exit_code
+      if !clear_attribution
+        puts
+        puts "This project is distributed under an Apache licence"
+        puts "We need clear attribution in order to be able to accept work from other people"
+        puts "For more information, please check out our contribution guidelines"
+        puts "https://gitlab.com/worldcon/2020-wellington/blob/master/CONTRIBUTING.md"
+        puts
+        puts "This is based on your git commit name"
+        puts "You can change this for this repsitory by running:"
+        puts
+        puts " git config user.name \"Your Full Name\""
+        puts
+        puts "or in all your git projects with"
+        puts
+        puts "  git config -g user.name \"Your Full Name\""
+
+        exit 1 # Fails CI
+      end
     end
   end
 end
