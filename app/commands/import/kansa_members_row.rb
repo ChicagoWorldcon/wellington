@@ -138,11 +138,6 @@ class Import::KansaMembersRow
     Membership.find_by(name: membership_name)
   end
 
-  def cell_for(column)
-    offset = HEADINGS.index(column)
-    row_data[offset]
-  end
-
   def import_date
     return @import_date if @import_date.present?
 
@@ -151,5 +146,10 @@ class Import::KansaMembersRow
     else
       @import_date = DateTime.now
     end
+  end
+
+  def cell_for(column)
+    offset = HEADINGS.index(column)
+    row_data[offset]&.strip
   end
 end

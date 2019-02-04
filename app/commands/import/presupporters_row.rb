@@ -216,6 +216,6 @@ class Import::PresupportersRow
 
   def cell_for(column)
     offset = HEADINGS.index(column)
-    row_data[offset]
+    row_data[offset]&.strip
   end
 end
