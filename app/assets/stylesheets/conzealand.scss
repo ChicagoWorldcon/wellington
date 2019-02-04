@@ -93,7 +93,6 @@ html {
 }
 html, body {
     font-size: 15px;
-    line-height: 15px;
 }
 body {
     background-color: $black;
@@ -208,14 +207,14 @@ a:focus {
 .form-control {
   min-height: 40px;
   background: none;
-    border-width: 2px;
-    border-style: solid;
-    border-color: $light-grey;
-    @include border-radius(5px);
-    color: $white;
-    width: 100%;
-    font-size: 1em;
-    padding: .2em .5em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $light-grey;
+  @include border-radius(5px);
+  color: $white;
+  width: 100%;
+  font-size: 1em;
+  padding: .2em .5em;
 }
 .form-control:focus {
   border: 2px solid $light-blue;
@@ -231,9 +230,9 @@ a:focus {
   margin-bottom: 1.5em;
 }
 .form-note {
-  font-size: .9em;
   color: $light-grey;
   margin-top: 1em;
+  margin-bottom: 1.5em;
 }
 .form-note-m-group {
   margin-top: -.5em;
@@ -244,6 +243,10 @@ a:focus {
   label {
     line-height: 1.5em;
     margin-bottom: 1.5em;
+  }
+
+  input {
+    height: 1.5em;
   }
 }
 label {
