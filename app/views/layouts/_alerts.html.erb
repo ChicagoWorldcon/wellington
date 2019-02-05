@@ -14,5 +14,10 @@
 # limitations under the License.
 %>
 
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
+<% if notice.present? %>
+  <p class="alert alert-primary alert-dismissible fade show" role="alert"><%= notice %></p>
+<% end %>
+
+<% if alert.present? %>
+  <p class="alert alert-warning alert-dismissible fade show" role="alert">Alert: <%= alert %></p>
+<% end %>
