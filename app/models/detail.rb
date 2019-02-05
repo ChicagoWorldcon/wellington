@@ -28,6 +28,30 @@ class Detail < ApplicationRecord
     PAPERPUBS_NONE
   ].freeze
 
+  PERMITTED_PARAMS = [
+    :legal_name,
+    :preferred_first_name,
+    :preferred_last_name,
+    :badge_title,
+    :badge_subtitle,
+    :share_with_future_worldcons,
+    :show_in_listings,
+    :address_line_1,
+    :address_line_2,
+    :city,
+    :province,
+    :postal,
+    :country,
+    :publication_format,
+    :interest_volunteering,
+    :interest_accessibility_services,
+    :interest_being_on_program,
+    :interest_dealers,
+    :interest_selling_at_art_show,
+    :interest_exhibiting,
+    :interest_performing
+  ].freeze
+
   belongs_to :claim
 
   attr_reader :for_import
@@ -43,6 +67,7 @@ class Detail < ApplicationRecord
     self
   end
 
+  # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
   def to_s
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}".strip

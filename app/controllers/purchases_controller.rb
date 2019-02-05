@@ -41,4 +41,30 @@ class PurchasesController < ApplicationController
     @my_offer = MembershipOffer.new(@purchase.membership)
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
+
+  def create
+    current_user.transaction do
+      matching_offer = MembershipOffer.options.find do |offer|
+        offer.to_s == params[:offer]
+      end
+
+      # TODO nicer errors
+      raise "Offer not available to user" if !matching_offer.present?
+
+      purchase_service = PurchaseMembership.new(matching_offer.membership, customer: current_user)
+      new_purchase = purchase_service.call
+
+      # TODO nicer errors
+      raise "Failed to purchase membership" if !new_purchase.present?
+
+      detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
+      detail.claim = new_purchase.active_claim
+
+      # TODO nicer errors
+      detail.save!
+
+      flash[:notice] = "Congratulations member #{new_purchase.membership_number}! You just reserved a #{matching_offer.membership} membership <3"
+      redirect_to purchase_path(new_purchase.membership_number)
+    end
+  end
 end
