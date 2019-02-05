@@ -15,8 +15,6 @@
 # limitations under the License.
 
 class PurchasesController < ApplicationController
-  before_action :lookup_purchase, only: :show
-
   # TODO(issue #24) list all members for people not logged in
   # TODO(issue #23) list all members and details for support
   def index
@@ -38,15 +36,9 @@ class PurchasesController < ApplicationController
   end
 
   def show
+    @purchase = Purchase.find_by!(membership_number: params[:id])
     @detail = @purchase.active_claim.detail
     @my_offer = MembershipOffer.new(@purchase.membership)
-    @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
-  end
-
-  private
-
-  def lookup_purchase
-    @purchase = Purchase.find_by!(membership_number: params[:id])
   end
 end
