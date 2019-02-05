@@ -42,8 +42,6 @@ class PurchasesController < ApplicationController
     @my_offer = MembershipOffer.new(@purchase.membership)
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
-
-    render "/purchases/new"
   end
 
   private
