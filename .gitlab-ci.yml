@@ -18,3 +18,7 @@ rspec:
 rubocop:
   script:
     - bundle exec rubocop
+
+apache:
+  script:
+    - bundle exec rake test:branch:copyright
