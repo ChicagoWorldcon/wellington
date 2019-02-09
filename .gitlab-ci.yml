@@ -14,26 +14,25 @@
 # limitations under the License.
 
 # https://docs.gitlab.com/ee/ci/quick_start/
+image: docker:stable
+services:
+  - docker:dind
+
 before_script:
-  - apt-get update -qq && apt-get install -y -qq postgresql nodejs
-  - ruby -v
-  - psql --version
-  - which ruby
-  - gem install bundler --no-document
-  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
-  - service postgresql start
-  - su postgres sh -c "createuser root"
-  - su postgres sh -c 'psql -c "ALTER USER root WITH SUPERUSER"'
-  - bundle exec rake db:create db:schema:load
+  - apk add make py3-pip
+  - pip3 install --upgrade pip
+  - pip install docker-compose
+  - make start
+  - make db
 
 rspec:
   script:
-    - bundle exec rspec
+    - make rspec
 
 rubocop:
   script:
-    - bundle exec rubocop
+    - make rubocop
 
 apache:
   script:
-    - bundle exec rake test:branch:copyright
+    - make apache
