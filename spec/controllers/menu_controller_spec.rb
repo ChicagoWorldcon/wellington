@@ -14,7 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PagesController < ApplicationController
-  def index
+require "rails_helper"
+
+RSpec.describe MenuController, type: :controller do
+  describe "#index" do
+    render_views
+
+    it "renders" do
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
   end
 end
