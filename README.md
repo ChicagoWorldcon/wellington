@@ -15,70 +15,37 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) an
 
 # Getting Started
 
-This project depends on [Ruby](http://ruby-lang.org/) and [PostgreSQL](https://www.postgresql.org/).
+This project has been designed to run inside Docker to simplify setup and testing. Follow [these instructions to install Docker and
+docker-compose](https://docs.docker.com/compose/install/).
 
-If you're running OSX, we setup a [quickstart guide](OSX.md) to help people setup Ruby and Postgres quickly. If you
-run into troubles getting this working on Linux or Windows, you can ask for help by [raising an
-issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get those platforms working, please
-create a few instructions and [open a pull request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
+This has been tested on MacOS and Ubuntu. If you run into troubles getting this working on Linux or MacOS, you can ask
+for help by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get other
+platforms working, please create a few instructions and [open a pull
+request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
 
-We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. Instructions on installing
-postgres can be found on the [postgres download](https://www.postgresql.org/download/) page. It's recommend to use
-a method which uses package management like apt, homebrew or chocolatey.
+We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. The default dev environment uses the latest stable v9.
 
-Ruby versions matter a bit more. This project only maintains against a single version is set in the
-[.ruby-version file](.ruby-version) at the base of this repository. When present, this file auto configures ruby
-management tools such as [rbenv](https://github.com/rbenv/rbenv#readme) and
-[chruby](https://github.com/postmodern/chruby#readme) to figure out which ruby to use and where to find it's installed
-gems.
-
-Install ruby from the official [installing ruby](https://www.ruby-lang.org/en/documentation/installation) page. It's
-also recommended to use a method that's under package management.
-
-Once you've got Ruby and Postgres setup, we can go on to installing project dependencies. We depend on [Ruby
-Gems](https://rubygems.org/) and manage these dependencies through [bundler](https://bundler.io/). You can install these
-dependencies by running:
+To get your dev environment up and running, simply use:
 
 ```sh
-gem install bundler
-bundle install
+make start
 ```
 
-We have rake tasks and you can use these to get our development and test databases up and running. To list all rake
-tasks inluded in the project, run:
-
-```
-bundle exec rake -T
-```
-
-This is the smallest set of tasks you'll need to run to get this project working on your developer environment:
+The first time you bring up your environment, you will also need to initialize the database:
 
 ```sh
-bundle exec rake db:create       # Creates the database
-bundle exec rake db:schema:load  # Loads tables from db/schema.rb
-bundle exec rake db:seed         # Seeds our developemnt database
-```
-
-You might find these two scripts useful for working on the project
-```sh
-bundle exec rake dev:generate:users # Generate sample users with purchases
-bundle exec rake dev:napalm         # Reset database and reapply patches since master on your current branch
+make db
 ```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
-check everything is working. Run the tests with:
+check everything is working. After starting and initalizing the db, Run the tests with:
 
 ```sh
-bundle exec rspec
+make rspec
 ```
 
-If you want to see what this project would look like on the web, you can do this by running a rails server:
-
-```sh
-bundle exec rails server
-```
-
-Then navigating to http://localhost:3000
+Once you have started the environment and initalized the database, you can navigate to http://localhost:3000 in your
+browser to see what the app looks like on the web.
 
 # Production Secrets
 
@@ -153,3 +120,6 @@ we can set something up to help you.
 
 This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
 file distributed with this project.
+
+- Copyright 2019 James Polley
+- Copyright 2019 Matthew B. Gray

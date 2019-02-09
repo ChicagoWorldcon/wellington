@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 James Polley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +27,7 @@ namespace :test do
       authors.each do |author|
         authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
-          next if file.in?(%w(LICENSE db/schema.rb))
+          next if file.in?(%w(LICENSE db/schema.rb .ruby-version))
           next if file.match(/\.lock/)
           next if !FileTest.exist?(file)
           next if file.match("app/assets/images/")

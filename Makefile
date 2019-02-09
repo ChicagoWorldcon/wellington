@@ -1,4 +1,5 @@
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 James Polley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+.PHONY: start build clean stop logs db
+
+build:
+	docker-compose build
+
+db:
+	docker-compose exec -T confzealand /bin/bash ./initialize-db.sh
+
+rubocop:
+	docker-compose exec -T confzealand rubocop
+apache:
+	docker-compose exec -T confzealand /bin/bash -c "bundle exec rake test:branch:copyright"
+rspec:
+	docker-compose exec -T confzealand /bin/bash -c "bundle exec rspec"
+test: rspec rubocop apache apache
+
+logs:
+	docker-compose logs -f confzealand
+
+clean: stop
+	docker-compose down
+	docker-compose rm
+
+stop:
+	docker-compose stop
+
 start:
-	bundle exec rake db:migrate
-	$(shell sh -c 'cat .env | grep -v '^#' | xargs') bundle exec rails server
+	docker-compose up -d
+
+restart:
+	docker-compose restart
+
