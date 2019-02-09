@@ -17,5 +17,21 @@
 require "rails_helper"
 
 RSpec.describe PurchasesController, type: :controller do
+  render_views
 
+  let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
+
+  describe "#index" do
+    it "renders" do
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "#show" do
+    it "renders" do
+      get :show, params: { id: purchase.membership_number }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

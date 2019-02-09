@@ -27,5 +27,11 @@ FactoryBot.define do
         claim.user = create(:user)
       end
     end
+
+    trait :with_detail do
+      after(:build) do |claim, _evaluator|
+        claim.detail = create(:detail)
+      end
+    end
   end
 end
