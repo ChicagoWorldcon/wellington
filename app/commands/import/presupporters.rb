@@ -18,7 +18,7 @@ require "csv"
 
 # ImportPresupporters takes a stream of text in CSV format and creates member records out of it. Check call return to see if
 # it succeeded or not, check errors to see why.
-class ImportPresupporters
+class Import::Presupporters
   attr_reader :input_stream, :description, :fallback_email
 
   def initialize(input_stream, description:, fallback_email:)
@@ -41,7 +41,7 @@ class ImportPresupporters
 
     User.transaction do
       table_body.each.with_index do |row_data, i|
-        row_import = ImportPresupportersRow.new(row_data,
+        row_import = Import::PresupportersRow.new(row_data,
           comment: "Import from row #{i+2} in #{description}",
           fallback_email: fallback_email
         )
@@ -65,7 +65,7 @@ class ImportPresupporters
   private
 
   def check_headings
-    expected = ImportPresupportersRow::HEADINGS
+    expected = Import::PresupportersRow::HEADINGS
     if headings != expected
       missing = expected - headings
       excess = headings - expected

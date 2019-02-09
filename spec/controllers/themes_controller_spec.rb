@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root to: "menu#index"
+require "rails_helper"
 
-  devise_for :users
-  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
-  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
-    get :logout, on: :collection
+RSpec.describe ThemesController, type: :controller do
+  render_views # we want all views to be viewable in the list
+
+  describe "#index" do
+    it "renders ok" do
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
   end
 
-  resources :menu
-  resources :charges
-  resources :themes
-  resources :purchases
-
-  mount(LetterOpenerWeb::Engine, at: "/letter_opener") if Rails.env.development?
+  describe "#show" do
+    it "renders ok" do
+      get :show, params: { id: :conzealand }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

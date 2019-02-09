@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :claim do
-    trait :with_purchase do
-      after(:build) do |claim, _evaluator|
-        claim.purchase = create(:purchase, :with_order_against_membership)
-      end
-    end
-
-    trait :with_user do
-      after(:build) do |claim, _evaluator|
-        claim.user = create(:user)
-      end
-    end
+class RenameFullNameToLegalName < ActiveRecord::Migration[5.1]
+  def change
+    rename_column :details, :full_name, :legal_name
   end
 end

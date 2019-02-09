@@ -16,21 +16,21 @@
 
 require "rails_helper"
 
-RSpec.describe ImportKansaMembersRow do
+RSpec.describe Import::KansaMembersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
 
-  let(:email_address) { Faker::Internet.email }
-  let(:my_comment) { "suite comment" }
+  let(:email_address)     { Faker::Internet.email }
+  let(:my_comment)        { "suite comment" }
   let(:stripe_payment_id) { "ch_1D0MiPEaQ9ZgIF2tWbUtFOnz" }
-  let(:charge_amount) { 37000 }
-  let(:payment_comment) { "Imported payment of #{charge_amount} paid by charge #{stripe_payment_id}" }
-  let(:note) { "Enjoys long walks on the beach" }
-  let(:member_number) { 7474 }
-  let(:created_at) { "2018-08-19T00:39:07Z" }
+  let(:charge_amount)     { "37000" }
+  let(:payment_comment)   { "Imported payment of #{charge_amount} paid by charge #{stripe_payment_id}" }
+  let(:note)              { "Enjoys long walks on the beach" }
+  let(:member_number)     { "7474" }
+  let(:created_at)        { "2018-08-19T00:39:07Z" }
 
-  subject(:command) { ImportKansaMembersRow.new(row_values, my_comment) }
+  subject(:command) { Import::KansaMembersRow.new(row_values, my_comment) }
 
   let(:row_values) do
     [
@@ -92,7 +92,7 @@ RSpec.describe ImportKansaMembersRow do
       end
 
       it "sets the charge amount" do
-        expect(Charge.last.amount).to match(charge_amount)
+        expect(Charge.last.amount).to match(charge_amount.to_i)
       end
 
       it "sets the stripe payment id" do
@@ -104,7 +104,7 @@ RSpec.describe ImportKansaMembersRow do
       end
 
       it "sets the membership number" do
-        expect(Purchase.last.membership_number).to eq member_number
+        expect(Purchase.last.membership_number).to eq member_number.to_i
       end
 
       it "set the user note" do

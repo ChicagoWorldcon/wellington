@@ -15,5 +15,7 @@
 # limitations under the License.
 
 class ApplicationController < ActionController::Base
+  layout "conzealand"
+
   protect_from_forgery with: :exception
 end

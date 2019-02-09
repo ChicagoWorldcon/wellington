@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ImportKansaMembersRow
+class Import::KansaMembersRow
   HEADINGS = [
     "Full name",
     "PreferredFirstname",
@@ -47,7 +47,8 @@ class ImportKansaMembersRow
     "Tuatara Pre-Support":      "tuatara",
     "Young Adult Attending":    "young_adult",
     "Adult":                    "adult",
-    "Supporter":                "supporting"
+    "Supporter":                "supporting",
+    "Unwaged":                  "unwaged",
   }.with_indifferent_access.freeze
 
   attr_reader :row_data, :comment
@@ -84,11 +85,11 @@ class ImportKansaMembersRow
 
     details = Detail.new(
       claim:                            new_purchase.active_claim,
-      full_name:                        cell_for("Full name"),
+      legal_name:                       cell_for("Full name"),
       preferred_first_name:             cell_for("PreferredFirstname"),
-      prefered_last_name:               cell_for("PreferedLastname"),
-      badgetitle:                       cell_for("BadgeTitle"),
-      badgesubtitle:                    cell_for("BadgeSubtitle"),
+      preferred_last_name:              cell_for("PreferedLastname"),
+      badge_title:                      cell_for("BadgeTitle"),
+      badge_subtitle:                   cell_for("BadgeSubtitle"),
       address_line_1:                   cell_for("Address Line1"),
       address_line_2:                   cell_for("Address Line2"),
       country:                          cell_for("Country"),
@@ -137,11 +138,6 @@ class ImportKansaMembersRow
     Membership.find_by(name: membership_name)
   end
 
-  def cell_for(column)
-    offset = HEADINGS.index(column)
-    row_data[offset]
-  end
-
   def import_date
     return @import_date if @import_date.present?
 
@@ -150,5 +146,10 @@ class ImportKansaMembersRow
     else
       @import_date = DateTime.now
     end
+  end
+
+  def cell_for(column)
+    offset = HEADINGS.index(column)
+    row_data[offset]&.strip
   end
 end

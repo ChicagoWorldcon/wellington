@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :charge do
-    comment { "Factory Generated Charge" }
-    amount { 300 }
-    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
-    state { Charge::STATE_SUCCESSFUL }
-    transfer { Charge::TRANSFER_STRIPE }
+# ThemesController allows users to browse and work on Themes for their con without
+# needing to browse around the entire con website. From here you get a feel for how things will render
+class ThemesController < ApplicationController
+  LAYOUTS = "app/views/layouts"
 
-    trait(:failed) do
-      state { Charge::STATE_FAILED }
-    end
+  layout -> { params[:id] }, only: :show
+
+  def index
+    layouts = Dir.each_child("#{Rails.root}/#{LAYOUTS}").to_a
+    html_layouts = layouts.select { |file| file.match(/html/) }
+    @themes = html_layouts.map { |file| file.gsub(/\.html.*/, "") }
+  end
+
+  def show
   end
 end

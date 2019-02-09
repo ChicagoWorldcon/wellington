@@ -1,0 +1,83 @@
+<%#
+  Copyright 2019 Matthew B. Gray
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%>
+
+<h1>Purchase List</h1>
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>
+          My Memberships
+          <% if current_user.present? %>
+            (<%= current_user.email %>)
+          <% end %>
+        </h2>
+        <% if !current_user.present? %>
+          <p>
+            You are currently signed out, please sign in in to view your memberships. It's pretty easy, just send
+            yourself a login link!
+          </p>
+          <%= render template: "/user_tokens/new" %>
+        <% else %>
+          <p>You have <%= @my_purcahses.count %> memberships</p>
+          <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
+            <p>
+              <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase) %>
+              for <%= purchase.active_claim.detail %>. <%= purchase.state %>,
+              paid <%= purchase.charges.successful.sum(:amount) %> cents
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if @everyones_purchases.present? %>
+  <section class="l-section">
+    <div class="row">
+      <div class="col-12 col-md-12">
+        <div class="l-panel">
+          <h2>Full Members List</h2>
+          <p>
+            This page is a kind of godmode. Be careful who you show this too, these details are private.
+          </p>
+          <table>
+            <thead>
+              <th>Membership Number</th>
+              <th>Member Name</th>
+              <th>Membership level</th>
+            </thead>
+            <%= @everyones_purchases.find_each(batch_size: 100) do |purchase| %>
+              <tbody>
+                <tr>
+                  <td><%= purchase.membership_number %></td>
+                  <td><%= link_to(purchase.active_claim.detail, purchase_path(purchase.membership_number)) %></td>
+                  <td><%= purchase.membership.name.humanize %></td>
+                </tr>
+              </tbody>
+            <% end %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>

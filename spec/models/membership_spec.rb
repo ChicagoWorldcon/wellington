@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -58,5 +58,10 @@ RSpec.describe Membership, type: :model do
       let(:time) { membership_inactive_from }
       it { is_expected.to_not include(our_membership) }
     end
+  end
+
+  describe "#to_s" do
+    subject(:to_s) { create(:membership, :kid_in_tow).to_s }
+    it { is_expected.to eq "Kid in tow" }
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :order do
-    active_from { 1.week.ago }
-    created_at { 1.week.ago }
+class MembershipOffer
+  attr_reader :membership
 
-    trait :with_purchase do
-      before(:create) do |order, _evaluator|
-        order.purchase = create(:purchase)
-      end
-    end
+  def self.options
+    Membership.active.map { |m| MembershipOffer.new(m) }
+  end
 
-    trait :with_membership do
-      before(:create) do |order, _evaluator|
-        order.membership = create(:membership, :adult)
-      end
-    end
+  def initialize(membership)
+    @membership = membership
+  end
+
+  def to_s
+    "#{membership} (#{formatted_price})"
+  end
+
+  # TODO Extract to i18n
+  def formatted_price
+    "$%.2f NZD" % (membership.price * 1.0 / 100)
   end
 end

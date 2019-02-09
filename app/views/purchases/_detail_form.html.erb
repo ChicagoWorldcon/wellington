@@ -1,0 +1,224 @@
+<%#
+  Copyright 2018 Rosanna Gray
+  Copyright 2019 Matthew B. Gray
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%>
+
+<%= form_for(@detail, url: purchases_path) do |detail| %>
+  <p>
+    This purchase will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
+    payment processor.
+  </p>
+
+  <fieldset class="l-v-spacing">
+    <% if !(@purchase.present? && @purchase.persisted?) %>
+      <legend>Membership Details</legend>
+
+      <div class="form-group">
+        <label for="offer">Membership type</span></label>
+        <%= select_tag(:offer, options_for_select(@offers, @my_offer), class: "form-control", id: "membership_type") %>
+      </div>
+    <% end %>
+
+    <fieldset class="l-v-spacing">
+      <label for="legal_name">Legal Name (required)</label>
+      <%= detail.text_field(:legal_name, required: true, class: "form-control", id: "legal_name") %>
+    </fieldset>
+
+    <p class="form-note form-note-m-group">
+      This is the name that appears on your official ID. We will need to check your ID at registration.
+    </p>
+
+    <fieldset class="l-v-spacing">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="preferred_first_name">Public First Name</span></label>
+            <%= detail.text_field(:preferred_first_name, class: "form-control", id: "preferred_first_name") %>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="preferred_last_name">Public Last Name</label>
+            <%= detail.text_field(:preferred_last_name, class: "form-control", id: "preferred_last_name") %>
+          </div>
+        </div>
+      </div>
+      <p class="form-note form-note-m-group">
+        This is the name you would like to be addressed by.
+        If it is left blank, you will be addressed by your legal name.
+      </p>
+    </fieldset>
+
+    <fieldset class="l-v-spacing">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="badge_title">Badge Name</label>
+            <%= detail.text_field(:badge_title, class: "form-control", id: "badge_title") %>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="badge_subtitle">Badge Subtitle</label>
+            <%= detail.text_field(:badge_subtitle, class: "form-control", id: "badge_subtitle") %>
+          </div>
+        </div>
+      </div>
+      <p class="form-note form-note-m-group">
+        This is the text we will print on your badge. It will default to Your preferred name and City and
+        Country from your address. Both fields are modifiable.
+      </p>
+    </fieldset>
+
+    <fieldset class="l-v-spacing">
+      <p class="form-note form-note-m-group">
+        SFCONZ and Worldcon 78 want to list your information on our websites and share your contact
+        information with future worldcons (no one else).
+      </p>
+
+      <p class="form-note form-note-m-group">
+        Shraing your information with future Worldcons will be able to give you the Hugo nominating rights for
+        Worldcons other than 2020 that come with your membership. If you answer no, you will not be able to
+        exercise those rights.
+      </p>
+
+      <div class="form-options">
+        <%= detail.check_box(:share_with_future_worldcons, class: "form-control form-control-m-checkbox", id: "share_with_future_worldcons") %>
+        <label for="share_with_future_worldcons">Share membership details with future worldcons?</label>
+      </div>
+
+      <div class="form-options l-v-spacing">
+        <%= detail.check_box(:show_in_listings, class: "form-control form-control-m-checkbox", id: "show_in_listings") %>
+        <label for="show_in_listings">List name on the CoNZealand website and in published directories?</label>
+      </div>
+    </fieldset>
+  </fieldset>
+
+  <fieldset class="l-v-spacing">
+    <legend>Address and Contact Information</legend>
+    <p class="form-note form-note-m-group">
+      Where do you get your mail? This should match your credit card address, if you use one.
+    </p>
+
+    <div class="form-group">
+      <label for="address_line_1">Address Line 1 (required)</label>
+      <%= detail.text_field(:address_line_1, required: true, class: "form-control", id: "address_line_1") %>
+    </div>
+
+    <div class="form-group">
+      <label for="address_line_2">Address Line 2</label>
+      <%= detail.text_field(:address_line_2, class: "form-control", id: "address_line_2") %>
+    </div>
+
+    <div class="form-group">
+      <label for="city">City</label>
+      <%= detail.text_field(:city, class: "form-control", id: "city") %>
+    </div>
+
+    <fieldset>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="province">State / Province / Region</label>
+              <%= detail.text_field(:province, class: "form-control", id: "province") %>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="postal">Post code</label>
+              <%= detail.text_field(:postal, class: "form-control", id: "postal") %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="country">Country (required)</label>
+        <%= detail.text_field(:country, required: true, class: "form-control", id: "country") %>
+      </div>
+    </fieldset>
+
+    <p class="form-note form-note-m-group">
+      Our primary means of communication are electronic, in particular our registration system. Opting out of
+      electronic publications does not mean that you will receive zero emails from us. It does mean that we
+      will not attempt to send progress reports, etc., to your email address.
+    </p>
+
+    <div class="form-group">
+      <label for="publication_format">Paper pubs format</label>
+      <%= detail.select(:publication_format, @paperpubs, {}, {
+        class: "form-control",
+        id: "publication_format",
+      }) %>
+    </div>
+  </fieldset>
+
+  <fieldset class="l-v-spacing">
+    <legend>Additional Options</legend>
+    <p class="form-note form-note-m-group">
+      This is how we know if you want to be contacted about specific things. We ask these questions to help us
+      give you the experience you are after.
+    </p>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_volunteering, class: "form-control form-control-m-checkbox", id: "interest_volunteering") %>
+      <label for="interest_volunteering">I am interested in volunteering before or at the convention</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_accessibility_services, class: "form-control form-control-m-checkbox", id: "interest_accessibility_services") %>
+      <label for="interest_accessibility_services">I would like information on disability or accessibility services at CoNZealand</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_being_on_program, class: "form-control form-control-m-checkbox", id: "interest_being_on_program") %>
+      <label for="interest_being_on_program">I am interested in being a program participant</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_dealers, class: "form-control form-control-m-checkbox", id: "interest_dealers") %>
+      <label for="interest_dealers">I am interested in vending in the Dealers Room</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_selling_at_art_show, class: "form-control form-control-m-checkbox", id: "interest_selling_at_art_show") %>
+      <label for="interest_selling_at_art_show">I am interested in selling my art in the art show</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_exhibiting, class: "form-control form-control-m-checkbox", id: "interest_exhibiting") %>
+      <label for="interest_exhibiting">I am interested in exhibiting at the convention</label>
+    </div>
+
+    <div class="form-options">
+      <%= detail.check_box(:interest_performing, class: "form-control form-control-m-checkbox", id: "interest_performing") %>
+      <label for="interest_performing">I am interested in performing at the convention</label>
+    </div>
+  </fieldset>
+
+  <div class="l-v-spacing-both">
+    <div class="form-group">
+    <input type="submit" value="Sign Up" class="btn btn-m-full-width">
+  </div>
+  </div>
+<% end %>

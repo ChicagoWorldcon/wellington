@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,26 +15,19 @@
 # limitations under the License.
 
 FactoryBot.define do
-  sequence(:next_membership_number)
-
-  factory :purchase do
-    state { Purchase::PAID }
+  factory :order do
+    active_from { 1.week.ago }
     created_at { 1.week.ago }
-    membership_number { generate(:next_membership_number) }
 
-    trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
-    end
-
-    trait :with_order_against_membership do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
+    trait :with_purchase do
+      before(:create) do |order, _evaluator|
+        order.purchase = create(:purchase)
       end
     end
 
-    trait :with_claim_from_user do
-      after(:build) do |new_purchase, _evaluator|
-        new_purchase.claims << create(:claim, :with_user, :with_purchase)
+    trait :with_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = create(:membership, :adult)
       end
     end
   end

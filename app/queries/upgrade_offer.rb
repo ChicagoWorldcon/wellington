@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,13 +18,26 @@
 class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
+  def self.from(current_membership, target_membership: nil)
+    options = Membership.active.where("price > ?", current_membership.price)
+    options = options.where(id: target_membership) if target_membership.present?
+    options.map do |membership|
+      UpgradeOffer.new(from: current_membership, to: membership)
+    end
+  end
+
   def initialize(from:, to:)
     @from_membership = from
     @to_membership = to
   end
 
-  def title
-    "Upgrade #{from_membership.name} to #{to_membership.name}"
+  def to_s
+    "Upgrade #{from_membership} to #{to_membership} (#{formatted_price})"
+  end
+
+  # TODO Extract to i18n
+  def formatted_price
+    "$%.2f NZD" % (price * 1.0 / 100)
   end
 
   def price

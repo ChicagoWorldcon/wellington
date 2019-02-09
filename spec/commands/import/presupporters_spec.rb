@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 require "rails_helper"
 
-RSpec.describe ImportKansaMembers do
+RSpec.describe Import::Presupporters do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
-  let(:standard_headings) { ImportKansaMembersRow::HEADINGS.join(",") }
-  let(:description) { "test stream" }
-  subject(:command) { ImportKansaMembers.new(read_stream, description) }
+  let(:standard_headings) { Import::PresupportersRow::HEADINGS.join(",") }
+  let(:my_description) { "test stream" }
+  let(:my_fallback_email) { Faker::Internet.email }
+
+  subject(:command) { Import::Presupporters.new(read_stream, description: my_description, fallback_email: my_fallback_email) }
 
   it "imports nothing when the file is empty" do
     expect { command.call }.to_not change { Membership.count }
@@ -44,38 +46,54 @@ RSpec.describe ImportKansaMembers do
   context "with import data" do
     let(:data) do
       CSV.generate do |csv|
-        csv << ImportKansaMembersRow::HEADINGS
+        csv << Import::PresupportersRow::HEADINGS
         csv << row_1
         csv << row_2
       end
     end
     let(:email_address) { "test@matthew.nz" }
-    let(:good_row_processor) { instance_double(ImportKansaMembersRow, call: true) }
-    let(:bad_row_processor) { instance_double(ImportKansaMembersRow, call: false, error_message: "gah") }
+    let(:good_row_processor) { instance_double(Import::PresupportersRow, call: true) }
+    let(:bad_row_processor) { instance_double(Import::PresupportersRow, call: false, error_message: "gah") }
 
-    let(:row_1) { ["1"] * ImportKansaMembersRow::HEADINGS.count }
-    let(:row_2) { ["2"] * ImportKansaMembersRow::HEADINGS.count }
+    let(:row_1) { ["1"] * Import::PresupportersRow::HEADINGS.count }
+    let(:row_2) { ["2"] * Import::PresupportersRow::HEADINGS.count }
 
     it "calls ProcessRow" do
-      expect(ImportKansaMembersRow)
-        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+      expect(Import::PresupportersRow)
+        .to receive(:new)
         .and_return(good_row_processor)
-      expect(ImportKansaMembersRow)
-        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+      expect(Import::PresupportersRow)
+        .to receive(:new)
         .and_return(good_row_processor)
       expect(command.call).to be_truthy
       expect(command.errors).to be_empty
     end
 
     it "raises errors with buggy rows" do
-      expect(ImportKansaMembersRow)
-        .to receive(:new).with(row_1, "Import from row 2 in #{description}")
+      expect(Import::PresupportersRow)
+        .to receive(:new)
         .and_return(good_row_processor)
-      expect(ImportKansaMembersRow)
-        .to receive(:new).with(row_2, "Import from row 3 in #{description}")
+      expect(Import::PresupportersRow)
+        .to receive(:new)
         .and_return(bad_row_processor)
       expect(command.call).to be_falsey
       expect(command.errors).to include(/gah/i)
+    end
+  end
+
+  context "when email address is empty" do
+    let(:my_fallback_email) { "" }
+
+    it "fails with errors" do
+      expect { command }.to raise_error(ArgumentError)
+    end
+  end
+
+  context "when default address already in use" do
+    before { create(:user, email: my_fallback_email) }
+
+    it "executes successfully" do
+      expect(command).to be_truthy
     end
   end
 end

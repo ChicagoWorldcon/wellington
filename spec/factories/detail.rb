@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ FactoryBot.define do
   factory :detail do
     address_line_1 { Faker::Address.street_address }
     country { Faker::Address.city }
-    full_name { Faker::VentureBros.character }
+    legal_name { Faker::VentureBros.character }
     publication_format { Detail::PAPERPUBS_ELECTRONIC }
 
     trait :with_claim do

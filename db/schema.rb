@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190113184237) do
+ActiveRecord::Schema.define(version: 20190202023301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,11 +44,11 @@ ActiveRecord::Schema.define(version: 20190113184237) do
   create_table "details", force: :cascade do |t|
     t.bigint "claim_id", null: false
     t.string "import_key"
-    t.string "full_name", null: false
+    t.string "legal_name", null: false
     t.string "preferred_first_name"
-    t.string "prefered_last_name"
-    t.string "badgetitle"
-    t.string "badgesubtitle"
+    t.string "preferred_last_name"
+    t.string "badge_title"
+    t.string "badge_subtitle"
     t.string "address_line_1"
     t.string "address_line_2"
     t.string "city"

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root to: "menu#index"
+FactoryBot.define do
+  factory :claim do
+    trait :with_purchase do
+      after(:build) do |claim, _evaluator|
+        claim.purchase = create(:purchase, :with_order_against_membership)
+      end
+    end
 
-  devise_for :users
-  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
-  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
-    get :logout, on: :collection
+    trait :with_user do
+      after(:build) do |claim, _evaluator|
+        claim.user = create(:user)
+      end
+    end
+
+    trait :with_detail do
+      after(:build) do |claim, _evaluator|
+        claim.detail = create(:detail)
+      end
+    end
   end
-
-  resources :menu
-  resources :charges
-  resources :themes
-  resources :purchases
-
-  mount(LetterOpenerWeb::Engine, at: "/letter_opener") if Rails.env.development?
 end

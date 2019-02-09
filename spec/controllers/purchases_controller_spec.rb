@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  root to: "menu#index"
+require "rails_helper"
 
-  devise_for :users
-  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
-  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
-    get :logout, on: :collection
+RSpec.describe PurchasesController, type: :controller do
+  render_views
+
+  let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
+
+  describe "#index" do
+    it "renders" do
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
   end
 
-  resources :menu
-  resources :charges
-  resources :themes
-  resources :purchases
-
-  mount(LetterOpenerWeb::Engine, at: "/letter_opener") if Rails.env.development?
+  describe "#show" do
+    it "renders" do
+      get :show, params: { id: purchase.membership_number }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

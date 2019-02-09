@@ -1,0 +1,386 @@
+// Copyright 2018 Rosanna Gray
+// Copyright 2019 Matthew B. Gray
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Place all the styles related to the Charges controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+// =========================================================================
+// CONZEALAND MEMBERSHIP SIGN UP PAGE STYLES
+// =========================================================================
+
+// 1. BASE
+//
+// 2. COMPONENTS
+//
+// 3. MODULES
+//
+// 4. LAYOUT
+//
+// 5. STATE AND UTILITIES
+//
+// 6. 3RD PARTY OVERRIDES
+
+// =========================================================================
+// BASE
+// =========================================================================
+
+// -------------------------------
+// VARIABLES
+// -------------------------------
+
+// Colours
+$black: #000; $blue: #034acc; $charcoal: #505050; $grey: #ccc; $light-blue: #6798f7; $light-grey: #e1e1e1; $red:
+#e93f36; $white: #fff;
+
+// Fonts
+$font-stack: 'Open Sans', sans-serif;
+
+// -------------------------------
+// MIXINS
+// -------------------------------
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+// -------------------------------
+// THIRD PARTY
+// -------------------------------
+
+
+
+// -------------------------------
+// BASE STYLES
+// -------------------------------
+
+* {
+    box-sizing: border-box;
+}
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -ms-overflow-style: scrollbar;
+}
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: inherit;
+   box-sizing: inherit;
+}
+html, body {
+    font-size: 15px;
+}
+body {
+    background-color: $black;
+    background: url(https://maailma.github.io/kansa-client/conzealand/img/conzealand-bg.jpg) center top / cover no-repeat fixed $black;
+    color: $white;
+    font-family: $font-stack;
+    -webkit-font-smoothing: antialiased;
+}
+
+p {
+    margin-bottom: 1em;
+    line-height: 1.5;
+}
+h1, .h1-like {
+    font-size: 2.4000em;
+    line-height: 1.2500em;
+    margin-bottom: 0.4167em;
+}
+h2, .h2-like {
+    font-size: 2.0000em;
+    line-height: 1.2000em;
+    margin-bottom: 0.5000em;
+}
+h3, .h3-like {
+    font-size: 1.8667em;
+    line-height: 1.0714em;
+    margin-bottom: 0.5357em;
+}
+h4, .h4-like {
+    font-size: 1.4667em;
+    line-height: 1.3636em;
+    margin-bottom: 0.6818em;
+}
+h5, .h5-like, .big {
+    font-size: 1.4000em;
+    line-height: 1.4286em;
+    margin-bottom: 0.7143em;
+}
+h6, .h6-like {
+    font-size: 1.0667em;
+    line-height: 1.8750em;
+    margin-bottom: 0.9375em;
+}
+
+// =========================================================================
+// COMPONENTS
+// =========================================================================
+
+// -------------------------------
+// BUTTONS
+// -------------------------------
+
+.btn {
+  background: $light-blue;
+  color: $black;
+  @include border-radius(5px);
+  border: 0;
+  cursor: pointer;
+  padding: 1em;
+  font-weight: bold;
+  font-size: 1em;
+  text-transform: uppercase;
+}
+.btn:hover,
+.btn:focus {
+  background-color: $blue;
+  color: $white;
+  -webkit-transition: background-color .2s ease-in;
+  -moz-transition: background-color .2s ease-in;
+  -o-transition: background-color .2s ease-in;
+  transition: background-color .2s ease-in;
+}
+.btn:focus {
+  outline: 1px dotted $white;
+}
+.btn-m-full-width {
+  width: 100%;
+}
+
+// -------------------------------
+// LINKS
+// -------------------------------
+
+a {
+  color: $light-blue;
+}
+a:hover,
+a:focus {
+  color: $light-grey;
+  text-decoration: underline;
+}
+a:focus {
+  outline: 1px dotted $white;
+}
+
+// -------------------------------
+// LOGO
+// -------------------------------
+
+.logo img {
+  max-width: 700px;
+}
+
+// =========================================================================
+// MODULES
+// =========================================================================
+
+// -------------------------------
+// FORM
+// -------------------------------
+
+.form-control {
+  min-height: 40px;
+  background: none;
+  border-width: 2px;
+  border-style: solid;
+  border-color: $light-grey;
+  @include border-radius(5px);
+  color: $white;
+  width: 100%;
+  font-size: 1em;
+  padding: .2em .5em;
+}
+.form-control:focus {
+  border: 2px solid $light-blue;
+}
+.form-control-m-error {
+  border-color: $red;
+}
+.form-error {
+  color: lighten($red, 20%);
+  margin-top: .5em;
+}
+.form-group {
+  margin-bottom: 1.5em;
+}
+.form-note {
+  color: $light-grey;
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+}
+.form-note-m-group {
+  margin-top: -.5em;
+}
+.form-options {
+  line-height: 2.3em;
+
+  label {
+    line-height: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  input {
+    height: 1.5em;
+  }
+}
+label {
+  display: block;
+}
+legend {
+  border-bottom: 1px solid $light-blue;
+  font-size: 1.2em;
+  margin: 1.5em 0 1em;
+  padding: 1em 0 .25em 0;
+  width: 100%;
+}
+.required {
+  color: $red;
+  font-size: 1.5em;
+}
+select {
+  height: 40px;
+  border-radius: 0 !important;
+}
+.form-options .form-control-m-radio,
+.form-options .form-control-m-checkbox {
+  display: inline-block;
+  min-height: 0;
+  width: 5%;
+  vertical-align: top;
+}
+.form-options label {
+  display: inline-block;
+  width: 80%;
+  vertical-align: top;
+}
+@media (min-width: 576px) {
+  .form-options label {
+    width: 90%;
+  }
+}
+
+// -------------------------------
+// PANELS
+// -------------------------------
+
+// Default panel
+.l-panel {
+  background: rgba(0,0,0, .7);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+}
+// Membership Type panel
+.l-panel-m-membership-types--list {
+  margin-left: 1em;
+}
+.l-panel-m-membership-types--list .h6-like {
+  margin-bottom: .3em;
+}
+.l-panel-m-membership-types--list p {
+  color: $light-blue;
+}
+
+// =========================================================================
+// LAYOUT
+// =========================================================================
+
+// -------------------------------
+// HEADER
+// -------------------------------
+
+header {
+  background: rgba(0,0,0,.7);
+  margin-bottom: 1.5em;
+  padding: .5em 0 1.5em;
+}
+
+// -------------------------------
+// FOOTER
+// -------------------------------
+
+footer {
+  background: rgba(0,0,0,.7);
+  padding: 1.5em 0;
+  text-align: center;
+}
+
+// -------------------------------
+// MAIN CONTENT
+// -------------------------------
+
+.l-main {
+  padding-bottom: 5em;
+}
+
+// -------------------------------
+// VERTICAL SPACING
+// -------------------------------
+
+.l-v-spacing {
+    margin-bottom: 1.5em;
+}
+.l-v-spacing-both {
+    margin: 1.5em 0;
+}
+.l-v-spacing-m-wide {
+    margin-bottom: 2.5em;
+}
+.l-v-spacing-m-wide-both {
+    margin: 2.5em 0;
+}
+
+// =========================================================================
+// STATE & UTILITIES
+// =========================================================================
+
+.img-responsive {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+.s-hidden {
+    display: none;
+}
+.s-invisible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+// ---------------------------------------------------------------------
+// 3RD PARTY OVERRIDES
+// ---------------------------------------------------------------------
