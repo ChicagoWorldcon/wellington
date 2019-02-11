@@ -59,7 +59,7 @@ class Detail < ApplicationRecord
   validates :address_line_1, presence: true, unless: :for_import
   validates :claim, presence: true
   validates :country, presence: true, unless: :for_import
-  validates :legal_name, presence: true
+  validates :legal_name, presence: true, unless: :for_import
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import
