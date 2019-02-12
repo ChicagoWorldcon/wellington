@@ -85,7 +85,7 @@ class Import::KansaMembersRow
 
     details = Detail.new(
       claim:                            new_purchase.active_claim,
-      legal_name:                       cell_for("Full name"),
+      first_name:                       cell_for("Full name"),
       preferred_first_name:             cell_for("PreferredFirstname"),
       preferred_last_name:              cell_for("PreferedLastname"),
       badge_title:                      cell_for("BadgeTitle"),

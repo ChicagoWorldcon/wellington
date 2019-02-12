@@ -95,7 +95,7 @@ class Import::PresupportersRow
       details = Detail.new(
         claim:                            new_purchase.active_claim,
         import_key:                       cell_for("Import Key"),
-        legal_name:                       cell_for("Given Name"),
+        first_name:                       cell_for("Given Name"),
         preferred_first_name:             cell_for("Display Given Name"),
         preferred_last_name:              cell_for("Display Family Name"),
         badge_title:                      cell_for("BadgeTitle"),

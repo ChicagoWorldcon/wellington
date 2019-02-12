@@ -29,7 +29,7 @@ class Detail < ApplicationRecord
   ].freeze
 
   PERMITTED_PARAMS = [
-    :legal_name,
+    :first_name,
     :preferred_first_name,
     :preferred_last_name,
     :badge_title,
@@ -59,7 +59,7 @@ class Detail < ApplicationRecord
   validates :address_line_1, presence: true, unless: :for_import
   validates :claim, presence: true
   validates :country, presence: true, unless: :for_import
-  validates :legal_name, presence: true, unless: :for_import
+  validates :first_name, presence: true, unless: :for_import
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import
@@ -72,7 +72,7 @@ class Detail < ApplicationRecord
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}".strip
     else
-      "#{legal_name}"
+      "#{first_name}"
     end
   end
 end
