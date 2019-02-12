@@ -53,13 +53,15 @@ class Detail < ApplicationRecord
   ].freeze
 
   belongs_to :claim
+  validates :claim, presence: true
 
   attr_reader :for_import
 
-  validates :address_line_1, presence: true, unless: :for_import
-  validates :claim, presence: true
-  validates :country, presence: true, unless: :for_import
   validates :first_name, presence: true, unless: :for_import
+  validates :last_name, presence: true, unless: :for_import
+
+  validates :address_line_1, presence: true, unless: :for_import
+  validates :country, presence: true, unless: :for_import
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import

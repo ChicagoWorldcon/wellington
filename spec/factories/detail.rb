@@ -18,7 +18,9 @@ FactoryBot.define do
   factory :detail do
     address_line_1 { Faker::Address.street_address }
     country { Faker::Address.city }
-    first_name { Faker::VentureBros.character }
+    title { Faker::Superhero.prefix }
+    first_name { Faker::Superhero.name }
+    last_name { Faker::Superhero.suffix }
     publication_format { Detail::PAPERPUBS_ELECTRONIC }
 
     trait :with_claim do
