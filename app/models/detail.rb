@@ -72,9 +72,9 @@ class Detail < ApplicationRecord
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
   def to_s
     if preferred_first_name.present? || preferred_last_name.present?
-      "#{preferred_first_name} #{preferred_last_name}".strip
+      "#{preferred_first_name} #{preferred_last_name}"
     else
-      "#{first_name}"
-    end
+      "#{title} #{first_name} #{last_name}"
+    end.strip
   end
 end
