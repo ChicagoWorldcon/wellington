@@ -60,10 +60,10 @@ RSpec.describe Import::KansaNameSplitter do
   end
 
   context "when it's just title and lastname" do
-    let(:name) { "Mr Richard" }
+    let(:name) { "Doctor Richard" }
 
     it "sets title and last name" do
-      expect(subject.title).to eq "Mr"
+      expect(subject.title).to eq "Doctor"
       expect(subject.first_name).to be_empty
       expect(subject.last_name).to eq "Richard"
     end
