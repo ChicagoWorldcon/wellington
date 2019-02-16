@@ -23,8 +23,18 @@ RSpec.describe Import::KansaNameSplitter do
     let(:name) { "McFly" }
 
     it "assigns to last name only" do
-      expect(subject.last_name).to be "McFly"
+      expect(subject.last_name).to eq "McFly"
       expect(subject.first_name).to be_empty
+      expect(subject.title).to be_empty
+    end
+  end
+
+  context "when there's two names" do
+    let(:name) { "Marty McFly" }
+
+    it "assigns first and last name" do
+      expect(subject.first_name).to eq "Marty"
+      expect(subject.last_name).to eq "McFly"
       expect(subject.title).to be_empty
     end
   end

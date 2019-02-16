@@ -19,7 +19,7 @@ class Import::KansaNameSplitter
   attr_reader :name
 
   def initialize(name)
-    @name = name
+    @name = name.split
   end
 
   def title
@@ -27,10 +27,15 @@ class Import::KansaNameSplitter
   end
 
   def first_name
-    ""
+    case name.size
+    when 1
+      ""
+    else
+      name.first
+    end
   end
 
   def last_name
-    name
+    name.last
   end
 end
