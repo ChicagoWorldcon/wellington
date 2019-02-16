@@ -56,6 +56,6 @@ class Import::KansaNameSplitter
   end
 
   def last_name
-    name.last
+    name.last || ""
   end
 end

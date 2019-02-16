@@ -68,4 +68,14 @@ RSpec.describe Import::KansaNameSplitter do
       expect(subject.last_name).to eq "Richard"
     end
   end
+
+  context "when there are no names" do
+    let(:name) { "" }
+
+    it "just gives emtpy strings" do
+      expect(subject.title).to be_empty
+      expect(subject.first_name).to be_empty
+      expect(subject.last_name).to be_empty
+    end
+  end
 end
