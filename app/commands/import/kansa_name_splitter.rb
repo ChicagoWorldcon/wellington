@@ -14,5 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Import::KansaNameSplitter takes a name string and provides methods for getting at parts of the name
 class Import::KansaNameSplitter
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def title
+    ""
+  end
+
+  def first_name
+    ""
+  end
+
+  def last_name
+    name
+  end
 end

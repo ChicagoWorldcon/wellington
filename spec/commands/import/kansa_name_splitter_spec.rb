@@ -17,6 +17,15 @@
 require "rails_helper"
 
 RSpec.describe Import::KansaNameSplitter do
-  subject(:presenter) { described_class.new }
-  it { is_expected.to_not be_nil }
+  subject(:presenter) { described_class.new(name) }
+
+  context "when it's just one name" do
+    let(:name) { "McFly" }
+
+    it "assigns to last name only" do
+      expect(subject.last_name).to be "McFly"
+      expect(subject.first_name).to be_empty
+      expect(subject.title).to be_empty
+    end
+  end
 end
