@@ -34,7 +34,7 @@ RSpec.describe Import::KansaMembersRow do
 
   let(:row_values) do
     [
-      Faker::FunnyName.three_word_name, # Full name
+      "Lord Evil B. M. Tyrant",         # Full name
       Faker::Name.first_name,           # PreferredFirstname
       Faker::Name.last_name,            # PreferedLastname
       Faker::Superhero.name,            # BadgeTitle
@@ -76,6 +76,14 @@ RSpec.describe Import::KansaMembersRow do
     it "inserts notes rows" do
       expect { command.call }.to change { Note.count }.by(1)
       expect(Note.last.content).to eq note
+    end
+
+    it "sets first, middle and last name" do
+      expect(Import::KansaNameSplitter).to receive(:new).and_call_original
+      command.call
+      expect(Detail.last.title).to be_present
+      expect(Detail.last.first_name).to be_present
+      expect(Detail.last.last_name).to be_present
     end
 
     context "after run" do
