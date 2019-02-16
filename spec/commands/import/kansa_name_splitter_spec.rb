@@ -48,4 +48,24 @@ RSpec.describe Import::KansaNameSplitter do
       expect(subject.title).to be_empty
     end
   end
+
+  context "when name has a title" do
+    let(:name) { "Mr Martin S. McFly" }
+
+    it "sets title, groups given names and assigns last name" do
+      expect(subject.title).to eq "Mr"
+      expect(subject.first_name).to eq "Martin S."
+      expect(subject.last_name).to eq "McFly"
+    end
+  end
+
+  context "when it's just title and lastname" do
+    let(:name) { "Mr Richard" }
+
+    it "sets title and last name" do
+      expect(subject.title).to eq "Mr"
+      expect(subject.first_name).to be_empty
+      expect(subject.last_name).to eq "Richard"
+    end
+  end
 end

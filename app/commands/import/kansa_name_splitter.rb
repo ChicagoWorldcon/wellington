@@ -16,6 +16,21 @@
 
 # Import::KansaNameSplitter takes a name string and provides methods for getting at parts of the name
 class Import::KansaNameSplitter
+  # Samples selected from https://en.wikipedia.org/wiki/English_honorifics
+  TITLES = %w(
+    Master
+    Baron Viscount
+    Mr Mister
+    Miss Ms
+    Mrs Missus
+    Sir Madam
+    Sire Dame Lord
+    Esq Esquire
+    Dr Doctor
+  ).freeze
+
+  TITLE_PATTERNS = TITLES.map { |pattern| Regexp.new(pattern, "i") }.freeze
+
   attr_reader :name
 
   def initialize(name)
@@ -23,16 +38,21 @@ class Import::KansaNameSplitter
   end
 
   def title
-    ""
+    if TITLE_PATTERNS.any? { |p| p.match(name.first) }
+      name.first
+    else
+      ""
+    end
   end
 
   def first_name
-    case name.size
-    when 1
-      ""
+    if name.size <= 1
+      []
+    elsif title.present?
+      name[1..-2]
     else
-      name[0..-2].join(" ")
-    end
+      name[0..-2]
+    end.join(" ")
   end
 
   def last_name
