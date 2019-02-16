@@ -83,9 +83,13 @@ class Import::KansaMembersRow
       return false
     end
 
+    name_splitter = Import::KansaNameSplitter.new(cell_for("Full name"))
+
     details = Detail.new(
       claim:                            new_purchase.active_claim,
-      legal_name:                       cell_for("Full name"),
+      title:                            name_splitter.title,
+      first_name:                       name_splitter.first_name,
+      last_name:                        name_splitter.last_name,
       preferred_first_name:             cell_for("PreferredFirstname"),
       preferred_last_name:              cell_for("PreferedLastname"),
       badge_title:                      cell_for("BadgeTitle"),

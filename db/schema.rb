@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190202023301) do
+ActiveRecord::Schema.define(version: 20190211185059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20190202023301) do
   create_table "details", force: :cascade do |t|
     t.bigint "claim_id", null: false
     t.string "import_key"
-    t.string "legal_name", null: false
+    t.string "first_name"
     t.string "preferred_first_name"
     t.string "preferred_last_name"
     t.string "badge_title"
@@ -67,6 +67,8 @@ ActiveRecord::Schema.define(version: 20190202023301) do
     t.boolean "interest_performing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.string "last_name"
     t.index ["claim_id"], name: "index_details_on_claim_id"
   end
 

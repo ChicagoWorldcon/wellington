@@ -19,9 +19,10 @@ class Import::PresupportersRow
   HEADINGS = [
     "Timestamp",
     "Title",
-    "Full name",
-    "PreferredFirstname",
-    "PreferedLastname",
+    "Given Name",
+    "Family Name",
+    "Display Given Name",
+    "Display Family Name",
     "BadgeTitle",
     "BadgeSubtitle",
     "Address Line1",
@@ -49,7 +50,7 @@ class Import::PresupportersRow
     "Import Key",
     "Pre-Support Status",
     "Membership Status",
-    "Master Membership Status",
+    "Kiwi Pre-Support and Voted in Site Selection",
   ].freeze
 
   MEMBERSHIP_LOOKUP = {
@@ -94,9 +95,11 @@ class Import::PresupportersRow
       details = Detail.new(
         claim:                            new_purchase.active_claim,
         import_key:                       cell_for("Import Key"),
-        legal_name:                       cell_for("Full name"),
-        preferred_first_name:             cell_for("PreferredFirstname"),
-        preferred_last_name:              cell_for("PreferedLastname"),
+        title:                            cell_for("Title"),
+        first_name:                       cell_for("Given Name"),
+        last_name:                        cell_for("Family Name"),
+        preferred_first_name:             cell_for("Display Given Name"),
+        preferred_last_name:              cell_for("Display Family Name"),
         badge_title:                      cell_for("BadgeTitle"),
         badge_subtitle:                   cell_for("BadgeSubtitle"),
         address_line_1:                   cell_for("Address Line1"),

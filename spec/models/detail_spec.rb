@@ -32,16 +32,26 @@ RSpec.describe Detail, type: :model do
     let(:tests) do
       [
         TestDetail.new(
-          Detail.new(legal_name: "Spongebob", preferred_first_name: "Dr", preferred_last_name: "Who"),
+          Detail.new(
+            first_name: "Spongebob",
+            preferred_first_name: "Dr", preferred_last_name: "Who"
+          ),
           "Dr Who",
         ),
         TestDetail.new(
-          Detail.new(legal_name: "Spongebob", preferred_last_name: "Who?"),
+          Detail.new(
+            first_name: "Spongebob",
+            preferred_last_name: "Who?"
+          ),
           "Who?",
         ),
         TestDetail.new(
-          Detail.new(legal_name: "Spongebob"),
+          Detail.new(first_name: "Spongebob"),
           "Spongebob",
+        ),
+        TestDetail.new(
+          Detail.new(title: "Dr", first_name: "Spongebob", last_name: "Squarepants"),
+          "Dr Spongebob Squarepants",
         ),
       ]
     end

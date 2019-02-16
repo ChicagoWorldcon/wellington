@@ -29,7 +29,7 @@ class Detail < ApplicationRecord
   ].freeze
 
   PERMITTED_PARAMS = [
-    :legal_name,
+    :first_name,
     :preferred_first_name,
     :preferred_last_name,
     :badge_title,
@@ -53,13 +53,15 @@ class Detail < ApplicationRecord
   ].freeze
 
   belongs_to :claim
+  validates :claim, presence: true
 
   attr_reader :for_import
 
+  validates :first_name, presence: true, unless: :for_import
+  validates :last_name, presence: true, unless: :for_import
+
   validates :address_line_1, presence: true, unless: :for_import
-  validates :claim, presence: true
   validates :country, presence: true, unless: :for_import
-  validates :legal_name, presence: true
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
 
   def as_import
@@ -70,9 +72,9 @@ class Detail < ApplicationRecord
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
   def to_s
     if preferred_first_name.present? || preferred_last_name.present?
-      "#{preferred_first_name} #{preferred_last_name}".strip
+      "#{preferred_first_name} #{preferred_last_name}"
     else
-      "#{legal_name}"
-    end
+      "#{title} #{first_name} #{last_name}"
+    end.strip
   end
 end

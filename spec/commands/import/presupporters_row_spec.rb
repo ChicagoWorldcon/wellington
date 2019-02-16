@@ -36,10 +36,11 @@ RSpec.describe Import::PresupportersRow do
   let(:row_values) do
     [
       timestamp,                        # Timestamp
-      "",                               # Title
-      Faker::FunnyName.three_word_name, # Full name
-      Faker::Name.first_name,           # PreferredFirstname
-      Faker::Name.last_name,            # PreferedLastname
+      Faker::Superhero.prefix,          # Title
+      Faker::Superhero.name,            # Given Name
+      Faker::Superhero.descriptor,      # Family Name
+      Faker::Name.first_name,           # Display Given Name
+      Faker::Name.last_name,            # Display Family Name
       Faker::Superhero.name,            # BadgeTitle
       Faker::Superhero.descriptor,      # BadgeSubtitle
       Faker::Address.street_address,    # Address Line1
