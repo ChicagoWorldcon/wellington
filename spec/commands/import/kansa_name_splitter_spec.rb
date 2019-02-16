@@ -38,4 +38,14 @@ RSpec.describe Import::KansaNameSplitter do
       expect(subject.title).to be_empty
     end
   end
+
+  context "when there's three names" do
+    let(:name) { "Martin Seamus McFly" }
+
+    it "groups first names, assigns last name" do
+      expect(subject.first_name).to eq "Martin Seamus"
+      expect(subject.last_name).to eq "McFly"
+      expect(subject.title).to be_empty
+    end
+  end
 end

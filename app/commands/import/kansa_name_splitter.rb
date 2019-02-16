@@ -31,7 +31,7 @@ class Import::KansaNameSplitter
     when 1
       ""
     else
-      name.first
+      name[0..-2].join(" ")
     end
   end
 
