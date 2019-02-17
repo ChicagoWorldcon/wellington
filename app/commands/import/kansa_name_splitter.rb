@@ -27,6 +27,8 @@ class Import::KansaNameSplitter
     Sire Dame Lord
     Esq Esquire
     Dr Doctor
+    Reverend Father Mother Nun
+    Bishop President
   ).freeze
 
   TITLE_PATTERNS = TITLES.map { |pattern| Regexp.new(pattern, "i") }.freeze

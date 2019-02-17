@@ -78,4 +78,14 @@ RSpec.describe Import::KansaNameSplitter do
       expect(subject.last_name).to be_empty
     end
   end
+
+  context "with religious titles" do
+    let(:name) { "Father Michael Jordan" }
+
+    it "recognises the title" do
+      expect(subject.title).to eq "Father"
+      expect(subject.first_name).to eq "Michael"
+      expect(subject.last_name).to eq "Jordan"
+    end
+  end
 end
