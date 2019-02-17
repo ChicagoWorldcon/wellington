@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.PHONY: start build clean stop logs db
+.PHONY: build db rubocop apache rspec test logs clean stop start restart napalm
 
 build:
 	docker-compose build
@@ -45,3 +45,4 @@ start:
 restart:
 	docker-compose restart
 
+napalm: clean start db
