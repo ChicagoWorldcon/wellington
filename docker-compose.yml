@@ -27,7 +27,7 @@ services:
     ports:
       - 8080
 
-  confzealand:
+  members_area:
     build:
       context: ./
       target: development
@@ -35,7 +35,7 @@ services:
       - postgres
     env_file:
       .env
-    image: confzealand:latest
+    image: conzealand:latest
     ports:
       - "3000:3000"
     restart: always

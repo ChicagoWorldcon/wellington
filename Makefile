@@ -19,18 +19,18 @@ build:
 	docker-compose build
 
 db:
-	docker-compose exec -T confzealand /bin/bash ./initialize-db.sh
+	docker-compose exec -T members_area /bin/bash -c "bundle exec rake dev:bootstrap"
 
 rubocop:
-	docker-compose exec -T confzealand rubocop
+	docker-compose exec -T members_area rubocop
 apache:
-	docker-compose exec -T confzealand /bin/bash -c "bundle exec rake test:branch:copyright"
+	docker-compose exec -T members_area /bin/bash -c "bundle exec rake test:branch:copyright"
 rspec:
-	docker-compose exec -T confzealand /bin/bash -c "bundle exec rspec"
+	docker-compose exec -T members_area /bin/bash -c "bundle exec rspec"
 test: rspec rubocop apache apache
 
 logs:
-	docker-compose logs -f confzealand
+	docker-compose logs -f members_area
 
 clean: stop
 	docker-compose down
