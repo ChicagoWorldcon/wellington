@@ -19,27 +19,40 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<nav class="l-section">
-  <h1>Menu</h1>
-  <div class="row">
-    <div class="col-12 col-md-12">
-      <div class="l-panel">
-        <h2>Account Actions</h2>
-        <% if current_user.present? %>
-          <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
-        <% else %>
-          <%= render template: "user_tokens/new" %>
-        <% end %>
-
-        <h2>Links</h2>
-        <ul>
-          <li><%= link_to "Purchase Membership", new_purchase_path %></li>
-          <li><%= link_to "Review Memberships", purchases_path %></li>
-          <li>Suggest for our Programme (coming soon)</li>
-          <li>Volunteering (coming soon)</li>
-          <li>Plan my trip(coming soon)</li>
-        </ul>
+<header>
+  <div class="collapse" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 py-4">
+          <h2 class="h4-like">Site Actions</h2>
+          <ul class="list-unstyled">
+            <li><%= link_to "Purchase Membership", new_purchase_path %></li>
+            <li><%= link_to "Review Memberships", purchases_path %></li>
+            <li>Suggest for our Programme (coming soon)</li>
+            <li>Volunteering (coming soon)</li>
+            <li>Plan my trip(coming soon)</li>
+          </ul>
+        </div>
+        <div class="col-sm-4 offset-md-1 py-4">
+          <h2 class="h4-like">Account Actions</h2>
+          <% if current_user.present? %>
+            <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
+          <% else %>
+            <%= render template: "user_tokens/new" %>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>
-</nav>
+
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-between">
+      <a href="#" class="navbar-brand d-flex align-items-center">
+        <strong>Menu</strong>
+      </a>
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </div>
+</header>
