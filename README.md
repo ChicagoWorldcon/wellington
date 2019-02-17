@@ -74,6 +74,11 @@ SMTP_SERVER=smtp.sendgrid.net
 SMTP_PORT=465
 SMTP_USER_NAME=apikey
 SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
+
+#Postgres default values
+DB_HOST=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=example
 ```
 
 Now start your server with
