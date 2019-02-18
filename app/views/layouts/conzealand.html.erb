@@ -48,10 +48,14 @@
       </a>
     </div>
 
+    <div class="container">
+      <%= render "layouts/alerts" %>
+    </div>
+
     <div class="navbar navbar-dark bg-dark shadow-sm">
       <div class="container d-flex justify-content-between" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
         <a href="#" class="navbar-brand d-flex align-items-center">
-          <strong>Menu and Site Navigation</strong>
+          <strong>Menu and Account Options</strong>
         </a>
 
         <% if request.path != root_path %>
@@ -65,8 +69,7 @@
     <div class="<%= "collapse" if request.path != root_path %>" id="navbarHeader">
       <div class="container">
         <div class="row">
-          <div class="col-sm-8 col-md-7 py-4">
-            <h2 class="h4-like">Site Actions</h2>
+          <div class="col-sm-8 col-md-6 py-4">
             <ul class="list-unstyled">
               <li><%= link_to "Purchase Membership", new_purchase_path %></li>
               <li><%= link_to "Review Memberships", purchases_path %></li>
@@ -75,8 +78,8 @@
               <li>Plan my trip(coming soon)</li>
             </ul>
           </div>
-          <div class="col-sm-4 offset-md-1 py-4">
-            <h2 class="h4-like">Account Actions</h2>
+          <div class="col-sm-4 offset-md-1 col-md-5 py-4">
+            <h2 class="h4-like">Login or Create an Account</h2>
             <% if current_user.present? %>
               <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
             <% else %>
@@ -90,8 +93,6 @@
   </header>
   <div class="l-main" role="main">
     <div class="container l-wrapper">
-      <%= render "layouts/alerts" %>
-
       <%= yield %>
     </div>
   </div>
