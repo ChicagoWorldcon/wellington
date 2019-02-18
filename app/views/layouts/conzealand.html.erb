@@ -41,14 +41,53 @@
   <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
 </head>
 <body>
-  <header role="banner">
-    <div class="container l-wrapper">
+  <header>
+    <div class="container l-v-spacing" role="banner">
       <a href="https://conzealand.nz" class="logo">
         <img src="https://maailma.github.io/kansa-client/conzealand/img/conzealand-logo.svg" alt="CoNZealand" class="img-responsive">
       </a>
     </div>
-  </header>
 
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+      <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+          <strong>Menu and Site Navigation</strong>
+        </a>
+
+        <% if request.path != root_path %>
+          <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="<%= "collapse" if request.path != root_path %>" id="navbarHeader">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-md-7 py-4">
+            <h2 class="h4-like">Site Actions</h2>
+            <ul class="list-unstyled">
+              <li><%= link_to "Purchase Membership", new_purchase_path %></li>
+              <li><%= link_to "Review Memberships", purchases_path %></li>
+              <li>Suggest for our Programme (coming soon)</li>
+              <li>Volunteering (coming soon)</li>
+              <li>Plan my trip(coming soon)</li>
+            </ul>
+          </div>
+          <div class="col-sm-4 offset-md-1 py-4">
+            <h2 class="h4-like">Account Actions</h2>
+            <% if current_user.present? %>
+              <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
+            <% else %>
+              <%= render template: "user_tokens/new" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </header>
   <div class="l-main" role="main">
     <div class="container l-wrapper">
       <%= render "layouts/alerts" %>
