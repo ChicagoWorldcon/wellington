@@ -33,7 +33,6 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   <%= favicon_link_tag %>
 
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -79,10 +78,11 @@
             </ul>
           </div>
           <div class="col-sm-4 offset-md-1 col-md-5 py-4">
-            <h2 class="h4-like">Login or Create an Account</h2>
             <% if current_user.present? %>
+              <h2 class="h4-like">Account actions</h2>
               <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
             <% else %>
+              <h2 class="h4-like">Login or Create an Account</h2>
               <%= render template: "user_tokens/new" %>
             <% end %>
           </div>
