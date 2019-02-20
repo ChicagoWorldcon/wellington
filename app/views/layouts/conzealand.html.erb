@@ -40,6 +40,18 @@
   <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
 </head>
 <body>
+  <%# TODO Style this to flash or something dramatic %>
+  <% if current_support.present? %>
+    <div class="alert alert-danger show fixed-top" role="alert">
+      NOTICE: You are logged in as support
+      <%= button_to(
+        "Logout of Support (#{current_support.email})",
+        destroy_support_session_path,
+        action: :delete, method: :delete, class: "button", style: "display: inline-block"
+      ) %>
+    </div>
+  <% end %>
+
   <header>
     <div class="container l-v-spacing" role="banner">
       <a href="<%= root_path %>" class="logo">
@@ -53,6 +65,7 @@
 
     <%= render "/layouts/menu" %>
   </header>
+
   <div class="l-main" role="main">
     <div class="container l-wrapper">
       <%= yield %>

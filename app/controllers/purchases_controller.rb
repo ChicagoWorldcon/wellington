@@ -17,7 +17,6 @@
 
 class PurchasesController < ApplicationController
   # TODO(issue #24) list all members for people not logged in
-  # TODO(issue #23) list all members and details for support
   def index
     if current_user.present?
       @my_purcahses = Purchase.joins(:user).where(users: {id: current_user})
@@ -25,7 +24,7 @@ class PurchasesController < ApplicationController
       @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
     end
 
-    if Rails.env.development?
+    if current_support.present?
       @everyones_purchases = Purchase.includes(:user).joins(:membership)
     end
   end

@@ -28,7 +28,8 @@ namespace :test do
         authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
           next if file.in?(%w(LICENSE db/schema.rb .ruby-version))
-          next if file.match(/\.lock/)
+          next if file.match(/\.lock$/)
+          next if file.match(/\.md$/)
           next if !FileTest.exist?(file)
           next if file.match("app/assets/images/")
 
