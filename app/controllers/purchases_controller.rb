@@ -16,6 +16,8 @@
 # limitations under the License.
 
 class PurchasesController < ApplicationController
+  before_action :lookup_purchase, only: [:show, :edit]
+
   # TODO(issue #24) list all members for people not logged in
   def index
     if current_user.present?
@@ -36,7 +38,6 @@ class PurchasesController < ApplicationController
   end
 
   def show
-    @purchase = current_user.purchases.find_by!(membership_number: params[:id])
     @detail = @purchase.active_claim.detail
     @my_offer = MembershipOffer.new(@purchase.membership)
     @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
@@ -67,5 +68,15 @@ class PurchasesController < ApplicationController
       flash[:notice] = "Congratulations member #{new_purchase.membership_number}! You just reserved a #{matching_offer.membership} membership <3"
       redirect_to new_charge_path(purchaseId: new_purchase.id)
     end
+  end
+
+  private
+
+  def lookup_purchase
+    visible_purchases = Purchase.joins(:user)
+    if current_support.nil?
+      visible_purchases = visible_purchases.where(users: { id: current_user })
+    end
+    @purchase = visible_purchases.find_by!(membership_number: params[:id])
   end
 end

@@ -24,17 +24,22 @@ RSpec.describe PurchasesController, type: :controller do
   let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { purchase.user }
 
-  before { sign_in(user) }
-
   describe "#index" do
     it "renders" do
+      sign_in(user)
       get :index
       expect(response).to have_http_status(:ok)
     end
   end
 
   describe "#show" do
+    it "can't be found when not signed in" do
+      expect { get :show, params: { id: purchase.membership_number } }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "renders" do
+      sign_in(user)
       get :show, params: { id: purchase.membership_number }
       expect(response).to have_http_status(:ok)
     end
