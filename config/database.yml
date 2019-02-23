@@ -1,4 +1,5 @@
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 James Polley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +18,9 @@ default: &default
   encoding: unicode
   pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
   timeout: <%= ENV["DB_TIMEOUT"] || 8000 %>
+  host: <%= ENV["DB_HOST"] || "postgres" %>
+  username: <%= ENV["POSTGRES_USER"] || "postgres" %>
+  password: <%= ENV["POSTGRES_PASSWORD"] || "example" %>
 
 development:
   <<: *default

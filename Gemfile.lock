@@ -98,6 +98,7 @@ GEM
       actionmailer (>= 3.2)
       letter_opener (~> 1.0)
       railties (>= 3.2)
+    libv8 (3.16.14.19)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -165,6 +166,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
+    ref (2.0.0)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -237,6 +239,9 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
@@ -289,6 +294,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   stripe
   stripe-ruby-mock
+  therubyracer
   turbolinks (~> 5)
   tzinfo-data
   uglifier (>= 1.3.0)

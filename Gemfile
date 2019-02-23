@@ -2,6 +2,7 @@
 
 # Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 James Polley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,6 +56,6 @@ end
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Suggested gems, investigate later
-# gem "therubyracer", platforms: :ruby # See https://github.com/rails/execjs#readme for more supported runtimes
+gem "therubyracer", platforms: :ruby # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem "redis", "~> 4.0" # Use Redis adapter to run Action Cable in production
 # gem "bcrypt", "~> 3.1.7" # Use ActiveModel has_secure_password

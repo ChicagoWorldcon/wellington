@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 James Polley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@
 namespace :dev do
   desc "Recreates database from master and seeds users"
   task napalm: %w(db:drop db:create dev:reset:schema db:schema:load db:migrate db:seed)
+  task bootstrap: %w(db:create db:schema:load db:migrate db:seed dev:generate:users)
 
   namespace :generate do
     desc "Generates 100 random users and inserts them into the database"
