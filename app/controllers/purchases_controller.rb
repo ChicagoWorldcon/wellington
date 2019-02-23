@@ -38,7 +38,7 @@ class PurchasesController < ApplicationController
   end
 
   def show
-    @detail = @purchase.active_claim.detail
+    @detail = @purchase.active_claim.detail || Detail.new
     @my_offer = MembershipOffer.new(@purchase.membership)
     @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
