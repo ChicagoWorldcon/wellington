@@ -128,12 +128,36 @@ RSpec.describe Import::PresupportersRow do
         expect(successful_cash_charges.sum(:amount)).to eq supporter.price
       end
 
-      it "describes the source of the import" do
-        expect(Charge.last.comment).to match(my_comment)
-      end
-
       it "sets membership to paid" do
         expect(imported_purchase.state).to eq Purchase::PAID
+      end
+
+      context "when voted in site selection" do
+        let(:account_credit) { 50_00 }
+        let(:kiwi_site_selection) { "TRUE" }
+
+        it "grants more credit to the account" do
+          expect(successful_cash_charges.sum(:amount)).to eq(supporter.price + account_credit)
+        end
+
+        it "sets membership to paid" do
+          expect(imported_purchase.state).to eq Purchase::PAID
+        end
+
+        # Light integration check, sorry if this test knows a lot
+        it "lets you upgrade to adult" do
+          upgrader = UpgradeMembership.new(imported_purchase, to: adult)
+          expect(upgrader.call).to be_truthy
+          imported_purchase.reload
+          expect(imported_purchase.membership).to eq(adult)
+          expect(imported_purchase.state).to eq Purchase::INSTALLMENT
+          expect(successful_cash_charges.sum(:amount)).to be > supporter.price
+          expect(successful_cash_charges.sum(:amount)).to be < adult.price
+        end
+      end
+
+      it "describes the source of the import" do
+        expect(Charge.last.comment).to match(my_comment)
       end
 
       it "links through from the user's claim" do
