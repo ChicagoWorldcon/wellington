@@ -20,6 +20,7 @@ RSpec.describe Import::PresupportersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
+  let!(:supporter)   { create(:membership, :supporting) }
 
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
@@ -67,8 +68,8 @@ RSpec.describe Import::PresupportersRow do
       "TRUE",                           # Performing
       spreadsheet_notes,                # Notes
       import_key,                       # Import Key
-      "Silver Fern Pre-Support",        # Pre-Support Status
-      "Silver Fern Pre-Support",        # Membership Status
+      "Kiwi Pre-Support",               # Pre-Support Status
+      "Supporting",                     # Membership Status
       kiwi_site_selection,              # Kiwi Pre-Support and Voted in Site Selection
     ]
   end
@@ -102,8 +103,8 @@ RSpec.describe Import::PresupportersRow do
     end
 
     it "puts a new active order against that membership" do
-      expect { command.call }.to change { silver_fern.reload.active_orders.count }.by(1)
-      expect(imported_user.purchases).to eq(silver_fern.purchases)
+      expect { command.call }.to change { supporter.reload.active_orders.count }.by(1)
+      expect(imported_user.purchases).to eq(supporter.purchases)
     end
 
     it "creates detail record from row" do
@@ -123,7 +124,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "charge covers value of membership" do
-        expect(successful_cash_charges.sum(:amount)).to eq silver_fern.price
+        expect(successful_cash_charges.sum(:amount)).to eq supporter.price
       end
 
       it "describes the source of the import" do
