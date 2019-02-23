@@ -17,12 +17,14 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
+  let(:membership) { create(:membership, :young_adult, :with_order_for_purchase) }
+  let(:upgrade_membership) { create(:membership, :young_adult) }
+  let(:purchase) { membership.purchases.first }
+
   subject(:command) { UpgradeMembership.new(purchase, to: upgrade_membership) }
 
   context "when upgrade is unavailable" do
     let(:membership) { create(:membership, :adult, :with_order_for_purchase) }
-    let(:purchase) { membership.purchases.first }
-    let(:upgrade_membership) { create(:membership, :young_adult) }
 
     it "returns false to indicate failure" do
       expect(subject.call).to be_falsey
