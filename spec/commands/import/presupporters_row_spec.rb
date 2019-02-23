@@ -88,6 +88,8 @@ RSpec.describe Import::PresupportersRow do
   end
 
   context "with one member" do
+    let(:imported_user) { User.last }
+
     it "executes successfully" do
       expect(command.call).to be_truthy
       expect(command.errors).to be_empty
@@ -95,12 +97,12 @@ RSpec.describe Import::PresupportersRow do
 
     it "imports a member" do
       expect { command.call }.to change { User.count }.by(1)
-      expect(User.last.email).to eq email_address
+      expect(imported_user.email).to eq email_address
     end
 
     it "puts a new active order against that membership" do
       expect { command.call }.to change { silver_fern.reload.active_orders.count }.by(1)
-      expect(User.last.purchases).to eq(silver_fern.purchases)
+      expect(imported_user.purchases).to eq(silver_fern.purchases)
     end
 
     it "creates detail record from row" do
@@ -110,11 +112,11 @@ RSpec.describe Import::PresupportersRow do
 
     context "after run" do
       before do
-        command.call
+        expect(command.call).to be_truthy
       end
 
       it "creates a cash charge" do
-        expect(User.last.charges.successful.cash.count).to be(1)
+        expect(imported_user.charges.successful.cash.count).to be(1)
       end
 
       it "describes the source of the import" do
@@ -170,7 +172,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "doesn't set user created_at based on spreadsheet" do
-        expect(User.last.created_at).to be > 1.minute.ago
+        expect(imported_user.created_at).to be > 1.minute.ago
       end
 
       context "when created_at is not set" do
