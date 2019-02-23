@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe MenuController, type: :controller do
+RSpec.describe LandingController, type: :controller do
   describe "#index" do
     render_views
 
