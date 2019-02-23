@@ -51,66 +51,7 @@
       <%= render "layouts/alerts" %>
     </div>
 
-    <div class="<%= navigation_classes %>">
-      <% if request.path != root_path %>
-        <div class="container d-flex justify-content-between">
-          <div
-            class="navbar-brand d-flex align-items-center pointer"
-            data-toggle="collapse"
-            data-target="#navbarHeader"
-            aria-controls="navbarHeader"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <strong>Menu and Account Options</strong>
-          </div>
-
-          <button
-            class="navbar-toggler collapsed pointer"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarHeader"
-            aria-controls="navbarHeader"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-      <% else %>
-        <div class="container d-flex justify-content-between">
-          <div class="navbar-brand d-flex align-items-center">
-            <strong>Welcome to the members area!</strong>
-          </div>
-        </div>
-      <% end %>
-    </div>
-
-    <nav class="<%= "collapse" if request.path != root_path %>" id="navbarHeader">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-8 col-md-6 py-4">
-            <ul class="list-unstyled">
-              <li><%= link_to "Purchase Membership", new_purchase_path %></li>
-              <li><%= link_to "Review Memberships", purchases_path %></li>
-              <li>Suggest for our Programme (coming soon)</li>
-              <li>Volunteering (coming soon)</li>
-              <li>Plan my trip(coming soon)</li>
-              <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
-            </ul>
-          </div>
-          <div class="col-sm-4 offset-md-1 col-md-5 py-4">
-            <% if current_user.present? %>
-              <h2 class="h4-like">Account actions</h2>
-              <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
-            <% else %>
-              <h2 class="h4-like">Login or Create an Account</h2>
-              <%= render template: "user_tokens/new" %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <%= render "/layouts/menu" %>
   </header>
   <div class="l-main" role="main">
     <div class="container l-wrapper">
