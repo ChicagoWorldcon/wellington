@@ -22,7 +22,7 @@ module ApplicationHelper
     if request.path == root_path
       DEFUALT_NAV_CLASSES
     else
-      DEFUALT_NAV_CLASSES + %w(pointer bg-dark )
+      DEFUALT_NAV_CLASSES + %w(bg-dark)
     end.join(" ")
   end
 end
