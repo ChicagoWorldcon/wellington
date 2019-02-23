@@ -51,18 +51,31 @@
       <%= render "layouts/alerts" %>
     </div>
 
-    <div class="navbar navbar-dark bg-dark shadow-sm">
-      <div class="container d-flex justify-content-between" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-        <div class="navbar-brand d-flex align-items-center">
-          <strong>Menu and Account Options</strong>
-        </div>
+    <div class="<%= navigation_classes %>">
+      <% if request.path != root_path %>
+        <div
+          class="container d-flex justify-content-between"
+          data-toggle="collapse"
+          data-target="#navbarHeader"
+          aria-controls="navbarHeader"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <div class="navbar-brand d-flex align-items-center">
+            <strong>Menu and Account Options</strong>
+          </div>
 
-        <% if request.path != root_path %>
           <button class="navbar-toggler collapsed" type="button">
             <span class="navbar-toggler-icon"></span>
           </button>
-        <% end %>
-      </div>
+        </div>
+      <% else %>
+        <div class="container d-flex justify-content-between">
+          <div class="navbar-brand d-flex align-items-center">
+            <strong>Welcome to the members area!</strong>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <div class="<%= "collapse" if request.path != root_path %>" id="navbarHeader">
