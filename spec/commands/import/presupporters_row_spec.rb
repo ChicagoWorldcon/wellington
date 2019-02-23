@@ -91,6 +91,7 @@ RSpec.describe Import::PresupportersRow do
 
   context "with one member" do
     let(:imported_user) { User.last }
+    let(:imported_purchase) { Purchase.last }
 
     it "executes successfully" do
       expect(command.call).to be_truthy
@@ -132,7 +133,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "sets membership to paid" do
-        expect(Purchase.last.state).to eq Purchase::PAID
+        expect(imported_purchase.state).to eq Purchase::PAID
       end
 
       it "links through from the user's claim" do
@@ -175,8 +176,8 @@ RSpec.describe Import::PresupportersRow do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+        expect(imported_purchase.created_at).to be < 1.week.ago
+        expect(imported_purchase.created_at).to eq(imported_purchase.updated_at)
       end
 
       it "doesn't set user created_at based on spreadsheet" do
@@ -187,7 +188,7 @@ RSpec.describe Import::PresupportersRow do
         let(:timestamp) { "" }
 
         it "just uses the current date" do
-          expect(Purchase.last.created_at).to be > 1.minute.ago
+          expect(imported_purchase.created_at).to be > 1.minute.ago
         end
       end
     end
