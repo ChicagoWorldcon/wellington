@@ -88,7 +88,7 @@ RSpec.describe Import::KansaMembersRow do
 
     context "after run" do
       before do
-        command.call
+        expect(command.call).to be_truthy
       end
 
       it "creates a stripe charge" do
@@ -129,6 +129,11 @@ RSpec.describe Import::KansaMembersRow do
 
       it "doesn't set user created_at based on spreadsheet" do
         expect(User.last.created_at).to be > 1.minute.ago
+      end
+
+      it "sets share settings to false" do
+        expect(Detail.last.show_in_listings).to be false
+        expect(Detail.last.share_with_future_worldcons).to be false
       end
 
       context "when created_at is not set" do
