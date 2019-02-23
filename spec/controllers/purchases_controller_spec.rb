@@ -21,6 +21,8 @@ RSpec.describe PurchasesController, type: :controller do
   include Warden::Test::Helpers
   render_views
 
+  let(:hacker) { create(:user) }
+  let(:support) { create(:support) }
   let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { purchase.user }
 
@@ -38,7 +40,13 @@ RSpec.describe PurchasesController, type: :controller do
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders" do
+    it "cant find it when you're signed in as a different user" do
+      sign_in(hacker)
+      expect { get :show, params: { id: purchase.membership_number } }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "can find your own purchases" do
       sign_in(user)
       get :show, params: { id: purchase.membership_number }
       expect(response).to have_http_status(:ok)
