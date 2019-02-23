@@ -32,6 +32,7 @@ RSpec.describe Import::PresupportersRow do
   let(:paper_pubs) { "TRUE" }
   let(:no_electonic_publications) { "FALSE" }
   let(:timestamp) { "2017-10-11" }
+  let(:kiwi_site_selection) { "" }
 
   let(:row_values) do
     [
@@ -68,7 +69,7 @@ RSpec.describe Import::PresupportersRow do
       import_key,                       # Import Key
       "Silver Fern Pre-Support",        # Pre-Support Status
       "Silver Fern Pre-Support",        # Membership Status
-      "",                               # Master Membership Status
+      kiwi_site_selection,              # Kiwi Pre-Support and Voted in Site Selection
     ]
   end
 
@@ -111,12 +112,18 @@ RSpec.describe Import::PresupportersRow do
     end
 
     context "after run" do
+      let(:successful_cash_charges) { imported_user.charges.successful.cash }
+
       before do
         expect(command.call).to be_truthy
       end
 
       it "creates a cash charge" do
-        expect(imported_user.charges.successful.cash.count).to be(1)
+        expect(successful_cash_charges.count).to be(1)
+      end
+
+      it "charge covers value of membership" do
+        expect(successful_cash_charges.sum(:amount)).to eq silver_fern.price
       end
 
       it "describes the source of the import" do
