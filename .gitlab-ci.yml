@@ -19,6 +19,7 @@ services:
   - docker:dind
 
 before_script:
+  - touch .env
   - apk add make py3-pip
   - pip3 install --upgrade pip
   - pip install docker-compose
