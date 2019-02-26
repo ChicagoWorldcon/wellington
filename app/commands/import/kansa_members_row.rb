@@ -102,6 +102,11 @@ class Import::KansaMembersRow
       updated_at:                       import_date,
     ).as_import
 
+    # This should be opt in, people need to have seen the checkbox to have accepted these terms.
+    # As this didn't exist in Kansa, we're setting it to false here. Forms going forward will have these set.
+    details[:show_in_listings] = false
+    details[:share_with_future_worldcons] = false
+
     if !details.valid?
       errors << details.errors.full_messages.to_sentence
       return false

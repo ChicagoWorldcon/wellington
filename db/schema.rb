@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190211185059) do
+ActiveRecord::Schema.define(version: 20190219053046) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,8 +56,8 @@ ActiveRecord::Schema.define(version: 20190211185059) do
     t.string "postal"
     t.string "country"
     t.string "publication_format"
-    t.boolean "show_in_listings"
-    t.boolean "share_with_future_worldcons"
+    t.boolean "show_in_listings", default: true
+    t.boolean "share_with_future_worldcons", default: true
     t.boolean "interest_volunteering"
     t.boolean "interest_accessibility_services"
     t.boolean "interest_being_on_program"
