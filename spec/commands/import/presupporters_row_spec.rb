@@ -20,6 +20,7 @@ RSpec.describe Import::PresupportersRow do
   let!(:adult)       { create(:membership, :adult) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
+  let!(:supporter)   { create(:membership, :supporting) }
 
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
@@ -32,6 +33,7 @@ RSpec.describe Import::PresupportersRow do
   let(:paper_pubs) { "TRUE" }
   let(:no_electonic_publications) { "FALSE" }
   let(:timestamp) { "2017-10-11" }
+  let(:kiwi_site_selection) { "" }
 
   let(:row_values) do
     [
@@ -66,9 +68,9 @@ RSpec.describe Import::PresupportersRow do
       "TRUE",                           # Performing
       spreadsheet_notes,                # Notes
       import_key,                       # Import Key
-      "Silver Fern Pre-Support",        # Pre-Support Status
-      "Silver Fern Pre-Support",        # Membership Status
-      "",                               # Master Membership Status
+      "Kiwi Pre-Support",               # Pre-Support Status
+      "Supporting",                     # Membership Status
+      kiwi_site_selection,              # Kiwi Pre-Support and Voted in Site Selection
     ]
   end
 
@@ -88,6 +90,9 @@ RSpec.describe Import::PresupportersRow do
   end
 
   context "with one member" do
+    let(:imported_user) { User.last }
+    let(:imported_purchase) { Purchase.last }
+
     it "executes successfully" do
       expect(command.call).to be_truthy
       expect(command.errors).to be_empty
@@ -95,12 +100,12 @@ RSpec.describe Import::PresupportersRow do
 
     it "imports a member" do
       expect { command.call }.to change { User.count }.by(1)
-      expect(User.last.email).to eq email_address
+      expect(imported_user.email).to eq email_address
     end
 
     it "puts a new active order against that membership" do
-      expect { command.call }.to change { silver_fern.reload.active_orders.count }.by(1)
-      expect(User.last.purchases).to eq(silver_fern.purchases)
+      expect { command.call }.to change { supporter.reload.active_orders.count }.by(1)
+      expect(imported_user.purchases).to eq(supporter.purchases)
     end
 
     it "creates detail record from row" do
@@ -109,20 +114,50 @@ RSpec.describe Import::PresupportersRow do
     end
 
     context "after run" do
+      let(:successful_cash_charges) { imported_user.charges.successful.cash }
+
       before do
-        command.call
+        expect(command.call).to be_truthy
       end
 
       it "creates a cash charge" do
-        expect(User.last.charges.successful.cash.count).to be(1)
+        expect(successful_cash_charges.count).to be(1)
+      end
+
+      it "charge covers value of membership" do
+        expect(successful_cash_charges.sum(:amount)).to eq supporter.price
+      end
+
+      it "sets membership to paid" do
+        expect(imported_purchase.state).to eq Purchase::PAID
+      end
+
+      context "when voted in site selection" do
+        let(:account_credit) { 50_00 }
+        let(:kiwi_site_selection) { "TRUE" }
+
+        it "grants more credit to the account" do
+          expect(successful_cash_charges.sum(:amount)).to eq(supporter.price + account_credit)
+        end
+
+        it "sets membership to paid" do
+          expect(imported_purchase.state).to eq Purchase::PAID
+        end
+
+        # Light integration check, sorry if this test knows a lot
+        it "lets you upgrade to adult" do
+          upgrader = UpgradeMembership.new(imported_purchase, to: adult)
+          expect(upgrader.call).to be_truthy
+          imported_purchase.reload
+          expect(imported_purchase.membership).to eq(adult)
+          expect(imported_purchase.state).to eq Purchase::INSTALLMENT
+          expect(successful_cash_charges.sum(:amount)).to be > supporter.price
+          expect(successful_cash_charges.sum(:amount)).to be < adult.price
+        end
       end
 
       it "describes the source of the import" do
         expect(Charge.last.comment).to match(my_comment)
-      end
-
-      it "sets membership to paid" do
-        expect(Purchase.last.state).to eq Purchase::PAID
       end
 
       it "links through from the user's claim" do
@@ -165,19 +200,19 @@ RSpec.describe Import::PresupportersRow do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+        expect(imported_purchase.created_at).to be < 1.week.ago
+        expect(imported_purchase.created_at).to eq(imported_purchase.updated_at)
       end
 
       it "doesn't set user created_at based on spreadsheet" do
-        expect(User.last.created_at).to be > 1.minute.ago
+        expect(imported_user.created_at).to be > 1.minute.ago
       end
 
       context "when created_at is not set" do
         let(:timestamp) { "" }
 
         it "just uses the current date" do
-          expect(Purchase.last.created_at).to be > 1.minute.ago
+          expect(imported_purchase.created_at).to be > 1.minute.ago
         end
       end
     end

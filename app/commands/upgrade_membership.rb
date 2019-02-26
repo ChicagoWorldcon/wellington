@@ -31,7 +31,8 @@ class UpgradeMembership
     purchase.transaction do
       as_at = Time.now
       old_order.update!(active_to: as_at)
-      purchase.orders.create!(active_from: as_at)
+      purchase.orders.create!(active_from: as_at, membership: to_membership)
+      purchase.update!(state: Purchase::INSTALLMENT)
     end
   end
 

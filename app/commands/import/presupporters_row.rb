@@ -141,6 +141,15 @@ class Import::PresupportersRow
           comment: comment,
         )
 
+        if account_credit.present?
+          Charge.cash.successful.create!(
+            user: new_user,
+            purchase: new_purchase,
+            amount: account_credit.amount,
+            comment: "Account credit: #{account_credit.comment}",
+          )
+        end
+
         new_purchase.update!(created_at: import_date, updated_at: import_date)
         new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
         new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
@@ -204,6 +213,15 @@ class Import::PresupportersRow
       lookup.downcase.strip
     else
       fallback_email
+    end
+  end
+
+  def account_credit
+    if cell_for("Kiwi Pre-Support and Voted in Site Selection") == "TRUE"
+      OpenStruct.new(
+        amount: 50_00,
+        comment: "voted in site selection and held kiwi membership"
+      )
     end
   end
 

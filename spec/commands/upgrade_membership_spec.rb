@@ -17,29 +17,52 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
-  subject(:command) { UpgradeMembership.new(purchase, to: upgrade_membership) }
+  let!(:membership) { create(:membership, :young_adult, :with_order_for_purchase) }
+  let!(:upgrade_membership) { create(:membership, :adult) }
+  let!(:purchase) { membership.purchases.first }
 
-  context "when upgrade is unavailable" do
-    let(:membership) { create(:membership, :adult, :with_order_for_purchase) }
-    let(:purchase) { membership.purchases.first }
-    let(:upgrade_membership) { create(:membership, :young_adult) }
+  describe "#call" do
+    let(:command) { UpgradeMembership.new(purchase, to: upgrade_membership) }
+    subject(:call) { command.call }
 
-    it "returns false to indicate failure" do
-      expect(subject.call).to be_falsey
+    it { is_expected.to be_truthy }
+
+    it "creates new order" do
+      expect { call }.to change { Order.count }.by(1)
     end
 
-    it "incldues helpful error message" do
-      expect { subject.call }
-        .to change { subject.errors }
-        .to include(/cannot upgrade to young adult/i)
+    it "now points at new membership" do
+      expect { call }
+        .to change { purchase.reload.membership }
+        .to(upgrade_membership)
     end
 
-    it "doesn't change orders" do
-      expect { subject.call }.to_not change { purchase.orders }
+
+    it "recalculates PAID state" do
+      expect { call }
+        .to change { purchase.reload.state }
+        .from(Purchase::PAID)
+        .to(Purchase::INSTALLMENT)
     end
 
-    it "doesn't create new charges" do
-      expect { subject.call }.to_not change { purchase.charges }
+    context "when upgrade is unavailable" do
+      let(:membership) { create(:membership, :adult, :with_order_for_purchase) }
+
+      it { is_expected.to be_falsey }
+
+      it "incldues helpful error message" do
+        expect { call }
+          .to change { command.errors }
+          .to include(/cannot upgrade/i)
+      end
+
+      it "doesn't change orders" do
+        expect { call }.to_not change { purchase.orders }
+      end
+
+      it "doesn't create new charges" do
+        expect { call }.to_not change { purchase.charges }
+      end
     end
   end
 end
