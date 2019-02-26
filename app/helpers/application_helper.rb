@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,4 +15,14 @@
 # limitations under the License.
 
 module ApplicationHelper
+  DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
+
+  # The root page has an expanded menu
+  def navigation_classes
+    if request.path == root_path
+      DEFUALT_NAV_CLASSES
+    else
+      DEFUALT_NAV_CLASSES + %w(bg-dark)
+    end.join(" ")
+  end
 end

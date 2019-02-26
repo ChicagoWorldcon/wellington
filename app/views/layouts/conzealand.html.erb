@@ -33,7 +33,6 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   <%= favicon_link_tag %>
 
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,18 +40,21 @@
   <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
 </head>
 <body>
-  <header role="banner">
-    <div class="container l-wrapper">
-      <a href="https://conzealand.nz" class="logo">
+  <header>
+    <div class="container l-v-spacing" role="banner">
+      <a href="<%= root_path %>" class="logo">
         <img src="https://maailma.github.io/kansa-client/conzealand/img/conzealand-logo.svg" alt="CoNZealand" class="img-responsive">
       </a>
     </div>
-  </header>
 
+    <div class="container">
+      <%= render "layouts/alerts" %>
+    </div>
+
+    <%= render "/layouts/menu" %>
+  </header>
   <div class="l-main" role="main">
     <div class="container l-wrapper">
-      <%= render "layouts/alerts" %>
-
       <%= yield %>
     </div>
   </div>

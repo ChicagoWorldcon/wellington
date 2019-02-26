@@ -15,7 +15,13 @@
 %>
 
 <%= form_for(UserToken.new) do |f| %>
-  <%= label_tag(:email, "Email:") %>
-  <%= text_field_tag(:email) %>
-  <%= submit_tag("Send Login Link") %>
+  <div class="form-group">
+    <%= label_tag(:email, "Email:") %>
+    <%= text_field_tag(:email) %>
+    <%= submit_tag("Send Login Link") %>
+  </div>
+  <p>
+    Sign in with the email address you want your memberships again. When you enter your email address above, we'll
+    send you a link which will log you in.
+  </p>
 <% end %>
