@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,13 +21,14 @@ class ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
-  attr_reader :purchase, :user, :token, :charge_amount
+  attr_reader :purchase, :user, :token, :charge_amount, :charge, :amount_owed
 
-  def initialize(purchase, user, token, charge_amount: nil)
+  def initialize(purchase, user, token, amount_owed, charge_amount: nil)
     @purchase = purchase
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
+    @amount_owed = amount_owed
   end
 
   def call
@@ -66,7 +68,7 @@ class ChargeCustomer
       end
     end
 
-    return @charge.state == Charge::STATE_SUCCESSFUL
+    @charge.successful?
   end
 
   def error_message
@@ -80,6 +82,12 @@ class ChargeCustomer
   private
 
   def check_charge_amount
+    if !charge_amount.present?
+      errors << "charge amount is missing"
+    end
+    if charge_amount <= 0
+      errors << "amount must be more than 0 cents"
+    end
     if charge_amount > amount_owed
       errors << "refusing to overpay for purchase"
     end
@@ -113,12 +121,6 @@ class ChargeCustomer
   end
 
   def fully_paid?
-    amount_owed <= 0
-  end
-
-  def amount_owed
-    membership_cost = purchase.membership.price
-    paid_so_far = purchase.charges.successful.sum(:amount)
-    membership_cost - paid_so_far
+    @charge.successful? && (amount_owed - charge_amount) <= 0
   end
 end

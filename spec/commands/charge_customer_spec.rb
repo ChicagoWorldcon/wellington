@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,10 +25,11 @@ RSpec.describe ChargeCustomer do
   let(:purchase) { create(:purchase, :with_order_against_membership) }
   let(:membership) { purchase.membership }
   let(:user) { create(:user) }
+  let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
 
   context "when paying for a purchase" do
-    subject(:command) { ChargeCustomer.new(purchase, user, token) }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed) }
 
     context "when payment fails" do
       before do
@@ -62,7 +64,7 @@ RSpec.describe ChargeCustomer do
   context "when paying only part of a purchase" do
     let(:amount_paid) { membership.price / 4 }
     let(:amount_left) { membership.price - amount_paid }
-    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_left, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
       StripeMock.prepare_card_error(:card_declined)
@@ -108,7 +110,7 @@ RSpec.describe ChargeCustomer do
         end
 
         it "pays off the membership at the original price" do
-          success = ChargeCustomer.new(purchase, user, token, charge_amount: amount_left).call
+          success = ChargeCustomer.new(purchase, user, token, amount_left, charge_amount: amount_left).call
           expect(success).to be_truthy
           expect(purchase.state).to eq(Purchase::PAID)
         end
@@ -118,7 +120,8 @@ RSpec.describe ChargeCustomer do
 
   context "when overpaying" do
     let(:amount_paid) { membership.price + 1 }
-    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: amount_paid) }
+    let(:amount_owed) { membership.price }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: amount_paid) }
 
     it "refuses to purchase the purchase" do
       expect(command.call).to be_falsey
@@ -130,12 +133,13 @@ RSpec.describe ChargeCustomer do
     let(:partial_pay) { membership.price / 4 }
     let(:remainder) { membership.price - partial_pay }
     let(:overpay) { remainder + 1 } # just a cent over
+    let(:amount_owed) { remainder }
 
     before do
-      ChargeCustomer.new(purchase, user, token, charge_amount: partial_pay).call
+      ChargeCustomer.new(purchase, user, token, membership.price, charge_amount: partial_pay).call
     end
 
-    subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: remainder) }
+    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: remainder) }
 
     it { is_expected.to be_truthy }
 
@@ -152,7 +156,7 @@ RSpec.describe ChargeCustomer do
     end
 
     context "when choosing to overpay" do
-      subject(:command) { ChargeCustomer.new(purchase, user, token, charge_amount: overpay) }
+      subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: overpay) }
 
       it "gives a polite error" do
         expect(command.call).to be_falsey
@@ -161,7 +165,7 @@ RSpec.describe ChargeCustomer do
     end
 
     context "with default behaviour" do
-      subject(:command) { ChargeCustomer.new(purchase, user, token) }
+      subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed) }
 
       it { is_expected.to be_truthy }
 

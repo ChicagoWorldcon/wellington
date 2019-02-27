@@ -22,7 +22,8 @@ class ChargesController < ApplicationController
   def create
     purchase = Purchase.find_or_create_by!(name: "adult", worth: 500)
     user = User.find_or_create_by!(email: params[:stripeEmail])
-    service = ChargeCustomer.new(purchase, user, params[:stripeToken])
+    amount_owed = AmountOwedForPurchase.new(purchase).amount_owed
+    service = ChargeCustomer.new(purchase, user, params[:stripeToken], amount_owed)
     @payment = service.call
     if !@payment
       flash[:error] = service.error_message

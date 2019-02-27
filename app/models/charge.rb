@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,5 +39,9 @@ class Charge < ApplicationRecord
 
   def stripe_transfer?
     transfer == TRANSFER_STRIPE
+  end
+
+  def successful?
+    state == STATE_SUCCESSFUL
   end
 end
