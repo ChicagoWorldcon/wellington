@@ -1,5 +1,6 @@
 <%#
   Copyright 2019 Matthew B. Gray
+  Copyright 2019 AJ Esler
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -40,9 +41,9 @@
           <p>You have <%= @my_purcahses.count %> memberships</p>
           <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
             <p>
-              <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase) %>
+              <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase_path(purchase.membership_number)) %>
               for <%= purchase.active_claim.detail %>. <%= purchase.state %>,
-              paid <%= purchase.charges.successful.sum(:amount) %> cents
+              paid <%= number_to_currency(purchase.charges.successful.sum(:amount) / 100) %>
             </p>
           <% end %>
         <% end %>
