@@ -42,7 +42,6 @@ group :development, :test do
 end
 
 group :development do
-  gem "letter_opener_web"
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
   gem "pry"                               # nicer debugger, use 'binding.pry'
   gem "pry-nav"                           # adds 'step' and 'next' to pry
