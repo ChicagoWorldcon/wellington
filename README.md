@@ -142,6 +142,9 @@ we can set something up to help you.
 This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
 file distributed with this project.
 
+- Copyright 2019 AJ Esler
 - Copyright 2019 James Polley
 - Copyright 2019 Matthew B. Gray
 - Copyright 2019 Steven C Hartley
+
+We are so grateful to all our contributors for helping us make this project great.
