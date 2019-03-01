@@ -26,5 +26,5 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     authentication:       "plain",
     enable_starttls_auto: true
   }
-  end
+end
 end
