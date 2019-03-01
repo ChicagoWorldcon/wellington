@@ -44,6 +44,15 @@ check everything is working. After starting and initalizing the db, Run the test
 make rspec
 ```
 
+In development to start mail capture run:
+
+```sh
+make mail
+```
+
+Mail is caught by mail catcher and serverd on port 1080.
+Navigate to http://localhost:1080 to see all sent mail.
+
 Once you have started the environment and initalized the database, you can navigate to http://localhost:3000 in your
 browser to see what the app looks like on the web.
 
