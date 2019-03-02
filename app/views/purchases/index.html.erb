@@ -42,10 +42,9 @@
           <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
             <p>
               <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase_path(purchase.membership_number)) %>
-              for <%= purchase.active_claim.detail %>. <%= purchase.state %>,
-              paid <%= number_to_currency(purchase.charges.successful.sum(:amount) / 100) %>
-              <% if purchase.charges.successful.sum(:amount) > 0 %>
-                worth <%= number_to_currency(purchase.charges.successful.sum(:amount) / 100) %> NZD
+              for <%= purchase.active_claim.detail %>. <%= purchase.state %>
+              <% if worth = present_currency_worth_for(purchase) %>
+                worth <%= worth %>
               <% end %>
             </p>
           <% end %>
