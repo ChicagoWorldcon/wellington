@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.PHONY: build db rubocop apache rspec test logs clean stop start restart napalm mail
+.PHONY: build db rubocop apache rspec test logs clean stop start restart napalm mail echoTest
 
 build:
 	docker-compose build
@@ -48,4 +48,8 @@ restart:
 napalm: clean start db
 
 mail:
-	docker-compose exec -T members_area /bin/bash -c "mailcatcher --ip 0.0.0.0"
+	docker-compose exec -T members_area //bin/bash -c "mailcatcher --ip 0.0.0.0"
+	@echo "To see email, navigate to http://localhost:1080"
+	
+
+		
