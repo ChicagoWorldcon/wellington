@@ -20,14 +20,14 @@ build:
 	docker-compose build
 
 db:
-	docker-compose exec -T members_area /bin/bash -c "bundle exec rake dev:bootstrap"
+	docker-compose exec -T members_area bundle exec rake dev:bootstrap
 
 rubocop:
 	docker-compose exec -T members_area rubocop
 apache:
-	docker-compose exec -T members_area /bin/bash -c "bundle exec rake test:branch:copyright"
+	docker-compose exec -T members_area bundle exec rake test:branch:copyright
 rspec:
-	docker-compose exec -T members_area /bin/bash -c "bundle exec rspec"
+	docker-compose exec -T members_area bundle exec rspec
 test: rspec rubocop apache apache
 
 logs:
