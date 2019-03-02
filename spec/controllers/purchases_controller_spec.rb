@@ -25,6 +25,7 @@ RSpec.describe PurchasesController, type: :controller do
   let!(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
   let!(:original_user) { purchase.user }
   let(:another_user) { create(:user) }
+  let(:support) { create(:support) }
 
   describe "#index" do
     it "renders" do
@@ -50,6 +51,14 @@ RSpec.describe PurchasesController, type: :controller do
       sign_in(original_user)
       get :show, params: { id: purchase.membership_number }
       expect(response).to have_http_status(:ok)
+    end
+
+    context "when signed in as support" do
+      it "can view any membership" do
+        sign_in(support)
+        get :show, params: { id: purchase.membership_number }
+        expect(response).to have_http_status(:found)
+      end
     end
 
     context "after transferring a membership" do
