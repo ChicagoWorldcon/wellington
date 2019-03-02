@@ -19,14 +19,14 @@ build:
 	docker-compose build
 
 db:
-	docker-compose exec -T members_area /bin/bash -c "bundle exec rake dev:bootstrap"
+	docker-compose exec -T members_area //bin/bash -c "bundle exec rake dev:bootstrap"
 
 rubocop:
 	docker-compose exec -T members_area rubocop
 apache:
 	docker-compose exec -T members_area /bin/bash -c "bundle exec rake test:branch:copyright"
 rspec:
-	docker-compose exec -T members_area /bin/bash -c "bundle exec rspec"
+	docker-compose exec -T members_area //bin/bash -c "bundle exec rspec"
 test: rspec rubocop apache apache
 
 logs:
@@ -49,7 +49,7 @@ napalm: clean start db
 
 mail:
 	docker-compose exec -T members_area //bin/bash -c "mailcatcher --ip 0.0.0.0"
-	@echo "To see email, navigate to http://localhost:1080"
+	@echo "To see email, go to the MailCatcher web interface at http://localhost:1080"
 	
 
 		
