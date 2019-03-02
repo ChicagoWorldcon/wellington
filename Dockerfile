@@ -21,4 +21,3 @@ FROM base as development
 VOLUME /app
 RUN gem install mailcatcher
 CMD bundle exec rails server
-
