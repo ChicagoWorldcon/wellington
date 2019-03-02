@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Login Flow", type: :feature do
+RSpec.describe "Account Management Flows", type: :feature do
   include Warden::Test::Helpers
   after(:each) { Warden.test_reset! }
 
