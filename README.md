@@ -76,6 +76,10 @@ HOSTNAME=members.conzealand.nz
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 
+# Setting this turns off developer specific settings and is important for prod deploy
+# Don't set this on your local
+RAILS_ENV=production
+
 # Con specific mailer configuration
 EMAIL_PAYMENTS=registration@conzealand.nz
 
