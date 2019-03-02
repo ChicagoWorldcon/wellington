@@ -45,4 +45,19 @@ RSpec.describe "Account Management Flows", type: :feature do
     expect(page).to have_current_path(new_user_token_path)
     expect(page).to have_content(/expired/i)
   end
+
+  context "support accounts" do
+    it "renders sign in page" do
+      visit new_support_session_path
+      expect(page.status_code).to eq(200)
+    end
+
+    it "can't use signup url generators" do
+      expect { new_support_registration_path }.to raise_error(NameError)
+    end
+
+    it "explodes when going to the endpoint" do
+      expect { visit "/supports/sign_up" }.to raise_error(ActionController::RoutingError)
+    end
+  end
 end
