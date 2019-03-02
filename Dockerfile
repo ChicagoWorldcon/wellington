@@ -1,4 +1,5 @@
 # Copyright 2019 James Polley
+# Copyright 2019 Steven Hartley
 FROM ruby:2.6.1-stretch as base
 
 RUN apt-get update && apt-get upgrade -y

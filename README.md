@@ -140,3 +140,4 @@ file distributed with this project.
 
 - Copyright 2019 James Polley
 - Copyright 2019 Matthew B. Gray
+- Copyright 2019 Steven Hartley
