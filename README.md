@@ -44,7 +44,8 @@ check everything is working. After starting and initalizing the db, Run the test
 make rspec
 ```
 
-Email is required to log users in. We have set up Mailcatcher in development to capture and serve all out bound mail.
+Email is required to log users in, because the login link is sent to the users email. 
+We have set up Mailcatcher to capture and serve all out bound mail, in the development environment.
  
 To start mail capture run:
 
