@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +16,16 @@
 # limitations under the License.
 
 # https://guides.rubyonrails.org/action_mailer_basics.html
-Rails.application.config.action_mailer.tap do |action_mailer|
-  action_mailer.raise_delivery_errors = true
-  action_mailer.smtp_settings = {
-    address:              ENV["SMTP_SERVER"],
-    port:                 ENV["SMTP_PORT"],
-    user_name:            ENV["SMTP_USER_NAME"],
-    password:             ENV["SMTP_PASSWORD"],
-    authentication:       "plain",
-    enable_starttls_auto: true
-  }
+if !Rails.env.development?
+  Rails.application.config.action_mailer.tap do |action_mailer|
+    action_mailer.raise_delivery_errors = true
+    action_mailer.smtp_settings = {
+      address:              ENV["SMTP_SERVER"],
+      port:                 ENV["SMTP_PORT"],
+      user_name:            ENV["SMTP_USER_NAME"],
+      password:             ENV["SMTP_PASSWORD"],
+      authentication:       "plain",
+      enable_starttls_auto: true
+    }
+  end
 end

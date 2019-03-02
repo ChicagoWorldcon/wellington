@@ -2,6 +2,7 @@
 
 # Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +29,4 @@ Rails.application.routes.draw do
   resources :charges
   resources :themes
   resources :purchases
-
-  mount(LetterOpenerWeb::Engine, at: "/letter_opener") if Rails.env.development?
 end

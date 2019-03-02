@@ -2,6 +2,7 @@
 
 # Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,6 +74,9 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.perform_deliveries = true
+  #mail catcher
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { address: "0.0.0.0", port: 1025 }
+
+
 end

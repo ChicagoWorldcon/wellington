@@ -3,6 +3,7 @@
 # Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +43,6 @@ group :development, :test do
 end
 
 group :development do
-  gem "letter_opener_web"
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
   gem "pry"                               # nicer debugger, use 'binding.pry'
   gem "pry-nav"                           # adds 'step' and 'next' to pry
