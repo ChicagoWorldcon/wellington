@@ -107,7 +107,7 @@ Rails.application.configure do
   # Used for rendering URLs for sign in
   raise "Please set HOST in your .env" unless ENV["HOST"].present?
   config.action_mailer.default_url_options = {
-    host: ENV["HOST"],
+    host: ENV["HOSTNAME"],
     protocol: "https",
   }
 
