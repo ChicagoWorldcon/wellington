@@ -100,7 +100,7 @@ RSpec.describe ChargesController, type: :controller do
         post :create, params: params
       end
 
-      context "mail stub" do
+      context "after email has been sent" do
         before do
           allow(PaymentMailer).to receive(:new_member).and_return(mail)
         end
