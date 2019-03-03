@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +31,7 @@ class Detail < ApplicationRecord
 
   PERMITTED_PARAMS = [
     :first_name,
+    :last_name,
     :preferred_first_name,
     :preferred_last_name,
     :badge_title,

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,6 +35,10 @@ class Purchase < ApplicationRecord
   scope :disabled, -> { where(state: DISABLED) }
   scope :installment, -> { where(state: INSTALLMENT) }
   scope :paid, -> { where(state: PAID) }
+
+  def paid?
+    state == PAID
+  end
 
   def transferable?
     state == PAID

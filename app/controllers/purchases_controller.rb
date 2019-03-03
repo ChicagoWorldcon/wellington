@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,9 +37,10 @@ class PurchasesController < ApplicationController
   end
 
   def show
-    @purchase = Purchase.find_by!(membership_number: params[:id])
+    @purchase = current_user.purchases.find_by!(membership_number: params[:id])
     @detail = @purchase.active_claim.detail
     @my_offer = MembershipOffer.new(@purchase.membership)
+    @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
 
@@ -64,7 +66,7 @@ class PurchasesController < ApplicationController
       detail.save!
 
       flash[:notice] = "Congratulations member #{new_purchase.membership_number}! You just reserved a #{matching_offer.membership} membership <3"
-      redirect_to purchase_path(new_purchase.membership_number)
+      redirect_to new_charge_path(purchaseId: new_purchase.id)
     end
   end
 end

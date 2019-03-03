@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +18,13 @@
 require "rails_helper"
 
 RSpec.describe PurchasesController, type: :controller do
+  include Warden::Test::Helpers
   render_views
 
   let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
+  let(:user) { purchase.user }
+
+  before { sign_in(user) }
 
   describe "#index" do
     it "renders" do

@@ -1,6 +1,7 @@
 <%#
   Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
+  Copyright 2019 AJ Esler
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -20,8 +21,24 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
+<% if flash[:notice].present? %>
+  <div><%= flash[:notice] %></div>
+<% end %>
+
 <h1>Review Membership</h1>
 <section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <div class="l-panel">
+        <% if @purchase.paid? %>
+          <span>This membership is fully paid for.</span>
+        <% else %>
+          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> outstanding for this membership</p>
+          <%= link_to "Make a payment", new_charge_url(purchaseId: @purchase.id) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12 col-md-8">
       <div class="l-panel">
