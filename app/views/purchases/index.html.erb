@@ -27,11 +27,11 @@
       <div class="l-panel">
         <h2>
           My Memberships
-          <% if current_user.present? %>
+          <% if user_signed_in? %>
             (<%= current_user.email %>)
           <% end %>
         </h2>
-        <% if !current_user.present? %>
+        <% if !user_signed_in? %>
           <p>
             You are currently signed out, please sign in in to view your memberships. It's pretty easy, just send
             yourself a login link!

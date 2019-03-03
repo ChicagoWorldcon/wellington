@@ -20,13 +20,13 @@ class PurchasesController < ApplicationController
 
   # TODO(issue #24) list all members for people not logged in
   def index
-    if current_user.present?
+    if user_signed_in?
       @my_purcahses = Purchase.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
       @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
     end
 
-    if current_support.present?
+    if user_signed_in?
       @everyones_purchases = Purchase.includes(:user).joins(:membership)
     end
   end

@@ -67,7 +67,7 @@
       </ul>
     </div>
     <div class="col-sm-4 offset-md-1 col-md-5 py-4">
-      <% if current_user.present? %>
+      <% if user_signed_in? %>
         <h2 class="h4-like">Account actions</h2>
         <%= link_to("Logout #{current_user.email}", logout_user_tokens_path) %>
       <% else %>
