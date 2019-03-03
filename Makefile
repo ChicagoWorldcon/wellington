@@ -54,3 +54,6 @@ napalm: clean start db
 mail:
 	docker-compose exec -T members_area mailcatcher --ip 0.0.0.0
 	@echo "To see email, go to the MailCatcher web interface at http://localhost:1080"
+
+publish: build
+	docker save conzealand:latest | ssh -C members.conzealand.nz docker load
