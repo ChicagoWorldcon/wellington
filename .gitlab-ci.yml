@@ -15,10 +15,24 @@
 
 # https://docs.gitlab.com/ee/ci/quick_start/
 image: docker:stable
+
 services:
   - docker:dind
 
+stages:
+  - build
+  - test
+  - publish
+
+# For more naming options, see https://docs.gitlab.com/ee/ci/variables/
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+
 before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   - touch .env
   - apk add make py3-pip
   - pip3 install --upgrade pip
@@ -26,14 +40,35 @@ before_script:
   - make start
   - make db
 
-rspec:
+docker_build:
+  stage: build
+  script:
+    - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+# TODO make docker images use bulit tag
+# See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-container-registry
+rspec_tests:
+  stage: test
   script:
     - make rspec
 
-rubocop:
+rubocop_linting:
+  stage: test
   script:
     - make rubocop
 
-licence:
+licence_check:
+  stage: test
   script:
     - make apache
+
+release_image:
+  stage: publish
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+    - 41-staging # FIXME Temporary
