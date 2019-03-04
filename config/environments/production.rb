@@ -103,4 +103,20 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Advice from rails g devise:install
+  # Used for rendering URLs for sign in
+  raise "Please set HOST in your .env" unless ENV["HOST"].present?
+  config.action_mailer.default_url_options = {
+    host: ENV["HOST"],
+    protocol: "https",
+  }
+
+  # Don't fill logs with colour codes
+  config.colorize_logging = false
+
+  # We're using docker to handle logging, so we're setting this to standard out.
+  # If this doesn't work for your usecase, please raise an issue.
+  # See https://success.docker.com/article/logging-best-practices
+  Rails.logger = ActiveSupport::Logger.new(STDOUT)
 end
