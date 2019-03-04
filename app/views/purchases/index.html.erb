@@ -27,11 +27,11 @@
       <div class="l-panel">
         <h2>
           My Memberships
-          <% if current_user.present? %>
+          <% if user_signed_in? %>
             (<%= current_user.email %>)
           <% end %>
         </h2>
-        <% if !current_user.present? %>
+        <% if !user_signed_in? %>
           <p>
             You are currently signed out, please sign in in to view your memberships. It's pretty easy, just send
             yourself a login link!
@@ -42,8 +42,10 @@
           <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
             <p>
               <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase_path(purchase.membership_number)) %>
-              for <%= purchase.active_claim.detail %>. <%= purchase.state %>,
-              paid <%= number_to_currency(purchase.charges.successful.sum(:amount) / 100) %>
+              for <%= purchase.active_claim.detail %>. <%= purchase.state %>
+              <% if worth = present_currency_worth_for(purchase) %>
+                worth <%= worth %>
+              <% end %>
             </p>
           <% end %>
         <% end %>

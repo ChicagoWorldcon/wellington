@@ -21,22 +21,62 @@ RSpec.describe PurchasesController, type: :controller do
   include Warden::Test::Helpers
   render_views
 
-  let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
-  let(:user) { purchase.user }
-
-  before { sign_in(user) }
+  let(:support) { create(:support) }
+  let!(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
+  let!(:original_user) { purchase.user }
+  let(:another_user) { create(:user) }
+  let(:support) { create(:support) }
 
   describe "#index" do
     it "renders" do
+      sign_in(original_user)
       get :index
       expect(response).to have_http_status(:ok)
     end
   end
 
   describe "#show" do
-    it "renders" do
+    it "can't be found when not signed in" do
+      expect { get :show, params: { id: purchase.membership_number } }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "cant find it when you're signed in as a different user" do
+      sign_in(another_user)
+      expect { get :show, params: { id: purchase.membership_number } }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "can find your own purchases" do
+      sign_in(original_user)
       get :show, params: { id: purchase.membership_number }
       expect(response).to have_http_status(:ok)
+    end
+
+    context "when signed in as support" do
+      it "can view any membership" do
+        sign_in(support)
+        get :show, params: { id: purchase.membership_number }
+        expect(response).to have_http_status(:found)
+      end
+    end
+
+    context "after transferring a membership" do
+      before do
+        TransferMembership.new(purchase, from: original_user, to: another_user).call
+      end
+
+      it "can't be found for original user" do
+        sign_in(original_user)
+        expect { get :show, params: { id: purchase.membership_number } }
+          .to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is found for new user" do
+        sign_in(another_user)
+        get :show, params: { id: purchase.membership_number }
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 end

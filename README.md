@@ -68,6 +68,9 @@ Create an .env file using this template. Please replace fields with your own val
 copy pasta errors ;-):
 
 ```bash
+# FQDN of the machine that's running the members area
+HOSTNAME=members.conzealand.nz
+
 # Stripe keys for payment
 # Generate them here https://dashboard.stripe.com/account/apikeys
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT

@@ -16,16 +16,17 @@
 # limitations under the License.
 
 class PurchasesController < ApplicationController
+  before_action :lookup_purchase, only: [:show, :edit]
+
   # TODO(issue #24) list all members for people not logged in
-  # TODO(issue #23) list all members and details for support
   def index
-    if current_user.present?
+    if user_signed_in?
       @my_purcahses = Purchase.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
       @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
     end
 
-    if Rails.env.development?
+    if user_signed_in?
       @everyones_purchases = Purchase.includes(:user).joins(:membership)
     end
   end
@@ -37,8 +38,7 @@ class PurchasesController < ApplicationController
   end
 
   def show
-    @purchase = current_user.purchases.find_by!(membership_number: params[:id])
-    @detail = @purchase.active_claim.detail
+    @detail = @purchase.active_claim.detail || Detail.new
     @my_offer = MembershipOffer.new(@purchase.membership)
     @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
@@ -68,5 +68,15 @@ class PurchasesController < ApplicationController
       flash[:notice] = "Congratulations member #{new_purchase.membership_number}! You just reserved a #{matching_offer.membership} membership <3"
       redirect_to new_charge_path(purchaseId: new_purchase.id)
     end
+  end
+
+  private
+
+  def lookup_purchase
+    visible_purchases = Purchase.joins(:user)
+    if !support_signed_in?
+      visible_purchases = visible_purchases.where(users: { id: current_user })
+    end
+    @purchase = visible_purchases.find_by!(membership_number: params[:id])
   end
 end
