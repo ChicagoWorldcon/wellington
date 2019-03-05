@@ -33,12 +33,6 @@ variables:
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-  - touch .env
-  - apk add make py3-pip
-  - pip3 install --upgrade pip
-  - pip install docker-compose
-  - make start
-  - make db
 
 docker_build:
   stage: build
@@ -51,17 +45,25 @@ docker_build:
 rspec_tests:
   stage: test
   script:
+    - touch .env
+    - apk add make py3-pip
+    - pip3 install --upgrade pip
+    - pip install docker-compose
+    - make start
+    - make db
     - make rspec
 
 rubocop_linting:
   stage: test
   script:
-    - make rubocop
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE bundle exec rubocop
 
 licence_check:
   stage: test
   script:
-    - make apache
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
 
 release_image:
   stage: publish
