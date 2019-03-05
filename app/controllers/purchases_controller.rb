@@ -26,7 +26,7 @@ class PurchasesController < ApplicationController
       @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
     end
 
-    if user_signed_in?
+    if support_signed_in?
       @everyones_purchases = Purchase.includes(:user).joins(:membership)
     end
   end
