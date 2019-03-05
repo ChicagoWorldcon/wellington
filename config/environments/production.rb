@@ -103,7 +103,7 @@ Rails.application.configure do
 
   # Advice from rails g devise:install
   # Used for rendering URLs for sign in
-  raise "Please set HOST in your .env" unless ENV["HOST"].present?
+  raise "Please set HOSTNAME in your .env" unless ENV["HOSTNAME"].present?
   config.action_mailer.default_url_options = {
     host: ENV["HOSTNAME"],
     protocol: "https",
