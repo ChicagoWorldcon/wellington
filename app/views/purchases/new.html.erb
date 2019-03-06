@@ -25,8 +25,12 @@
   <div class="row">
     <div class="col-12 col-md-8">
       <div class="l-panel">
-        <h2>Membership Details</h2>
-        <%= render "detail_form" %>
+        <% if !user_signed_in? %>
+          <%= render "sign_in_notice" %>
+        <% else %>
+          <h2>Membership Details</h2>
+          <%= render "detail_form" %>
+        <% end %>
       </div>
     </div>
 
