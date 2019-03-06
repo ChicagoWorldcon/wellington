@@ -34,7 +34,6 @@ RSpec.describe UpgradeOffer do
 
   describe "#to_s" do
     subject(:to_s) { offer.to_s }
-    it { is_expected.to match(/silver fern/i) }
     it { is_expected.to match(/\$\d+\.\d+/i) }
     it { is_expected.to match(/NZD/i) }
   end

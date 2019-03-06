@@ -32,7 +32,7 @@ class UpgradeOffer
   end
 
   def to_s
-    "Upgrade #{from_membership} to #{to_membership} (#{formatted_price})"
+    "Upgrade to #{to_membership} (#{formatted_price})"
   end
 
   # TODO Extract to i18n

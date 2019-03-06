@@ -32,15 +32,34 @@
             My Memberships (<%= current_user.email %>)
           </h2>
           <p>You have <%= @my_purcahses.count %> memberships</p>
-          <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
-            <p>
-              <%= link_to("Member #{purchase.membership_number}, #{purchase.membership}", purchase_path(purchase.membership_number)) %>
-              for <%= purchase.active_claim.detail %>. <%= purchase.state %>
-              <% if worth = present_currency_worth_for(purchase) %>
-                worth <%= worth %>
-              <% end %>
-            </p>
-          <% end %>
+
+          <div class="card-columns">
+            <% @my_purcahses.find_each(batch_size: 10) do |purchase| %>
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= purchase.membership %> Membership
+                  </h5>
+
+                  <p class="card-text">
+                    <span class="text-muted">
+                      #<%= purchase.membership_number %>
+                    </span>
+
+                    <% if detail = purchase.active_claim.detail %>
+                      <%= detail %>
+                    <% end %>
+                  </p>
+
+                  <p><%= link_to("Review or update details", purchase_path(purchase.membership_number)) %></p>
+                  <% UpgradeOffer.from(purchase.membership).each do |offer| %>
+                    <p><%= offer %></p>
+                  <% end %>
+
+                </div>
+              </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
