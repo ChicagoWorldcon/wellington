@@ -25,19 +25,12 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
-        <h2>
-          My Memberships
-          <% if user_signed_in? %>
-            (<%= current_user.email %>)
-          <% end %>
-        </h2>
         <% if !user_signed_in? %>
-          <p>
-            You are currently signed out, please sign in in to view your memberships. It's pretty easy, just send
-            yourself a login link!
-          </p>
-          <%= render template: "/user_tokens/new" %>
+          <%= render "sign_in_notice" %>
         <% else %>
+          <h2>
+            My Memberships (<%= current_user.email %>)
+          </h2>
           <p>You have <%= @my_purcahses.count %> memberships</p>
           <% @my_purcahses.find_each(batch_size: 100) do |purchase| %>
             <p>
