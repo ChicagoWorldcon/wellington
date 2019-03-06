@@ -73,4 +73,3 @@ release_image:
     - docker push $CONTAINER_RELEASE_IMAGE
   only:
     - master
-    - 41-staging # FIXME Temporary
