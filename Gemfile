@@ -29,6 +29,8 @@ gem "sass-rails", "~> 5.0" # sass compiler for an easier way to manage large sty
 gem "stripe"               # payment provider
 gem "turbolinks", "~> 5"   # html pages with the feeling of ajax
 gem "uglifier", ">= 1.3.0" # for minifying javascript and css
+gem 'markerb'              # Renders Html and Text email from Markdown template
+gem 'redcarpet', '>= 2.0'  # parser for markerb
 
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
