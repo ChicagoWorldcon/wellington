@@ -1,5 +1,5 @@
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,25 +15,62 @@
 
 # https://docs.gitlab.com/ee/ci/quick_start/
 image: docker:stable
+
 services:
   - docker:dind
 
-before_script:
-  - touch .env
-  - apk add make py3-pip
-  - pip3 install --upgrade pip
-  - pip install docker-compose
-  - make start
-  - make db
+stages:
+  - build
+  - test
+  - publish
 
-rspec:
+# For more naming options, see https://docs.gitlab.com/ee/ci/variables/
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+docker_build:
+  stage: build
   script:
+    - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+rspec_tests:
+  stage: test
+  script:
+    - touch .env
+    - apk add make py3-pip
+    - pip3 install --upgrade pip
+    - pip install docker-compose
+    - make start
+    - make db
     - make rspec
 
-rubocop:
+rubocop_linting:
+  stage: test
   script:
-    - make rubocop
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE bundle exec rubocop
 
-apache:
+licence_check:
+  stage: test
   script:
-    - make apache
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
+
+# TODO also get docker images to push bulit tags
+# See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-container-registry
+# Might be handled in issue #66
+release_image:
+  stage: publish
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master

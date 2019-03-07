@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,5 +18,5 @@ copy_pasta_keys = ENV.select { |variable, set_as| set_as.match(/copypasta/) }.ke
 if copy_pasta_keys.any?
   puts "Badness detected, don't copy paste things. Please check the README and set these:"
   puts copy_pasta_keys.to_sentence
-  exit 1
+  exit 1 unless Rails.env.development?
 end

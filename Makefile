@@ -1,4 +1,4 @@
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
 #
@@ -24,10 +24,13 @@ db:
 
 rubocop:
 	docker-compose exec -T members_area rubocop
+
 apache:
 	docker-compose exec -T members_area bundle exec rake test:branch:copyright
+
 rspec:
 	docker-compose exec -T members_area bundle exec rspec
+
 test: rspec rubocop apache apache
 
 logs:
@@ -51,3 +54,6 @@ napalm: clean start db
 mail:
 	docker-compose exec -T members_area mailcatcher --ip 0.0.0.0
 	@echo "To see email, go to the MailCatcher web interface at http://localhost:1080"
+
+publish: build
+	docker save conzealand:latest | ssh -C members.conzealand.nz docker load

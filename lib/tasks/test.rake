@@ -40,13 +40,15 @@ namespace :test do
         end
       end
 
-      # Special case file, if you work in this repository, you need to make sure you mention our name in the LICENSE
-      # file with the current year.
-      licence = File.readlines("LICENSE")
-      authors.each do |author|
-        if licence.grep(/Copyright #{current_year} .*#{author}/).none?
-          clear_attribution = false
-          puts "Missing 'Copyright #{current_year} #{author}' in LICENSE file"
+      # Special case file, if you work in this repository, you need to make sure you mention our name in the LICENSE and
+      # README.md with the current year.
+      %w(LICENSE README.md).each do |file_name|
+        lines = File.readlines(file_name)
+        authors.each do |author|
+          if lines.grep(/Copyright #{current_year} .*#{author}/).none?
+            clear_attribution = false
+            puts "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
+          end
         end
       end
 
