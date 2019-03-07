@@ -33,7 +33,8 @@
 spec/examples.txt
 coverage/
 
-# Pre compiled asset artifacts
-public/
+# Pre compiled artifacts for production deploy
+# Side effect of `bundle exec rake assets:precompile`
+public/assets
 
 *.csv
