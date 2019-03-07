@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 # Copyright 2018 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,17 +18,16 @@
 %>
 Kia Ora;
 
-We're emailing you becasue we've recieved a request for a login link.
+We're emailing you because we've received a request for a login link.
 
-<%= user_token_path(@token) %>
+<%= link_to user_token_url(@token), user_token_url(@token) %>
 
-Visiting this URL will automatically log you in, with no need for passwords or other credentials. Please don't share the
-link or forward this email, as that'll allow any recipients to also access your account.
+Visiting this URL will automatically log you in, with no need for passwords or other credentials. Please don't share
+the link or forward this email, as that'll allow any recipients to also access your account.
 
 This link will expire 10 minutes after it was created, but you can always create another one if you need.
 
 If you've got any queries or concerns, please reply to this email.
 
-CoNZealand – registration@conzealand.nz
-
+CoNZealand – registration@conzealand.nz   
 https://conzealand.nz/

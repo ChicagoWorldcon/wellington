@@ -1,5 +1,6 @@
 <%
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@ Kia Ora (hello), Welcome to CoNZealand!
 
 We have just processed your <%= @purchase.name %> membership for CoNZealand. Your member number is <%= @purchase.number %>.
 
-To access our online services and to check that all your data is correct, please use the following link:
+To access our online services and to check that all your data is correct, please use the following link:  
 <%= @user.login_url %>
 
 Visiting that URL will automatically log you in, with no need for passwords or other credentials. Please don't share the link or forward this email, as that'll allow any recipients to also access your account.
@@ -27,5 +28,5 @@ At any time, you can also return to our membership section and enter your regist
 
 Our charge ID for this transaction was <%= @charge.id %>, and it will appear on your statement as coming from “CoNZealand”.
 
-CoNZealand - registration@conzealand.nz
+CoNZealand - registration@conzealand.nz  
 https://conzealand.nz/
