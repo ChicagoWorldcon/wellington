@@ -25,12 +25,6 @@ request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
 
 We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. The default dev environment uses the latest stable v9.
 
-To get your dev environment up and running, simply use:
-
-```sh
-make start
-```
-
 The first time you bring up your environment, you will also need to initialize the database:
 
 ```sh
@@ -44,30 +38,10 @@ check everything is working. After starting and initalizing the db, Run the test
 make rspec
 ```
 
-Email is required to log users in, because the login link is sent to the users email. 
-We have set up Mailcatcher to capture and serve all out bound mail, in the development environment.
- 
-To start mail capture run:
-
-```sh
-make mail
-```
-
-Mail is caught by mail catcher and served on port 1080.
-Navigate to http://localhost:1080 to see all sent mail.
-
-Once you have started the environment and initalized the database, you can navigate to http://localhost:3000 in your
-browser to see what the app looks like on the web.
-
-# Production Secrets
-
-You're going to need to setup a .env file to run this project. This keeps your configuration secrets out of source
+You're going to need to setup a `.env` file to run this project. This keeps your configuration secrets out of source
 control and allows you to configure the project.
 
-Create an .env file using this template. Please replace fields with your own values or the application will explode with
-copy pasta errors ;-):
-
-```bash
+```sh
 # FQDN of the machine that's running the members area
 HOSTNAME=members.conzealand.nz
 
@@ -76,8 +50,8 @@ HOSTNAME=members.conzealand.nz
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 
-# Production specific environment variables
 # Used for URL generation and using compiled assets
+# Don't do this on your local machine!
 RAILS_ENV=production
 
 # Con specific mailer configuration
@@ -101,6 +75,9 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=example
 ```
 
+If you're on production, please replace fields with your own values or the application will explode with copy pasta
+errors ;-)
+
 Now start your server with
 
 ```bash
@@ -108,6 +85,17 @@ make start
 ```
 
 Then navigate to http://localhost:3000
+
+Email is required to log users in because we use login links. We have set up Mailcatcher to capture and serve all out
+bound mail in our development environment.
+
+To start mail capture run:
+
+```sh
+make mail
+```
+
+And navigate to http://localhost:1080 to view it.
 
 # Configuring pricing
 
