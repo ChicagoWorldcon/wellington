@@ -18,4 +18,14 @@ class ApplicationController < ActionController::Base
   layout "conzealand"
 
   protect_from_forgery with: :exception
+
+  protected
+
+  def lookup_purchase
+    visible_purchases = Purchase.joins(:user)
+    if !support_signed_in?
+      visible_purchases = visible_purchases.where(users: { id: current_user })
+    end
+    @purchase = visible_purchases.find_by!(membership_number: params[:id])
+  end
 end

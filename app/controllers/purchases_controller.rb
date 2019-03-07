@@ -69,14 +69,4 @@ class PurchasesController < ApplicationController
       redirect_to new_charge_path(purchaseId: new_purchase.id)
     end
   end
-
-  private
-
-  def lookup_purchase
-    visible_purchases = Purchase.joins(:user)
-    if !support_signed_in?
-      visible_purchases = visible_purchases.where(users: { id: current_user })
-    end
-    @purchase = visible_purchases.find_by!(membership_number: params[:id])
-  end
 end
