@@ -40,8 +40,6 @@ docker_build:
     - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
-# TODO make docker images use bulit tag
-# See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-container-registry
 rspec_tests:
   stage: test
   script:
@@ -65,6 +63,9 @@ licence_check:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
 
+# TODO also get docker images to push bulit tags
+# See https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#using-the-gitlab-container-registry
+# Might be handled in issue #66
 release_image:
   stage: publish
   script:
