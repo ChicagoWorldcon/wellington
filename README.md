@@ -13,6 +13,20 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) an
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 
+# Contributing and Contacting Us
+
+You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
+
+If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
+team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
+to respect our member's privacy and rights.
+
+If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
+
+We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
+label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
+keen have a look at this list and leave comments on any you'd like to try.
+
 # Getting Started
 
 This project has been designed to run inside Docker to simplify setup and testing. Follow [these instructions to install Docker and
@@ -96,20 +110,6 @@ make mail
 ```
 
 And navigate to http://localhost:1080 to view it.
-
-# Contributing and Contacting Us
-
-You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
-
-If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
-team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
-to respect our member's privacy and rights.
-
-If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
-
-We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
-label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
-keen have a look at this list and leave comments on any you'd like to try.
 
 # Running in Production
 
