@@ -121,7 +121,7 @@ You may end up writing your own `docker-compose.yml` for this, or just wiring it
 it with just raw docker commands:
 
 ```sh
-docker run --restart always -P 3000:3000 --env-file=.env -it registry.gitlab.com/worldcon/2020-wellington:latest
+docker run --restart=always -p=3000:3000 --env-file=.env -it registry.gitlab.com/worldcon/2020-wellington:latest
 ```
 
 For more information or options, check out Docker's [extensive documentation](https://docs.docker.com/).
