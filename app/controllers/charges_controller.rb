@@ -29,7 +29,7 @@ class ChargesController < ApplicationController
     end
 
     @membership = @purchase.membership
-    @membership_amount = @membership.price
+    @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
   end
 
   def create
