@@ -134,6 +134,24 @@ to respect our members's privacy and rights.
 If you want to be involved in this project but don't know the best way to help out, we'd love to have you! Just ask and
 we can set something up to help you.
 
+# Running in Production
+
+We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
+images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
+that have gone through CI and code review.
+
+You may end up writing your own `docker-compose.yml` for this, or just wiring it up some other way. Here's how you'd do
+it with just raw docker commands:
+
+```sh
+docker run --restart always -P 3000:3000 --env-file=.env -it registry.gitlab.com/worldcon/2020-wellington:latest
+```
+
+For more information or options, check out Docker's [extensive documentation](https://docs.docker.com/).
+
+You'll have to manage HTTPS outside of this using something like [elastic load
+balancer](https://aws.amazon.com/elasticloadbalancing/) or [caddy server](https://caddyserver.com/).
+
 # License
 
 This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)
