@@ -13,6 +13,20 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) an
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 
+# Contributing and Contacting Us
+
+You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
+
+If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
+team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
+to respect our member's privacy and rights.
+
+If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
+
+We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
+label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
+keen have a look at this list and leave comments on any you'd like to try.
+
 # Getting Started
 
 This project has been designed to run inside Docker to simplify setup and testing. Follow [these instructions to install Docker and
@@ -32,7 +46,7 @@ make db
 ```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
-check everything is working. After starting and initalizing the db, Run the tests with:
+check everything is working. After starting and initializing the db, Run the tests with:
 
 ```sh
 make rspec
@@ -97,6 +111,24 @@ make mail
 
 And navigate to http://localhost:1080 to view it.
 
+# Running in Production
+
+We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
+images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
+that have gone through CI and code review.
+
+You may end up writing your own `docker-compose.yml` for this, or just wiring it up some other way. Here's how you'd do
+it with just raw docker commands:
+
+```sh
+docker run --restart=always -p=3000:3000 --env-file=.env -it registry.gitlab.com/worldcon/2020-wellington:latest
+```
+
+For more information or options, check out Docker's [extensive documentation](https://docs.docker.com/).
+
+You'll have to manage HTTPS outside of this using something like [elastic load
+balancer](https://aws.amazon.com/elasticloadbalancing/) or [caddy server](https://caddyserver.com/).
+
 # Configuring pricing
 
 Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
@@ -114,20 +146,6 @@ Membership.create!(name: :adult, active_from: price_change, active_to: venue_con
 ```
 
 For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
-
-# Contributing
-
-If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
-
-# Contacting us, Mentoring and Growth
-
-You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
-
-If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
-team members.
-
-If you want to be involved in this project but don't know the best way to help out, we'd love to have you! Just ask and
-we can set something up to help you.
 
 # License
 
