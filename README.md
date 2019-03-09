@@ -97,42 +97,19 @@ make mail
 
 And navigate to http://localhost:1080 to view it.
 
-# Contributing
-
-If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
-
-We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
-label that we're testing out to encourage new people to pick stuff up. You're welcome to  have a look at this list and
-leave comments on any you'd like to try.
-
-# Configuring pricing
-
-Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
-they're "active" at the current time. This is managed by setting `active_from` and `active_to` fields.
-
-For instance, to create an Adult membership that varies in price over time, do this by running the following code:
-
-```ruby
-# Note, dates and prices are examples. Please don't expect these as a reflection on real dates/prices.
-announcement = Date.parse("2018-08-25").midday
-price_change = (announcement + 6.months).midday
-venue_confirmation = Date.parse("2020-04-01").midday
-Membership.create!(name: :adult, active_from: announcement, active_to: price_change price: 400_00)
-Membership.create!(name: :adult, active_from: price_change, active_to: venue_confirmation price: 450_00)
-```
-
-For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
-
-# Contacting us, Mentoring and Growth
+# Contributing and Contacting Us
 
 You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
 
 If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
 team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
-to respect our members's privacy and rights.
+to respect our member's privacy and rights.
 
-If you want to be involved in this project but don't know the best way to help out, we'd love to have you! Just ask and
-we can set something up to help you.
+If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
+
+We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
+label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
+keen have a look at this list and leave comments on any you'd like to try.
 
 # Running in Production
 
@@ -151,6 +128,24 @@ For more information or options, check out Docker's [extensive documentation](ht
 
 You'll have to manage HTTPS outside of this using something like [elastic load
 balancer](https://aws.amazon.com/elasticloadbalancing/) or [caddy server](https://caddyserver.com/).
+
+# Configuring pricing
+
+Pricing is handled through Membership records. Creating new records creates new memberships on the shop so long as
+they're "active" at the current time. This is managed by setting `active_from` and `active_to` fields.
+
+For instance, to create an Adult membership that varies in price over time, do this by running the following code:
+
+```ruby
+# Note, dates and prices are examples. Please don't expect these as a reflection on real dates/prices.
+announcement = Date.parse("2018-08-25").midday
+price_change = (announcement + 6.months).midday
+venue_confirmation = Date.parse("2020-04-01").midday
+Membership.create!(name: :adult, active_from: announcement, active_to: price_change price: 400_00)
+Membership.create!(name: :adult, active_from: price_change, active_to: venue_confirmation price: 450_00)
+```
+
+For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
 
 # License
 
