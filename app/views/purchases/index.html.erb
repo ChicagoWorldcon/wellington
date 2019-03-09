@@ -52,10 +52,10 @@
                   </p>
 
                   <p><%= link_to("Review or update details", purchase_path(purchase.membership_number)) %></p>
-                  <% UpgradeOffer.from(purchase.membership).each do |offer| %>
-                    <p><%= offer %></p>
-                  <% end %>
 
+                  <% UpgradeOffer.from(purchase.membership).each do |offer| %>
+                    <p><%= upgrade_link(purchase, offer: offer) %></p>
+                  <% end %>
                 </div>
               </div>
             <% end %>

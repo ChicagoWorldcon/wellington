@@ -35,6 +35,10 @@ class UpgradeOffer
     "Upgrade to #{to_membership} (#{formatted_price})"
   end
 
+  def confirm_text
+    "Are you sure? This will cost #{formatted_price}"
+  end
+
   # TODO Extract to i18n
   def formatted_price
     "$%.2f NZD" % (price * 1.0 / 100)
