@@ -32,7 +32,7 @@ make db
 ```
 
 We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
-check everything is working. After starting and initalizing the db, Run the tests with:
+check everything is working. After starting and initializing the db, Run the tests with:
 
 ```sh
 make rspec
