@@ -45,7 +45,7 @@ class ChargesController < ApplicationController
       PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge).deliver_later
 
       # TODO: different message if membership is fully paid
-      message = "Thank you for your <strong>#{helpers.number_to_currency(@charge_amount / 100)}</strong> payment towards this membership"
+      message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
       redirect_to(purchase_path(@purchase.membership_number), notice: message)
     else
       flash[:error] = service.error_message
