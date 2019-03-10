@@ -43,7 +43,7 @@ RSpec.describe UserTokensController, type: :controller do
 
       it "sets flash error" do
         get :show, params: { id: user_token }
-        expect(flash[:notice]).to match(/secret/i)
+        expect(flash[:error]).to match(/secret/i)
       end
     end
   end

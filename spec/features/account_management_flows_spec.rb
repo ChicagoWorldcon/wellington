@@ -42,7 +42,7 @@ RSpec.describe "Account Management Flows", type: :feature do
 
   it "shows kansa user's 'expired' message" do
     visit "/login/willy_wonka@chocolate_factory.nz/DsfS3123"
-    expect(page).to have_current_path(new_user_token_path)
+    expect(page).to have_current_path(root_path)
     expect(page).to have_content(/expired/i)
   end
 

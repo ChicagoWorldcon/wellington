@@ -39,8 +39,7 @@ RSpec.describe UpgradesController, type: :controller do
         expect(response).to redirect_to(purchases_path)
 
         expect(purchase.reload.membership).to eq(silver_fern_membership)
-        expect(flash[:notice]).to be_present
-        expect(flash[:notice]).to match(/sorry/i)
+        expect(flash[:error]).to match(/sorry/i)
       end
 
       it "fails if the offer changes" do
@@ -48,8 +47,7 @@ RSpec.describe UpgradesController, type: :controller do
         expect(response).to redirect_to(purchases_path)
 
         expect(purchase.reload.membership).to eq(silver_fern_membership)
-        expect(flash[:notice]).to be_present
-        expect(flash[:notice]).to match(/sorry/i)
+        expect(flash[:error]).to match(/sorry/i)
       end
 
       it "upgrades your membership when available" do
@@ -57,7 +55,6 @@ RSpec.describe UpgradesController, type: :controller do
         expect(response).to redirect_to(pay_cash_money_path)
 
         expect(purchase.reload.membership).to eq(offer.to_membership)
-        expect(flash[:notice]).to be_present
         expect(flash[:notice]).to match(/congratulations/i)
       end
     end

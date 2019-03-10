@@ -20,7 +20,7 @@ class UpgradesController < ApplicationController
   def edit
     if !params[:offer].present?
       redirect_to purchases_path
-      return flash[:notice] = "Sorry, something went wrong with your upgrade. Please try again."
+      return flash[:error] = "Sorry, something went wrong with your upgrade. Please try again."
     end
 
     # Find the offer that matches the our user clicked on
@@ -30,13 +30,13 @@ class UpgradesController < ApplicationController
 
     if !offer.present?
       redirect_to purchases_path
-      return flash[:notice] = "Sorry. #{params[:offer]} from #{@purchase.membership} is no longer available"
+      return flash[:error] = "Sorry. #{params[:offer]} from #{@purchase.membership} is no longer available"
     end
 
     upgrader = UpgradeMembership.new(@purchase, to: offer.to_membership)
     if !upgrader.call
       Rails.logger.error("Failed to upgrade #{current_user.id} to #{@purchase.membership.name}")
-      return flash[:notice] = "Sorry. #{params[:offer]} from #{@purchase.membership} could not be upgraded at this time"
+      return flash[:error] = "Sorry. #{params[:offer]} from #{@purchase.membership} could not be upgraded at this time"
     end
 
     redirect_to new_charge_path(purchaseId: @purchase.id)
