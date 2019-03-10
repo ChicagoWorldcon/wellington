@@ -35,27 +35,30 @@
 
           <div class="card-columns">
             <% @my_purcahses.find_each(batch_size: 10) do |purchase| %>
-              <div class="card">
+              <div class="<%= card_classes(purchase) %>">
                 <div class="card-body">
                   <h5 class="card-title">
                     <%= purchase.membership %> Membership
                   </h5>
 
                   <p class="card-text">
-                    <span class="text-muted">
-                      #<%= purchase.membership_number %>
-                    </span>
+                    #<%= purchase.membership_number %>
 
                     <% if detail = purchase.active_claim.detail %>
                       <%= detail %>
                     <% end %>
                   </p>
 
-                  <p><%= link_to("Review or update details", purchase_path(purchase.membership_number)) %></p>
-
-                  <% UpgradeOffer.from(purchase.membership).each do |offer| %>
-                    <p><%= upgrade_link(purchase, offer: offer) %></p>
+                  <% if purchase.paid? %>
+                    <% UpgradeOffer.from(purchase.membership).each do |offer| %>
+                      <p><%= upgrade_link(purchase, offer: offer) %></p>
+                    <% end %>
+                  <% else %>
+                    <p>Reserved, but not fully paid</p>
+                    <p><%= link_to "Make a payment", new_charge_url(purchaseId: purchase.id) %></p>
                   <% end %>
+
+                  <p><%= link_to("Review or update details", purchase_path(purchase.membership_number)) %></p>
                 </div>
               </div>
             <% end %>
