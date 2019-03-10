@@ -40,6 +40,6 @@ class UpgradesController < ApplicationController
     end
 
     redirect_to new_charge_path(purchaseId: @purchase.id)
-    flash[:notice] = "Congratulations! You now hold a #{offer.to_membership}"
+    flash[:notice] = "We've reserved you one #{offer.to_membership} membership"
   end
 end

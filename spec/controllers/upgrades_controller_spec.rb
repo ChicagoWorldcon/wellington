@@ -55,7 +55,7 @@ RSpec.describe UpgradesController, type: :controller do
         expect(response).to redirect_to(pay_cash_money_path)
 
         expect(purchase.reload.membership).to eq(offer.to_membership)
-        expect(flash[:notice]).to match(/congratulations/i)
+        expect(flash[:notice]).to match(/reserved/i)
       end
     end
   end
