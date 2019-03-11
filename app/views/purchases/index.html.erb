@@ -58,7 +58,7 @@
                     <p><%= link_to "Make a payment", new_charge_url(purchaseId: purchase.id) %></p>
                   <% end %>
 
-                  <p><%= link_to("Review or update details", purchase_path(purchase.membership_number)) %></p>
+                  <p><%= link_to("Review or update details", purchase_path(purchase)) %></p>
                 </div>
               </div>
             <% end %>
@@ -88,7 +88,7 @@
               <tbody>
                 <tr>
                   <td><%= purchase.membership_number %></td>
-                  <td><%= link_to(purchase.active_claim.detail, purchase_path(purchase.membership_number)) %></td>
+                  <td><%= link_to(purchase.active_claim.detail, purchase_path(purchase)) %></td>
                   <td><%= purchase.membership.name.humanize %></td>
                 </tr>
               </tbody>

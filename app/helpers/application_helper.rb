@@ -32,7 +32,7 @@ module ApplicationHelper
       # link text, based on offer's #to_s
       offer,
       # link with params, enough to perform the upgrade action
-      edit_upgrade_path(purchase.membership_number, { offer: offer.to_s }),
+      edit_upgrade_path(purchase, { offer: offer.to_s }),
       # confirmation, check with our user
       data: { confirm: offer.confirm_text }
     )

@@ -26,6 +26,6 @@ class ApplicationController < ActionController::Base
     if !support_signed_in?
       visible_purchases = visible_purchases.where(users: { id: current_user })
     end
-    @purchase = visible_purchases.find_by!(membership_number: params[:id])
+    @purchase = visible_purchases.find(params[:id])
   end
 end

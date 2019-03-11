@@ -27,7 +27,7 @@ RSpec.describe UpgradesController, type: :controller do
   describe "#edit" do
     # shallow checks, also tested by purchases_controller_spec for things like transferred membership
     it "fails to find record when you're not signed in" do
-      expect { put :edit, params: { id: purchase.membership_number } }
+      expect { put :edit, params: { id: purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
@@ -35,7 +35,7 @@ RSpec.describe UpgradesController, type: :controller do
       before { sign_in(purchase.user) }
 
       it "requires you submit offer text in params" do
-        put :edit, params: { id: purchase.membership_number }
+        put :edit, params: { id: purchase.id }
         expect(response).to redirect_to(purchases_path)
 
         expect(purchase.reload.membership).to eq(silver_fern_membership)
@@ -43,7 +43,7 @@ RSpec.describe UpgradesController, type: :controller do
       end
 
       it "fails if the offer changes" do
-        put :edit, params: { id: purchase.membership_number, offer: "Upgrade to Adult ($1.00 NZD)" }
+        put :edit, params: { id: purchase.id, offer: "Upgrade to Adult ($1.00 NZD)" }
         expect(response).to redirect_to(purchases_path)
 
         expect(purchase.reload.membership).to eq(silver_fern_membership)
@@ -51,7 +51,7 @@ RSpec.describe UpgradesController, type: :controller do
       end
 
       it "upgrades your membership when available" do
-        put :edit, params: { id: purchase.membership_number, offer: offer.to_s }
+        put :edit, params: { id: purchase.id, offer: offer.to_s }
         expect(response).to redirect_to(pay_cash_money_path)
 
         expect(purchase.reload.membership).to eq(offer.to_membership)

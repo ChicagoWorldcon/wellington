@@ -37,26 +37,26 @@ RSpec.describe PurchasesController, type: :controller do
 
   describe "#show" do
     it "can't be found when not signed in" do
-      expect { get :show, params: { id: purchase.membership_number } }
+      expect { get :show, params: { id: purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "cant find it when you're signed in as a different user" do
       sign_in(another_user)
-      expect { get :show, params: { id: purchase.membership_number } }
+      expect { get :show, params: { id: purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "can find your own purchases" do
       sign_in(original_user)
-      get :show, params: { id: purchase.membership_number }
+      get :show, params: { id: purchase.id }
       expect(response).to have_http_status(:ok)
     end
 
     context "when signed in as support" do
       it "can view any membership" do
         sign_in(support)
-        get :show, params: { id: purchase.membership_number }
+        get :show, params: { id: purchase.id }
         expect(response).to have_http_status(:found)
       end
     end
@@ -68,13 +68,13 @@ RSpec.describe PurchasesController, type: :controller do
 
       it "can't be found for original user" do
         sign_in(original_user)
-        expect { get :show, params: { id: purchase.membership_number } }
+        expect { get :show, params: { id: purchase.id } }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "is found for new user" do
         sign_in(another_user)
-        get :show, params: { id: purchase.membership_number }
+        get :show, params: { id: purchase.id }
         expect(response).to have_http_status(:ok)
       end
     end

@@ -33,7 +33,7 @@ RSpec.describe ChargesController, type: :controller do
       it "redirects to the purchase" do
         get :new, params: { purchaseId: purchase.id }
 
-        expect(response).to redirect_to(purchase_path(purchase.membership_number))
+        expect(response).to redirect_to(purchase_path(purchase))
       end
 
       it "returns a flash notice" do
@@ -108,7 +108,7 @@ RSpec.describe ChargesController, type: :controller do
         it "redirects to the purchase" do
           post :create, params: params
 
-          expect(response).to redirect_to(purchase_path(purchase.membership_number))
+          expect(response).to redirect_to(purchase_path(purchase))
         end
 
         it "sets a flash notice" do
