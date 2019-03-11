@@ -46,7 +46,7 @@ class ChargesController < ApplicationController
 
       # TODO: different message if membership is fully paid
       message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
-      redirect_to(purchase_path(@purchase), notice: message)
+      redirect_to(purchases_path, notice: message)
     else
       flash[:error] = service.error_message
       redirect_to new_charge_path(purchaseId: @purchase.id)

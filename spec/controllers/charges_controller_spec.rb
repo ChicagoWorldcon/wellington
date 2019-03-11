@@ -108,7 +108,7 @@ RSpec.describe ChargesController, type: :controller do
         it "redirects to the purchase" do
           post :create, params: params
 
-          expect(response).to redirect_to(purchase_path(purchase))
+          expect(response).to redirect_to(purchases_path)
         end
 
         it "sets a flash notice" do
