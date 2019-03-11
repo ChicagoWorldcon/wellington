@@ -42,6 +42,13 @@ class ChargesController < ApplicationController
 
     amount_owed = AmountOwedForPurchase.new(@purchase).amount_owed
 
+    allowed_charge_amounts = PaymentAmountOptions.new(amount_owed).amounts
+    if !allowed_charge_amounts.include?(@charge_amount)
+      flash[:error] = "amount must be one of the provided payment amounts"
+      redirect_to(new_charge_path(purchaseId: @purchase.id))
+      return
+    end
+
     service = ChargeCustomer.new(@purchase, current_user, params[:stripeToken], amount_owed, charge_amount: @charge_amount)
 
     charge_successful = service.call
