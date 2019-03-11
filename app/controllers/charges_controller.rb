@@ -30,6 +30,10 @@ class ChargesController < ApplicationController
 
     @membership = @purchase.membership
     @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
+
+    price_steps = PaymentAmountOptions.new(@amount_owed).amounts
+
+    @price_options = price_steps.map { |price| [helpers.number_to_currency(price / 100), price] }
   end
 
   def create
