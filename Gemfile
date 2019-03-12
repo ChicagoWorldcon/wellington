@@ -37,6 +37,8 @@ group :development, :test do
   gem "capybara", "~> 2.13"                           # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
   gem "faker"                                         # fun common strings fro testing
+  gem "pry"                                           # nicer debugger, use 'binding.pry'
+  gem "pry-nav"                                       # adds 'step' and 'next' to pry
   gem "rspec-rails"                                   # testing framework
   gem "rubocop-github"                                # ruby ilnting to keep things clean
   gem "selenium-webdriver"                            # brower based full stack testing
@@ -46,8 +48,6 @@ end
 
 group :development do
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
-  gem "pry"                               # nicer debugger, use 'binding.pry'
-  gem "pry-nav"                           # adds 'step' and 'next' to pry
   gem "pry-rails"                         # sets pry as your rails console
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
