@@ -28,4 +28,13 @@ class PaymentMailerPreview < ActionMailer::Preview
 
     PaymentMailer.new_member(user: user, purchase: purchase, charge: charge, outstanding_amount: outstanding_amount)
   end
+
+  def installment_payment
+    purchase = StubPurchase.new("Adult", 42, true, false)
+    user = StubUser.new("first.user@example.org", "https://members-staging.conzealand.nz/login/test@conzealand.nz/pahJie3v")
+    charge = StubCharge.new("stub-charge-1234", 150_00)
+    outstanding_amount = 70_00
+
+    PaymentMailer.installment_payment(user: user, purchase: purchase, charge: charge, outstanding_amount: outstanding_amount)
+  end
 end

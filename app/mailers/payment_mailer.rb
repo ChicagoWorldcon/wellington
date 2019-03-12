@@ -31,4 +31,17 @@ class PaymentMailer < ApplicationMailer
       format.html
     end
   end
+
+  def installment_payment(user:, purchase:, charge:, outstanding_amount:)
+    @user = user
+    @purchase = purchase
+    @charge = charge
+    @outstanding_amount = outstanding_amount
+
+    mail(to: user.email) do |format|
+      #text must be called before html.
+      format.text
+      format.html
+    end
+  end
 end
