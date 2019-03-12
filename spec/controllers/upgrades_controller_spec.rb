@@ -22,7 +22,7 @@ RSpec.describe UpgradesController, type: :controller do
   let!(:purchase) { create(:purchase, :with_claim_from_user, membership: silver_fern_membership) }
 
   let(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
-  let(:pay_cash_money_path) { new_charge_path(purchaseId: purchase.id) }
+  let(:user_pays_path) { new_charge_path(purchaseId: purchase.id) }
 
   describe "#edit" do
     # shallow checks, also tested by purchases_controller_spec for things like transferred membership
@@ -52,7 +52,7 @@ RSpec.describe UpgradesController, type: :controller do
 
       it "upgrades your membership when available" do
         put :edit, params: { id: purchase.id, offer: offer.to_s }
-        expect(response).to redirect_to(pay_cash_money_path)
+        expect(response).to redirect_to(user_pays_path)
 
         expect(purchase.reload.membership).to eq(offer.to_membership)
         expect(flash[:notice]).to match(/reserved/i)
