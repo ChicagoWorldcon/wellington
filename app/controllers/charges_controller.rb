@@ -31,7 +31,7 @@ class ChargesController < ApplicationController
     @membership = @purchase.membership
     @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
 
-    price_steps = PaymentAmountOptions.new(@amount_owed).amounts
+    price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
 
     @price_options = price_steps.map { |price| [helpers.number_to_currency(price / 100), price] }
   end
@@ -40,16 +40,16 @@ class ChargesController < ApplicationController
     @purchase = current_user.purchases.find(params[:purchaseId])
     @charge_amount = params[:amount].to_i
 
-    amount_owed = AmountOwedForPurchase.new(@purchase).amount_owed
+    outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
 
-    allowed_charge_amounts = PaymentAmountOptions.new(amount_owed).amounts
+    allowed_charge_amounts = PaymentAmountOptions.new(outstanding_amount).amounts
     if !allowed_charge_amounts.include?(@charge_amount)
       flash[:error] = "amount must be one of the provided payment amounts"
       redirect_to(new_charge_path(purchaseId: @purchase.id))
       return
     end
 
-    service = ChargeCustomer.new(@purchase, current_user, params[:stripeToken], amount_owed, charge_amount: @charge_amount)
+    service = ChargeCustomer.new(@purchase, current_user, params[:stripeToken], outstanding_amount, charge_amount: @charge_amount)
 
     charge_successful = service.call
     if charge_successful
@@ -57,7 +57,7 @@ class ChargesController < ApplicationController
 
       # TODO: different message if membership is fully paid
       message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
-      redirect_to(purchases_path, notice: message)
+      redirect_to(purchase_path(@purchase), notice: message)
     else
       flash[:error] = service.error_message
       redirect_to new_charge_path(purchaseId: @purchase.id)
