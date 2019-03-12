@@ -15,8 +15,8 @@
 # limitations under the License.
 
 class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = 4000 # cents
-  PAYMENT_STEP = 4000 # cents
+  MIN_PAYMENT_AMOUNT = 40_00 # cents
+  PAYMENT_STEP = 40_00 # cents
 
   attr_reader :amount_owed
 

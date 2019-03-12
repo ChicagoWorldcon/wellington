@@ -53,8 +53,8 @@ RSpec.describe ChargesController, type: :controller do
   end
 
   describe "#create" do
-    let(:amount) { 23000 }
-    let(:amount_owed) { 23000 }
+    let(:amount) { 230_00 }
+    let(:amount_owed) { 230_00 }
     let(:allowed_payment_amounts) { [amount] }
     let(:stripe_token) { "stripe-token" }
     let(:params) do
@@ -78,8 +78,8 @@ RSpec.describe ChargesController, type: :controller do
 
     context "when the charge amount is not allowed" do
       let(:charge_success) { false }
-      let(:amount) { 9000 }
-      let(:allowed_payment_amounts) { [4000, 8000, amount_owed] }
+      let(:amount) { 90_00 }
+      let(:allowed_payment_amounts) { [40_00, 80_00, amount_owed] }
 
       it "sets a flash error" do
         post :create, params: params

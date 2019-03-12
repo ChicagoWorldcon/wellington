@@ -20,13 +20,13 @@ RSpec.describe PaymentAmountOptions, type: :model do
   subject(:amounts) { described_class.new(amount_owed).amounts }
 
   context "when the amount owed is less than the minimum payment" do
-    let(:amount_owed) { 3200 }
+    let(:amount_owed) { 32_00 }
 
     it { is_expected.to eq [amount_owed] }
   end
 
   context "when the amount owed is greater than the minimum payment" do
-    let(:amount_owed) { 11300 }
+    let(:amount_owed) { 113_00 }
 
     it("offers a series of payment amounts") { is_expected.to eq [4000, 8000, amount_owed] }
   end
