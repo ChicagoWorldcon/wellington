@@ -19,10 +19,12 @@
 class PaymentMailer < ApplicationMailer
   default from: ENV["EMAIL_PAYMENTS"]
 
-  def new_member(user:, purchase:, charge:)
+  def new_member(user:, purchase:, charge:, outstanding_amount:)
     @user = user
     @purchase = purchase
     @charge = charge
+    @outstanding_amount = outstanding_amount
+
     mail(to: user.email) do |format|
       #text must be called before html.
       format.text

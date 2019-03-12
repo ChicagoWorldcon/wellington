@@ -53,7 +53,7 @@ class ChargesController < ApplicationController
 
     charge_successful = service.call
     if charge_successful
-      PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge).deliver_later
+      PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
 
       # TODO: different message if membership is fully paid
       message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
