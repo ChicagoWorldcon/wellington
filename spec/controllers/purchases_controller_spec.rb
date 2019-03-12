@@ -79,4 +79,35 @@ RSpec.describe PurchasesController, type: :controller do
       end
     end
   end
+
+  describe "#update" do
+    before { sign_in(original_user) }
+
+    it "updates when all values present" do
+      post :update, params: {
+        id: purchase.id,
+        detail: {
+          first_name: "this",
+          last_name: "is",
+          address_line_1: "yolo",
+          country: "valid",
+        }
+      }
+      expect(purchase.reload.active_claim.detail.address_line_1).to eq "yolo"
+      expect(flash[:notice]).to match(/your details have been saved/i)
+    end
+
+    it "shows error when values not present" do
+      post :update, params: {
+        id: purchase.id,
+        detail: {
+          first_name: "this",
+          last_name: "is",
+          address_line_1: "",
+          country: "valid",
+        }
+      }
+      expect(flash[:error]).to match(/address/i)
+    end
+  end
 end

@@ -73,12 +73,15 @@ class PurchasesController < ApplicationController
 
   def update
     current_user.transaction do
-      @purchase.active_claim.detail.update!(
-        params.require(:detail).permit(Detail::PERMITTED_PARAMS)
-      )
+      current_details = @purchase.active_claim.detail
+      submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
+      if current_details.update(submitted_values)
+        flash[:notice] = "Your details have been saved against Member ##{@purchase.membership_number}"
+        redirect_to purchases_path
+      else
+        flash[:error] = current_details.errors.full_messages.to_sentence
+        redirect_to purchase_path(@purchase)
+      end
     end
-
-    flash[:notice] = "Your details have been saved against Member ##{@purchase.membership_number}"
-    redirect_to purchases_path
   end
 end
