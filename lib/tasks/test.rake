@@ -27,11 +27,13 @@ namespace :test do
       authors.each do |author|
         authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
-          next if file.in?(%w(LICENSE db/schema.rb .ruby-version))
+          next if file.match(/LICENSE/)
+          next if file.match(/schema.rb$/)
+          next if file.match(/\.ruby-version$/)
           next if file.match(/\.lock$/)
           next if file.match(/\.md$/)
-          next if !FileTest.exist?(file)
           next if file.match("app/assets/images/")
+          next if !FileTest.exist?(file)
 
           if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
             clear_attribution = false # Fail on CI

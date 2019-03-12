@@ -23,10 +23,16 @@ namespace :dev do
   namespace :generate do
     desc "Generates 100 random users and inserts them into the database"
     task users: :environment do
+      all_memberships = Membership.all.to_a
+
       100.times do |count|
         puts "Seeding #{count} of 100 users" if count % 10 == 0
-        user = FactoryBot.create(:user, :with_purchase)
-        user.active_claims.each do |claim|
+        new_user = FactoryBot.create(:user)
+        memberships_held = rand(2..10)
+        all_memberships.sample(memberships_held).each do |rando_membership|
+          FactoryBot.create(:purchase, user: new_user, membership: rando_membership)
+        end
+        new_user.active_claims.each do |claim|
           claim.update!(detail: FactoryBot.create(:detail, claim: claim))
         end
       end

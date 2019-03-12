@@ -27,6 +27,17 @@ module ApplicationHelper
     end.join(" ")
   end
 
+  def upgrade_link(purchase, offer:)
+    link_to(
+      # link text, based on offer's #to_s
+      offer,
+      # link with params, enough to perform the upgrade action
+      edit_upgrade_path(purchase, { offer: offer.to_s }),
+      # confirmation, check with our user
+      data: { confirm: offer.confirm_text }
+    )
+  end
+
   # Currency conversion, might be superseeded by #58
   def present_currency_worth_for(purchase)
     total_cents = purchase.charges.successful.sum(:amount)

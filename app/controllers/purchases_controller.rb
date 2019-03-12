@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class PurchasesController < ApplicationController
-  before_action :lookup_purchase, only: [:show, :edit]
+  before_action :lookup_purchase, only: [:show, :update]
 
   # TODO(issue #24) list all members for people not logged in
   def index
@@ -32,6 +32,7 @@ class PurchasesController < ApplicationController
   end
 
   def new
+    @purchase = Purchase.new
     @detail = Detail.new
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
@@ -65,18 +66,22 @@ class PurchasesController < ApplicationController
       # TODO nicer errors
       detail.save!
 
-      flash[:notice] = "Congratulations member #{new_purchase.membership_number}! You just reserved a #{matching_offer.membership} membership <3"
+      flash[:notice] = "Congratulations member ##{new_purchase.membership_number}! You've just reserved a #{matching_offer.membership} membership"
       redirect_to new_charge_path(purchaseId: new_purchase.id)
     end
   end
 
-  private
-
-  def lookup_purchase
-    visible_purchases = Purchase.joins(:user)
-    if !support_signed_in?
-      visible_purchases = visible_purchases.where(users: { id: current_user })
+  def update
+    current_user.transaction do
+      current_details = @purchase.active_claim.detail
+      submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
+      if current_details.update(submitted_values)
+        flash[:notice] = "Your details have been saved against Member ##{@purchase.membership_number}"
+        redirect_to purchases_path
+      else
+        flash[:error] = current_details.errors.full_messages.to_sentence
+        redirect_to purchase_path(@purchase)
+      end
     end
-    @purchase = visible_purchases.find_by!(membership_number: params[:id])
   end
 end

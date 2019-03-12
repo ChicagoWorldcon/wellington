@@ -26,29 +26,27 @@ class UserTokensController < ApplicationController
     if user.present?
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
-      redirect_to root_path
     else
       error_message = lookup_user_query.errors.to_sentence.humanize
-      flash[:notice] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
-      redirect_to new_user_token_path
+      flash[:error] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
     end
+    redirect_to root_path
   end
 
   def create
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
-      redirect_to root_path
     else
-      flash[:notice] = send_link_command.errors.to_sentence
-      redirect_to new_user_token_path
+      flash[:error] = send_link_command.errors.to_sentence
     end
+    redirect_to root_path
   end
 
   def kansa_login_link
     sign_out(current_user) if signed_in?
-    flash[:notice] = "That login link has expired. Please send another link, or email us at registrations@conzealand.nz"
-    redirect_to new_user_token_path
+    flash[:error] = "That login link has expired. Please send another link, or email us at registrations@conzealand.nz"
+    redirect_to root_path
   end
 
   def logout

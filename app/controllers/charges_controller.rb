@@ -24,12 +24,12 @@ class ChargesController < ApplicationController
     @purchase = current_user.purchases.find(params.require(:purchaseId))
 
     if @purchase.paid?
-      redirect_to purchase_path(@purchase.membership_number), notice: "This membership has already been paid for"
+      redirect_to purchase_path(@purchase), notice: "This membership has already been paid for"
       return
     end
 
     @membership = @purchase.membership
-    @membership_amount = @membership.price
+    @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
   end
 
   def create
@@ -45,8 +45,8 @@ class ChargesController < ApplicationController
       PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge).deliver_later
 
       # TODO: different message if membership is fully paid
-      message = "Thank you for your <strong>#{helpers.number_to_currency(@charge_amount / 100)}</strong> payment towards this membership"
-      redirect_to(purchase_path(@purchase.membership_number), notice: message)
+      message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
+      redirect_to(purchases_path, notice: message)
     else
       flash[:error] = service.error_message
       redirect_to new_charge_path(purchaseId: @purchase.id)

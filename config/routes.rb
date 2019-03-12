@@ -17,6 +17,7 @@
 # limitations under the License.
 
 Rails.application.routes.draw do
+  resources :upgrades
   root to: "landing#index"
 
   devise_for :users

@@ -37,26 +37,26 @@ RSpec.describe PurchasesController, type: :controller do
 
   describe "#show" do
     it "can't be found when not signed in" do
-      expect { get :show, params: { id: purchase.membership_number } }
+      expect { get :show, params: { id: purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "cant find it when you're signed in as a different user" do
       sign_in(another_user)
-      expect { get :show, params: { id: purchase.membership_number } }
+      expect { get :show, params: { id: purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "can find your own purchases" do
       sign_in(original_user)
-      get :show, params: { id: purchase.membership_number }
+      get :show, params: { id: purchase.id }
       expect(response).to have_http_status(:ok)
     end
 
     context "when signed in as support" do
       it "can view any membership" do
         sign_in(support)
-        get :show, params: { id: purchase.membership_number }
+        get :show, params: { id: purchase.id }
         expect(response).to have_http_status(:found)
       end
     end
@@ -68,15 +68,46 @@ RSpec.describe PurchasesController, type: :controller do
 
       it "can't be found for original user" do
         sign_in(original_user)
-        expect { get :show, params: { id: purchase.membership_number } }
+        expect { get :show, params: { id: purchase.id } }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "is found for new user" do
         sign_in(another_user)
-        get :show, params: { id: purchase.membership_number }
+        get :show, params: { id: purchase.id }
         expect(response).to have_http_status(:ok)
       end
+    end
+  end
+
+  describe "#update" do
+    before { sign_in(original_user) }
+
+    it "updates when all values present" do
+      post :update, params: {
+        id: purchase.id,
+        detail: {
+          first_name: "this",
+          last_name: "is",
+          address_line_1: "yolo",
+          country: "valid",
+        }
+      }
+      expect(purchase.reload.active_claim.detail.address_line_1).to eq "yolo"
+      expect(flash[:notice]).to match(/your details have been saved/i)
+    end
+
+    it "shows error when values not present" do
+      post :update, params: {
+        id: purchase.id,
+        detail: {
+          first_name: "this",
+          last_name: "is",
+          address_line_1: "",
+          country: "valid",
+        }
+      }
+      expect(flash[:error]).to match(/address/i)
     end
   end
 end
