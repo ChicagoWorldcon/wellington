@@ -1,6 +1,6 @@
 # frozen-string_literal: true
 
-# Copyright 2019 Andrew Esler (ajesler)
+# Copyright 2019 AJ Esler
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
