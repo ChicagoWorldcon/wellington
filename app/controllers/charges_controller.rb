@@ -53,10 +53,14 @@ class ChargesController < ApplicationController
 
     charge_successful = service.call
     if charge_successful
-      PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+      if @purchase.charges.successful.size == 1
+        PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+      else
+        PaymentMailer.installment_payment(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+      end
 
-      # TODO: different message if membership is fully paid
-      message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment towards this membership"
+      message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment"
+      (message += ". The membership has been fully paid for.") if @purchase.paid?
       redirect_to(purchase_path(@purchase), notice: message)
     else
       flash[:error] = service.error_message
