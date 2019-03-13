@@ -23,7 +23,7 @@ presupport_start = announcement - 2.years
 adult_membership = Membership.create!(name: :adult, active_from: announcement, price: 370_00)
 
 Membership.create!(name: :silver_fern , active_from: presupport_start, active_to: announcement , price: adult_membership.price - 50_00)
-Membership.create!(name: :kiwi        , active_from: presupport_start, active_to: announcement , price: adult_membership.price - 150_00)
+Membership.create!(name: :kiwi        , active_from: presupport_start, active_to: announcement , price: 50_00)
 Membership.create!(name: :tuatara     , active_from: presupport_start, active_to: announcement , price: 0)
 Membership.create!(name: :pre_oppose  , active_from: presupport_start, active_to: announcement , price: 0)
 Membership.create!(name: :pre_support , active_from: presupport_start, active_to: announcement , price: 0)

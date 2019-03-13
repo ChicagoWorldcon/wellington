@@ -57,7 +57,7 @@ FactoryBot.define do
 
     trait :kiwi do
       name { :kiwi }
-      price { 220_00 }
+      price { 50_00 }
       active_to { 1.day.ago }
     end
 
