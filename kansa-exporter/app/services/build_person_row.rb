@@ -17,7 +17,7 @@
 
 class BuildPersonRow
   ExportError = Class.new(StandardError)
-  MEMBER_NUMBER_OFFSET = 100
+  MEMBER_NUMBER_OFFSET = 2000
 
   HEADINGS = [
     "Full name",
