@@ -15,8 +15,8 @@
 # limitations under the License.
 
 class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = 40_00 # cents
-  PAYMENT_STEP = 40_00 # cents
+  MIN_PAYMENT_AMOUNT = 75_00 # cents
+  PAYMENT_STEP = 50_00 # cents
 
   attr_reader :amount_owed
 
@@ -26,7 +26,6 @@ class PaymentAmountOptions
 
   def amounts
     return [] if minimum_payment <= 0
-    return [minimum_payment] if amount_owed_is_below_minimum_payment?
 
     (minimum_payment...amount_owed).step(PAYMENT_STEP).to_a.append(amount_owed).uniq
   end
@@ -34,10 +33,6 @@ class PaymentAmountOptions
   private
 
   def minimum_payment
-    amount_owed_is_below_minimum_payment? ? amount_owed : MIN_PAYMENT_AMOUNT
-  end
-
-  def amount_owed_is_below_minimum_payment?
-    amount_owed < MIN_PAYMENT_AMOUNT
+    amount_owed < MIN_PAYMENT_AMOUNT ? amount_owed : MIN_PAYMENT_AMOUNT
   end
 end
