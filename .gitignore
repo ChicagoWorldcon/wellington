@@ -38,3 +38,4 @@ coverage/
 public/assets
 
 *.csv
+**/.DS_Store
