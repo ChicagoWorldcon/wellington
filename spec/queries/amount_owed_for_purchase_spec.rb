@@ -39,11 +39,21 @@ RSpec.describe AmountOwedForPurchase do
       let(:purchase) { claim.purchase }
 
       before do
-        charge = create(:charge, user: user, purchase: claim.purchase, amount: charge_amount)
+        create(:charge, user: user, purchase: claim.purchase, amount: charge_amount)
       end
 
       it "returns the amount owing" do
         expect(amount_owed).to eq (membership.price - charge_amount)
+      end
+
+      context "where some have failed" do
+        before do
+          create(:charge, user: user, purchase: claim.purchase, amount: charge_amount, state: Charge::STATE_FAILED)
+        end
+
+        it "returns the amount owing" do
+          expect(amount_owed).to eq (membership.price - charge_amount)
+        end
       end
     end
   end

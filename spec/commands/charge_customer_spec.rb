@@ -37,6 +37,10 @@ RSpec.describe ChargeCustomer do
         expect(command.call).to be_falsey
       end
 
+      it "does not change the amount paid" do
+        expect { command.call }.not_to change { purchase.reload.charges.successful.sum(:amount) }
+      end
+
       it "creates a failed payment on card decline" do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
