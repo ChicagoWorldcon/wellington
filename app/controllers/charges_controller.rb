@@ -33,7 +33,7 @@ class ChargesController < ApplicationController
 
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
 
-    @price_options = price_steps.map do |price|
+    @price_options = price_steps.reverse.map do |price|
       [helpers.number_to_currency(price / 100), price]
     end
   end
