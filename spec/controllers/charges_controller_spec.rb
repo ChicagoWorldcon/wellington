@@ -84,7 +84,7 @@ RSpec.describe ChargesController, type: :controller do
       it "sets a flash error" do
         post :create, params: params
 
-        expect(flash[:error]).to match /amount must be one of the provided payment amounts/
+        expect(flash[:error]).to match /Amount must be one of the provided payment amounts/
       end
 
       it "redirects to the new charge path" do
@@ -141,7 +141,7 @@ RSpec.describe ChargesController, type: :controller do
             it "redirects to the purchase" do
               post :create, params: params
 
-              expect(response).to redirect_to(purchase_path(purchase))
+              expect(response).to redirect_to(purchases_path)
             end
 
             it "sets a flash notice" do
@@ -176,7 +176,7 @@ RSpec.describe ChargesController, type: :controller do
             it "redirects to the purchase" do
               post :create, params: params
 
-              expect(response).to redirect_to(purchase_path(purchase))
+              expect(response).to redirect_to(purchases_path)
             end
 
             it "sets a flash notice" do
