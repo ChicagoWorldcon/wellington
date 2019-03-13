@@ -1,6 +1,7 @@
 <%
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +28,10 @@ Visiting that URL will automatically log you in, with no need for passwords or o
 At any time, you can also return to our membership section and enter your registered email address, and you will be sent an email with a log in link.
 
 Our charge ID for this transaction was <%= @charge.id %>, and it will appear on your statement as coming from “CoNZealand”.
+
+<% if @purchase.installment? %>
+Thank you for your payment of <%= number_to_currency(@charge.amount / 100) %>. You have <%= number_to_currency(@outstanding_amount / 100) %> left to pay for your <%= @purchase.name %> membership.
+<% end %>
 
 CoNZealand - registration@conzealand.nz  
 https://conzealand.nz/

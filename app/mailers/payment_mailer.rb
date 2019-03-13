@@ -2,6 +2,7 @@
 
 # Copyright 2018 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +20,25 @@
 class PaymentMailer < ApplicationMailer
   default from: ENV["EMAIL_PAYMENTS"]
 
-  def new_member(user:, purchase:, charge:)
+  def new_member(user:, purchase:, charge:, outstanding_amount:)
     @user = user
     @purchase = purchase
     @charge = charge
+    @outstanding_amount = outstanding_amount
+
+    mail(to: user.email) do |format|
+      #text must be called before html.
+      format.text
+      format.html
+    end
+  end
+
+  def installment_payment(user:, purchase:, charge:, outstanding_amount:)
+    @user = user
+    @purchase = purchase
+    @charge = charge
+    @outstanding_amount = outstanding_amount
+
     mail(to: user.email) do |format|
       #text must be called before html.
       format.text

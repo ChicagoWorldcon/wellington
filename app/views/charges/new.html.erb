@@ -20,17 +20,21 @@
       <div class="l-panel">
         <%= form_tag(charges_path, id: "purchase-form") do %>
           <article>
-            <div id="error_explanation">
-            </div>
+              <div id="error_explanation">
+              </div>
+            <label class="amount">
+              <span>Amount:
+                <%= select_tag(:amount, options_for_select(@price_options, selected: @outstandingamount)) %>
+              </span>
+            </label>
           </article>
 
-          <%= hidden_field_tag(:amount, @outstanding_amount) %>
           <%= hidden_field_tag(:stripeToken) %>
           <%= hidden_field_tag(:stripeEmail) %>
           <%= hidden_field_tag(:purchaseId, @purchase.id) %>
           <div class="l-v-spacing-both">
             <div class="form-group">
-              <%= submit_tag("Pay for #{@membership} membership (#{number_to_currency(@outstanding_amount / 100)}) ", id: "purchase-button", class: "btn btn-m-full-width") %>
+              <%= submit_tag("Pay for #{@membership} membership", id: "purchase-button", class: "btn btn-m-full-width") %>
             </div>
           </div>
         <% end %>
@@ -60,7 +64,7 @@ document.querySelector('#purchase-button').addEventListener('click', function(e)
 
   document.querySelector('#error_explanation').innerHtml = '';
 
-  var amount = document.querySelector('input#amount').value;
+  var amount = document.querySelector('select#amount').value;
   amount = amount.replace(/\$/g, '').replace(/\,/g, '')
 
   amount = parseInt(amount);

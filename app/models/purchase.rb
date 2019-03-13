@@ -43,4 +43,8 @@ class Purchase < ApplicationRecord
   def transferable?
     state == PAID
   end
+
+  def installment?
+    state == INSTALLMENT
+  end
 end
