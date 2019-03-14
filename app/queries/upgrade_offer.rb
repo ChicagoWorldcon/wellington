@@ -36,7 +36,7 @@ class UpgradeOffer
   end
 
   def confirm_text
-    "This will Upgrade you to at a cost of #{formatted_price}. Are you sure?"
+    "This will upgrade your membership to #{to_membership} at a cost of #{formatted_price}. Are you sure?"
   end
 
   # TODO Extract to i18n
