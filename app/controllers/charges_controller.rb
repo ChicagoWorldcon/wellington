@@ -34,7 +34,7 @@ class ChargesController < ApplicationController
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
 
     @price_options = price_steps.reverse.map do |price|
-      [helpers.number_to_currency(price / 100), price]
+      [format_nzd(price), price]
     end
   end
 
@@ -69,5 +69,11 @@ class ChargesController < ApplicationController
     message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment"
     (message += ". The membership has been fully paid for.") if @purchase.paid?
     redirect_to(purchases_path, notice: message)
+  end
+
+  private
+
+  def format_nzd(price)
+    "#{helpers.number_to_currency(price / 100)} NZD"
   end
 end
