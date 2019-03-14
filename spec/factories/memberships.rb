@@ -21,7 +21,7 @@ FactoryBot.define do
 
     trait :adult do
       name { :adult }
-      price { 340_00 }
+      price { 370_00 }
       description { "Attending Membership" }
     end
 
@@ -56,7 +56,7 @@ FactoryBot.define do
 
     trait :silver_fern do
       name { :silver_fern }
-      price { 300_00 }
+      price { 370_00 - 50_00 }
       active_to { 1.day.ago }
       description { "Presupport membership, shows support and pays towards a membership" }
     end
@@ -66,6 +66,27 @@ FactoryBot.define do
       price { 50_00 }
       active_to { 1.day.ago }
       description { "Presupport membership, shows support and pays towards a membership" }
+    end
+
+    trait :tuatara do
+      name { :tuatara }
+      price { 0 }
+      active_to { 1.day.ago }
+      description { "Presupport membership" }
+    end
+
+    trait :pre_oppose do
+      name { :pre_oppose }
+      price { 0 }
+      active_to { 1.day.ago }
+      description { "Presupport membership" }
+    end
+
+    trait :pre_support do
+      name { :pre_support }
+      price { 0 }
+      active_to { 1.day.ago }
+      description { "Presupport membership" }
     end
 
     trait :with_order_for_purchase do
