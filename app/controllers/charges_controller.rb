@@ -24,7 +24,7 @@ class ChargesController < ApplicationController
     @purchase = current_user.purchases.find(params.require(:purchaseId))
 
     if @purchase.paid?
-      redirect_to purchase_path(@purchase), notice: "This membership has already been paid for"
+      redirect_to purchase_path(@purchase), notice: "You've paid for this #{@purchase.membership} membership"
       return
     end
 

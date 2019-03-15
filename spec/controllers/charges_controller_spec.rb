@@ -39,7 +39,7 @@ RSpec.describe ChargesController, type: :controller do
       it "returns a flash notice" do
         get :new, params: { purchaseId: purchase.id }
 
-        expect(flash[:notice]).to match /membership has already been paid for/
+        expect(flash[:notice]).to match /paid/
       end
     end
 
