@@ -51,7 +51,10 @@
 
                   <% if purchase.paid? %>
                     <% UpgradeOffer.from(purchase.membership).each do |offer| %>
-                      <p><%= upgrade_link(purchase, offer: offer) %></p>
+                      <p>
+                        <%= upgrade_link(purchase, offer: offer) %><br>
+                        <em><%= offer.link_description %></em>
+                      </p>
                     <% end %>
                   <% else %>
                     <p>Reserved, but not fully paid</p>

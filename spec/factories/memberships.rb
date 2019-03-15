@@ -22,31 +22,30 @@ FactoryBot.define do
     trait :adult do
       name { :adult }
       price { 370_00 }
-      description { "Attending Membership" }
     end
 
     trait :young_adult do
       name { :young_adult }
       price { 225_00 }
-      description { "Attending Membership, born in or after 2000" }
+      description { "born in or after 2000" }
     end
 
     trait :unwaged do
       name { :unwaged }
       price { 225_00 }
-      description { "Attending Membership, NZ residents only" }
+      description { "NZ residents only" }
     end
 
     trait :child do
       name { :child }
       price { 105_00 }
-      description { "Attending Membership, born in or after 2005" }
+      description { "born in or after 2005" }
     end
 
     trait :kid_in_tow do
       name { :kid_in_tow }
       price { 0 }
-      description { "Attending Membership, born in or after 2015" }
+      description { "born in or after 2015" }
     end
 
     trait :supporting do
@@ -58,14 +57,14 @@ FactoryBot.define do
       name { :silver_fern }
       price { 370_00 - 50_00 }
       active_to { 1.day.ago }
-      description { "Presupport membership, shows support and pays towards a membership" }
+      description { "Presupport membership" }
     end
 
     trait :kiwi do
       name { :kiwi }
       price { 50_00 }
       active_to { 1.day.ago }
-      description { "Presupport membership, shows support and pays towards a membership" }
+      description { "Presupport membership" }
     end
 
     trait :tuatara do

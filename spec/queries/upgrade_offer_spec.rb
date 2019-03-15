@@ -38,6 +38,17 @@ RSpec.describe UpgradeOffer do
     it { is_expected.to match(/NZD/i) }
   end
 
+  describe "#link_text" do
+    subject(:to_s) { offer.link_text }
+    it { is_expected.to match(/Upgrade/i) }
+  end
+
+  describe "#link_description" do
+    subject(:to_s) { offer.link_description }
+    it { is_expected.to match(/\$\d+\.\d+/i) }
+    it { is_expected.to match(/NZD/i) }
+  end
+
   describe "#from" do
     let(:upgrade_offers) { UpgradeOffer.from(current_membership) }
     subject(:upgrade_offer_strings) { upgrade_offers.map(&:to_s) }

@@ -30,7 +30,7 @@ module ApplicationHelper
   def upgrade_link(purchase, offer:)
     link_to(
       # link text, based on offer's #to_s
-      offer,
+      offer.link_text,
       # link with params, enough to perform the upgrade action
       edit_upgrade_path(purchase, { offer: offer.to_s }),
       # confirmation, check with our user
