@@ -41,7 +41,7 @@ RSpec.describe PurchaseMembership do
 
     it "sets purchase to installment" do
       command.call
-      expect(Purchase.last.state).to eq(Purchase::INSTALLMENT)
+      expect(Purchase.last).to be_installment
     end
 
     it "gives us room to add guest of honor and staff" do
