@@ -43,7 +43,10 @@ class PurchaseMembership
     customer.transaction do
       Purchase.lock # pessimistic membership number uniqueness
       as_at = Time.now
-      purchase = Purchase.installment.create!(membership_number: (membership_number || next_membership_number))
+      purchase = Purchase.create!(
+        membership_number: (membership_number || next_membership_number),
+        state: (membership.price.zero? ? Purchase::PAID : Purchase::INSTALLMENT)
+      )
       Order.create!(active_from: as_at, membership: membership, purchase: purchase)
       Claim.create!(active_from: as_at, user: customer, purchase: purchase)
       purchase

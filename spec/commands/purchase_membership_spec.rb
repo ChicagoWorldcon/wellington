@@ -49,6 +49,15 @@ RSpec.describe PurchaseMembership do
       expect(Purchase.last.membership_number).to eq(100)
     end
 
+    context "with a zero cost membership" do
+      let(:membership) { create(:membership, :kid_in_tow) }
+
+      it "sets purchase to paid" do
+        command.call
+        expect(Purchase.last).to be_paid
+      end
+    end
+
     context "when given a membership number" do
       let(:membership_number) { 7480 }
 
