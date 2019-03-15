@@ -30,10 +30,10 @@ RSpec.describe ChargesController, type: :controller do
     context "when the purchase is paid for" do
       before { purchase.update!(state: Purchase::PAID) }
 
-      it "redirects to the purchase" do
+      it "redirects to the purchase listing page" do
         get :new, params: { purchaseId: purchase.id }
 
-        expect(response).to redirect_to(purchase_path(purchase))
+        expect(response).to redirect_to(purchases_path)
       end
 
       it "returns a flash notice" do
@@ -84,7 +84,7 @@ RSpec.describe ChargesController, type: :controller do
       it "sets a flash error" do
         post :create, params: params
 
-        expect(flash[:error]).to match /Amount must be one of the provided payment amounts/
+        expect(flash[:error]).to match(/provided payment amounts/)
       end
 
       it "redirects to the new charge path" do
@@ -101,16 +101,13 @@ RSpec.describe ChargesController, type: :controller do
 
       context "when the charge is unsuccessful" do
         let(:charge_success) { false }
+        before { post :create, params: params }
 
         it "sets a flash error" do
-          post :create, params: params
-
           expect(flash[:error]).to be_present
         end
 
         it "redirects to the new charge form" do
-          post :create, params: params
-
           expect(response).to redirect_to(new_charge_path(purchaseId: purchase.id))
         end
       end

@@ -24,7 +24,7 @@ class ChargesController < ApplicationController
     @purchase = current_user.purchases.find(params.require(:purchaseId))
 
     if @purchase.paid?
-      redirect_to purchase_path(@purchase), notice: "You've paid for this #{@purchase.membership} membership"
+      redirect_to purchases_path, notice: "You've paid for this #{@purchase.membership} membership"
       return
     end
 
@@ -46,8 +46,8 @@ class ChargesController < ApplicationController
 
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_amount).amounts
     if !allowed_charge_amounts.include?(@charge_amount)
-      flash[:error] = "Amount must be one of the provided payment amounts"
-      redirect_to(new_charge_path(purchaseId: @purchase.id))
+      flash[:error] =  "Amount must be one of the provided payment amounts"
+      redirect_to new_charge_path(purchaseId: @purchase.id)
       return
     end
 
@@ -67,8 +67,8 @@ class ChargesController < ApplicationController
     end
 
     message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment"
-    (message += ". The membership has been fully paid for.") if @purchase.paid?
-    redirect_to(purchases_path, notice: message)
+    (message += ". Your #{@purchase.membership} membership has been fully paid for.") if @purchase.paid?
+    redirect_to purchases_path, notice: message
   end
 
   private
