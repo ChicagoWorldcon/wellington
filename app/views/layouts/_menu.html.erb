@@ -19,13 +19,14 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<div class="<%= navigation_classes %>">
-  <% if request.path != root_path %>
+<% if request.path != root_path %>
+  <div class="<%= navigation_classes %> pointer"
+    data-toggle="collapse"
+    data-target="#navbarHeader"
+  >
     <div class="container d-flex justify-content-between">
       <div
-        class="navbar-brand d-flex align-items-center pointer"
-        data-toggle="collapse"
-        data-target="#navbarHeader"
+        class="navbar-brand d-flex align-items-center"
         aria-controls="navbarHeader"
         aria-expanded="false"
         aria-label="Toggle navigation"
@@ -34,10 +35,8 @@
       </div>
 
       <button
-        class="navbar-toggler collapsed pointer"
+        class="navbar-toggler collapsed"
         type="button"
-        data-toggle="collapse"
-        data-target="#navbarHeader"
         aria-controls="navbarHeader"
         aria-expanded="false"
         aria-label="Toggle navigation"
@@ -45,14 +44,16 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
-  <% else %>
+  </div>
+<% else %>
+  <div class="<%= navigation_classes %>">
     <div class="container d-flex justify-content-between">
       <div class="navbar-brand d-flex align-items-center">
         <strong>Welcome to the NEW Members Area</strong>
       </div>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>
 
 <nav class="container <%= "collapse" if request.path != root_path %>" id="navbarHeader">
   <div class="row">
