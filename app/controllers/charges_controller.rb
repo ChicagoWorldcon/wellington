@@ -79,7 +79,7 @@ class ChargesController < ApplicationController
       ).deliver_later
     end
 
-    message = "Thank you for your #{helpers.number_to_currency(charge_amount / 100)} payment"
+    message = "Thank you for your #{format_nzd(charge_amount)} payment"
     (message += ". Your #{purchase.membership} membership has been fully paid for.") if purchase.paid?
     redirect_to purchases_path, notice: message
   end
