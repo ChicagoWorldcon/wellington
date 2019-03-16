@@ -21,6 +21,7 @@ RSpec.describe PurchasesController, type: :controller do
   include Warden::Test::Helpers
   render_views
 
+  let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
   let!(:existing_purchase) { create(:purchase, :with_claim_from_user, membership: adult) }
   let!(:original_user) { existing_purchase.user }
@@ -109,6 +110,46 @@ RSpec.describe PurchasesController, type: :controller do
         }
       }
       expect(flash[:error]).to match(/address/i)
+    end
+  end
+
+  describe "#create" do
+    before { sign_in(original_user) }
+
+    let(:valid_detail_params) do
+      FactoryBot.build(:detail).slice(
+        :first_name,
+        :last_name,
+        :publication_format,
+        :address_line_1,
+        :country,
+      )
+    end
+
+    context "when adult offer selected" do
+      let(:offer) { MembershipOffer.new(adult) }
+
+      it "redirects to the charges page" do
+        post :create, params: {
+          detail: valid_detail_params,
+          offer: offer.to_s,
+        }
+        expect(flash[:error]).to_not be_present
+        expect(response.headers["Location"]).to match(/charges/)
+      end
+    end
+
+    context "when free offer selected" do
+      let(:offer) { MembershipOffer.new(kid_in_tow) }
+
+      it "redirects to the purchase listing page" do
+        post :create, params: {
+          detail: valid_detail_params,
+          offer: offer.to_s,
+        }
+        expect(flash[:error]).to_not be_present
+        expect(response).to redirect_to(purchases_path)
+      end
     end
   end
 end

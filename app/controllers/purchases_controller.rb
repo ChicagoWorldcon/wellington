@@ -67,7 +67,11 @@ class PurchasesController < ApplicationController
       detail.save!
 
       flash[:notice] = "Congratulations member ##{new_purchase.membership_number}! You've just reserved a #{matching_offer.membership} membership"
-      redirect_to new_charge_path(purchaseId: new_purchase.id)
+      if new_purchase.membership.price.zero?
+        redirect_to purchases_path
+      else
+        redirect_to new_charge_path(purchaseId: new_purchase.id)
+      end
     end
   end
 
