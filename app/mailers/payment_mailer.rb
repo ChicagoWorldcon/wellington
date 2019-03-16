@@ -20,27 +20,26 @@
 class PaymentMailer < ApplicationMailer
   default from: ENV["EMAIL_PAYMENTS"]
 
-  def new_member(user:, purchase:, charge:, outstanding_amount:)
-    @user = user
-    @purchase = purchase
+  def paid(user:, charge:)
     @charge = charge
-    @outstanding_amount = outstanding_amount
+    @purchase = charge.purchase
+    @detail = @purchase.active_claim.detail
 
-    mail(to: user.email) do |format|
-      #text must be called before html.
+    mail(to: user.email, subject: "CoNZealand Payment: Payment for member ##{@purchase.membership_number}") do |format|
+      # text must be called before html.
       format.text
       format.html
     end
   end
 
-  def installment_payment(user:, purchase:, charge:, outstanding_amount:)
-    @user = user
-    @purchase = purchase
+  def installment(user:, charge:, outstanding_amount:)
     @charge = charge
+    @purchase = charge.purchase
+    @detail = @purchase.active_claim.detail
     @outstanding_amount = outstanding_amount
 
-    mail(to: user.email) do |format|
-      #text must be called before html.
+    mail(to: user.email, subject: "CoNZealand Payment: Installment for member ##{@purchase.membership_number}") do |format|
+      # text must be called before html.
       format.text
       format.html
     end

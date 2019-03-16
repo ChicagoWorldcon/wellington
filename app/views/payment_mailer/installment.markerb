@@ -1,0 +1,30 @@
+<%#
+  Copyright 2019 AJ Esler
+  Copyright 2019 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+Kia Ora <%= @detail.playful_nickname %>!
+
+We've sent you this email to let you know that we've just received an installment towards your
+<%= @purchase.membership %> membership, which is reserved with the membership number #<%= @purchase.membership_number %>.
+
+You paid <%= number_to_currency(@charge.amount / 100) %> NZD which will show up on your statement with the identifier
+"<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".
+
+You still need to pay <%= number_to_currency(@outstanding_amount / 100) %> NZD to cover this membership. You can do this
+anytime by returning to the members area and to make further installments
+or to pay your membership off completely.
+
+CoNZealand - registration@conzealand.nz  
+https://conzealand.nz/

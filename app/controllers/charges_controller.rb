@@ -39,35 +39,48 @@ class ChargesController < ApplicationController
   end
 
   def create
-    @purchase = current_user.purchases.find(params[:purchaseId])
-    @charge_amount = params[:amount].to_i
+    purchase = current_user.purchases.find(params[:purchaseId])
+    charge_amount = params[:amount].to_i
 
-    outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
+    outstanding_before_charge = AmountOwedForPurchase.new(purchase).amount_owed
 
-    allowed_charge_amounts = PaymentAmountOptions.new(outstanding_amount).amounts
-    if !allowed_charge_amounts.include?(@charge_amount)
+    allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
+    if !allowed_charge_amounts.include?(charge_amount)
       flash[:error] =  "Amount must be one of the provided payment amounts"
-      redirect_to new_charge_path(purchaseId: @purchase.id)
+      redirect_to new_charge_path(purchaseId: purchase.id)
       return
     end
 
-    service = ChargeCustomer.new(@purchase, current_user, params[:stripeToken], outstanding_amount, charge_amount: @charge_amount)
+    service = ChargeCustomer.new(
+      purchase,
+      current_user,
+      params[:stripeToken],
+      outstanding_before_charge,
+      charge_amount: charge_amount
+    )
 
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to new_charge_path(purchaseId: @purchase.id)
+      redirect_to new_charge_path(purchaseId: purchase.id)
       return
     end
 
-    if @purchase.charges.successful.size == 1
-      PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+    if purchase.installment?
+      PaymentMailer.installment(
+        user: current_user,
+        charge: service.charge,
+        outstanding_amount: (outstanding_before_charge - charge_amount)
+      ).deliver_later
     else
-      PaymentMailer.installment_payment(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+      PaymentMailer.paid(
+        user: current_user,
+        charge: service.charge,
+      ).deliver_later
     end
 
-    message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment"
-    (message += ". Your #{@purchase.membership} membership has been fully paid for.") if @purchase.paid?
+    message = "Thank you for your #{helpers.number_to_currency(charge_amount / 100)} payment"
+    (message += ". Your #{purchase.membership} membership has been fully paid for.") if purchase.paid?
     redirect_to purchases_path, notice: message
   end
 
