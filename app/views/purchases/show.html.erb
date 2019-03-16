@@ -30,7 +30,7 @@
         <% if @purchase.paid? %>
           <span>This membership is fully paid for.</span>
         <% else %>
-          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> outstanding for this membership</p>
+          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
           <%= link_to "Make a payment", new_charge_url(purchaseId: @purchase.id) %>
         <% end %>
       </div>
