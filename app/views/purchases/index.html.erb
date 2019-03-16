@@ -38,15 +38,15 @@
               <div class="<%= card_classes(purchase) %>">
                 <div class="card-body">
                   <h5 class="card-title">
-                    <%= purchase.membership %> Membership
-                  </h5>
-
-                  <p class="card-text">
                     #<%= purchase.membership_number %>
 
                     <% if detail = purchase.active_claim.detail %>
                       <%= detail %>
                     <% end %>
+                  </h5>
+
+                  <p class="card-text">
+                    <%= purchase.membership %> Membership
                   </p>
 
                   <% if purchase.paid? %>
