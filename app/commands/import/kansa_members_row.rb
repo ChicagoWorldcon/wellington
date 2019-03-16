@@ -49,6 +49,7 @@ class Import::KansaMembersRow
     "Adult":                    "adult",
     "Supporter":                "supporting",
     "Unwaged":                  "unwaged",
+    "KidInTow":                 "kid_in_tow",
   }.with_indifferent_access.freeze
 
   attr_reader :row_data, :comment
@@ -113,16 +114,18 @@ class Import::KansaMembersRow
     end
 
     new_purchase.transaction do
-      new_purchase.update!(state: Purchase::PAID)
-      details.save!
-      Charge.stripe.successful.create!(
-        user: new_user,
-        purchase: new_purchase,
-        amount: cell_for("Charge Amount"),
-        stripe_id: cell_for("Stripe Payment ID"),
-        comment: cell_for("Payment Comment"),
-      )
+      if new_purchase.installment?
+        Charge.stripe.successful.create!(
+          user: new_user,
+          purchase: new_purchase,
+          amount: cell_for("Charge Amount"),
+          stripe_id: cell_for("Stripe Payment ID"),
+          comment: cell_for("Payment Comment"),
+        )
+        new_purchase.update!(state: Purchase::PAID)
+      end
 
+      details.save!
       new_purchase.update!(created_at: import_date, updated_at: import_date)
       new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
       new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
