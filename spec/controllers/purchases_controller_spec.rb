@@ -21,9 +21,10 @@ RSpec.describe PurchasesController, type: :controller do
   include Warden::Test::Helpers
   render_views
 
-  let(:support) { create(:support) }
-  let!(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user) }
-  let!(:original_user) { purchase.user }
+  let!(:adult) { create(:membership, :adult) }
+  let!(:existing_purchase) { create(:purchase, :with_claim_from_user, membership: adult) }
+  let!(:original_user) { existing_purchase.user }
+
   let(:another_user) { create(:user) }
   let(:support) { create(:support) }
 
@@ -37,44 +38,44 @@ RSpec.describe PurchasesController, type: :controller do
 
   describe "#show" do
     it "can't be found when not signed in" do
-      expect { get :show, params: { id: purchase.id } }
+      expect { get :show, params: { id: existing_purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "cant find it when you're signed in as a different user" do
       sign_in(another_user)
-      expect { get :show, params: { id: purchase.id } }
+      expect { get :show, params: { id: existing_purchase.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "can find your own purchases" do
       sign_in(original_user)
-      get :show, params: { id: purchase.id }
+      get :show, params: { id: existing_purchase.id }
       expect(response).to have_http_status(:ok)
     end
 
     context "when signed in as support" do
       it "can view any membership" do
         sign_in(support)
-        get :show, params: { id: purchase.id }
+        get :show, params: { id: existing_purchase.id }
         expect(response).to have_http_status(:found)
       end
     end
 
     context "after transferring a membership" do
       before do
-        TransferMembership.new(purchase, from: original_user, to: another_user).call
+        TransferMembership.new(existing_purchase, from: original_user, to: another_user).call
       end
 
       it "can't be found for original user" do
         sign_in(original_user)
-        expect { get :show, params: { id: purchase.id } }
+        expect { get :show, params: { id: existing_purchase.id } }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "is found for new user" do
         sign_in(another_user)
-        get :show, params: { id: purchase.id }
+        get :show, params: { id: existing_purchase.id }
         expect(response).to have_http_status(:ok)
       end
     end
@@ -85,7 +86,7 @@ RSpec.describe PurchasesController, type: :controller do
 
     it "updates when all values present" do
       post :update, params: {
-        id: purchase.id,
+        id: existing_purchase.id,
         detail: {
           first_name: "this",
           last_name: "is",
@@ -93,13 +94,13 @@ RSpec.describe PurchasesController, type: :controller do
           country: "valid",
         }
       }
-      expect(purchase.reload.active_claim.detail.address_line_1).to eq "yolo"
+      expect(existing_purchase.reload.active_claim.detail.address_line_1).to eq "yolo"
       expect(flash[:notice]).to match(/your details have been saved/i)
     end
 
     it "shows error when values not present" do
       post :update, params: {
-        id: purchase.id,
+        id: existing_purchase.id,
         detail: {
           first_name: "this",
           last_name: "is",
