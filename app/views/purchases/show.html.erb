@@ -24,12 +24,13 @@
 <h1>Review Membership</h1>
 <section class="l-section">
   <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-md-12">
       <div class="l-panel">
+        <h2><%= @my_offer.membership %> membership #<%= @purchase.membership_number %></h2>
         <% if @purchase.paid? %>
           <span>This membership is fully paid for.</span>
         <% else %>
-          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> outstanding for this membership</p>
+          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
           <%= link_to "Make a payment", new_charge_url(purchaseId: @purchase.id) %>
         <% end %>
       </div>
@@ -38,7 +39,7 @@
   <div class="row">
     <div class="col-12 col-md-8">
       <div class="l-panel">
-        <h2>Review your <%= @my_offer.membership %> membership details</h2>
+        <h2>Review your details</h2>
         <%= render "detail_form" %>
       </div>
     </div>

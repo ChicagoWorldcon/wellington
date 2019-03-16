@@ -24,7 +24,7 @@ class ChargesController < ApplicationController
     @purchase = current_user.purchases.find(params.require(:purchaseId))
 
     if @purchase.paid?
-      redirect_to purchase_path(@purchase), notice: "This membership has already been paid for"
+      redirect_to purchases_path, notice: "You've paid for this #{@purchase.membership} membership"
       return
     end
 
@@ -33,41 +33,60 @@ class ChargesController < ApplicationController
 
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
 
-    @price_options = price_steps.map do |price|
-      [helpers.number_to_currency(price / 100), price]
+    @price_options = price_steps.reverse.map do |price|
+      [format_nzd(price), price]
     end
   end
 
   def create
-    @purchase = current_user.purchases.find(params[:purchaseId])
-    @charge_amount = params[:amount].to_i
+    purchase = current_user.purchases.find(params[:purchaseId])
+    charge_amount = params[:amount].to_i
 
-    outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
+    outstanding_before_charge = AmountOwedForPurchase.new(purchase).amount_owed
 
-    allowed_charge_amounts = PaymentAmountOptions.new(outstanding_amount).amounts
-    if !allowed_charge_amounts.include?(@charge_amount)
-      flash[:error] = "Amount must be one of the provided payment amounts"
-      redirect_to(new_charge_path(purchaseId: @purchase.id))
+    allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
+    if !allowed_charge_amounts.include?(charge_amount)
+      flash[:error] =  "Amount must be one of the provided payment amounts"
+      redirect_to new_charge_path(purchaseId: purchase.id)
       return
     end
 
-    service = ChargeCustomer.new(@purchase, current_user, params[:stripeToken], outstanding_amount, charge_amount: @charge_amount)
+    service = ChargeCustomer.new(
+      purchase,
+      current_user,
+      params[:stripeToken],
+      outstanding_before_charge,
+      charge_amount: charge_amount
+    )
 
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to new_charge_path(purchaseId: @purchase.id)
+      redirect_to new_charge_path(purchaseId: purchase.id)
       return
     end
 
-    if @purchase.charges.successful.size == 1
-      PaymentMailer.new_member(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+    if purchase.installment?
+      PaymentMailer.installment(
+        user: current_user,
+        charge: service.charge,
+        outstanding_amount: (outstanding_before_charge - charge_amount)
+      ).deliver_later
     else
-      PaymentMailer.installment_payment(user: current_user, purchase: @purchase, charge: service.charge, outstanding_amount: outstanding_amount).deliver_later
+      PaymentMailer.paid(
+        user: current_user,
+        charge: service.charge,
+      ).deliver_later
     end
 
-    message = "Thank you for your #{helpers.number_to_currency(@charge_amount / 100)} payment"
-    (message += ". The membership has been fully paid for.") if @purchase.paid?
-    redirect_to(purchases_path, notice: message)
+    message = "Thank you for your #{format_nzd(charge_amount)} payment"
+    (message += ". Your #{purchase.membership} membership has been fully paid for.") if purchase.paid?
+    redirect_to purchases_path, notice: message
+  end
+
+  private
+
+  def format_nzd(price)
+    "#{helpers.number_to_currency(price / 100)} NZD"
   end
 end

@@ -45,7 +45,7 @@ RSpec.describe ChargeCustomer do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
         expect(Charge.last.comment).to match(/Declined/i)
-        expect(purchase.state).to eq(Purchase::INSTALLMENT)
+        expect(purchase).to be_installment
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe ChargeCustomer do
       end
 
       it "marks purchase state as installment" do
-        expect(purchase.state).to eq Purchase::INSTALLMENT
+        expect(purchase).to be_installment
       end
 
       context "then membership pricing changes" do

@@ -1,6 +1,6 @@
-<%
+# frozen_string_literal: true
+
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-%>
 
-<h2>Thanks, you paid <strong><%= number_to_currency(@charge_amount / 100) %></strong> towards a <%= @purchase.membership %></strong></h2>
+class AddDescriptionToMembership < ActiveRecord::Migration[5.1]
+  def change
+    add_column :memberships, :description, :string
+  end
+end

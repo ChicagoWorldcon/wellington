@@ -17,7 +17,7 @@
 
 class BuildPersonRow
   ExportError = Class.new(StandardError)
-  MEMBER_NUMBER_OFFSET = 100
+  MEMBER_NUMBER_OFFSET = 2000
 
   HEADINGS = [
     "Full name",
@@ -45,10 +45,15 @@ class BuildPersonRow
   end
 
   def to_row
-    raise(ExportError, "Person##{person.id} has multiple successful payments") if person.payments.succeeded.count > 1
-    raise(ExportError, "Person##{person.id} is missing a payment") if payment.nil?
-    raise(ExportError, "Person##{person.id} payment does not match membership") unless person.membership == payment.type
-    raise(ExportError, "Person##{person.id} payment is not in NZD") unless payment.currency == "nzd"
+    # Hack, 125 is our first kid in tow membership and we need to go live
+    # Better export function would be to check if this export is worth 0, then skip payment checks
+    # Sorry future person <3
+    if person.id != 125
+      raise(ExportError, "Person##{person.id} has multiple successful payments") if person.payments.succeeded.count > 1
+      raise(ExportError, "Person##{person.id} is missing a payment") if payment.nil?
+      raise(ExportError, "Person##{person.id} payment does not match membership") unless person.membership == payment.type
+      raise(ExportError, "Person##{person.id} payment is not in NZD") unless payment.currency == "nzd"
+    end
 
     [
       person.legal_name,                           # "Full name",
@@ -62,11 +67,11 @@ class BuildPersonRow
       person.email,                                # "Email Address",
       "Imported from kansa. People##{person.id}",  # "Notes",
       person.membership,                           # "Membership Status",
-      payment.stripe_charge_id,                    # "Stripe Payment ID",
-      payment.amount,                              # "Charge Amount"
+      payment&.stripe_charge_id,                    # "Stripe Payment ID",
+      payment&.amount,                              # "Charge Amount"
       payment_comment,                             # "Payment Comment"
       person.member_number + MEMBER_NUMBER_OFFSET, # "Member Number"
-      payment.created&.iso8601,                    # "Created At"
+      payment&.created&.iso8601,                    # "Created At"
     ]
   end
 
@@ -75,6 +80,10 @@ class BuildPersonRow
   end
 
   def payment_comment
-    "kansa payment##{payment.id} for #{payment.amount.to_f / 100}#{payment.currency.upcase} paid with token #{payment.stripe_token} for #{payment.type} (#{payment.category})"
+    if payment.present?
+      "kansa payment##{payment.id} for #{payment.amount.to_f / 100}#{payment.currency.upcase} paid with token #{payment.stripe_token} for #{payment.type} (#{payment.category})"
+    else
+      nil
+    end
   end
 end

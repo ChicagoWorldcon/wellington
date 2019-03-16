@@ -41,12 +41,21 @@ RSpec.describe PurchaseMembership do
 
     it "sets purchase to installment" do
       command.call
-      expect(Purchase.last.state).to eq(Purchase::INSTALLMENT)
+      expect(Purchase.last).to be_installment
     end
 
     it "gives us room to add guest of honor and staff" do
       command.call
       expect(Purchase.last.membership_number).to eq(100)
+    end
+
+    context "with a zero cost membership" do
+      let(:membership) { create(:membership, :kid_in_tow) }
+
+      it "sets purchase to paid" do
+        command.call
+        expect(Purchase.last).to be_paid
+      end
     end
 
     context "when given a membership number" do

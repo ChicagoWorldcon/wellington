@@ -35,8 +35,20 @@ class UpgradeOffer
     "Upgrade to #{to_membership} (#{formatted_price})"
   end
 
+  def link_text
+    "Upgrade to #{to_membership}"
+  end
+
+  def link_description
+    if to_membership.description.present?
+      "#{to_membership.description}, for #{formatted_price}"
+    else
+      "for #{formatted_price}"
+    end
+  end
+
   def confirm_text
-    "This will Upgrade you to at a cost of #{formatted_price}. Are you sure?"
+    "This will upgrade your membership to #{to_membership} at a cost of #{formatted_price}. Are you sure?"
   end
 
   # TODO Extract to i18n

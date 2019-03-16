@@ -1,4 +1,6 @@
 <%
+# Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,18 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
+Kia Ora <%= @detail.playful_nickname %>!
 
-Kia Ora (hello),
+We've sent you this email to let you know that you've just finished paying for your <%= @purchase.membership %> membership,
+and that your membership number is #<%= @purchase.membership_number %>.
 
-Thank you for your <%= number_to_currency(@charge.amount / 100) %> payment towards your <%= @purchase.name %> membership for CoNZealand.
+You paid <%= number_to_currency(@charge.amount / 100) %> NZD which will show up on your statement with the identifier
+"<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".
 
-Our charge ID for this transaction was <%= @charge.id %>, and it will appear on your statement as coming from “CoNZealand”.
-
-<% if @purchase.paid? %>
-Your <%= @purchase.name %> membership is now fully paid for.
-<% else %>
-Your <%= @purchase.name %> membership now has <%= number_to_currency(@outstanding_amount / 100) %> outstanding.
-<% end %>
+You can update your detals and access our services any time by returning to the members area.
 
 CoNZealand - registration@conzealand.nz  
 https://conzealand.nz/

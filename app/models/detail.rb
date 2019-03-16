@@ -79,4 +79,23 @@ class Detail < ApplicationRecord
       "#{title} #{first_name} #{last_name}"
     end.strip
   end
+
+  def playful_nickname
+    if fun_badge_title?
+      "#{nickname} (psst, we know it's really you #{badge_title.humanize})"
+    else
+      nickname
+    end
+  end
+
+  def nickname
+    preferred_first_name || first_name || ""
+  end
+
+  def fun_badge_title?
+    return false if !badge_title.present?                        # if you've set one
+    return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
+    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
+    true
+  end
 end

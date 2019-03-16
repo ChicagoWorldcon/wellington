@@ -26,11 +26,19 @@ class MembershipOffer
   end
 
   def to_s
-    "#{membership} (#{formatted_price})"
+    if membership.description.present?
+      "#{membership} - #{membership.description} (#{formatted_price})"
+    else
+      "#{membership} (#{formatted_price})"
+    end
   end
 
   # TODO Extract to i18n
   def formatted_price
-    "$%.2f NZD" % (membership.price * 1.0 / 100)
+    if membership.price > 0
+      "$%.2f NZD" % (membership.price * 1.0 / 100)
+    else
+      "free"
+    end
   end
 end

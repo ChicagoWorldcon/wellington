@@ -30,16 +30,16 @@ RSpec.describe ChargesController, type: :controller do
     context "when the purchase is paid for" do
       before { purchase.update!(state: Purchase::PAID) }
 
-      it "redirects to the purchase" do
+      it "redirects to the purchase listing page" do
         get :new, params: { purchaseId: purchase.id }
 
-        expect(response).to redirect_to(purchase_path(purchase))
+        expect(response).to redirect_to(purchases_path)
       end
 
       it "returns a flash notice" do
         get :new, params: { purchaseId: purchase.id }
 
-        expect(flash[:notice]).to match /membership has already been paid for/
+        expect(flash[:notice]).to match /paid/
       end
     end
 
@@ -74,6 +74,11 @@ RSpec.describe ChargesController, type: :controller do
       payment_amount_options_double = instance_double(PaymentAmountOptions)
       expect(PaymentAmountOptions).to receive(:new).and_return(payment_amount_options_double)
       expect(payment_amount_options_double).to receive(:amounts).and_return(allowed_payment_amounts)
+
+      # We're not going to assert what type of email was sent.
+      # If this becomes more complex, please do make assertions on this.
+      allow(PaymentMailer).to receive_message_chain(:installment, :deliver_later).and_return(true)
+      allow(PaymentMailer).to receive_message_chain(:paid, :deliver_later).and_return(true)
     end
 
     context "when the charge amount is not allowed" do
@@ -84,7 +89,7 @@ RSpec.describe ChargesController, type: :controller do
       it "sets a flash error" do
         post :create, params: params
 
-        expect(flash[:error]).to match /Amount must be one of the provided payment amounts/
+        expect(flash[:error]).to match(/provided payment amounts/)
       end
 
       it "redirects to the new charge path" do
@@ -101,16 +106,13 @@ RSpec.describe ChargesController, type: :controller do
 
       context "when the charge is unsuccessful" do
         let(:charge_success) { false }
+        before { post :create, params: params }
 
         it "sets a flash error" do
-          post :create, params: params
-
           expect(flash[:error]).to be_present
         end
 
         it "redirects to the new charge form" do
-          post :create, params: params
-
           expect(response).to redirect_to(new_charge_path(purchaseId: purchase.id))
         end
       end
@@ -126,29 +128,16 @@ RSpec.describe ChargesController, type: :controller do
             create(:charge, amount: 340_00, purchase: purchase, user: user)
           end
 
-          it "sends an email" do
-            expect(PaymentMailer).to receive(:new_member).with(user: user, purchase: purchase, charge: charge_double, outstanding_amount: 0).and_return(mail)
-            expect(mail).to receive(:deliver_later)
-
+          it "redirects to the purchase" do
             post :create, params: params
+
+            expect(response).to redirect_to(purchases_path)
           end
 
-          context "after email has been sent" do
-            before do
-              allow(PaymentMailer).to receive(:new_member).and_return(mail)
-            end
+          it "sets a flash notice" do
+            post :create, params: params
 
-            it "redirects to the purchase" do
-              post :create, params: params
-
-              expect(response).to redirect_to(purchases_path)
-            end
-
-            it "sets a flash notice" do
-              post :create, params: params
-
-              expect(flash[:notice]).to be_present
-            end
+            expect(flash[:notice]).to be_present
           end
         end
 
@@ -161,29 +150,16 @@ RSpec.describe ChargesController, type: :controller do
             create(:charge, amount: amount, purchase: purchase, user: user)
           end
 
-          it "sends an email" do
-            expect(PaymentMailer).to receive(:installment_payment).with(user: user, purchase: purchase, charge: charge_double, outstanding_amount: amount_owed).and_return(mail)
-            expect(mail).to receive(:deliver_later)
-
+          it "redirects to the purchase" do
             post :create, params: params
+
+            expect(response).to redirect_to(purchases_path)
           end
 
-          context "after email has been sent" do
-            before do
-              allow(PaymentMailer).to receive(:installment_payment).and_return(mail)
-            end
+          it "sets a flash notice" do
+            post :create, params: params
 
-            it "redirects to the purchase" do
-              post :create, params: params
-
-              expect(response).to redirect_to(purchases_path)
-            end
-
-            it "sets a flash notice" do
-              post :create, params: params
-
-              expect(flash[:notice]).to be_present
-            end
+            expect(flash[:notice]).to be_present
           end
         end
       end

@@ -112,20 +112,18 @@
           <label for="share_with_future_worldcons">Share membership details with future worldcons?</label>
         </div>
 
+        <p class="form-note form-note-m-group">
+          Sharing your information with future Worldcons gives you the Hugo nominating rights for Worldcons other than
+          2020 that come with your membership. If you answer no, you will not be able to exercise those rights.
+        </p>
+
         <div class="form-options">
           <%= detail_form.check_box(:show_in_listings, class: "form-control form-control-m-checkbox", id: "show_in_listings") %>
           <label for="show_in_listings">List name on the CoNZealand website and in published directories?</label>
         </div>
 
         <p class="form-note form-note-m-group">
-          SFCONZ and Worldcon 78 want to list your information on our websites and share your contact
-          information with future worldcons (no one else).
-        </p>
-
-        <p class="form-note form-note-m-group">
-          Shraing your information with future Worldcons will be able to give you the Hugo nominating rights for
-          Worldcons other than 2020 that come with your membership. If you answer no, you will not be able to
-          exercise those rights.
+          SFCONZ and Worldcon 78 want to list your information on our websites.
         </p>
       </fieldset>
     </fieldset>
@@ -133,7 +131,7 @@
     <fieldset class="l-v-spacing">
       <legend>Address and Contact Information</legend>
       <p class="form-note form-note-m-group">
-        Where do you get your mail? This should match your credit card address, if you use one.
+        Where do you get your postal mail? This should match your credit card address, if you use one.
       </p>
 
       <div class="form-group">
@@ -238,13 +236,15 @@
 
     <div class="l-v-spacing-both">
       <div class="form-group">
-        <input type="submit" value="Save Details" class="btn btn-m-full-width">
+        <input type="submit" value="<%= detail_form_submit_text(@purchase) %>" class="btn btn-m-full-width">
       </div>
 
       <p>
         This purchase will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
         payment processor.
       </p>
+
+      <p>We do not store your credit card information.</p>
     </div>
   <% end %>
 <% end %>

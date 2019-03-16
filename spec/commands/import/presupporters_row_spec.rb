@@ -150,7 +150,7 @@ RSpec.describe Import::PresupportersRow do
           expect(upgrader.call).to be_truthy
           imported_purchase.reload
           expect(imported_purchase.membership).to eq(adult)
-          expect(imported_purchase.state).to eq Purchase::INSTALLMENT
+          expect(imported_purchase).to be_installment
           expect(successful_cash_charges.sum(:amount)).to be > supporter.price
           expect(successful_cash_charges.sum(:amount)).to be < adult.price
         end

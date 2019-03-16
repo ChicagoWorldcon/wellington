@@ -30,7 +30,7 @@ module ApplicationHelper
   def upgrade_link(purchase, offer:)
     link_to(
       # link text, based on offer's #to_s
-      offer,
+      offer.link_text,
       # link with params, enough to perform the upgrade action
       edit_upgrade_path(purchase, { offer: offer.to_s }),
       # confirmation, check with our user
@@ -45,5 +45,13 @@ module ApplicationHelper
 
     formatted_money = number_to_currency(total_cents / 100)
     "#{formatted_money} NZD"
+  end
+
+  def detail_form_submit_text(purchase)
+    if purchase.persisted?
+      "Save Details"
+    else
+      "Reserve Membership and Pay"
+    end
   end
 end
