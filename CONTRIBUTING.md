@@ -35,11 +35,12 @@ few guidelines that we need our contributors to follow so that we can have a cha
   Find examples of other specs in the [spec directory](spec).
 * Do check your files with linting rules, either by running `rubocop` or by getting an [editor
   plugin](https://docs.rubocop.org/en/latest/integration_with_other_tools/) which runs rubocop for you.
-* [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change. For example
+* [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change in your commit
+  messages. For example
   ```
   issue #1: Rework guide, move OSX specific instructions into it's own file
   ```
-* Trivial changes that are not specific to issues don't need this. Please instead mention "docs", "maint", or
+* Trivial changes that are not specific to issues don't need this. Please instead mention "docs", "maint", "bugfix", or
   "packaging" as appropriate. For example
   ```
   docs: Rework guide, move OSX specific instructions into it's own file
@@ -53,17 +54,13 @@ code for our convention.
 
 To do this, we need to maintain some boilerplate text in our files.
 
-New contributors should add their name to the [LICENSE](LICENSE) file in the root of this project. Try put your name in
-alphabetical order, and mention the current year.
+New contributors should add their name to the [LICENSE](LICENSE) file in the root of this project, and the
+[README.md](README.md). Try put your name in alphabetical order, and mention the current year.
 
-Modifying existing files will require modifying their license at the top to include your name and the year. You only
-need to do this for files you authored, please don't do this for generated files.
+Where there are multiple authors please try keep them sorted by year, then alphabetically.
 
-If you're modifying files in this project, please make sure you add yourself to the top of the file in the Apache
-boilerplate.
-
-If you're creating a new file in this project, please add the following boilerplate comment in the top of your new
-files:
+If you're creating a new file in this project, please add the following boilerplate comment in the top to declare the
+licence that file is under:
 
 > Copyright [year] [author name]
 >
@@ -79,4 +76,15 @@ files:
 > See the License for the specific language governing permissions and
 > limitations under the License.
 
-If there are multiple authors who have worked on a file, please try keep them in alphabetical order.
+Modifying existing files will require modifying their license at the top to include your name and the year. You only
+need to do this for files you authored. Please don't do this for generated files.
+
+There are CI scripts running to make sure this is in place. If you want to run them locally, you can do this by running
+
+```
+# For docker developers
+docker-compose exec -T members_area bundle exec rake test:branch:copyright
+
+# For system ruby developers
+bundle exec rake test:branch:copyright
+```
