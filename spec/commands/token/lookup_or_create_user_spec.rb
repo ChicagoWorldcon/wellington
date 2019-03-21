@@ -75,11 +75,10 @@ RSpec.describe Token::LookupOrCreateUser do
   end
 
   context "with new user" do
-    let(:new_email) { "aaa@aaa.aaa" }
     let(:login_info) do
       {
         exp: 10.seconds.from_now.to_i,
-        email: new_email,
+        email: good_email,
       }
     end
 
@@ -89,7 +88,23 @@ RSpec.describe Token::LookupOrCreateUser do
 
     it "creates a new user" do
       expect { command.call }.to change { User.count }.by(1)
-      expect(User.last.email).to eq(new_email)
+      expect(User.last.email).to eq(good_email)
+    end
+
+    context "when user exists, and you login with all caps" do
+      before { create(:user, email: good_email) }
+
+      let(:login_info) do
+        {
+          exp: 10.seconds.from_now.to_i,
+          email: good_email.upcase,
+        }
+      end
+
+      it "succeeds" do
+        expect(command.call).to be_truthy
+        expect(command.errors).to be_empty
+      end
     end
   end
 
