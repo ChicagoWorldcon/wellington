@@ -120,4 +120,15 @@ RSpec.describe Token::LookupOrCreateUser do
       expect(command.call).to eq(user)
     end
   end
+
+  context "when email is missing" do
+    let(:login_info) do
+      { exp: 10.seconds.from_now.to_i }
+    end
+
+    it "fails gracefully" do
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/email is invalid/i)
+    end
+  end
 end
