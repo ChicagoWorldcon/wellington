@@ -27,6 +27,13 @@ module ApplicationHelper
     end.join(" ")
   end
 
+  # Marker on the body so we can distinguish prod from staging from dev
+  def environment_classes
+    if stripe_test_keys? && !Rails.env.production?
+      "env-#{Rails.env}"
+    end
+  end
+
   def upgrade_link(purchase, offer:)
     link_to(
       # link text, based on offer's #to_s
@@ -53,5 +60,11 @@ module ApplicationHelper
     else
       "Reserve Membership and Pay"
     end
+  end
+
+  private
+
+  def stripe_test_keys?
+    @stripe_test_keys ||= Rails.configuration.stripe[:secret_key]&.match(/^sk_test/)
   end
 end
