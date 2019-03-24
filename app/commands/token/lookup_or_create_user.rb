@@ -63,7 +63,7 @@ class Token::LookupOrCreateUser
   end
 
   def lookup_and_validate_user
-    @user = User.find_or_create_by(email: @token.first["email"])
+    @user = User.find_or_create_by(email: @token.first["email"]&.downcase)
     if !@user.valid?
       @user.errors.full_messages.each do |validation_error|
         errors << validation_error
