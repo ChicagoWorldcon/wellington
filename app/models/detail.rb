@@ -55,7 +55,6 @@ class Detail < ApplicationRecord
   ].freeze
 
   belongs_to :claim
-  validates :claim, presence: true
 
   attr_reader :for_import
 
