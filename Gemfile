@@ -27,7 +27,7 @@ gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
 gem "rails"                # framework for building websites <3
 gem "redcarpet"            # parser for markerb
-gem "sass-rails"           # sass compiler for an easier way to manage large stylesheets
+gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "stripe"               # payment provider
 gem "turbolinks"           # html pages with the feeling of ajax
 gem "uglifier"             # for minifying javascript and css
