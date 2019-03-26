@@ -75,7 +75,7 @@ release_image:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
     - docker tag $CONTAINER_RELEASE_IMAGE $CI_REGISTRY_IMAGE:stable
-    - docker push $CONTAINER_RELEASE_IMAGE
+    - docker push $CI_REGISTRY_IMAGE:stable
   only:
     - tags
 
