@@ -43,13 +43,8 @@ docker_build:
 rspec_tests:
   stage: test
   script:
-    - touch .env
-    - apk add make py3-pip
-    - pip3 install --upgrade pip
-    - pip install docker-compose
-    - make start
-    - make db
-    - make rspec
+    - docker run -d --name="test-database" --hostname "postgres" postgres:latest
+    - docker run --network "container:test-database" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:schema:load spec
 
 rubocop_linting:
   stage: test
@@ -89,4 +84,3 @@ latest_image:
     - docker push $CONTAINER_RELEASE_IMAGE
   only:
     - master
-
