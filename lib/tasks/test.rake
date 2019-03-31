@@ -23,6 +23,8 @@ namespace :test do
       current_year = Date.today.year
       authors = `git log origin/master... --format="%an" | sort | uniq`.lines.map(&:chomp)
 
+      errors = []
+
       # Check to see files authored by people in the branch contain their Git usernames
       authors.each do |author|
         authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
@@ -37,7 +39,7 @@ namespace :test do
 
           if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
             clear_attribution = false # Fail on CI
-            puts "Missing 'Copyright #{current_year} #{author}' from '#{file}'"
+            errors << "Missing 'Copyright #{current_year} #{author}' from '#{file}'"
           end
         end
       end
@@ -49,13 +51,12 @@ namespace :test do
         authors.each do |author|
           if lines.grep(/Copyright #{current_year} .*#{author}/).none?
             clear_attribution = false
-            puts "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
+            errors "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
           end
         end
       end
 
-      if !clear_attribution
-        puts
+      if errors.any?
         puts "This project is distributed under an Apache licence"
         puts "We need clear attribution in order to be able to accept work from other people"
         puts "For more information, please check out our contribution guidelines"
@@ -69,6 +70,11 @@ namespace :test do
         puts "or in all your git projects with"
         puts
         puts "    git config --global user.name \"Your Full Name\""
+        puts
+
+        errors.each do |error|
+          puts error
+        end
 
         exit 1 # Fails CI
       end

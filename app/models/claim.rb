@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@ class Claim < ApplicationRecord
   belongs_to :purchase
   has_one :detail
 
-  validates :purchase, presence: true, uniqueness: {
+  validates :purchase, uniqueness: {
     # There can't be other active claims against the same purchase
     conditions: -> { active }
   }
-  validates :user, presence: true
 
   def transferable?
     active_to.nil?

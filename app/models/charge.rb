@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@ class Charge < ApplicationRecord
 
   validates :amount, presence: true
   validates :comment, presence: true
-  validates :purchase, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
   validates :stripe_id, presence: true, if: :stripe_transfer?
   validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE, TRANSFER_CASH]}
-  validates :user, presence: true
 
   scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
   scope :cash, ->() { where(transfer: TRANSFER_CASH) }
