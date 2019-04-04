@@ -28,7 +28,7 @@
       <div class="l-panel">
         <h2><%= @my_offer.membership %> membership #<%= @purchase.membership_number %></h2>
         <% if @purchase.paid? %>
-          <span>This membership is fully paid for.</span>
+          <span>This membership is paid for.</span>
         <% else %>
           <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
           <%= link_to "Make a payment", new_charge_url(purchaseId: @purchase.id) %>
