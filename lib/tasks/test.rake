@@ -21,13 +21,13 @@ namespace :test do
     task :copyright do
       clear_attribution = true # Pass on CI
       current_year = Date.today.year
-      authors = `git log origin/master... --format="%an" | sort | uniq`.lines.map(&:chomp)
+      authors = `git log origin/master.. --format="%an" | sort | uniq`.lines.map(&:chomp)
 
       errors = []
 
       # Check to see files authored by people in the branch contain their Git usernames
       authors.each do |author|
-        authored_files = `git log origin/master... --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
+        authored_files = `git log origin/master.. --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
           next if file.match(/LICENSE/)
           next if file.match(/schema.rb$/)
