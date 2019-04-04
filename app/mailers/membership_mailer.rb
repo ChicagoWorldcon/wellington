@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ class MembershipMailer < ApplicationMailer
 
   def login_link(token:, email:)
     @token = token
-    mail(to: email, subject: "CoNZealand Login Link") do |format|
+    mail(to: email, subject: "CoNZealand Login Link for #{email}") do |format|
       #text must be called before html.
       format.text
       format.html
