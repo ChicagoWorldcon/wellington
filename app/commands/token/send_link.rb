@@ -20,9 +20,10 @@ class Token::SendLink
   attr_reader :email
   attr_reader :secret
 
-  def initialize(email:, secret:)
+  def initialize(email:, secret:, path:)
     @email = email
     @secret = secret
+    @path = path
   end
 
   def call
@@ -58,6 +59,7 @@ class Token::SendLink
     token_data = {
       exp: (Time.now + TOKEN_DURATION).to_i,
       email: email,
+      path: path,
     }
     @token = JWT.encode(token_data, secret, "HS256")
   rescue JWT::EncodeError

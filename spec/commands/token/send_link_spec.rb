@@ -19,11 +19,24 @@ require "rails_helper"
 RSpec.describe Token::SendLink do
   let(:good_email) { Faker::Internet.email }
   let(:good_secret) { "you'll never find the treasure" }
+  let(:good_path) { "/purchases" }
   let(:query) { Token::SendLink.new(email: good_email, secret: good_secret) }
 
   describe "#call" do
     it "sends email" do
       service = Token::SendLink.new(email: good_email, secret: good_secret)
+      expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
+      expect(service.call).to be_truthy
+    end
+
+    it "sends email with good path" do
+      service = Token::SendLink.new(email: good_email, secret: good_secret, path: good_path)
+      expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
+      expect(service.call).to be_truthy
+    end
+
+    it "sends email with blank path" do
+      service = Token::SendLink.new(email: good_email, secret: good_secret, path: "")
       expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
       expect(service.call).to be_truthy
     end

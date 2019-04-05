@@ -34,7 +34,7 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
+    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: URI(request.headers['HTTP_REFERER']).path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
     else
