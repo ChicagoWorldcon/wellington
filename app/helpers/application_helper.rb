@@ -28,10 +28,8 @@ module ApplicationHelper
   end
 
   # Marker on the body so we can distinguish prod from staging from dev
-  def environment_classes
-    if stripe_test_keys? && !Rails.env.production?
-      "env-#{Rails.env}"
-    end
+  def body_classes
+    "stripe-test-keys" if stripe_test_keys?
   end
 
   def upgrade_link(purchase, offer:)

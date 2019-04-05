@@ -98,13 +98,8 @@ body {
     background-color: $black;
     background: image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
 
-    &.env-development {
-      background: linear-gradient(rgba(#8b47aa, 0.5), rgba(#47aa8b, 0.5)), image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
-    }
-
-    // For staging boxes, detected based on stripe test keys
-    &.env-production {
-      background: linear-gradient(rgba(#8b47aa, 0.5), rgba(#bc3648, 0.5)), image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    &.stripe-test-keys {
+      background: linear-gradient(rgba(#8b47aa, 0.5), rgba(#8b47aa, 0.5)), image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
     }
 
     color: $white;
