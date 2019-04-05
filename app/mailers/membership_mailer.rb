@@ -15,12 +15,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Preview all emails at http://localhost:3000/rails/mailers/membership_mailer
 class MembershipMailer < ApplicationMailer
   default from: ENV["EMAIL_PAYMENTS"]
 
   def login_link(token:, email:)
     @token = token
     mail(to: email, subject: "CoNZealand Login Link for #{email}") do |format|
+      #text must be called before html.
+      format.text
+      format.html
+    end
+  end
+
+  def duplicate_purchases(email:, purchases:)
+    @purchases = purchases
+    @name = purchases.first.active_claim.detail.to_s
+    membership_numbers = purchases.pluck(:membership_number).to_sentence
+    mail(to: email, subject: "CoNZealand: Duplicate names for members #{membership_numbers}") do |format|
       #text must be called before html.
       format.text
       format.html

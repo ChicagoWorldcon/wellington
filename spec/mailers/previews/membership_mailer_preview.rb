@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,13 @@ class MembershipMailerPreview < ActionMailer::Preview
     MembershipMailer.login_link(
       email: Faker::Internet.email,
       token: JWT.encode({data: "stub"}, "secret", "HS256")
+    )
+  end
+
+  def duplicate_purchases
+    MembershipMailer.duplicate_purchases(
+      email: Faker::Internet.email,
+      purchases: Purchase.last(100).sample(3)
     )
   end
 end
