@@ -19,6 +19,7 @@ class Token::SendLink
 
   attr_reader :email
   attr_reader :secret
+  attr_reader :path
 
   def initialize(email:, secret:, path:)
     @email = email
