@@ -23,14 +23,16 @@ class UserTokensController < ApplicationController
   def show
     lookup_user_query = Token::LookupOrCreateUser.new(token: params[:id], secret: secret)
     user = lookup_user_query.call
+    redirect_path = root_path
     if user.present?
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
+      redirect_path = lookup_user_query.path
     else
       error_message = lookup_user_query.errors.to_sentence.humanize
       flash[:error] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
     end
-    redirect_to root_path
+    redirect_to redirect_path
   end
 
   def create
@@ -63,4 +65,5 @@ class UserTokensController < ApplicationController
   def secret
     ENV["JWT_SECRET"]
   end
+
 end
