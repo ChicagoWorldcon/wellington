@@ -27,9 +27,8 @@ module ApplicationHelper
     end.join(" ")
   end
 
-  # Marker on the body so we can distinguish prod from staging from dev
-  def body_classes
-    "stripe-test-keys" if stripe_test_keys?
+  def api_test_keys?
+    @api_test_keys ||= !!Rails.configuration.stripe[:secret_key]&.match(/^sk_test/)
   end
 
   def upgrade_link(purchase, offer:)
@@ -58,11 +57,5 @@ module ApplicationHelper
     else
       "Reserve Membership and Pay"
     end
-  end
-
-  private
-
-  def stripe_test_keys?
-    @stripe_test_keys ||= Rails.configuration.stripe[:secret_key]&.match(/^sk_test/)
   end
 end

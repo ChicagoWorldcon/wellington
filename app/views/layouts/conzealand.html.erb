@@ -44,7 +44,7 @@
   <meta name="description" content="Conzealand is a conference for science fiction enthusiasts.">
   <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
 </head>
-<body class="<%= body_classes %>">
+<body class="<%= "api-test-keys" if api_test_keys? %>">
   <%# TODO Style this to flash or something dramatic %>
   <% if support_signed_in? %>
     <div class="alert alert-danger show fixed-top" role="alert">
@@ -82,5 +82,22 @@
       &copy; CoNZealand 2019. Contact <a href="mailto:registration@conzealand.nz">registration@conzealand.nz</a>
     </div>
   </footer>
+
+  <% if api_test_keys? %>
+    <script>
+      (function initStyleToggler() {
+        var button = $("<input>").attr({
+          value: "Toggle Styles",
+          title: "Stripe test keys present, this makes it clear you're in a staging environment",
+          class: "btn",
+          style: "position: relative; bottom: -2em; right: -2em;"
+        });
+        $("body").append(button);
+        button.on("click", function() {
+          $('body').toggleClass("api-test-keys");
+        });
+      })();
+    </script>
+  <% end%>
 </body>
 </html>

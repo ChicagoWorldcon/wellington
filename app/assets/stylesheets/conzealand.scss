@@ -99,7 +99,7 @@ body {
     background: image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
 
     // For that test environment feeling
-    &.stripe-test-keys {
+    &.api-test-keys {
       filter: hue-rotate(90deg);
     }
 
