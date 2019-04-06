@@ -31,7 +31,7 @@ namespace :email do
     puts "#{duplicates.count} duplicates found"
 
     duplicates.each do |name, purchases|
-      users = User.joins(:purchases).where(purchases: {id: purchases.map(&:id)})
+      users = User.joins(:purchases).where(purchases: {id: purchases.map(&:id)}).distinct
       emails = users.pluck(:email)
       numbers = purchases.map(&:membership_number)
       puts "member #{numbers.join(",")} => #{emails.to_sentence}"

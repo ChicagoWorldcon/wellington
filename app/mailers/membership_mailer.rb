@@ -30,6 +30,7 @@ class MembershipMailer < ApplicationMailer
 
   def duplicate_purchases(email:, purchases:)
     @purchases = purchases
+    @user_count = User.joins(:purchases).where(purchases: {id: purchases}).distinct.count
     @name = purchases.first.active_claim.detail.to_s
     membership_numbers = purchases.pluck(:membership_number).to_sentence
     mail(to: email, subject: "CoNZealand: Duplicate names for members #{membership_numbers}") do |format|

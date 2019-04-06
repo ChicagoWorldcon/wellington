@@ -20,26 +20,29 @@ Hello there <%= @name %>
 I'm reaching out to you on behalf of the registrations team for CoNZealand. It looks like you may have inadvertently
 registered with us multiple times, either by paper or through our website.
 
-We suspect these are all your memberships:
+We suspect these are all your memberships which are claimed by <%= @user_count %> accounts:
 
 <% @purchases.each do |purchase| %>
 * Member #<%= purchase.membership_number %>, <%= purchase.membership %> membership, recorded on <%= purchase.created_at %>
 <% end %>
 
-Memberships are worth different amounts at our con, you can find the upgrade pricing here:
-
-https://conzealand.nz/registrations/
-
-If we're wrong, then congratulations! Someone else has your name. Just reply and let us know and we'll leave this be.
+<% if @user_count > 1 %>
 We've emailed all accounts one at a time to resepect the privacy of our members. This email has gone out to more than
 one person, but they won't know your email address.
+<% end %>
 
-If you own both memberships, let us know what you'd like us to do. We can do various things including
+If we're wrong, then congratulations! Someone else has your name. Just reply and let us know and we'll leave this be.
+
+If you own these memberships, let us know what you'd like us to do. We can do various things including
 
 * merge these into one of your accounts,
 * do nothing if you're happy with where things are,
 * change membership numbers around to make your attending memberships the lower number,
 * or delete a membership which will mean you don't get listed twice.
+
+Memberships are worth different amounts at our con, you can find the upgrade pricing here:
+
+https://conzealand.nz/registrations/
 
 We look forward to hearing back from you.
 
