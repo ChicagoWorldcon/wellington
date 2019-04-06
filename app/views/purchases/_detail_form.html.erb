@@ -22,6 +22,12 @@
 
 <%= form_for(@purchase) do |purchase_form| %>
   <%= fields_for(@detail) do |detail_form| %>
+    <p>
+      For more information about how we handle and use your personal information, please read our
+      <a href="https://conzealand.nz/privacy-policy/" target="_blank">Privacy Policy</a> and our
+      <a href="https://conzealand.nz/about-conzealand/policies-and-expectations/" target="_blank">Terms of Service</a>.
+    </p>
+
     <fieldset class="l-v-spacing">
       <% if !(@purchase.present? && @purchase.persisted?) %>
         <legend>Membership Details</legend>
