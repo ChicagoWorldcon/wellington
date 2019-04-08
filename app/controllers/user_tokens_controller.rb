@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +37,7 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: URI(request.headers['HTTP_REFERER']).path)
+    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: URI(request.headers["HTTP_REFERER"]).path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
     else
