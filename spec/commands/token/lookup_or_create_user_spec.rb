@@ -20,6 +20,8 @@ RSpec.describe Token::LookupOrCreateUser do
   let(:good_secret) { "you'll never find the treasure" }
   let(:good_email) { "willy_wönka@chocolate_factory.nz" }
   let(:user) { create(:user) }
+  let(:good_path) { "/purchases" }
+  let(:bad_path) { "/notonthelist" }
   let(:encoded_token) { JWT.encode(login_info, good_secret, "HS256") }
 
   subject(:command) { Token::LookupOrCreateUser.new(token: encoded_token, secret: good_secret) }
@@ -131,4 +133,35 @@ RSpec.describe Token::LookupOrCreateUser do
       expect(command.errors).to include(/email is invalid/i)
     end
   end
+
+  context "with good redirect path" do
+    let(:login_info) do
+      {
+          exp: 10.seconds.from_now.to_i,
+          email: user.email,
+          path: good_path,
+      }
+    end
+
+    it "returns good_path" do
+      expect(command.call).to be_truthy
+      expect(command.path).to eq(good_path)
+    end
+  end
+
+  context "with good redirect path" do
+    let(:login_info) do
+      {
+          exp: 10.seconds.from_now.to_i,
+          email: user.email,
+          path: bad_path,
+      }
+    end
+
+    it "returns good_path" do
+      expect(command.call).to be_truthy
+      expect(command.path).to eq(:root)
+    end
+  end
+
 end
