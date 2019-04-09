@@ -27,10 +27,6 @@ module ApplicationHelper
     end.join(" ")
   end
 
-  def api_test_keys?
-    @api_test_keys ||= !!Rails.configuration.stripe[:secret_key]&.match(/^sk_test/)
-  end
-
   def upgrade_link(purchase, offer:)
     link_to(
       # link text, based on offer's #to_s
