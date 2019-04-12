@@ -66,5 +66,4 @@ class UserTokensController < ApplicationController
   def secret
     ENV["JWT_SECRET"]
   end
-
 end
