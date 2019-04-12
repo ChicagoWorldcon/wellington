@@ -16,6 +16,8 @@
 # limitations under the License.
 
 class Token::LookupOrCreateUser
+  include Rails.application.routes.url_helpers
+
   attr_reader :token
   attr_reader :secret
 
@@ -47,7 +49,7 @@ class Token::LookupOrCreateUser
     if path.in?(PATH_LIST)
       path
     else
-      :root
+      root_path
     end
   end
 
