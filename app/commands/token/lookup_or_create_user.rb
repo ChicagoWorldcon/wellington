@@ -43,7 +43,6 @@ class Token::LookupOrCreateUser
   end
 
   def path
-    pathlist = ["/purchases/new", "/purchases"]
     path = @token.first["path"]
     if path.in?(PATH_LIST)
       path
