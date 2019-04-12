@@ -19,6 +19,11 @@ class Token::LookupOrCreateUser
   attr_reader :token
   attr_reader :secret
 
+  PATH_LIST = [
+      "/purchases/new",
+      "/purchases",
+  ].freeze
+
   def initialize(token:, secret:)
     @token = token
     @secret = secret
@@ -40,7 +45,7 @@ class Token::LookupOrCreateUser
   def path
     pathlist = ["/purchases/new", "/purchases"]
     path = @token.first["path"]
-    if path.in?(pathlist)
+    if path.in?(PATH_LIST)
       path
     else
       :root
