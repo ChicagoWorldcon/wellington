@@ -152,7 +152,8 @@ class Import::PresupportersRow
 
         new_purchase.update!(created_at: import_date, updated_at: import_date)
         new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
-        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
+        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+        new_purchase.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
       end
     end
   end

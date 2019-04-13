@@ -124,7 +124,13 @@ RSpec.describe Import::KansaMembersRow do
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
         expect(Purchase.last.created_at).to be < 1.week.ago
+        expect(Claim.last.created_at).to be < 1.week.ago
         expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+      end
+
+      it "set active_from dates based on spreadsheet" do
+        expect(Claim.last.created_at).to be < 1.week.ago
+        expect(Order.last.created_at).to be < 1.week.ago
       end
 
       it "doesn't set user created_at based on spreadsheet" do

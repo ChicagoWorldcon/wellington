@@ -200,8 +200,14 @@ RSpec.describe Import::PresupportersRow do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
+        expect(Claim.last.created_at).to be < 1.week.ago
         expect(imported_purchase.created_at).to be < 1.week.ago
         expect(imported_purchase.created_at).to eq(imported_purchase.updated_at)
+      end
+
+      it "sets the active_from fields based on spreadsheet" do
+        expect(Claim.last.active_from).to be < 1.week.ago
+        expect(Order.last.active_from).to be < 1.week.ago
       end
 
       it "doesn't set user created_at based on spreadsheet" do
