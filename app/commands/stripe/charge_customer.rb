@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-class ChargeCustomer
+class Stripe::ChargeCustomer
   STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
@@ -32,7 +32,7 @@ class ChargeCustomer
   end
 
   def call
-    @charge = Charge.stripe.new(
+    @charge = ::Charge.stripe.new(
       user: user,
       purchase: purchase,
       stripe_id: token,
@@ -44,12 +44,12 @@ class ChargeCustomer
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.state = Charge::STATE_FAILED
+      @charge.state = ::Charge::STATE_FAILED
       @charge.comment = error_message
     elsif !@stripe_charge[:paid]
-      @charge.state = Charge::STATE_FAILED
+      @charge.state = ::Charge::STATE_FAILED
     else
-      @charge.state = Charge::STATE_SUCCESSFUL
+      @charge.state = ::Charge::STATE_SUCCESSFUL
     end
 
     if @stripe_charge.present?
