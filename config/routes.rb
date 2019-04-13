@@ -17,9 +17,10 @@
 # limitations under the License.
 
 Rails.application.routes.draw do
-  resources :upgrades
   root to: "landing#index"
 
+  # Sets routes for account management actions.
+  # This order seems to matter for tests.
   devise_for :users
   devise_for :supports
 
@@ -28,8 +29,9 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  resources :landing
   resources :charges
-  resources :themes
+  resources :landing
   resources :purchases
+  resources :themes
+  resources :upgrades
 end
