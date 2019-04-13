@@ -14,17 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  devise :trackable
+class Stripe::SyncCustomers
+  def call
+    Stripe::Customer.list.auto_paging_each do |stripe_customer|
+      next if stripe_customer.id.nil?
+      next if stripe_customer.email.nil?
 
-  has_many :active_claims, -> { active }, class_name: "Claim"
-  has_many :charges
-  has_many :claims
-  has_many :notes
-  has_many :purchases, through: :active_claims
+      user = User.find_or_create_by(email: stripe_customer.email.downcase)
 
-  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
+      if user.stripe_id && user.stripe_id != stripe_customer.id
+        Rails.logger.warn "#{user.email} has doppleganger in stripe, preferring #{user.stripe_id} for members area"
+      end
 
-  scope :in_stripe, -> { where.not(stripe_id: nil) }
-  scope :not_in_stripe, -> { where(stripe_id: nil) }
+      next if user.stripe_id.present?
+      user.update!(stripe_id: stripe_customer.id)
+    end
+  end
 end

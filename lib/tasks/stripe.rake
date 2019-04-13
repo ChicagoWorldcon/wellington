@@ -17,20 +17,8 @@
 namespace :stripe do
   desc "Updates users with stripe Customer IDs"
   task sync_customers: :environment do
-    lookup = {}
-    exceptions = []
-
-    Stripe::Customer.list.auto_paging_each do |customer|
-      if customer.email.nil?
-        exceptions << customer
-      else
-        lookup[customer.email.downcase] ||= customer
-      end
-    end
-
-    User.where(email: lookup.keys).find_each(batch_size: 10) do |user|
-      stripe_id = lookup[user.email]&.id
-      user.update!(stripe_id: stripe_id) if stripe_id.present?
-    end
+    puts "Starting run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
+    Stripe::SyncCustomers.new.call
+    puts "Ended run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
   end
 end
