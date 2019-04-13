@@ -43,6 +43,10 @@ module ActiveScopes
       active_at?(Time.now)
     end
 
+    def inactive?
+      !active?
+    end
+
     def active_at?(moment)
       return false if moment < active_from # inactive before it became active
       return false if active_to.present? && active_to <= moment # inactive on or after moment

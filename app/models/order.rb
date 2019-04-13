@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ class Order < ApplicationRecord
 
   validates :membership, presence: true
   validates :purchase, presence: true, uniqueness: {
-    # There can't be other active orders against the same purchase
-    conditions: -> { active }
-  }
+    conditions: -> { active } # There can't be other active orders against the same purchase
+  }, if: :active?
 
   belongs_to :membership
   belongs_to :purchase

@@ -22,9 +22,8 @@ class Claim < ApplicationRecord
   has_one :detail
 
   validates :purchase, uniqueness: {
-    # There can't be other active claims against the same purchase
-    conditions: -> { active }
-  }
+    conditions: -> { active } # There can't be other active claims against the same purchase
+  }, if: :active?
 
   def transferable?
     active_to.nil?
