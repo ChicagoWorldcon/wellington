@@ -68,7 +68,7 @@ class ChargeDescription
   end
 
   def charges_so_far
-    charge.purchase.charges.where("created_at <= ?", charge.created_at)
+    charge.purchase.charges.successful.where("created_at <= ?", charge.created_at)
   end
 
   def format_nzd

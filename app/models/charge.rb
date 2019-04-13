@@ -18,6 +18,7 @@
 class Charge < ApplicationRecord
   STATE_FAILED = "failed"
   STATE_SUCCESSFUL = "successful"
+  STATE_PENDING = "pending"
   TRANSFER_STRIPE = "stripe"
   TRANSFER_CASH = "cash"
 
@@ -26,12 +27,13 @@ class Charge < ApplicationRecord
 
   validates :amount, presence: true
   validates :comment, presence: true
-  validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL]}
+  validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL, STATE_PENDING]}
   validates :stripe_id, presence: true, if: :stripe_transfer?
   validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE, TRANSFER_CASH]}
 
   scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
   scope :cash, ->() { where(transfer: TRANSFER_CASH) }
+  scope :pending, ->() { where(state: STATE_PENDING) }
   scope :failed, ->() { where(state: STATE_FAILED) }
   scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
 
@@ -41,5 +43,9 @@ class Charge < ApplicationRecord
 
   def successful?
     state == STATE_SUCCESSFUL
+  end
+
+  def pending?
+    state == STATE_PENDING
   end
 end

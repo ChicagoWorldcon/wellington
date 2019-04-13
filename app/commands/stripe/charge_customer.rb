@@ -18,7 +18,6 @@
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
 class Stripe::ChargeCustomer
-  STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
   CURRENCY = "nzd"
 
   attr_reader :purchase, :user, :token, :charge_amount, :charge, :amount_owed
@@ -32,11 +31,12 @@ class Stripe::ChargeCustomer
   end
 
   def call
-    @charge = ::Charge.stripe.new(
+    @charge = ::Charge.stripe.pending.create!(
       user: user,
       purchase: purchase,
       stripe_id: token,
       amount: charge_amount,
+      comment: "Pending transfer",
     )
 
     check_charge_amount
@@ -103,7 +103,7 @@ class Stripe::ChargeCustomer
 
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
-      description: STRIPE_CHARGE_DESCRIPTION,
+      description: ChargeDescription.new(@charge).to_s,
       currency: CURRENCY,
       customer: @stripe_customer.id,
       amount: charge_amount,
