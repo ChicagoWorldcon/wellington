@@ -27,8 +27,8 @@
 #          \          ^   ^
 #           `--------< Order
 #
-# PurchaseMembership takes a user and a membership and creates a claim and purchase for them.
-class PurchaseMembership
+# ReservePurchase takes a user and a membership and creates a claim and purchase for them.
+class ReservePurchase
   FIRST_MEMBERSHIP_NUMER = 100
 
   attr_reader :customer, :membership, :membership_number
