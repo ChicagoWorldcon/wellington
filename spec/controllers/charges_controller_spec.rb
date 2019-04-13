@@ -100,8 +100,18 @@ RSpec.describe ChargesController, type: :controller do
     end
 
     context "when the charge is made" do
+      let(:error_service) do
+        instance_double(ChargeCustomer,
+          call: charge_success,
+          charge: charge_double,
+          error_message: "error"
+       )
+      end
+
       before do
-        expect(ChargeCustomer).to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount).and_return(instance_double(ChargeCustomer, call: charge_success, charge: charge_double, error_message: "error"))
+        expect(ChargeCustomer)
+          .to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount)
+          .and_return(error_service)
       end
 
       context "when the charge is unsuccessful" do
