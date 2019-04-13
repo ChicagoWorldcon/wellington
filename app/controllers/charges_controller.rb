@@ -17,9 +17,6 @@
 
 # Test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
-  def index
-  end
-
   def new
     @purchase = current_user.purchases.find(params[:purchase])
 
