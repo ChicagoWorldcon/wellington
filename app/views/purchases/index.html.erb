@@ -58,7 +58,7 @@
                     <% end %>
                   <% else %>
                     <p>Reserved, but not fully paid</p>
-                    <p><%= link_to "Make a payment", new_charge_url(purchaseId: purchase.id) %></p>
+                    <p><%= link_to "Make a payment", new_charge_url(purchase: purchase) %></p>
                   <% end %>
 
                   <p><%= link_to("Review or update details", purchase_path(purchase)) %></p>

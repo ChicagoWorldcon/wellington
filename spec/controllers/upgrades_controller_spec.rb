@@ -22,7 +22,7 @@ RSpec.describe UpgradesController, type: :controller do
   let!(:purchase) { create(:purchase, :with_claim_from_user, membership: silver_fern_membership) }
 
   let(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
-  let(:user_pays_path) { new_charge_path(purchaseId: purchase.id) }
+  let(:user_pays_path) { new_charge_path(purchase: purchase) }
 
   describe "#edit" do
     # shallow checks, also tested by purchases_controller_spec for things like transferred membership

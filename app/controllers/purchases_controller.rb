@@ -66,7 +66,7 @@ class PurchasesController < ApplicationController
       if new_purchase.membership.price.zero?
         redirect_to purchases_path
       else
-        redirect_to new_charge_path(purchaseId: new_purchase.id)
+        redirect_to new_charge_path(purchase: new_purchase)
       end
     end
   end

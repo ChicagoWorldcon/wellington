@@ -21,7 +21,7 @@ class ChargesController < ApplicationController
   end
 
   def new
-    @purchase = current_user.purchases.find(params.require(:purchaseId))
+    @purchase = current_user.purchases.find(params[:purchase])
 
     if @purchase.paid?
       redirect_to purchases_path, notice: "You've paid for this #{@purchase.membership} membership"
@@ -39,7 +39,7 @@ class ChargesController < ApplicationController
   end
 
   def create
-    purchase = current_user.purchases.find(params[:purchaseId])
+    purchase = current_user.purchases.find(params[:purchase])
     charge_amount = params[:amount].to_i
 
     outstanding_before_charge = AmountOwedForPurchase.new(purchase).amount_owed
@@ -47,7 +47,7 @@ class ChargesController < ApplicationController
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !allowed_charge_amounts.include?(charge_amount)
       flash[:error] =  "Amount must be one of the provided payment amounts"
-      redirect_to new_charge_path(purchaseId: purchase.id)
+      redirect_to new_charge_path(purchase: purchase)
       return
     end
 
@@ -62,7 +62,7 @@ class ChargesController < ApplicationController
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to new_charge_path(purchaseId: purchase.id)
+      redirect_to new_charge_path(purchase: purchase)
       return
     end
 
