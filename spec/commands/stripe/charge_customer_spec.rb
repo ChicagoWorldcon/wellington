@@ -27,7 +27,7 @@ RSpec.describe Stripe::ChargeCustomer do
   let(:user) { create(:user) }
   let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
-  let(:description_service) { instance_double(ChargeDescription, to_s: "Stripe Zibra Payment") }
+  let(:description_service) { instance_double(ChargeDescription, for_users: "Stripe Zibra Payment") }
 
   context "when paying for a purchase" do
     subject(:command) { described_class.new(purchase, user, token, amount_owed) }

@@ -70,7 +70,7 @@ RSpec.describe ChargeDescription do
   # like what that charge would have described
 
   def description(charge)
-    ChargeDescription.new(charge).to_s
+    ChargeDescription.new(charge).for_users
   end
 
   let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }

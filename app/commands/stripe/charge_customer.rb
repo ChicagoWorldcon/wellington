@@ -103,7 +103,7 @@ class Stripe::ChargeCustomer
 
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
-      description: ChargeDescription.new(@charge).to_s,
+      description: ChargeDescription.new(@charge).for_users,
       currency: CURRENCY,
       customer: @stripe_customer.id,
       amount: charge_amount,

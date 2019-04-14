@@ -25,7 +25,7 @@ class ChargeDescription
     @charge = charge
   end
 
-  def to_s
+  def for_users
     [
       format_nzd,
       try_upgrade_text,
