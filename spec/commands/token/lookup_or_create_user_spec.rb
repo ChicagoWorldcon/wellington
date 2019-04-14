@@ -159,9 +159,9 @@ RSpec.describe Token::LookupOrCreateUser do
       }
     end
 
-    it "returns good_path" do
+    it "returns nil" do
       expect(command.call).to be_truthy
-      expect(command.path).to eq(root_path)
+      expect(command.path).to eq(nil)
     end
   end
 
