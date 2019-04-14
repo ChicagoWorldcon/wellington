@@ -27,16 +27,17 @@ class ChargeDescription
 
   def for_users
     [
-      format_nzd,
-      try_upgrade_text,
-      charge_action,
-      membership_description,
+      formatted_amount,
+      upgrade_maybe,
+      installment_or_paid,
+      "for",
+      membership,
     ].compact.join(" ")
   end
 
   private
 
-  def charge_action
+  def installment_or_paid
     if charges_so_far.sum(:amount) < charged_membership.price
       "Installment"
     else
@@ -44,8 +45,8 @@ class ChargeDescription
     end
   end
 
-  def membership_description
-    "for #{charged_membership} member #{charge.purchase.membership_number}"
+  def membership
+    "#{charged_membership} member #{charge.purchase.membership_number}"
   end
 
   def charged_membership
@@ -55,7 +56,7 @@ class ChargeDescription
     @charged_membership = orders.active_at(charge.created_at).first.membership
   end
 
-  def try_upgrade_text
+  def upgrade_maybe
     if orders_so_far.count > 1
       "Upgrade"
     else
@@ -71,7 +72,7 @@ class ChargeDescription
     charge.purchase.charges.successful.where("created_at <= ?", charge.created_at)
   end
 
-  def format_nzd
+  def formatted_amount
     "#{number_to_currency(charge.amount / 100)} NZD"
   end
 end

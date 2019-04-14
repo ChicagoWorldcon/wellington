@@ -69,24 +69,24 @@ RSpec.describe ChargeDescription do
   # Even after all this setup, you should still be able to call on the origonal charge and get back results that look
   # like what that charge would have described
 
-  def description(charge)
+  def for_users(charge)
     ChargeDescription.new(charge).for_users
   end
 
   let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }
 
   it "describes installments on horses" do
-    expect(description(Charge.first).to_s).to eq "$50.00 NZD Installment for Horse member #{membership_number}"
-    expect(description(Charge.second).to_s).to eq "$49.00 NZD Installment for Horse member #{membership_number}"
-    expect(description(Charge.third).to_s).to eq "$1.00 NZD Paid for Horse member #{membership_number}"
+    expect(for_users(Charge.first)).to eq "$50.00 NZD Installment for Horse member #{membership_number}"
+    expect(for_users(Charge.second)).to eq "$49.00 NZD Installment for Horse member #{membership_number}"
+    expect(for_users(Charge.third)).to eq "$1.00 NZD Paid for Horse member #{membership_number}"
   end
 
   it "describes upgrades to ponys" do
-    expect(description(Charge.fourth).to_s).to eq "$50.00 NZD Upgrade Installment for Pony member #{membership_number}"
-    expect(description(Charge.fifth).to_s).to eq "$50.00 NZD Upgrade Paid for Pony member #{membership_number}"
+    expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment for Pony member #{membership_number}"
+    expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Paid for Pony member #{membership_number}"
   end
 
   it "describes transfer upgrades to unicorns" do
-    expect(description(Charge.last).to_s).to eq "$100.00 NZD Upgrade Paid for Unicorn member #{membership_number}"
+    expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Paid for Unicorn member #{membership_number}"
   end
 end
