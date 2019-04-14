@@ -49,7 +49,7 @@ class Token::LookupOrCreateUser
     if path.in?(PATH_LIST)
       path
     else
-      root_path
+      nil
     end
   end
 

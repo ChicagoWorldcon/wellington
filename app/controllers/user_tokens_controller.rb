@@ -24,7 +24,7 @@ class UserTokensController < ApplicationController
   def show
     lookup_user_query = Token::LookupOrCreateUser.new(token: params[:id], secret: secret)
     user = lookup_user_query.call
-    redirect_path = root_path
+    redirect_path = nil
     if user.present?
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
@@ -33,7 +33,7 @@ class UserTokensController < ApplicationController
       error_message = lookup_user_query.errors.to_sentence.humanize
       flash[:error] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
     end
-    redirect_to redirect_path
+    redirect_to redirect_path || root_path
   end
 
   def create
