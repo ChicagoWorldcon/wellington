@@ -76,17 +76,17 @@ RSpec.describe ChargeDescription do
   let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }
 
   it "describes installments on horses" do
-    expect(for_users(Charge.first)).to eq "$50.00 NZD Installment for Horse member #{membership_number}"
-    expect(for_users(Charge.second)).to eq "$49.00 NZD Installment for Horse member #{membership_number}"
-    expect(for_users(Charge.third)).to eq "$1.00 NZD Paid for Horse member #{membership_number}"
+    expect(for_users(Charge.first)).to eq "$50.00 NZD Installment with Credit Card for Horse member #{membership_number}"
+    expect(for_users(Charge.second)).to eq "$49.00 NZD Installment with Credit Card for Horse member #{membership_number}"
+    expect(for_users(Charge.third)).to eq "$1.00 NZD Paid with Credit Card for Horse member #{membership_number}"
   end
 
   it "describes upgrades to ponys" do
-    expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment for Pony member #{membership_number}"
-    expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Paid for Pony member #{membership_number}"
+    expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment with Credit Card for Pony member #{membership_number}"
+    expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Paid with Credit Card for Pony member #{membership_number}"
   end
 
   it "describes transfer upgrades to unicorns" do
-    expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Paid for Unicorn member #{membership_number}"
+    expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Paid with Credit Card for Unicorn member #{membership_number}"
   end
 end

@@ -27,15 +27,32 @@ class ChargeDescription
 
   def for_users
     [
+      maybe_charge_state,
       formatted_amount,
       upgrade_maybe,
       installment_or_paid,
+      "with",
+      payment_type,
       "for",
-      membership,
+      membership_type,
     ].compact.join(" ")
   end
 
   private
+
+  def maybe_charge_state
+    if !charge.successful?
+      charge.state.humanize
+    end
+  end
+
+  def payment_type
+    if charge.stripe?
+      "Credit Card"
+    else
+      charge.transfer.humanize
+    end
+  end
 
   def installment_or_paid
     if charges_so_far.sum(:amount) < charged_membership.price
@@ -45,7 +62,7 @@ class ChargeDescription
     end
   end
 
-  def membership
+  def membership_type
     "#{charged_membership} member #{charge.purchase.membership_number}"
   end
 
@@ -53,7 +70,7 @@ class ChargeDescription
     return @charged_membership if @charged_membership.present?
 
     orders = charge.purchase.orders
-    @charged_membership = orders.active_at(charge.created_at).first.membership
+    @charged_membership = orders.active_at(charge_active_at).first.membership
   end
 
   def upgrade_maybe
@@ -65,14 +82,20 @@ class ChargeDescription
   end
 
   def orders_so_far
-    charge.purchase.orders.where("created_at <= ?", charge.created_at)
+    charge.purchase.orders.where("created_at <= ?", charge_active_at)
   end
 
   def charges_so_far
-    charge.purchase.charges.successful.where("created_at <= ?", charge.created_at)
+    charge.purchase.charges.successful.where("created_at <= ?", charge_active_at)
   end
 
   def formatted_amount
     "#{number_to_currency(charge.amount / 100)} NZD"
+  end
+
+  # This makes it pretty clear we'll be within the thresholds, avoids floating point errors
+  # that may rise from how Postgres stores dates
+  def charge_active_at
+    @charge_active_from ||= charge.created_at + 1.second
   end
 end
