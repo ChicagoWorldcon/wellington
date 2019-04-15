@@ -28,7 +28,7 @@ class Charge < ApplicationRecord
   validates :amount, presence: true
   validates :comment, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL, STATE_PENDING]}
-  validates :stripe_id, presence: true, if: :stripe_transfer?
+  validates :stripe_id, presence: true, if: :stripe?
   validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE, TRANSFER_CASH]}
 
   scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
@@ -37,8 +37,12 @@ class Charge < ApplicationRecord
   scope :failed, ->() { where(state: STATE_FAILED) }
   scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
 
-  def stripe_transfer?
+  def stripe?
     transfer == TRANSFER_STRIPE
+  end
+
+  def cash?
+    transfer == TRANSFER_CASH
   end
 
   def successful?
