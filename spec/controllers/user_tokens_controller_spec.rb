@@ -25,6 +25,9 @@ RSpec.describe UserTokensController, type: :controller do
   describe "#show" do
     let(:user) { create(:user) }
     let(:user_token) { "asdf" }
+    let(:valid_login_path) { "/purchases/new" }
+    let(:valid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: user.email, path: "/purchases/new", }, secret, "HS256") }
+    let(:invalid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: user.email, path: "/notarealpath",}, secret, "HS256") }
 
     context "when secret is not set" do
       before do
@@ -44,6 +47,20 @@ RSpec.describe UserTokensController, type: :controller do
       it "sets flash error" do
         get :show, params: { id: user_token }
         expect(flash[:error]).to match(/secret/i)
+      end
+    end
+
+    context "when login path is valid" do
+      it "redirects to login path" do
+        get :show, params: { id: valid_login_path_token}
+        response.should redirect_to valid_login_path
+      end
+    end
+
+    context "when login path is invalid" do
+      it "redirects to root_path" do
+        get :show, params: { id: invalid_login_path_token}
+        response.should redirect_to root_path
       end
     end
   end
