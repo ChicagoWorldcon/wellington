@@ -96,7 +96,13 @@ html, body {
 }
 body {
     background-color: $black;
-    background: url(https://maailma.github.io/kansa-client/conzealand/img/conzealand-bg.jpg) center top / cover no-repeat fixed $black;
+    background: image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+
+    // For that test environment feeling
+    &.api-test-keys {
+      filter: hue-rotate(90deg);
+    }
+
     color: $white;
     font-family: $font-stack;
     -webkit-font-smoothing: antialiased;

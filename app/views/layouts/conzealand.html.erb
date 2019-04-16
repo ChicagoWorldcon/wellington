@@ -44,7 +44,7 @@
   <meta name="description" content="Conzealand is a conference for science fiction enthusiasts.">
   <meta name="keywords" content="Conzealand, science fiction, conference, meet up, sci-fi" />
 </head>
-<body>
+<body class="<%= "api-test-keys" if $stripe_test_keys %>">
   <%# TODO Style this to flash or something dramatic %>
   <% if support_signed_in? %>
     <div class="alert alert-danger show fixed-top" role="alert">
@@ -60,7 +60,7 @@
   <header>
     <div class="container l-v-spacing" role="banner">
       <a href="<%= root_path %>" class="logo">
-        <img src="https://maailma.github.io/kansa-client/conzealand/img/conzealand-logo.svg" alt="CoNZealand" class="img-responsive">
+        <%= image_tag "conzealand-logo.svg", alt: "CoNZealand", class: "img-responsive" %>
       </a>
     </div>
 
@@ -82,5 +82,22 @@
       &copy; CoNZealand 2019. Contact <a href="mailto:registration@conzealand.nz">registration@conzealand.nz</a>
     </div>
   </footer>
+
+  <% if $stripe_test_keys %>
+    <script>
+      (function initStyleToggler() {
+        var button = $("<input>").attr({
+          value: "Toggle Styles",
+          title: "Stripe test keys present, this makes it clear you're in a staging environment",
+          class: "btn",
+          style: "position: relative; bottom: -2em; right: -2em;"
+        });
+        $("body").append(button);
+        button.on("click", function() {
+          $('body').toggleClass("api-test-keys");
+        });
+      })();
+    </script>
+  <% end%>
 </body>
 </html>
