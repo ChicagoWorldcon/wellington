@@ -134,12 +134,14 @@ class Import::PresupportersRow
         new_user.notes.create!(content: comment)
         new_user.notes.create!(content: cell_for("Notes")) if cell_for("Notes").present?
 
-        Charge.cash.successful.create!(
-          user: new_user,
-          purchase: new_purchase,
-          amount: membership.price,
-          comment: comment,
-        )
+        if membership.price > 0
+          Charge.cash.successful.create!(
+            user: new_user,
+            purchase: new_purchase,
+            amount: membership.price,
+            comment: comment,
+          )
+        end
 
         if account_credit.present?
           Charge.cash.successful.create!(

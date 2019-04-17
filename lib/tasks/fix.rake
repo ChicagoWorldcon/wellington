@@ -52,4 +52,15 @@ namespace :fix do
       end
     end
   end
+
+  desc "Imports on v1.0 had $0 charges which may make confusing artifacts for our users. This is an attempt to fix it."
+  task zero_dollar_charges: :environment do
+    imported_users = User.joins(:notes).where("notes.content LIKE ?", "Import%").distinct
+    zero_dollar_imports = Charge.where(user_id: imported_users).where(amount: 0)
+    puts "Destorying #{zero_dollar_imports.count} $0 charges"
+    zero_dollar_imports.destroy_all
+  end
+
+  task v1_0: %w(imported_timestamps zero_dollar_charges)
+  task all: %w(v1_0)
 end
