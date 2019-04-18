@@ -55,14 +55,14 @@ RSpec.describe UserTokensController, type: :controller do
     context "when login path is valid" do
       it "redirects to login path" do
         get :show, params: { id: valid_login_path_token}
-        response.should redirect_to valid_login_path
+        expect(response).to redirect_to(valid_login_path)
       end
     end
 
     context "when login path is invalid" do
       it "redirects to root_path" do
         get :show, params: { id: invalid_login_path_token}
-        response.should redirect_to root_path
+        expect(response).to redirect_to(root_path)
       end
     end
   end
