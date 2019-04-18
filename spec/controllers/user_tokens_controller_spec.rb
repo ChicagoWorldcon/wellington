@@ -19,7 +19,9 @@ require "rails_helper"
 
 RSpec.describe UserTokensController, type: :controller do
   include Warden::Test::Helpers
-
+  def secret
+    super
+  end
   let(:user) { create(:user) }
 
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
@@ -28,10 +30,8 @@ RSpec.describe UserTokensController, type: :controller do
     let(:user_token) { "asdf" }
     let(:good_email) { "willy_wönka@chocolate_factory.nz" }
     let(:valid_login_path) { "/purchases/new" }
-    @controller = UserTokensController.new
-    @controller_secret = @controller.instance_eval(secret)
-    let(:valid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/purchases/new", }, @controller_secret, "HS256") }
-    let(:invalid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/notarealpath", }, @controller_secret, "HS256") }
+    let(:valid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/purchases/new", }, secret, "HS256") }
+    let(:invalid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/notarealpath", }, secret, "HS256") }
 
     context "when secret is not set" do
       before do
