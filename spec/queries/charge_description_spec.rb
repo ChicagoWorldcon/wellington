@@ -30,6 +30,28 @@ RSpec.describe ChargeDescription do
   let!(:owner_1) { create(:user) }
   let!(:owner_2) { create(:user) }
 
+  describe "#for_accounts" do
+    subject(:for_accounts) { ChargeDescription.new(charge).for_accounts }
+
+    let(:membership_number) { 5423.to_s }
+    let(:charge) { create(:charge, purchase: unicorn_purchase) }
+
+    let(:unicorn_purchase) do
+      create(:purchase, :with_claim_from_user,
+        membership_number: membership_number,
+        membership: unicorn_membership,
+      )
+    end
+
+    context "with details" do
+      let!(:user_details) { create(:detail, claim: unicorn_purchase.active_claim) }
+      it { is_expected.to match %r{\$3.00 NZD Installment for}i }
+      it { is_expected.to include(user_details.to_s) }
+      it { is_expected.to match %r{as Unicorn member}i }
+      it { is_expected.to include(membership_number) }
+    end
+  end
+
   describe "#for_users" do
     context "when describing historical records" do
       let(:reserve_horse_date)  { 4.weeks.ago }
@@ -80,16 +102,16 @@ RSpec.describe ChargeDescription do
       it "describes installments on horses" do
         expect(for_users(Charge.first)).to eq "$50.00 NZD Installment with Credit Card for Horse member #{membership_number}"
         expect(for_users(Charge.second)).to eq "$49.00 NZD Installment with Credit Card for Horse member #{membership_number}"
-        expect(for_users(Charge.third)).to eq "$1.00 NZD Paid with Credit Card for Horse member #{membership_number}"
+        expect(for_users(Charge.third)).to eq "$1.00 NZD Fully Paid with Credit Card for Horse member #{membership_number}"
       end
 
       it "describes upgrades to ponys" do
         expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment with Credit Card for Pony member #{membership_number}"
-        expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Paid with Credit Card for Pony member #{membership_number}"
+        expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Fully Paid with Credit Card for Pony member #{membership_number}"
       end
 
       it "describes transfer upgrades to unicorns" do
-        expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Paid with Credit Card for Unicorn member #{membership_number}"
+        expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Fully Paid with Credit Card for Unicorn member #{membership_number}"
       end
     end
   end

@@ -38,6 +38,18 @@ class ChargeDescription
     ].compact.join(" ")
   end
 
+  def for_accounts
+    [
+      formatted_amount,
+      upgrade_maybe,
+      installment_or_paid,
+      "for",
+      maybe_member_name,
+      "as",
+      membership_type,
+    ].compact.join(" ")
+  end
+
   private
 
   def maybe_charge_state
@@ -58,8 +70,14 @@ class ChargeDescription
     if charges_so_far.sum(:amount) < charged_membership.price
       "Installment"
     else
-      "Paid"
+      "Fully Paid"
     end
+  end
+
+  def maybe_member_name
+    claims = charge.purchase.claims
+    active_claim = claims.active_at(charge_active_at).first
+    active_claim.detail
   end
 
   def membership_type
