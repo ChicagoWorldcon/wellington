@@ -53,66 +53,80 @@ RSpec.describe ChargeDescription do
   end
 
   describe "#for_users" do
-    context "when describing historical records" do
-      let(:reserve_horse_date)  { 4.weeks.ago }
-      let(:reserve_pony_date)   { 3.weeks.ago }
+    subject(:for_users) { ChargeDescription.new(charge).for_users }
 
-      before do
-        # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
-        Timecop.freeze(4.weeks.ago)
-        purchase = ReservePurchase.new(horse_membership, customer: owner_1).call
-        expect(purchase).to be_installment
-        Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
-        Timecop.freeze(1.day.from_now)
-        Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 49_00).call
-        Timecop.freeze(2.days.from_now)
-        Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 1_00).call
-        expect(purchase).to be_paid
+    context "when charge succeeds" do
+      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership) }
+      let(:charge) { create(:charge, purchase: unicorn_purchase) }
+      it { is_expected.to_not match(/failed/i) }
+    end
 
-        # 3 weeks ago, we upgraded to a $200 pony and started paying down 1 day at a time
-        Timecop.return
-        Timecop.freeze(3.weeks.ago)
-        UpgradeMembership.new(purchase.reload, to: pony_membership).call
-        expect(purchase).to be_installment
-        Timecop.freeze(1.second.from_now)
-        Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
-        Timecop.freeze(1.day.from_now)
-        Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
-        expect(purchase).to be_paid
+    context "when charge fails" do
+      let(:unicorn_purchase) { create(:purchase, membership: horse_membership) }
+      let(:charge) { create(:charge, :failed, purchase: unicorn_purchase) }
+      it { is_expected.to match(/failed/i) }
+    end
+  end
 
-        # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
-        Timecop.return
-        Timecop.freeze(2.weeks.ago)
-        TransferMembership.new(purchase, from: owner_1, to: owner_2).call
-        Timecop.freeze(1.second.from_now)
-        UpgradeMembership.new(purchase.reload, to: unicorn_membership).call
-        Stripe::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call
-        expect(purchase).to be_paid
-      end
+  context "integration when describing historical records" do
+    let(:reserve_horse_date)  { 4.weeks.ago }
+    let(:reserve_pony_date)   { 3.weeks.ago }
 
-      # Even after all this setup, you should still be able to call on the origonal charge and get back results that look
-      # like what that charge would have described
+    before do
+      # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
+      Timecop.freeze(4.weeks.ago)
+      purchase = ReservePurchase.new(horse_membership, customer: owner_1).call
+      expect(purchase).to be_installment
+      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Timecop.freeze(1.day.from_now)
+      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 49_00).call
+      Timecop.freeze(2.days.from_now)
+      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 1_00).call
+      expect(purchase).to be_paid
 
-      def for_users(charge)
-        ChargeDescription.new(charge).for_users
-      end
+      # 3 weeks ago, we upgraded to a $200 pony and started paying down 1 day at a time
+      Timecop.return
+      Timecop.freeze(3.weeks.ago)
+      UpgradeMembership.new(purchase.reload, to: pony_membership).call
+      expect(purchase).to be_installment
+      Timecop.freeze(1.second.from_now)
+      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Timecop.freeze(1.day.from_now)
+      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      expect(purchase).to be_paid
 
-      let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }
+      # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
+      Timecop.return
+      Timecop.freeze(2.weeks.ago)
+      TransferMembership.new(purchase, from: owner_1, to: owner_2).call
+      Timecop.freeze(1.second.from_now)
+      UpgradeMembership.new(purchase.reload, to: unicorn_membership).call
+      Stripe::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call
+      expect(purchase).to be_paid
+    end
 
-      it "describes installments on horses" do
-        expect(for_users(Charge.first)).to eq "$50.00 NZD Installment with Credit Card for Horse member #{membership_number}"
-        expect(for_users(Charge.second)).to eq "$49.00 NZD Installment with Credit Card for Horse member #{membership_number}"
-        expect(for_users(Charge.third)).to eq "$1.00 NZD Fully Paid with Credit Card for Horse member #{membership_number}"
-      end
+    # Even after all this setup, you should still be able to call on the origonal charge and get back results that look
+    # like what that charge would have described
 
-      it "describes upgrades to ponys" do
-        expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment with Credit Card for Pony member #{membership_number}"
-        expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Fully Paid with Credit Card for Pony member #{membership_number}"
-      end
+    def for_users(charge)
+      ChargeDescription.new(charge).for_users
+    end
 
-      it "describes transfer upgrades to unicorns" do
-        expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Fully Paid with Credit Card for Unicorn member #{membership_number}"
-      end
+    let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }
+
+    it "describes installments on horses" do
+      expect(for_users(Charge.first)).to eq "$50.00 NZD Installment with Credit Card for Horse member #{membership_number}"
+      expect(for_users(Charge.second)).to eq "$49.00 NZD Installment with Credit Card for Horse member #{membership_number}"
+      expect(for_users(Charge.third)).to eq "$1.00 NZD Fully Paid with Credit Card for Horse member #{membership_number}"
+    end
+
+    it "describes upgrades to ponys" do
+      expect(for_users(Charge.fourth)).to eq "$50.00 NZD Upgrade Installment with Credit Card for Pony member #{membership_number}"
+      expect(for_users(Charge.fifth)).to eq "$50.00 NZD Upgrade Fully Paid with Credit Card for Pony member #{membership_number}"
+    end
+
+    it "describes transfer upgrades to unicorns" do
+      expect(for_users(Charge.last)).to eq "$100.00 NZD Upgrade Fully Paid with Credit Card for Unicorn member #{membership_number}"
     end
   end
 end
