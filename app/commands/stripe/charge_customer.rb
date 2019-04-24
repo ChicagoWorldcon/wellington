@@ -40,7 +40,7 @@ class Stripe::ChargeCustomer
     )
 
     check_charge_amount
-    create_stripe_customer unless errors.any?
+    setup_stripe_customer unless errors.any?
     create_stripe_charge unless errors.any?
 
     if errors.any?
@@ -93,19 +93,25 @@ class Stripe::ChargeCustomer
     end
   end
 
-  def create_stripe_customer
-    @stripe_customer = Stripe::Customer.create(email: user.email, source: token)
+  def setup_stripe_customer
+    if !user.stripe_id.present?
+      stripe_customer = Stripe::Customer.create(email: user.email)
+      user.update!(stripe_id: stripe_customer.id)
+    end
+    card_response = Stripe::Customer.create_source(user.stripe_id, source: token)
+    @card_id = card_response.id
   rescue Stripe::StripeError => e
-    errors << e.message
+    errors << "#{e.message}"
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment = "failed to create Stripe::Customer - #{e.message}"
+    @charge.comment = "Failed to setup customer - #{e.message}"
   end
 
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
       description: ChargeDescription.new(@charge).for_users,
       currency: CURRENCY,
-      customer: @stripe_customer.id,
+      customer: user.stripe_id,
+      source: @card_id,
       amount: charge_amount,
     )
   rescue Stripe::StripeError => e

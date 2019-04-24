@@ -29,11 +29,28 @@ RSpec.describe Stripe::ChargeCustomer do
   let(:token) { stripe_helper.generate_card_token }
   let(:description_service) { instance_double(ChargeDescription, for_users: "Stripe Zibra Payment") }
 
+  context "when stripe customer id is already set" do
+    subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+    let(:initial_stripe_id) { "super vip customer" }
+
+    let(:user) { create(:user, stripe_id: initial_stripe_id) }
+    it "does the thing" do
+      expect(Stripe::Customer).to_not receive(:create)
+      expect { command.call }
+        .to_not change { user.reload.stripe_id }
+        .from(initial_stripe_id)
+    end
+  end
+
   context "when paying for a purchase" do
     subject(:command) { described_class.new(purchase, user, token, amount_owed) }
 
     before do
       expect(ChargeDescription).to receive(:new).at_least(:once).and_return(description_service)
+    end
+
+    it "updates user's stripe id" do
+      expect { command.call }.to change { user.reload.stripe_id }.from(nil)
     end
 
     context "when payment fails" do
