@@ -33,14 +33,13 @@ namespace :stripe do
         next if stripe_charge.description == accounts_charge_description
 
         Stripe::Charge.update(charge.stripe_id,
-          customer: user.stripe_id,
           description: accounts_charge_description,
-          receipt_email: user.email,
+          receipt_email: charge.user.email,
         )
       end
 
       Charge.find_each do |charge|
-        charge.update!(comment: charge_describer.for_users)
+        charge.update!(comment: ChargeDescription.new(charge).for_users)
       end
     end
   end
