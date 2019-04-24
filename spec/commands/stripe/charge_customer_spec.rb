@@ -27,7 +27,19 @@ RSpec.describe Stripe::ChargeCustomer do
   let(:user) { create(:user) }
   let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
-  let(:description_service) { instance_double(ChargeDescription, for_users: "Stripe Zibra Payment") }
+  let(:comment_for_users) { "Fab Zibra is yours" }
+  let(:comment_for_accounts) { "Stripey Zibra Paid" }
+
+  before do
+    expect(ChargeDescription)
+      .to receive(:new).at_least(:once)
+      .and_return(
+        instance_double(ChargeDescription,
+          for_accounts: comment_for_accounts,
+          for_users: comment_for_users,
+        )
+      )
+  end
 
   context "when stripe customer id is already set" do
     subject(:command) { described_class.new(purchase, user, token, amount_owed) }
@@ -44,10 +56,6 @@ RSpec.describe Stripe::ChargeCustomer do
 
   context "when paying for a purchase" do
     subject(:command) { described_class.new(purchase, user, token, amount_owed) }
-
-    before do
-      expect(ChargeDescription).to receive(:new).at_least(:once).and_return(description_service)
-    end
 
     it "updates user's stripe id" do
       expect { command.call }.to change { user.reload.stripe_id }.from(nil)
@@ -66,8 +74,11 @@ RSpec.describe Stripe::ChargeCustomer do
       it "creates a failed payment on card decline" do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
-        expect(Charge.last.comment).to match(/Declined/i)
         expect(purchase).to be_installment
+      end
+
+      it "delegates the description to our charge description service" do
+        expect(Charge.last.comment).to eq comment_for_users
       end
     end
 
@@ -97,7 +108,6 @@ RSpec.describe Stripe::ChargeCustomer do
       expect(command.call).to be_falsey
       expect(Charge.failed.count).to eq 1
       expect(Charge.last.stripe_id).to be_present
-      expect(Charge.last.comment).to match(/Declined/i)
       expect(Charge.last.amount).to be(amount_paid)
     end
 
