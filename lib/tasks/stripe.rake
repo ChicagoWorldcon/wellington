@@ -15,10 +15,41 @@
 # limitations under the License.
 
 namespace :stripe do
-  desc "Updates users with stripe Customer IDs"
-  task sync_customers: :environment do
-    puts "Starting run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
-    Stripe::SyncCustomers.new.call
-    puts "Ended run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
+  namespace :sync do
+    desc "Updates users with stripe Customer IDs"
+    task customers: "assert:setup" do
+      puts "Starting run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
+      Stripe::SyncCustomers.new.call
+      puts "Ended run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
+    end
+
+    desc "Updates stripe descriptions to match local"
+    task charges: "assert:setup" do
+      # So initially stripe charges had the description "CoNZealand Payment" which is ugly. Lets fix that.
+      Charge.stripe.joins(:user).find_each do |charge|
+        stripe_charge = Stripe::Charge.retrieve(charge.stripe_id)
+        accounts_charge_description = ChargeDescription.new(charge).for_accounts
+
+        next if stripe_charge.description == accounts_charge_description
+
+        Stripe::Charge.update(charge.stripe_id,
+          customer: user.stripe_id,
+          description: accounts_charge_description,
+          receipt_email: user.email,
+        )
+      end
+
+      Charge.find_each do |charge|
+        charge.update!(comment: charge_describer.for_users)
+      end
+    end
+  end
+
+  namespace :assert do
+    task setup: :environment do
+      if !ENV["STRIPE_PRIVATE_KEY"].present? || !ENV["STRIPE_PUBLIC_KEY"].present?
+        raise "Bailing, please set STRIPE_PRIVATE_KEY and STRIPE_PUBLIC_KEY"
+      end
+    end
   end
 end
