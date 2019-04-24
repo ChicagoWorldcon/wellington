@@ -36,7 +36,7 @@ class Stripe::ChargeCustomer
       purchase: purchase,
       stripe_id: token,
       amount: charge_amount,
-      comment: "Pending transfer",
+      comment: "Pending stripe payment",
     )
 
     check_charge_amount
@@ -60,6 +60,7 @@ class Stripe::ChargeCustomer
     end
 
     purchase.transaction do
+      @charge.comment = ChargeDescription.new(@charge).for_users
       @charge.save!
       if fully_paid?
         purchase.update!(state: Purchase::PAID)
@@ -108,7 +109,7 @@ class Stripe::ChargeCustomer
 
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
-      description: ChargeDescription.new(@charge).for_users,
+      description: ChargeDescription.new(@charge).for_accounts,
       currency: CURRENCY,
       customer: user.stripe_id,
       source: @card_id,
