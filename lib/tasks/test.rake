@@ -51,7 +51,7 @@ namespace :test do
         authors.each do |author|
           if lines.grep(/Copyright #{current_year} .*#{author}/).none?
             clear_attribution = false
-            errors "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
+            errors << "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
           end
         end
       end
