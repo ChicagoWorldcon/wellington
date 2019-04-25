@@ -21,6 +21,16 @@ RSpec.describe UserTokensController, type: :controller do
   include Warden::Test::Helpers
 
   let(:user) { create(:user) }
+  let(:jwt_secret) { "unguessable jwt secret" }
+
+  before do
+    @real_jwt_secret = ENV["JWT_SECRET"]
+    ENV["JWT_SECRET"] = jwt_secret
+  end
+
+  after do
+    ENV["JWT_SECRET"] = @real_jwt_secret
+  end
 
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
   describe "#show" do
@@ -32,14 +42,7 @@ RSpec.describe UserTokensController, type: :controller do
     let(:invalid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/notarealpath", }, ENV["JWT_SECRET"], "HS256") }
 
     context "when secret is not set" do
-      before do
-        @jwt_secret = ENV["JWT_SECRET"]
-        ENV["JWT_SECRET"] = nil
-      end
-
-      after do
-        ENV["JWT_SECRET"] = @jwt_secret
-      end
+      let(:jwt_secret) { nil }
 
       it "doesn't login" do
         get :show, params: { id: user_token }
