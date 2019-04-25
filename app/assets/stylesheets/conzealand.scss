@@ -1,5 +1,6 @@
 // Copyright 2018 Rosanna Gray
 // Copyright 2019 Matthew B. Gray
+// Copyright 2019 Jen Zajac
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,21 +43,23 @@
 // -------------------------------
 
 // Colours
-$black: #000; $blue: #034acc; $charcoal: #505050; $grey: #ccc; $light-blue: #6798f7; $light-grey: #e1e1e1; $red:
-#e93f36; $white: #fff;
+$black: #000;
+$blue: #034acc;
+$charcoal: #505050;
+$grey: #ccc;
+$light-blue: #6798f7; 
+$light-grey: #e1e1e1;
+$red: #e93f36;
+$white: #fff;
 
 // Fonts
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
 $font-stack: 'Open Sans', sans-serif;
 
 // -------------------------------
 // MIXINS
 // -------------------------------
 
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-  -moz-border-radius: $radius;
-  border-radius: $radius;
-}
 
 // -------------------------------
 // THIRD PARTY
@@ -154,7 +157,7 @@ h6, .h6-like {
 .btn {
   background: $light-blue;
   color: $black;
-  @include border-radius(5px);
+  border-radius: 5px;
   border: 0;
   cursor: pointer;
   padding: 1em;
@@ -216,7 +219,7 @@ a:focus {
   border-width: 2px;
   border-style: solid;
   border-color: $light-grey;
-  @include border-radius(5px);
+  border-radius: 5px;
   color: $white;
   width: 100%;
   font-size: 1em;
