@@ -41,4 +41,16 @@ class MembershipOffer
       "free"
     end
   end
+
+  def name
+    "#{membership}"
+  end
+
+  def description
+    if membership.description.present?
+      "#{membership.description}"
+    else
+      ""
+    end
+  end
 end

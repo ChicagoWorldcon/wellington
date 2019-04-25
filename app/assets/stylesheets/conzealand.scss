@@ -46,8 +46,9 @@
 $black: #000;
 $blue: #034acc;
 $charcoal: #505050;
+$header-dark: #343a40;
 $grey: #ccc;
-$light-blue: #6798f7; 
+$light-blue: #6798f7;
 $light-grey: #e1e1e1;
 $red: #e93f36;
 $white: #fff;
@@ -203,6 +204,15 @@ a:focus {
 
 .logo img {
   max-width: 700px;
+}
+
+// -------------------------------
+// CARDS
+// -------------------------------
+
+.card {
+  background-color: $header-dark;
+  color: $white !important;
 }
 
 // =========================================================================
