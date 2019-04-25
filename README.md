@@ -156,5 +156,6 @@ file distributed with this project.
 - Copyright 2019 James Polley
 - Copyright 2019 Matthew B. Gray
 - Copyright 2019 Steven C Hartley
+- Copyright 2019 Jen Zajac
 
 We are so grateful to all our contributors for helping us make this project great.
