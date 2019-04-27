@@ -1,0 +1,39 @@
+<%
+# frozen_string_literal: true
+
+# Copyright 2019 Matthew B. Gray
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+%>
+Kia Ora!
+
+You've received this email because <%= @detail || "somebody" %> has requested to transfer
+membership #<%= @purchase.membership_number %>
+from "<%= @from.email %>"
+to "<%= @to.email %>"
+
+While this transfer is happening, all rights for that membership are put on hold. After this transfer has completed, any
+unused rights on that membership will belong to "<%= @to.email %>".
+
+Each party has 7 days to complete this transfer, so this process may take up to 2 weeks to complete. If this doesn't
+happen in time, then this transfer will be cancelled and "<%= @from.email %>" will continue to hold the membership.
+
+Please follow one of the links below to proceed
+
+* [transfer membership #<%= @purchase.membership_number %>](http://placekitten.com/200/300),
+* or [cancel this transfer](http://placekitten.com/200/300).
+
+If you have any questions, please reply to this email.
+
+CoNZealand – registration@conzealand.nz   
+https://conzealand.nz/

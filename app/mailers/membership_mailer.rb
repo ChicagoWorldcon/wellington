@@ -26,4 +26,12 @@ class MembershipMailer < ApplicationMailer
       format.html
     end
   end
+
+  def transfer
+    @from = User.joins(:purchases).sample
+    @to = User.all.sample
+    @purchase = @from.purchases.sample
+    @detail = @purchase.active_claim.detail
+    mail(to: @to, subject: "CoNZealand Membership Transfer: From #{@from.email} to #{@to.email}")
+  end
 end
