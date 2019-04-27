@@ -83,15 +83,17 @@
           </p>
           <table class="table table-hover table-striped table-dark table-borderless">
             <thead>
-              <th>Membership Number</th>
-              <th>Member Name</th>
-              <th>Membership level</th>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Membership</th>
             </thead>
             <%= @everyones_purchases.find_each(batch_size: 100) do |purchase| %>
               <tbody>
                 <tr>
                   <td><%= purchase.membership_number %></td>
                   <td><%= link_to(purchase.active_claim.detail, purchase_path(purchase)) %></td>
+                  <td><%= purchase.user.email %></td>
                   <td><%= purchase.membership.name.humanize %></td>
                 </tr>
               </tbody>
