@@ -76,11 +76,11 @@ class PurchasesController < ApplicationController
   end
 
   def update
-    current_user.transaction do
+    @purchase.transaction do
       current_details = @purchase.active_claim.detail
       submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
       if current_details.update(submitted_values)
-        flash[:notice] = "Your details have been saved against Member ##{@purchase.membership_number}"
+        flash[:notice] = "Details for #{current_details} member ##{@purchase.membership_number} have been updated"
         redirect_to purchases_path
       else
         flash[:error] = current_details.errors.full_messages.to_sentence

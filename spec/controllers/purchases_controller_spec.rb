@@ -83,33 +83,47 @@ RSpec.describe PurchasesController, type: :controller do
   end
 
   describe "#update" do
-    before { sign_in(original_user) }
+    let(:updated_address) { "yolo" }
+    let(:target_details) { existing_purchase.active_claim.detail }
 
-    it "updates when all values present" do
-      post :update, params: {
-        id: existing_purchase.id,
+    let(:valid_params) do
+      {
+        id: existing_purchase.reload.id,
         detail: {
           first_name: "this",
           last_name: "is",
-          address_line_1: "yolo",
+          address_line_1: updated_address,
           country: "valid",
         }
       }
-      expect(existing_purchase.reload.active_claim.detail.address_line_1).to eq "yolo"
-      expect(flash[:notice]).to match(/your details have been saved/i)
     end
 
-    it "shows error when values not present" do
-      post :update, params: {
-        id: existing_purchase.id,
-        detail: {
-          first_name: "this",
-          last_name: "is",
-          address_line_1: "",
-          country: "valid",
+    it "can't be found when not signed in" do
+      expect { get :show, params: valid_params }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context "when signed in as user" do
+      before { sign_in(original_user) }
+
+      it "updates when all values present" do
+        post :update, params: valid_params
+        expect(flash[:notice]).to match(/updated/i)
+        expect(Detail.last.address_line_1).to eq updated_address
+      end
+
+      it "shows error when values not present" do
+        post :update, params: {
+          id: existing_purchase.id,
+          detail: {
+            first_name: "this",
+            last_name: "is",
+            address_line_1: "",
+            country: "valid",
+          }
         }
-      }
-      expect(flash[:error]).to match(/address/i)
+        expect(flash[:error]).to match(/address/i)
+      end
     end
   end
 
