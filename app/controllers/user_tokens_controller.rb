@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,18 +24,20 @@ class UserTokensController < ApplicationController
   def show
     lookup_user_query = Token::LookupOrCreateUser.new(token: params[:id], secret: secret)
     user = lookup_user_query.call
+    redirect_path = nil
     if user.present?
       sign_in user
       flash[:notice] = "Logged in as #{user.email}"
+      redirect_path = lookup_user_query.path
     else
       error_message = lookup_user_query.errors.to_sentence.humanize
       flash[:error] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
     end
-    redirect_to root_path
+    redirect_to redirect_path || root_path
   end
 
   def create
-    send_link_command = Token::SendLink.new(email: params[:email], secret: secret)
+    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: URI(request.headers["HTTP_REFERER"]).path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
     else
