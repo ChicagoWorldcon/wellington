@@ -28,4 +28,8 @@ class ApplicationController < ActionController::Base
     end
     @purchase = visible_purchases.find(params[:id])
   end
+
+  def assert_support!
+    # FIXME set 403 if not support
+  end
 end

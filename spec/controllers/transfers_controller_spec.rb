@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Andrew Esler (ajesler)
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,22 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Rails.application.routes.draw do
-  resources :upgrades
-  root to: "landing#index"
+require "rails_helper"
 
-  devise_for :users
-  devise_for :supports
-
-  get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
-  resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
-    get :logout, on: :collection
-  end
-
-  resources :landing
-  resources :charges
-  resources :themes
-  resources :purchases do
-    resources :transfers, id: /[^\/]+/
-  end
+RSpec.describe TransfersController, type: :controller do
+  # TODO tests around access
 end
