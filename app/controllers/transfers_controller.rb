@@ -14,20 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ApplicationController < ActionController::Base
-  layout "conzealand"
+#
+class TransfersController < ApplicationController
+  before_action :assert_support!
 
-  protected
-
-  def lookup_purchase
-    visible_purchases = Purchase.joins(:user)
-    if !support_signed_in?
-      visible_purchases = visible_purchases.where(users: { id: current_user })
-    end
-    @purchase = visible_purchases.find(params[:id])
+  def new
+    @purchase = Purchase.find(params[:purchase_id])
+    @detail = @purchase.active_claim.detail
   end
 
-  def assert_support!
-    # FIXME set 403 if not support
+  def show
+    @purchase = Purchase.find(params[:purchase_id])
+    @detail = @purchase.active_claim.detail
+    @from = @purchase.user.email
+    @to = params[:id]
+  end
+
+  def create
   end
 end

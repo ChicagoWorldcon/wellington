@@ -35,4 +35,7 @@ Rails.application.routes.draw do
   resources :purchases
   resources :themes
   resources :upgrades
+  resources :purchases do
+    resources :transfers, id: /[^\/]+/
+  end
 end
