@@ -72,7 +72,7 @@
   </div>
 </section>
 
-<% if @everyones_purchases.present? %>
+<% if support_signed_in? %>
   <section class="l-section">
     <div class="row">
       <div class="col-12 col-md-12">
@@ -88,7 +88,7 @@
               <th>Email</th>
               <th>Membership</th>
             </thead>
-            <%= @everyones_purchases.find_each(batch_size: 100) do |purchase| %>
+            <% Purchase.order(:membership_number).eager_load(:membership, :user, active_claim: :detail).each do |purchase| %>
               <tbody>
                 <tr>
                   <td><%= purchase.membership_number %></td>
