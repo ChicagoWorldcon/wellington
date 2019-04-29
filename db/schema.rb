@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190314180805) do
+ActiveRecord::Schema.define(version: 2019_04_29_190852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,16 @@ ActiveRecord::Schema.define(version: 20190314180805) do
     t.index ["unlock_token"], name: "index_supports_on_unlock_token", unique: true
   end
 
+  create_table "transfers", force: :cascade do |t|
+    t.bigint "purchase_id", null: false
+    t.string "new_owner_email", null: false
+    t.datetime "active_from", null: false
+    t.datetime "active_to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["purchase_id"], name: "index_transfers_on_purchase_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.datetime "created_at", null: false
@@ -153,4 +163,5 @@ ActiveRecord::Schema.define(version: 20190314180805) do
   add_foreign_key "notes", "users"
   add_foreign_key "orders", "memberships"
   add_foreign_key "orders", "purchases"
+  add_foreign_key "transfers", "purchases"
 end
