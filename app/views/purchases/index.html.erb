@@ -84,7 +84,8 @@
           <table class="table table-hover table-striped table-dark table-borderless table-responsive-lg">
             <thead>
               <th>#</th>
-              <th>Name</th>
+              <th>Legal Name</th>
+              <th>Preferred Name</th>
               <th>Email</th>
               <th>Membership</th>
             </thead>
@@ -92,7 +93,8 @@
               <tbody>
                 <tr>
                   <td><%= purchase.membership_number %></td>
-                  <td><%= link_to(purchase.active_claim.detail, purchase_path(purchase)) %></td>
+                  <td><%= link_to(purchase.active_claim.detail&.legal_name, purchase_path(purchase)) %></td>
+                  <td><%= purchase.active_claim.detail&.preferred_name %></td>
                   <td><%= purchase.user.email %></td>
                   <td><%= purchase.membership.name.humanize %></td>
                 </tr>
