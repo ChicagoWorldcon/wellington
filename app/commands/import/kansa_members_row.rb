@@ -114,7 +114,7 @@ class Import::KansaMembersRow
     end
 
     new_purchase.transaction do
-      if new_purchase.installment?
+      if new_purchase.installment? && cell_for("Charge Amount").to_i > 0
         Charge.stripe.successful.create!(
           user: new_user,
           purchase: new_purchase,

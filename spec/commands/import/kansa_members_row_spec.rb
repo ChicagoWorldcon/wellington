@@ -86,6 +86,20 @@ RSpec.describe Import::KansaMembersRow do
       expect(Detail.last.last_name).to be_present
     end
 
+    context "when charge is zero" do
+      let(:charge_amount) { "0" }
+      it "doesn't create charges" do
+        expect { command.call }.to_not change { Charge.count }
+      end
+    end
+
+    context "when charge is empty" do
+      let(:charge_amount) { "" }
+      it "doesn't create charges" do
+        expect { command.call }.to_not change { Charge.count }
+      end
+    end
+
     context "after run" do
       before do
         expect(command.call).to be_truthy
