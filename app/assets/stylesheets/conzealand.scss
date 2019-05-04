@@ -213,6 +213,10 @@ a:focus {
 .card {
   background-color: $header-dark;
   color: $white !important;
+
+  .card-body {
+      background-color: lighten($header-dark, 2%);
+  }
 }
 
 // =========================================================================

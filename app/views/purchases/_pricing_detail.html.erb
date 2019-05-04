@@ -29,7 +29,7 @@
             <h4 class="my-0"><%= offer.name %></h4>
           </div>
           <div class="card-body">
-            <% if offer.description != "" %>
+            <% if offer.description.present? %>
               <small>(<%= offer.description %>)</small>
             <% end %>
             <h5 class="card-title"><%= offer.formatted_price %></h5>
