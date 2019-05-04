@@ -50,19 +50,26 @@ RSpec.describe ChargeDescription do
       it { is_expected.to match %r{as Unicorn member}i }
       it { is_expected.to include(membership_number) }
     end
+
+    context "when charge fails" do
+      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership, user: owner_1) }
+      let(:charge) { create(:charge, :failed, purchase: unicorn_purchase) }
+      it { is_expected.to match(/Failed/i) }
+      it { is_expected.to_not match(/Installment/i) }
+    end
   end
 
   describe "#for_users" do
     subject(:for_users) { ChargeDescription.new(charge).for_users }
 
     context "when charge succeeds" do
-      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership) }
+      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership, user: owner_1) }
       let(:charge) { create(:charge, purchase: unicorn_purchase) }
       it { is_expected.to_not match(/failed/i) }
     end
 
     context "when charge fails" do
-      let(:unicorn_purchase) { create(:purchase, membership: horse_membership) }
+      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership, user: owner_1) }
       let(:charge) { create(:charge, :failed, purchase: unicorn_purchase) }
       it { is_expected.to match(/failed/i) }
     end

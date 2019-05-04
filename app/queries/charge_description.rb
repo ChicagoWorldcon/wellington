@@ -40,6 +40,7 @@ class ChargeDescription
 
   def for_accounts
     [
+      maybe_charge_state,
       formatted_amount,
       upgrade_maybe,
       installment_or_paid,
@@ -67,7 +68,9 @@ class ChargeDescription
   end
 
   def installment_or_paid
-    if charges_so_far.sum(:amount) < charged_membership.price
+    if !charge.successful?
+      "Payment"
+    elsif charges_so_far.sum(:amount) < charged_membership.price
       "Installment"
     else
       "Fully Paid"
