@@ -27,9 +27,10 @@ namespace :stripe do
     task charges: "assert:setup" do
       # So initially stripe charges had the description "CoNZealand Payment" which is ugly. Lets fix that.
       Charge.stripe.joins(:user).find_each do |charge|
+        next unless charge.stripe_id.starts_with?("ch_")
+
         stripe_charge = Stripe::Charge.retrieve(charge.stripe_id)
         accounts_charge_description = ChargeDescription.new(charge).for_accounts
-
         next if stripe_charge.description == accounts_charge_description
 
         Stripe::Charge.update(charge.stripe_id, description: accounts_charge_description)
