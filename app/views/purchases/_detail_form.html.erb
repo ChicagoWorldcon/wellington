@@ -23,6 +23,12 @@
 
 <%= form_for(@purchase) do |purchase_form| %>
   <%= fields_for(@detail) do |detail_form| %>
+    <% if !@purchase.persisted? && current_user.purchases.any? %>
+      <p>
+        You already have <%= Membership.joins(:purchases).where(purchases: {id: current_user.purchases}).group(:name).count %> purchases.
+      </p>
+    <% end %>
+
     <p>
       For more information about how we handle and use your personal information, please read our
       <a href="https://conzealand.nz/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a> and our
