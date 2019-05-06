@@ -16,10 +16,10 @@
 
 FROM ruby:2.6.1-stretch as base
 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev
+
 RUN gem install bundler
 
 RUN mkdir /setup
