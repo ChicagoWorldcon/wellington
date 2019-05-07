@@ -22,21 +22,25 @@
 
 <%= form_for(@purchase) do |purchase_form| %>
   <%= fields_for(@detail) do |detail_form| %>
-    <% if !@purchase.persisted? && current_user.purchases.any? %>
-      <p>
-        You already have <%= Membership.joins(:purchases).where(purchases: {id: current_user.purchases}).group(:name).count %> purchases.
-      </p>
-    <% end %>
-
     <p>
       For more information about how we handle and use your personal information, please read our
       <a href="https://conzealand.nz/privacy-policy/" target="_blank">Privacy Policy</a> and our
       <a href="https://conzealand.nz/about-conzealand/policies-and-expectations/" target="_blank">Terms of Service</a>.
     </p>
 
+    <% if !@purchase.persisted? && @current_memberships.present? %>
+      <fieldset class="l-v-spacing">
+        <legend>Review Your Memberships</legend>
+        <p>
+          You also have <%= @current_memberships %>. If you'd rather upgrade, pay for or change those details, head over
+          to the <%= link_to "Review Memberships", purchases_path %> section.
+        </p>
+      </fieldset>
+    <% end %>
+
     <fieldset class="l-v-spacing">
       <% if !(@purchase.present? && @purchase.persisted?) %>
-        <legend>Membership Details</legend>
+        <legend>New Membership Details</legend>
 
         <div class="form-group">
           <label for="offer">Membership type</span></label>
