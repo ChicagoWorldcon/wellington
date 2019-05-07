@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Jen Zajac (jenofdoom)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +40,18 @@ class MembershipOffer
       "$%.2f NZD" % (membership.price * 1.0 / 100)
     else
       "free"
+    end
+  end
+
+  def name
+    "#{membership}"
+  end
+
+  def description
+    if membership.description.present?
+      "#{membership.description}"
+    else
+      ""
     end
   end
 end
