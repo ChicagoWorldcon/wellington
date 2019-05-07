@@ -37,13 +37,13 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: URI(request.headers["HTTP_REFERER"]).path)
+    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: referrer_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
     else
       flash[:error] = send_link_command.errors.to_sentence
     end
-    redirect_to root_path
+    redirect_to referrer_path
   end
 
   def kansa_login_link
@@ -65,5 +65,9 @@ class UserTokensController < ApplicationController
   # Check README.md if this fails for you
   def secret
     ENV["JWT_SECRET"]
+  end
+
+  def referrer_path
+    URI(request.headers["HTTP_REFERER"]).path
   end
 end
