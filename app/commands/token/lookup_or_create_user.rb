@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +16,15 @@
 # limitations under the License.
 
 class Token::LookupOrCreateUser
+  include Rails.application.routes.url_helpers
+
   attr_reader :token
   attr_reader :secret
+
+  PATH_LIST = [
+      "/purchases/new",
+      "/purchases",
+  ].freeze
 
   def initialize(token:, secret:)
     @token = token
@@ -34,6 +42,15 @@ class Token::LookupOrCreateUser
     return false if errors.any?
 
     @user
+  end
+
+  def path
+    path = @token.first["path"]
+    if path.in?(PATH_LIST)
+      path
+    else
+      nil
+    end
   end
 
   def errors

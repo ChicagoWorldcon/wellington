@@ -108,6 +108,17 @@ make mail
 
 And navigate to http://localhost:1080 to view it.
 
+# Changelog and Versioning
+
+All notable changes to this project will be documented in [our changelog](CHANGELOG.md).
+
+We maintain published docker images for this project in our
+[container registry](https://gitlab.com/worldcon/2020-wellington/container_registry). These track
+* all branches that ran through CI including master
+* all tags on the project which follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+* `:latest` tracks master which moves after things have gone through code review and basic testing
+* `:stable` tracks latest tags and update after a new tag is pushed
+
 # Running in Production
 
 We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
@@ -118,7 +129,14 @@ You may end up writing your own `docker-compose.yml` for this, or just wiring it
 it with just raw docker commands:
 
 ```sh
-docker run --restart=always -p=3000:3000 --env-file=.env -it registry.gitlab.com/worldcon/2020-wellington:stable
+# Create database
+docker run -d --name="test-database" --hostname "postgres" postgres:latest
+
+# Build tables
+docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:latest bundle exec rake db:create db:schema:load
+
+# Run rails server, TODO bind ports
+docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:stable bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0
 ```
 
 To see all versions available, check out our [container registry](https://gitlab.com/worldcon/2020-wellington/container_registry).

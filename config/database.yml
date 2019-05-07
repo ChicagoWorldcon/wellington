@@ -1,5 +1,5 @@
-# Copyright 2018 Matthew B. Gray
 # Copyright 2019 James Polley
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,10 +30,6 @@ test:
   <<: *default
   database: worldcon_test
 
-staging:
-  <<: *default
-  database: worldcon_staging
-
 production:
   <<: *default
-  database: worldcon_production
+  database: <%= ENV["DB_NAME"] || "worldcon_production" %>
