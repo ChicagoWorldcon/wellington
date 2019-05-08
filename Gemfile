@@ -19,17 +19,17 @@
 
 source "https://rubygems.org"
 
-gem "devise"               # authentication solution for Rails with Warden
-gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
-gem "markerb"              # Renders Html and Text email from Markdown template
-gem "pg"                   # postgres driver
-gem "puma"                 # http server for rack
-gem "rails"                # framework for building websites <3
-gem "redcarpet"            # parser for markerb
-gem "sassc-rails"          # sass compiler, an easier way to manage styles
-gem "stripe"               # payment provider
-gem "uglifier"             # for minifying javascript and css
+gem "devise"                      # authentication solution for Rails with Warden
+gem "jbuilder"                    # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "jwt"                         # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
+gem "markerb"                     # Renders Html and Text email from Markdown template
+gem "pg"                          # postgres driver
+gem "puma"                        # http server for rack
+gem "rails"                       # framework for building websites <3
+gem "redcarpet"                   # parser for markerb
+gem "sassc-rails"                 # sass compiler, an easier way to manage styles
+gem "stripe"                      # payment provider
+gem "uglifier"                    # for minifying javascript and css
 
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
