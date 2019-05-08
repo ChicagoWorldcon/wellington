@@ -28,6 +28,9 @@ gem "puma"                        # http server for rack
 gem "rails"                       # framework for building websites <3
 gem "redcarpet"                   # parser for markerb
 gem "sassc-rails"                 # sass compiler, an easier way to manage styles
+gem "state_machines"              # ruby library creating and managing state
+gem "state_machines-activerecord" # driver to save audit events from audit_trail
+gem "state_machines-audit_trail"  # audit events from state changes
 gem "stripe"                      # payment provider
 gem "uglifier"                    # for minifying javascript and css
 
