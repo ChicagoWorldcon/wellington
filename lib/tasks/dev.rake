@@ -17,12 +17,45 @@
 
 namespace :dev do
   desc "Recreates database from master and seeds users"
-  task napalm: %w(db:drop db:create dev:reset:schema db:schema:load db:migrate db:seed)
-  task bootstrap: %w(db:create db:schema:load db:migrate db:seed dev:generate:users)
+  task napalm: %w(db:drop dev:bootstrap)
 
-  namespace :generate do
-    desc "Generates 100 random users and inserts them into the database"
-    task users: :environment do
+  desc "Asserts you've got everything for a running system, doesn't clobber"
+  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate dev:setup:seeds)
+
+  namespace :setup do
+    desc "Recreates the database if there isn't one"
+    task db: :environment do
+      ActiveRecord::Base.establish_connection
+      User.count
+    rescue ActiveRecord::NoDatabaseError
+      puts "Creating database and tables"
+      Rake::Task["db:create"].invoke
+      Rake::Task["db:schema:load"].invoke
+    end
+
+    desc "Seeds memberships"
+    task seeds: :environment do
+      if User.count > 0
+        puts "Database has been seeded"
+        next
+      end
+
+      announcement = Date.parse("2018-08-25").midday
+      presupport_start = announcement - 2.years
+
+      FactoryBot.create(:membership, :silver_fern , active_from: presupport_start, active_to: announcement)
+      FactoryBot.create(:membership, :kiwi        , active_from: presupport_start, active_to: announcement)
+      FactoryBot.create(:membership, :tuatara     , active_from: presupport_start, active_to: announcement)
+      FactoryBot.create(:membership, :pre_oppose  , active_from: presupport_start, active_to: announcement)
+      FactoryBot.create(:membership, :pre_support , active_from: presupport_start, active_to: announcement)
+
+      FactoryBot.create(:membership, :adult       , active_from: announcement)
+      FactoryBot.create(:membership, :young_adult , active_from: announcement)
+      FactoryBot.create(:membership, :unwaged     , active_from: announcement)
+      FactoryBot.create(:membership, :child       , active_from: announcement)
+      FactoryBot.create(:membership, :kid_in_tow  , active_from: announcement)
+      FactoryBot.create(:membership, :supporting  , active_from: announcement)
+
       all_memberships = Membership.all.to_a
 
       100.times do |count|
@@ -42,7 +75,6 @@ namespace :dev do
   namespace :reset do
     desc "Sets db/schema.rb to the same as master"
     task :schema do
-      system("git fetch")
       system("git checkout origin/master db/schema.rb")
       system("git reset db/schema.rb")
     end
