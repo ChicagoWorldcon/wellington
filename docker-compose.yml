@@ -22,21 +22,16 @@ services:
     env_file:
       - .env
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080
-
   members_area:
+    image: registry.gitlab.com/worldcon/2020-wellington:latest
     build:
       context: ./
       target: development
+    command: script/entry_dev.sh
     depends_on:
       - postgres
     env_file:
       .env
-    image: conzealand:latest
     ports:
       - "3000:3000"
       - "1080:1080"
