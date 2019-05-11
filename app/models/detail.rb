@@ -79,6 +79,14 @@ class Detail < ApplicationRecord
     end.strip
   end
 
+  def legal_name
+    "#{title} #{first_name} #{last_name}".strip
+  end
+
+  def preferred_name
+    "#{title} #{first_name} #{last_name}".strip
+  end
+
   def playful_nickname
     if fun_badge_title?
       "#{nickname} (psst, we know it's really you #{badge_title.humanize})"
