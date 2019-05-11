@@ -130,7 +130,19 @@ make clean
 ```
 
 You can also run your own commands in the container itself. Check out the Makefile for examples of how you might do
-this.
+this. Here are some examples to get you started:
+
+```sh
+# Generate migrations
+# see https://edgeguides.rubyonrails.org/active_record_migrations.html
+docker-compose exec -T members_area bundle exec rails generate migration
+
+# Install a gem you've added to the project's Gemfile
+docker-compose exec -T members_area bundle install
+
+# Run migrations after changing branches
+docker-compose exec -T members_area bundle exec rake db:migrate
+```
 
 # Changelog and Versioning
 
