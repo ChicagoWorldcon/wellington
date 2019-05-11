@@ -26,52 +26,61 @@ keen have a look at this list and leave comments on any you'd like to try.
 
 # Getting Started
 
-This project has been designed to run inside Docker to simplify setup and testing. Follow [these instructions to install Docker and
-docker-compose](https://docs.docker.com/compose/install/).
+This project has been designed to run inside Docker on Docker Compose to simplify setup and testing. We also rely on GNU
+Make to keep people in sync, and git to track your project files.
 
-This has been tested on MacOS and Ubuntu. If you run into troubles getting this working on Linux or MacOS, you can ask
-for help by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new). If you manage to get other
-platforms working, please create a few instructions and [open a pull
-request](https://gitlab.com/worldcon/2020-wellington/merge_requests/new).
+If you run into troubles getting any of this working, ask for help by
+[raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be in touch!
 
-We will do our best to not rely on niche PostgreSQL features, so PG 9+ should be fine. The default dev environment uses the latest stable v9.
+From here onwards, we're assuming you're comfortable running commands in your console. These commands will create and install
+files on your machine.
 
-The first time you bring up your environment, you will also need to initialize the database:
+If you haven't already, please install:
+1. [docker and docker-compose](https://docs.docker.com/compose/install/),
+2. [gnu make](https://www.gnu.org/software/make/)
+3. [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
+Once you have these, clone this project using the git clone command with the URL you get from the clone button on the
+top right of the page.
+
+If you've been following or are planning to follow the [Contribution Guidelines](CONTRIBUTING.md), make sure you use the
+clone button on your fork of this project.
+
+The command you run will end up looking something like this:
 
 ```sh
-make db
+git clone git@gitlab.com:worldcon/2020-wellington.git worldcon_members_area
 ```
 
-We have a suite of tests written for [rspec](http://rspec.info/) which uses all the above dependencies, lets use it to
-check everything is working. After starting and initializing the db, Run the tests with:
+This will create a directory named `worldcon_members_area` which you should run all the following commands from.
 
 ```sh
-make rspec
+cd worldcon_members_area
 ```
 
-You're going to need to setup a `.env` file to run this project. This keeps your configuration secrets out of source
-control and allows you to configure the project.
+You're going to need to setup a `.env` file to run this project. This is just a text file, and will keep your
+configuration secrets out of source control. Here's an example to get you started!
 
 ```sh
 # FQDN of the machine that's running the members area
-HOSTNAME=members.conzealand.nz
+HOSTNAME=localhost:3000
 
 # Stripe keys for payment
 # Generate them here https://dashboard.stripe.com/account/apikeys
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 
-# Used for URL generation and using compiled assets
-# Don't do this on your local machine!
-RAILS_ENV=production
-
 # Con specific mailer configuration
 EMAIL_PAYMENTS=registration@conzealand.nz
 
-# Auth secrets
-# Generate them with `bundle exec rails secret`
+# Auth secrets, make sure they're super hard to guess!
 JWT_SECRET=838734faa9b935c1f8b68846e37aed9096cc9fb746copypastaf856594409a11b1086535e468edb2e5bbc18482b386b6264ada38703dcdefd94a291ab5a95eb5
 DEVISE_SECRET=838734faa9b935c1f8b68846e37aed9096cc9fb746copypastaf856594409a11b1086535e468edb2e5bbc18482b386b6264ada38703dcdefd94a291ab5a95eb5
+
+# Postgres default values
+DB_HOST=postgres
+POSTGRES_USER=postgres
+# POSTGRES_PASSWORD="super secret password"
 
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys
@@ -79,11 +88,6 @@ SMTP_SERVER=smtp.sendgrid.net
 SMTP_PORT=465
 SMTP_USER_NAME=apikey
 SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
-
-#Postgres default values
-DB_HOST=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=example
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
@@ -91,22 +95,42 @@ errors ;-)
 
 Now start your server with
 
-```bash
+```sh
 make start
 ```
 
-Then navigate to http://localhost:3000
+Changes you make to your machine will show up inside the application which you can browse from http://localhost:3000
 
-Email is required to log users in because we use login links. We have set up Mailcatcher to capture and serve all out
-bound mail in our development environment.
+All emails sent from the website will be caught and displayed from http://localhost:1080, including login links and
+receipts.
 
-To start mail capture run:
+If you want to run up a console so you can get a seeded user with dummy purchases, you can do this with:
 
 ```sh
-make mail
+make console
+User.all.sample.email
 ```
 
-And navigate to http://localhost:1080 to view it.
+If you want to run tests for the project you can do this by running
+
+```sh
+make test
+```
+
+If you've finished working and want to shut down the servers, run
+
+```sh
+make stop
+```
+
+If you want to delete the docker images, you can do this with
+
+```sh
+make clean
+```
+
+You can also run your own commands in the container itself. Check out the Makefile for examples of how you might do
+this.
 
 # Changelog and Versioning
 
@@ -124,6 +148,14 @@ We maintain published docker images for this project in our
 We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
 images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
 that have gone through CI and code review.
+
+Make sure you set RAILS_ENV to produciton so you take advantager of production specific speedups. If you're managing
+your secrets in a .env like your developer environment, just add this:
+
+```
+# Used for URL generation and using compiled assets
+RAILS_ENV=production
+```
 
 You may end up writing your own `docker-compose.yml` for this, or just wiring it up some other way. Here's how you'd do
 it with just raw docker commands:
@@ -162,8 +194,6 @@ venue_confirmation = Date.parse("2020-04-01").midday
 Membership.create!(name: :adult, active_from: announcement, active_to: price_change price: 400_00)
 Membership.create!(name: :adult, active_from: price_change, active_to: venue_confirmation price: 450_00)
 ```
-
-For lots of examples of membership pricing and setup, please read `db/seeds.rb`.
 
 # License
 

@@ -14,46 +14,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.PHONY: build db rubocop apache rspec test logs clean stop start restart napalm mail
+# starts daemon then tails logs
+start: daemon
+	docker-compose logs -f # Tail logs
 
-build:
-	docker-compose build
-
-db:
-	docker-compose exec -T members_area bundle exec rake dev:bootstrap
-
-rubocop:
-	docker-compose exec -T members_area rubocop
-
-apache:
-	docker-compose exec -T members_area bundle exec rake test:branch:copyright
-
-rspec:
-	docker-compose exec -T members_area bundle exec rspec
-
-test: rspec rubocop apache apache
-
-logs:
-	docker-compose logs -f members_area
-
-clean: stop
-	docker-compose down
-	docker-compose rm
-
+# stops application containers
 stop:
 	docker-compose stop
 
-start:
-	docker-compose up -d
+# stops and removes application containers
+clean: stop
+	docker-compose rm -f # Remove stopped containers; Don't ask to confirm removal
 
-restart:
-	docker-compose restart
+# builds, configures and starts application in the background
+daemon: stop
+	docker-compose pull # Pull service images
+	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
+	docker-compose up -d # Create and start containers
+	echo "Webserver starting on http://localhost:3000"
+	echo "Mailcatcher starting on http://localhost:1080"
 
-napalm: clean start db
+# opens up a REPL that lets you run code in the project
+console:
+	docker-compose exec -T members_area bundle exec rails console
 
-mail:
-	docker-compose exec -T members_area mailcatcher --ip 0.0.0.0
-	@echo "To see email, go to the MailCatcher web interface at http://localhost:1080"
-
-publish: build
-	docker save conzealand:latest | ssh -C members.conzealand.nz docker load
+# Tests your setup, similar to CI
+test:
+	docker-compose exec -T members_area bundle exec rspec
+	docker-compose exec -T members_area rubocop
+	docker-compose exec -T members_area bundle exec rake test:branch:copyright
