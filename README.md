@@ -1,7 +1,7 @@
 # Worldcon Members Management
 
 Kia ora and welcome to the [2020-wellington](https://gitlab.com/worldcon/2020-wellington) source code repository. This
-site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) conference.
+site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) convention.
 
 What you'll find in this project is a series of compromises that we felt struck a balance with features and
 functionality. If you have an interest in making your convention or future conventions better do feel free to reach out
