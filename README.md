@@ -37,8 +37,8 @@ files on your machine.
 
 If you haven't already, please install:
 1. [docker and docker-compose](https://docs.docker.com/compose/install/),
-2. [gnu make](https://www.gnu.org/software/make/)
-3. [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+2. [gnu make](https://www.gnu.org/software/make/),
+3. and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 Once you have these, clone this project using the git clone command with the URL you get from the clone button on the
 top right of the page.
