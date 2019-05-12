@@ -102,7 +102,7 @@ class Stripe::ChargeCustomer
     card_response = Stripe::Customer.create_source(user.stripe_id, source: token)
     @card_id = card_response.id
   rescue Stripe::StripeError => e
-    errors << "#{e.message}"
+    errors << e.message.to_s
     @charge.stripe_response = json_to_hash(e.response)
     @charge.comment = "Failed to setup customer - #{e.message}"
   end
