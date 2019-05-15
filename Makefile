@@ -38,6 +38,10 @@ daemon: stop
 console:
 	docker-compose exec -T members_area bundle exec rails console
 
+# lets you cd around and have a look at the project
+bash:
+	docker-compose exec -T members_area bash
+
 # Tests your setup, similar to CI
 test:
 	docker-compose exec -T members_area bundle exec rspec
