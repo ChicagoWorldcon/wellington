@@ -16,11 +16,9 @@
 
 mailcatcher --ip 0.0.0.0
 
-until bundle exec rake dev:bootstrap; do
+until nc -z postgres 5432; do
+  echo "waiting for postgres..."
   sleep 1
-  echo
-  echo "Retrying bootstrap..."
-  echo
 done
 
 bundle exec rails server -b 0.0.0.0
