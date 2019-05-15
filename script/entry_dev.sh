@@ -23,4 +23,4 @@ until bundle exec rake dev:bootstrap; do
   echo
 done
 
-bundle exec rails server
+bundle exec rails server -b 0.0.0.0
