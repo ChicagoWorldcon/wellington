@@ -14,18 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Claim < ApplicationRecord
-  include ActiveScopes
+class Stripe::SyncCustomers
+  def call
+    Stripe::Customer.list.auto_paging_each do |stripe_customer|
+      next if stripe_customer.id.nil?
+      next if stripe_customer.email.nil?
 
-  belongs_to :user
-  belongs_to :purchase
-  has_one :detail
+      user = User.find_or_create_by(email: stripe_customer.email.downcase)
 
-  validates :purchase, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same purchase
-  }, if: :active?
+      if user.stripe_id && user.stripe_id != stripe_customer.id
+        Rails.logger.warn "#{user.email} has doppleganger in stripe, preferring #{user.stripe_id} for members area"
+      end
 
-  def transferable?
-    active_to.nil?
+      next if user.stripe_id.present?
+      user.update!(stripe_id: stripe_customer.id)
+    end
   end
 end

@@ -17,7 +17,7 @@
 
 require "rails_helper"
 
-RSpec.describe ChargeCustomer do
+RSpec.describe Money::ChargeCustomer do
   let(:stripe_helper) { StripeMock.create_test_helper }
   before { StripeMock.start }
   after { StripeMock.stop }
@@ -27,9 +27,39 @@ RSpec.describe ChargeCustomer do
   let(:user) { create(:user) }
   let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
+  let(:comment_for_users) { "Fab Zibra is yours" }
+  let(:comment_for_accounts) { "Stripey Zibra Paid" }
+
+  before do
+    expect(ChargeDescription)
+      .to receive(:new).at_least(:once)
+      .and_return(
+        instance_double(ChargeDescription,
+          for_accounts: comment_for_accounts,
+          for_users: comment_for_users,
+        )
+      )
+  end
+
+  context "when stripe customer id is already set" do
+    subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+    let(:initial_stripe_id) { "super vip customer" }
+
+    let(:user) { create(:user, stripe_id: initial_stripe_id) }
+    it "doesn't set stripe ID again" do
+      expect(Stripe::Customer).to_not receive(:create)
+      expect { command.call }
+        .to_not change { user.reload.stripe_id }
+        .from(initial_stripe_id)
+    end
+  end
 
   context "when paying for a purchase" do
-    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed) }
+    subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+
+    it "updates user's stripe id" do
+      expect { command.call }.to change { user.reload.stripe_id }.from(nil)
+    end
 
     context "when payment fails" do
       before do
@@ -44,8 +74,11 @@ RSpec.describe ChargeCustomer do
       it "creates a failed payment on card decline" do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
-        expect(Charge.last.comment).to match(/Declined/i)
         expect(purchase).to be_installment
+      end
+
+      it "delegates the description to our charge description service" do
+        expect(Charge.last.comment).to eq comment_for_users
       end
     end
 
@@ -68,14 +101,13 @@ RSpec.describe ChargeCustomer do
   context "when paying only part of a purchase" do
     let(:amount_paid) { membership.price / 4 }
     let(:amount_left) { membership.price - amount_paid }
-    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_left, charge_amount: amount_paid) }
+    subject(:command) { described_class.new(purchase, user, token, amount_left, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
       StripeMock.prepare_card_error(:card_declined)
       expect(command.call).to be_falsey
       expect(Charge.failed.count).to eq 1
       expect(Charge.last.stripe_id).to be_present
-      expect(Charge.last.comment).to match(/Declined/i)
       expect(Charge.last.amount).to be(amount_paid)
     end
 
@@ -114,7 +146,7 @@ RSpec.describe ChargeCustomer do
         end
 
         it "pays off the membership at the original price" do
-          success = ChargeCustomer.new(purchase, user, token, amount_left, charge_amount: amount_left).call
+          success = described_class.new(purchase, user, token, amount_left, charge_amount: amount_left).call
           expect(success).to be_truthy
           expect(purchase.state).to eq(Purchase::PAID)
         end
@@ -125,7 +157,7 @@ RSpec.describe ChargeCustomer do
   context "when overpaying" do
     let(:amount_paid) { membership.price + 1 }
     let(:amount_owed) { membership.price }
-    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: amount_paid) }
+    subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: amount_paid) }
 
     it "refuses to purchase the purchase" do
       expect(command.call).to be_falsey
@@ -140,10 +172,10 @@ RSpec.describe ChargeCustomer do
     let(:amount_owed) { remainder }
 
     before do
-      ChargeCustomer.new(purchase, user, token, membership.price, charge_amount: partial_pay).call
+      described_class.new(purchase, user, token, membership.price, charge_amount: partial_pay).call
     end
 
-    subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: remainder) }
+    subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: remainder) }
 
     it { is_expected.to be_truthy }
 
@@ -160,7 +192,7 @@ RSpec.describe ChargeCustomer do
     end
 
     context "when choosing to overpay" do
-      subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed, charge_amount: overpay) }
+      subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: overpay) }
 
       it "gives a polite error" do
         expect(command.call).to be_falsey
@@ -169,7 +201,7 @@ RSpec.describe ChargeCustomer do
     end
 
     context "with default behaviour" do
-      subject(:command) { ChargeCustomer.new(purchase, user, token, amount_owed) }
+      subject(:command) { described_class.new(purchase, user, token, amount_owed) }
 
       it { is_expected.to be_truthy }
 

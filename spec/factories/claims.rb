@@ -16,6 +16,9 @@
 
 FactoryBot.define do
   factory :claim do
+    active_from { 1.week.ago }
+    created_at { 1.week.ago }
+
     trait :with_purchase do
       after(:build) do |claim, _evaluator|
         claim.purchase = create(:purchase, :with_order_against_membership)

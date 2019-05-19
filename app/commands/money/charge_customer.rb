@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,7 @@
 
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
-class ChargeCustomer
-  STRIPE_CHARGE_DESCRIPTION = "CoNZealand Purchase"
+class Money::ChargeCustomer
   CURRENCY = "nzd"
 
   attr_reader :purchase, :user, :token, :charge_amount, :charge, :amount_owed
@@ -32,24 +31,25 @@ class ChargeCustomer
   end
 
   def call
-    @charge = Charge.stripe.new(
+    @charge = ::Charge.stripe.pending.create!(
       user: user,
       purchase: purchase,
       stripe_id: token,
       amount: charge_amount,
+      comment: "Pending stripe payment",
     )
 
     check_charge_amount
-    create_stripe_customer unless errors.any?
+    setup_stripe_customer unless errors.any?
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.state = Charge::STATE_FAILED
+      @charge.state = ::Charge::STATE_FAILED
       @charge.comment = error_message
     elsif !@stripe_charge[:paid]
-      @charge.state = Charge::STATE_FAILED
+      @charge.state = ::Charge::STATE_FAILED
     else
-      @charge.state = Charge::STATE_SUCCESSFUL
+      @charge.state = ::Charge::STATE_SUCCESSFUL
     end
 
     if @stripe_charge.present?
@@ -60,6 +60,7 @@ class ChargeCustomer
     end
 
     purchase.transaction do
+      @charge.comment = ChargeDescription.new(@charge).for_users
       @charge.save!
       if fully_paid?
         purchase.update!(state: Purchase::PAID)
@@ -93,19 +94,25 @@ class ChargeCustomer
     end
   end
 
-  def create_stripe_customer
-    @stripe_customer = Stripe::Customer.create(email: user.email, source: token)
+  def setup_stripe_customer
+    if !user.stripe_id.present?
+      stripe_customer = Stripe::Customer.create(email: user.email)
+      user.update!(stripe_id: stripe_customer.id)
+    end
+    card_response = Stripe::Customer.create_source(user.stripe_id, source: token)
+    @card_id = card_response.id
   rescue Stripe::StripeError => e
-    errors << e.message
+    errors << e.message.to_s
     @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment = "failed to create Stripe::Customer - #{e.message}"
+    @charge.comment = "Failed to setup customer - #{e.message}"
   end
 
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
-      description: STRIPE_CHARGE_DESCRIPTION,
+      description: ChargeDescription.new(@charge).for_accounts,
       currency: CURRENCY,
-      customer: @stripe_customer.id,
+      customer: user.stripe_id,
+      source: @card_id,
       amount: charge_amount,
     )
   rescue Stripe::StripeError => e

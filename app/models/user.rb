@@ -24,4 +24,11 @@ class User < ApplicationRecord
   has_many :purchases, through: :active_claims
 
   validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
+
+  scope :in_stripe, -> { where.not(stripe_id: nil) }
+  scope :not_in_stripe, -> { where(stripe_id: nil) }
+
+  def in_stripe?
+    stripe_id.present?
+  end
 end

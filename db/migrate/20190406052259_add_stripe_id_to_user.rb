@@ -14,18 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Claim < ApplicationRecord
-  include ActiveScopes
-
-  belongs_to :user
-  belongs_to :purchase
-  has_one :detail
-
-  validates :purchase, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same purchase
-  }, if: :active?
-
-  def transferable?
-    active_to.nil?
+class AddStripeIdToUser < ActiveRecord::Migration[5.1]
+  def change
+    add_column :users, :stripe_id, :string, null: true
   end
 end

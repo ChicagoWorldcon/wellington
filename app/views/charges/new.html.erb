@@ -35,7 +35,7 @@
 
           <%= hidden_field_tag(:stripeToken) %>
           <%= hidden_field_tag(:stripeEmail) %>
-          <%= hidden_field_tag(:purchaseId, @purchase.id) %>
+          <%= hidden_field_tag(:purchase, @purchase.id) %>
           <div class="l-v-spacing-both">
             <div class="form-group">
               <%= submit_tag("Pay for #{@membership} membership", id: "purchase-button", class: "btn btn-m-full-width") %>

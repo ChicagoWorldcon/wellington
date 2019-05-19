@@ -39,7 +39,7 @@ class UpgradesController < ApplicationController
       return flash[:error] = "Sorry. #{params[:offer]} from #{@purchase.membership} could not be upgraded at this time"
     end
 
-    redirect_to new_charge_path(purchaseId: @purchase.id)
+    redirect_to new_charge_path(purchase: @purchase)
     flash[:notice] = "We've reserved you one #{offer.to_membership} membership"
   end
 end

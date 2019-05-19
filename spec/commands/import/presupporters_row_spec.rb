@@ -21,6 +21,7 @@ RSpec.describe Import::PresupportersRow do
   let!(:silver_fern) { create(:membership, :silver_fern) }
   let!(:kiwi)        { create(:membership, :kiwi) }
   let!(:supporter)   { create(:membership, :supporting) }
+  let!(:pre_support) { create(:membership, :pre_support) }
 
   let(:email_address) { Faker::Internet.email }
   let(:my_comment) { "suite comment" }
@@ -34,6 +35,7 @@ RSpec.describe Import::PresupportersRow do
   let(:no_electonic_publications) { "FALSE" }
   let(:timestamp) { "2017-10-11" }
   let(:kiwi_site_selection) { "" }
+  let(:membership_status) { "Supporting" }
 
   let(:row_values) do
     [
@@ -69,7 +71,7 @@ RSpec.describe Import::PresupportersRow do
       spreadsheet_notes,                # Notes
       import_key,                       # Import Key
       "Kiwi Pre-Support",               # Pre-Support Status
-      "Supporting",                     # Membership Status
+      membership_status,                # Membership Status
       kiwi_site_selection,              # Kiwi Pre-Support and Voted in Site Selection
     ]
   end
@@ -111,6 +113,15 @@ RSpec.describe Import::PresupportersRow do
     it "creates detail record from row" do
       expect { command.call }.to change { Detail.count }.by(1)
       expect(Detail.last.import_key).to eq import_key
+    end
+
+    context "with presupport worth $0" do
+      let(:membership_status) { "Pre-Supporting" }
+
+      it "doesn't create charges" do
+        expect(pre_support.price).to be_zero
+        expect { command.call }.to_not change { Charge.count }
+      end
     end
 
     context "after run" do
@@ -200,8 +211,14 @@ RSpec.describe Import::PresupportersRow do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
+        expect(Claim.last.created_at).to be < 1.week.ago
         expect(imported_purchase.created_at).to be < 1.week.ago
         expect(imported_purchase.created_at).to eq(imported_purchase.updated_at)
+      end
+
+      it "sets the active_from fields based on spreadsheet" do
+        expect(Claim.last.active_from).to be < 1.week.ago
+        expect(Order.last.active_from).to be < 1.week.ago
       end
 
       it "doesn't set user created_at based on spreadsheet" do

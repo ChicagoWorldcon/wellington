@@ -76,7 +76,7 @@ class Import::KansaMembersRow
       return false
     end
 
-    command = PurchaseMembership.new(membership_record, customer: new_user, membership_number: membership_number)
+    command = ReservePurchase.new(membership_record, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
     if !new_purchase
@@ -114,7 +114,7 @@ class Import::KansaMembersRow
     end
 
     new_purchase.transaction do
-      if new_purchase.installment?
+      if new_purchase.installment? && cell_for("Charge Amount").to_i > 0
         Charge.stripe.successful.create!(
           user: new_user,
           purchase: new_purchase,
@@ -128,7 +128,8 @@ class Import::KansaMembersRow
       details.save!
       new_purchase.update!(created_at: import_date, updated_at: import_date)
       new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
-      new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
+      new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+      new_purchase.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
     end
 
     errors.none?

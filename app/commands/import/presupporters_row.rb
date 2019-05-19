@@ -86,7 +86,7 @@ class Import::PresupportersRow
         return false
       end
 
-      new_purchase = PurchaseMembership.new(membership, customer: new_user).call
+      new_purchase = ReservePurchase.new(membership, customer: new_user).call
       if !new_purchase
         errors << "could not purchase membership"
         return false
@@ -134,12 +134,14 @@ class Import::PresupportersRow
         new_user.notes.create!(content: comment)
         new_user.notes.create!(content: cell_for("Notes")) if cell_for("Notes").present?
 
-        Charge.cash.successful.create!(
-          user: new_user,
-          purchase: new_purchase,
-          amount: membership.price,
-          comment: comment,
-        )
+        if membership.price > 0
+          Charge.cash.successful.create!(
+            user: new_user,
+            purchase: new_purchase,
+            amount: membership.price,
+            comment: comment,
+          )
+        end
 
         if account_credit.present?
           Charge.cash.successful.create!(
@@ -152,7 +154,8 @@ class Import::PresupportersRow
 
         new_purchase.update!(created_at: import_date, updated_at: import_date)
         new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
-        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date)
+        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+        new_purchase.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
       end
     end
   end

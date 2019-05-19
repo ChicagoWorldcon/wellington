@@ -86,6 +86,20 @@ RSpec.describe Import::KansaMembersRow do
       expect(Detail.last.last_name).to be_present
     end
 
+    context "when charge is zero" do
+      let(:charge_amount) { "0" }
+      it "doesn't create charges" do
+        expect { command.call }.to_not change { Charge.count }
+      end
+    end
+
+    context "when charge is empty" do
+      let(:charge_amount) { "" }
+      it "doesn't create charges" do
+        expect { command.call }.to_not change { Charge.count }
+      end
+    end
+
     context "after run" do
       before do
         expect(command.call).to be_truthy
@@ -124,7 +138,13 @@ RSpec.describe Import::KansaMembersRow do
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
         expect(Purchase.last.created_at).to be < 1.week.ago
+        expect(Claim.last.created_at).to be < 1.week.ago
         expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+      end
+
+      it "set active_from dates based on spreadsheet" do
+        expect(Claim.last.created_at).to be < 1.week.ago
+        expect(Order.last.created_at).to be < 1.week.ago
       end
 
       it "doesn't set user created_at based on spreadsheet" do

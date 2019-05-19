@@ -14,18 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Claim < ApplicationRecord
-  include ActiveScopes
+# Imports on v1.0 had $0 charges which may make confusing artifacts for our users. This is an attempt to fix it.
+class DropZeroDollarCharges < ActiveRecord::Migration[5.2]
+  def up
+    imported_users = User.joins(:notes).where("notes.content LIKE ?", "Import%").distinct
+    zero_dollar_imports = Charge.where(user_id: imported_users).where(amount: 0)
+    puts "Destorying #{zero_dollar_imports.count} $0 charges"
+    zero_dollar_imports.destroy_all
+  end
 
-  belongs_to :user
-  belongs_to :purchase
-  has_one :detail
-
-  validates :purchase, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same purchase
-  }, if: :active?
-
-  def transferable?
-    active_to.nil?
+  def down
+    raise "Cannot reverse data migration"
   end
 end

@@ -31,13 +31,13 @@ RSpec.describe ChargesController, type: :controller do
       before { purchase.update!(state: Purchase::PAID) }
 
       it "redirects to the purchase listing page" do
-        get :new, params: { purchaseId: purchase.id }
+        get :new, params: { purchase: purchase }
 
         expect(response).to redirect_to(purchases_path)
       end
 
       it "returns a flash notice" do
-        get :new, params: { purchaseId: purchase.id }
+        get :new, params: { purchase: purchase }
 
         expect(flash[:notice]).to match /paid/
       end
@@ -45,7 +45,7 @@ RSpec.describe ChargesController, type: :controller do
 
     context "when the purchase has not been paid for" do
       it "renders" do
-        get :new, params: { purchaseId: purchase.id }
+        get :new, params: { purchase: purchase }
 
         expect(response).to have_http_status(:ok)
       end
@@ -61,7 +61,7 @@ RSpec.describe ChargesController, type: :controller do
       {
         stripeToken: stripe_token,
         amount: amount,
-        purchaseId: purchase.id,
+        purchase: purchase,
       }
     end
     let(:charge_double) { instance_double(Charge, amount: amount) }
@@ -95,13 +95,23 @@ RSpec.describe ChargesController, type: :controller do
       it "redirects to the new charge path" do
         post :create, params: params
 
-        expect(response).to redirect_to(new_charge_path(purchaseId: purchase.id))
+        expect(response).to redirect_to(new_charge_path(purchase: purchase))
       end
     end
 
     context "when the charge is made" do
+      let(:error_service) do
+        instance_double(Money::ChargeCustomer,
+          call: charge_success,
+          charge: charge_double,
+          error_message: "error"
+       )
+      end
+
       before do
-        expect(ChargeCustomer).to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount).and_return(instance_double(ChargeCustomer, call: charge_success, charge: charge_double, error_message: "error"))
+        expect(Money::ChargeCustomer)
+          .to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount)
+          .and_return(error_service)
       end
 
       context "when the charge is unsuccessful" do
@@ -113,7 +123,7 @@ RSpec.describe ChargesController, type: :controller do
         end
 
         it "redirects to the new charge form" do
-          expect(response).to redirect_to(new_charge_path(purchaseId: purchase.id))
+          expect(response).to redirect_to(new_charge_path(purchase: purchase))
         end
       end
 

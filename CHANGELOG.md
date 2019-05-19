@@ -8,11 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Detection of Stripe test keys to change colours on pages to distinguish between production and test systems
+- Migrations to correct data corruption on imported timestamps
+- Customer stripe ID now recorded and reused from User model going forward
+- New rake tasks for your utility belt:
+  ```bash
+  # Copy over stripe customer details to users with
+  bundle exec rake stripe:sync:customers
+
+  # Update historical charge descriptions in stripe and charge comments with
+  bundle exec rake stripe:sync:charges
+
+  # Detect invalid records on your systems with
+  bundle exec rake check:models
+  ```
 - CoNZealand images are now served from the project rather than GitHub to consolidate infrastructure
 
 ### Changed
 - URLs for charging a person have been updated to use Purchase for consistency
 - Fixed Kansa and Presupport import methods to set "active" correctly on older records
+- Charge descriptions in stripe now describe amount owed, type of payment, membership name and number
 - Allow database name to be configurable on production builds for cheep staging costs
 - Updated most gems in the project including Rails
 - Replaced deprecated SASS gem with SASSC

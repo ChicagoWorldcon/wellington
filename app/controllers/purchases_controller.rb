@@ -50,7 +50,7 @@ class PurchasesController < ApplicationController
       # TODO nicer errors
       raise "Offer not available to user" if !matching_offer.present?
 
-      purchase_service = PurchaseMembership.new(matching_offer.membership, customer: current_user)
+      purchase_service = ReservePurchase.new(matching_offer.membership, customer: current_user)
       new_purchase = purchase_service.call
 
       # TODO nicer errors
@@ -66,7 +66,7 @@ class PurchasesController < ApplicationController
       if new_purchase.membership.price.zero?
         redirect_to purchases_path
       else
-        redirect_to new_charge_path(purchaseId: new_purchase.id)
+        redirect_to new_charge_path(purchase: new_purchase)
       end
     end
   end
