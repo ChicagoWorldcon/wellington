@@ -35,6 +35,11 @@ namespace :dev do
 
     desc "Seeds memberships"
     task seeds: :environment do
+      if !Rails.env.development?
+        puts "Skipping seeds, rails isn't running in developer mode"
+        next
+      end
+
       if User.count > 0
         puts "Database has been seeded"
         next
