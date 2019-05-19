@@ -16,7 +16,10 @@
 
 copy_pasta_keys = ENV.select { |variable, set_as| set_as.match(/copypasta/) }.keys
 if copy_pasta_keys.any?
-  puts "Badness detected, don't copy paste things. Please check the README and set these:"
-  puts copy_pasta_keys.to_sentence
+  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  puts "The keys in your environment were coppied from the README."
+  puts "This means an attacker can do whatever they like."
+  puts "Please rotate #{copy_pasta_keys.to_sentence}"
+  puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   exit 1 unless Rails.env.development?
 end
