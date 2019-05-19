@@ -32,7 +32,9 @@ class PurchasesController < ApplicationController
     @detail = Detail.new
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
-    @current_memberships = MembershipsHeldSummary.new(current_user).to_s
+    if user_signed_in?
+      @current_memberships = MembershipsHeldSummary.new(current_user).to_s
+    end
   end
 
   def show
