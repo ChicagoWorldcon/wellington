@@ -41,4 +41,4 @@ RUN bundle exec rake assets:precompile
 FROM base as development
 VOLUME /app
 
-CMD bundle exec rails server -b 0.0.0.0
+CMD script/entry_dev.sh

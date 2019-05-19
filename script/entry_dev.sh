@@ -21,4 +21,5 @@ until nc -z postgres 5432; do
   sleep 1
 done
 
-bundle exec rails server -b 0.0.0.0
+bin/rake dev:bootstrap
+bin/rails server -b 0.0.0.0
