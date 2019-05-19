@@ -40,7 +40,6 @@ class ChargeDescription
 
   def for_accounts
     [
-      maybe_charge_state,
       formatted_amount,
       upgrade_maybe,
       installment_or_paid,
