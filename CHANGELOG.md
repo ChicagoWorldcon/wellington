@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bundle exec rake check:models
   ```
 - CoNZealand images are now served from the project rather than GitHub to consolidate infrastructure
+- When purchasing a new membership, if you've got existing memberships you now get linked to the 'Review Memberships'
+  section with a helpful message
+- Added Policy and Terms of service to CoNZealand pages
 
 ### Changed
 - URLs for charging a person have been updated to use Purchase for consistency
@@ -30,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow database name to be configurable on production builds for cheep staging costs
 - Updated most gems in the project including Rails
 - Replaced deprecated SASS gem with SASSC
-- Added Policy and Terms of service to CoNZealand pages
 - Redirect to current page on login, puts you on the "new membership" or "review memberships" pages
 - New styles added to support page for readability
 - Email address added to support page for findability
