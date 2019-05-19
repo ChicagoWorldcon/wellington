@@ -15,8 +15,7 @@
 # limitations under the License.
 
 # starts daemon then tails logs
-start: daemon
-	docker-compose logs -f # Tail logs
+start: daemon logs
 
 # stops application containers
 stop:
@@ -26,17 +25,9 @@ stop:
 clean: stop
 	docker-compose rm -f # Remove stopped containers; Don't ask to confirm removal
 
-# resets your running database
-napalm: stop
-	docker-compose run members_area bundle exec rake dev:napalm
-
-# builds, configures and starts application in the background
-daemon: stop
-	docker pull registry.gitlab.com/worldcon/2020-wellington:latest # Pull prebuilt images
-	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
-	docker-compose up -d # Create and start containers
-	echo "Webserver starting on http://localhost:3000"
-	echo "Mailcatcher starting on http://localhost:1080"
+# tails logs of running application
+logs:
+	docker-compose logs -f # Tail logs
 
 # opens up a REPL that lets you run code in the project
 console:
@@ -46,8 +37,20 @@ console:
 bash:
 	docker-compose exec members_area bash
 
+# resets your running database
+napalm: stop
+	docker-compose run members_area bundle exec rake dev:napalm
+
 # Tests your setup, similar to CI
 test:
 	docker-compose exec members_area bundle exec rspec
 	docker-compose exec members_area rubocop
 	docker-compose exec members_area bundle exec rake test:branch:copyright
+
+# builds, configures and starts application in the background
+daemon: stop
+	docker pull registry.gitlab.com/worldcon/2020-wellington:latest # Pull prebuilt images
+	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
+	docker-compose up -d # Create and start containers
+	echo "Webserver starting on http://localhost:3000"
+	echo "Mailcatcher starting on http://localhost:1080"
