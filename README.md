@@ -21,7 +21,7 @@ We maintain published docker images for this project in our
 * `:latest` tracks master which moves after things have gone through code review and basic testing
 * `:stable` tracks latest tags and update after a new tag is pushed
 
-# Contributing and Contacting Us
+# Contacting Us and Contributing
 
 You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
 
