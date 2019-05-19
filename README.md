@@ -10,6 +10,17 @@ by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) an
 [![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 [![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
 
+# Changelog and Versioning
+
+All notable changes to this project will be documented in [our changelog](CHANGELOG.md).
+
+We maintain published docker images for this project in our
+[container registry](https://gitlab.com/worldcon/2020-wellington/container_registry). These track
+* all branches that ran through CI including master
+* all tags on the project which follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+* `:latest` tracks master which moves after things have gone through code review and basic testing
+* `:stable` tracks latest tags and update after a new tag is pushed
+
 # Contributing and Contacting Us
 
 You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
@@ -143,17 +154,6 @@ docker-compose exec -T members_area bundle install
 # Run migrations after changing branches
 docker-compose exec -T members_area bundle exec rake db:migrate
 ```
-
-# Changelog and Versioning
-
-All notable changes to this project will be documented in [our changelog](CHANGELOG.md).
-
-We maintain published docker images for this project in our
-[container registry](https://gitlab.com/worldcon/2020-wellington/container_registry). These track
-* all branches that ran through CI including master
-* all tags on the project which follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-* `:latest` tracks master which moves after things have gone through code review and basic testing
-* `:stable` tracks latest tags and update after a new tag is pushed
 
 # Running in Production
 
