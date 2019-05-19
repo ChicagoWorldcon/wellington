@@ -40,6 +40,7 @@ class UserTokensController < ApplicationController
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: referrer_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
+      flash[:notice] += " (http://localhost:1080)" if Rails.env.development?
     else
       flash[:error] = send_link_command.errors.to_sentence
     end
