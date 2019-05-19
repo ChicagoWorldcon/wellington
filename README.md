@@ -146,13 +146,13 @@ this. Here are some examples to get you started:
 ```sh
 # Generate migrations
 # see https://edgeguides.rubyonrails.org/active_record_migrations.html
-docker-compose exec -T members_area bundle exec rails generate migration
+docker-compose exec members_area bundle exec rails generate migration
 
 # Install a gem you've added to the project's Gemfile
-docker-compose exec -T members_area bundle install
+docker-compose exec members_area bundle install
 
 # Run migrations after changing branches
-docker-compose exec -T members_area bundle exec rake db:migrate
+docker-compose exec members_area bundle exec rake db:migrate
 ```
 
 # Running in Production

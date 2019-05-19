@@ -36,14 +36,14 @@ daemon: stop
 
 # opens up a REPL that lets you run code in the project
 console:
-	docker-compose exec -T members_area bundle exec rails console
+	docker-compose exec members_area bundle exec rails console
 
 # lets you cd around and have a look at the project
 bash:
-	docker-compose exec -T members_area bash
+	docker-compose exec members_area bash
 
 # Tests your setup, similar to CI
 test:
-	docker-compose exec -T members_area bundle exec rspec
-	docker-compose exec -T members_area rubocop
-	docker-compose exec -T members_area bundle exec rake test:branch:copyright
+	docker-compose exec members_area bundle exec rspec
+	docker-compose exec members_area rubocop
+	docker-compose exec members_area bundle exec rake test:branch:copyright
