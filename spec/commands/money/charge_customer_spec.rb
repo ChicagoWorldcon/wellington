@@ -46,7 +46,7 @@ RSpec.describe Money::ChargeCustomer do
     let(:initial_stripe_id) { "super vip customer" }
 
     let(:user) { create(:user, stripe_id: initial_stripe_id) }
-    it "does the thing" do
+    it "doesn't set stripe ID again" do
       expect(Stripe::Customer).to_not receive(:create)
       expect { command.call }
         .to_not change { user.reload.stripe_id }
