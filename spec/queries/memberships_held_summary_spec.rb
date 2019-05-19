@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe CurrentMemberships do
+RSpec.describe MembershipsHeldSummary do
   let(:adult) { create(:membership, :adult) }
   let(:supporting) { create(:membership, :supporting) }
   let(:current_user) { create(:user) }
