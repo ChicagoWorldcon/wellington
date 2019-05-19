@@ -38,10 +38,17 @@ RSpec.describe MembershipsHeldSummary do
       expect(query.to_s).to eq "2 Adult Memberships"
     end
 
-    it "displays mutliple membrership with plural" do
+    it "keeps singlular when the last membership is singular" do
       create(:purchase, user: current_user, membership: adult)
       create(:purchase, user: current_user, membership: supporting)
-      expect(query.to_s).to eq "1 Adult and 1 Supporting Memberships"
+      expect(query.to_s).to eq "1 Adult and 1 Supporting Membership"
+    end
+
+    it "goes plural when memberships are plural" do
+      create(:purchase, user: current_user, membership: adult)
+      create(:purchase, user: current_user, membership: adult)
+      create(:purchase, user: current_user, membership: supporting)
+      expect(query.to_s).to eq "1 Supporting and 2 Adult Memberships"
     end
   end
 end

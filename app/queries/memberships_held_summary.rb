@@ -23,16 +23,14 @@ class MembershipsHeldSummary
 
   def to_s
     grouped = memberships.group(:name).count
-    printable = grouped.map { |name, count| "#{count} #{name.humanize}" }
-    total = grouped.values.sum
+    printable = grouped.map { |name, count| "#{count} #{name.humanize}" }.sort
 
-    case total
-    when 0
+    if printable.none?
       ""
-    when 1
-      "#{printable.first} Membership"
+    elsif printable.last.starts_with?("1 ")
+      "#{printable.to_sentence} Membership"
     else
-      "#{printable.sort.to_sentence} Memberships"
+      "#{printable.to_sentence} Memberships"
     end
   end
 
