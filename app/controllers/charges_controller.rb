@@ -48,7 +48,7 @@ class ChargesController < ApplicationController
       return
     end
 
-    service = Stripe::ChargeCustomer.new(
+    service = Money::ChargeCustomer.new(
       purchase,
       current_user,
       params[:stripeToken],

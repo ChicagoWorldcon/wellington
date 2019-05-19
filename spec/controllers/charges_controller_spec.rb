@@ -101,7 +101,7 @@ RSpec.describe ChargesController, type: :controller do
 
     context "when the charge is made" do
       let(:error_service) do
-        instance_double(Stripe::ChargeCustomer,
+        instance_double(Money::ChargeCustomer,
           call: charge_success,
           charge: charge_double,
           error_message: "error"
@@ -109,7 +109,7 @@ RSpec.describe ChargesController, type: :controller do
       end
 
       before do
-        expect(Stripe::ChargeCustomer)
+        expect(Money::ChargeCustomer)
           .to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount)
           .and_return(error_service)
       end

@@ -84,11 +84,11 @@ RSpec.describe ChargeDescription do
       Timecop.freeze(4.weeks.ago)
       purchase = ReservePurchase.new(horse_membership, customer: owner_1).call
       expect(purchase).to be_installment
-      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
       Timecop.freeze(1.day.from_now)
-      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 49_00).call
+      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 49_00).call
       Timecop.freeze(2.days.from_now)
-      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 1_00).call
+      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 1_00).call
       expect(purchase).to be_paid
 
       # 3 weeks ago, we upgraded to a $200 pony and started paying down 1 day at a time
@@ -97,9 +97,9 @@ RSpec.describe ChargeDescription do
       UpgradeMembership.new(purchase.reload, to: pony_membership).call
       expect(purchase).to be_installment
       Timecop.freeze(1.second.from_now)
-      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
       Timecop.freeze(1.day.from_now)
-      Stripe::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
       expect(purchase).to be_paid
 
       # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
@@ -108,7 +108,7 @@ RSpec.describe ChargeDescription do
       TransferMembership.new(purchase, from: owner_1, to: owner_2).call
       Timecop.freeze(1.second.from_now)
       UpgradeMembership.new(purchase.reload, to: unicorn_membership).call
-      Stripe::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call
+      Money::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call
       expect(purchase).to be_paid
     end
 

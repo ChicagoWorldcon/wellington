@@ -17,7 +17,7 @@
 
 require "rails_helper"
 
-RSpec.describe Stripe::ChargeCustomer do
+RSpec.describe Money::ChargeCustomer do
   let(:stripe_helper) { StripeMock.create_test_helper }
   before { StripeMock.start }
   after { StripeMock.stop }
