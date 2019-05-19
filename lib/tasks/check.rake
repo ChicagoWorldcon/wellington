@@ -25,7 +25,6 @@ namespace :check do
 
       invalid_models = klass.all.reject(&:valid?)
       if invalid_models.count > 0
-        errors = invalid_models.map(&:errors).map(&:full_messages).uniq
         puts "#{klass} has #{invalid_models.count} bad models, #{klass}.where(id: #{invalid_models.map(&:id)})"
       elsif klass.count == 0
         puts "#{klass} has no models"
