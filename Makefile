@@ -22,9 +22,13 @@ start: daemon
 stop:
 	docker-compose stop
 
-# stops and removes application containers
+# stops and removes application containers and volumes
 clean: stop
 	docker-compose rm -f # Remove stopped containers; Don't ask to confirm removal
+
+# resets your running database
+napalm: stop
+	docker-compose run members_area bundle exec rake dev:napalm
 
 # builds, configures and starts application in the background
 daemon: stop
