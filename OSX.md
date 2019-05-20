@@ -7,33 +7,54 @@ Ruby we're using is important for working on this project.
 These steps rely on the [Homebrew package manager](https://brew.sh/). Please make sure you have it installed when
 following this guide.
 
-To manage rubies we can use `ruby-install` to manage which ones are running:
+To manage rubies we can use `rbenv` to manage which ones are running:
 
 ```sh
-brew install chruby
-brew install ruby-install
-ruby-install ruby 2.5.1
+brew install rbenv
+rbenv install 2.6.1
 ```
 
-For chruby to hook into your `.ruby-version` file, you need to modify your shell configuration. Add this to your
+For rbenv to hook into your `.ruby-version` file, you need to modify your shell configuration. Add this to your
 `~/.bash_profile` or `~/.zshrc`:
 
 ```sh
-source /usr/local/share/chruby/chruby.sh
-source /usr/local/share/chruby/auto.sh
+if which rbenv > /dev/null; then
+  eval "$(rbenv init -)";
+  export PATH="~/.rbenv/bin:$PATH"
+fi
 ```
 
-To setup a default system ruby for yourself, create a `.ruby-version` in your home directory:
+To setup a default for your user, create a `.ruby-version` in your home directory:
 
 ```sh
-echo 2.5.1 > ~/.ruby-version
+echo 2.6.1 > ~/.ruby-version
 ```
 
-We use postgres in production. Here's how you can get a copy of postgres running on boot:
+This will let you run this version of ruby everywhere, not just the project.
+
+We use postgres in production. Here's how you can get a copy of postgres running and starting up on boot:
 
 ```sh
 brew install postgres
 brew services postgres start
 ```
 
-To continue to setup this project, please refer to the [README.md](README.md).
+You still need secrets exported in order to boot your application. A great way to do this would ber to use `direnv` and
+put your secrets into a `.envrc` file.
+
+```sh
+brew install direnv
+```
+
+Now add this to your `.zshrc` or `.bash_profile`
+
+```sh
+if which rbenv > /dev/null; then
+  eval "$(rbenv init -)";
+  export PATH="~/.rbenv/bin:$PATH"
+fi
+```
+
+Now copy secrets over from the example from the [README.md](README.md) into a `.envrc` in the base of your checkout.
+
+Continue to skim through [README.md](README.md), you can use that docker stuff for your production deploys if you like.

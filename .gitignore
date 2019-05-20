@@ -21,7 +21,7 @@
 # Allow keep files
 !/**/.keep
 
-.env
+.env*
 /.bundle
 /log/*
 /tmp/*
