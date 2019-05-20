@@ -30,4 +30,5 @@ if [[ -z $RAILS_ENV ]]; then
 fi
 
 # Start the server, anything that comes in on 3000 is accepted
+bin/rake db:migrate
 bin/rails server -b 0.0.0.0
