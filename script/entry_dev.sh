@@ -1,6 +1,6 @@
-# Copyright 2019 James Polley
+#!/usr/bin/env bash
+
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 Steven C Hartley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,34 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '3.7'
+mailcatcher --ip 0.0.0.0
 
-volumes:
-  pgdata:
+until nc -z postgres 5432; do
+  echo "waiting for postgres..."
+  sleep 1
+done
 
-services:
-  postgres:
-    image: postgres:9-alpine
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  members_area:
-    build:
-      context: ./
-      target: development
-    depends_on:
-      - postgres
-    env_file:
-      .env
-    ports:
-      - "3000:3000"
-      - "1080:1080"
-
-    restart: always
-    volumes:
-      - ./:/app
-      - type: tmpfs
-        target: /app/tmp
+bin/rake dev:bootstrap
+bin/rails server -b 0.0.0.0

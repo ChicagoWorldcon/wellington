@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New styles added to support page for readability
 - Email address added to support page for findability
 - Performance improvements for support memberships listing
+- Makefile has smarter build targets that create databases and images as needed
+- Developer setup steps in README should run out of the box
 
 ### Removed
 - Nothing significant in this release
