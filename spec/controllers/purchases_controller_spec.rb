@@ -29,9 +29,27 @@ RSpec.describe PurchasesController, type: :controller do
   let(:another_user) { create(:user) }
   let(:support) { create(:support) }
 
+  describe "#new" do
+    it "renders" do
+      sign_in(original_user)
+      get :new
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders when signed out" do
+      get :new
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "#index" do
     it "renders" do
       sign_in(original_user)
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders when signed out" do
       get :index
       expect(response).to have_http_status(:ok)
     end
