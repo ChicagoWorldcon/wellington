@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+## Tag 1.1.0 - 2019-05-22
+
+Some quality of life improvements for support, and general cleanup with things we learnt from our initial release.
+
+### Added
 - Detection of Stripe test keys to change colours on pages to distinguish between production and test systems
 - Migrations to correct data corruption on imported timestamps
 - Customer stripe ID now recorded and reused from User model going forward
@@ -44,6 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ## Tag 1.0.0 - 2019-03-29
+
+Initial release of CoNZealand, intended to give people what they had with Kansa, introduce instalments and bring in our
+pre supporters.
 
 ### Added
 - Basic forms for purchasing memberships based on CoNZealand paper forms
