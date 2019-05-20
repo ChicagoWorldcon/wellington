@@ -56,5 +56,27 @@ fi
 ```
 
 Now copy secrets over from the example from the [README.md](README.md) into a `.envrc` in the base of your checkout.
+Each entry will have to be prefixed witb the word `export`. For instance, here's how you should set your postgres host:
+
+```sh
+export DB_HOST=postgres
+export POSTGRES_USER=$USER
+```
 
 Continue to skim through [README.md](README.md), you can use that docker stuff for your production deploys if you like.
+
+Reset or create a new database instance with the napalm script:
+
+```sh
+bin/rake dev:napalm
+```
+
+Now run your rails server with your standard commands:
+
+```sh
+bin/rake db:migrate   # Run migrations
+bin/rails server      # Run rails server
+bin/rails console     # Console to manipulate models, run queries or commands
+```
+
+Happy hacking! &lt;3
