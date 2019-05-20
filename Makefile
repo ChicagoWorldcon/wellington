@@ -37,10 +37,6 @@ console:
 bash:
 	docker-compose exec members_area bash
 
-# resets your running database
-napalm: stop
-	docker-compose run members_area bundle exec rake dev:napalm
-
 # Tests your setup, similar to CI
 test:
 	docker-compose exec members_area bundle exec rspec
