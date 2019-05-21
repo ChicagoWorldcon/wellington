@@ -45,7 +45,6 @@ test:
 
 # builds, configures and starts application in the background
 daemon: stop
-	docker pull registry.gitlab.com/worldcon/2020-wellington:latest # Pull prebuilt images
 	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
 	docker-compose up -d # Create and start containers
 	echo "Webserver starting on http://localhost:3000"

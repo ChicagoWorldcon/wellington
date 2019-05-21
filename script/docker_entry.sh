@@ -14,12 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mailcatcher --ip 0.0.0.0
-
-until nc -z postgres 5432; do
+# Wait for postgres opens it's ports to start services
+if [[ -z $DB_HOST ]]; then
+  DB_HOST="postgres"
+fi
+until nc -z $DB_HOST 5432; do
   echo "waiting for postgres..."
   sleep 1
 done
 
-bin/rake dev:bootstrap
+# Development setup runs when RAILS_ENV is not set
+if [[ -z $RAILS_ENV ]]; then
+  mailcatcher --ip 0.0.0.0
+  bin/rake dev:bootstrap
+fi
+
+# Run migrations and start the server, anything that comes in on 3000 is accepted
+bin/rake db:migrate
 bin/rails server -b 0.0.0.0

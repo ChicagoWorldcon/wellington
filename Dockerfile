@@ -42,4 +42,4 @@ RUN bundle exec rake assets:precompile
 FROM base as development
 VOLUME /app
 
-CMD script/entry_dev.sh
+CMD script/docker_entry.sh

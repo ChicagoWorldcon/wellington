@@ -37,8 +37,12 @@ keen have a look at this list and leave comments on any you'd like to try.
 
 # Getting Started
 
-This project has been designed to run inside Docker on Docker Compose to simplify setup and testing. We also rely on GNU
-Make to keep people in sync, and git to track your project files.
+This project is a super standard Ruby on Rails application that runs on Postgres. There's a really simple
+[OSX guide](OSX.md) guide for those that use it as their daily driver.
+
+However to try make on-boarding for people who are just starting Ruby or want a simpler setup to manage, we've got
+methods to run inside Docker and Docker Compose. This simplifies setup and testing and is really easy to clean up when
+you're done. These steps rely on GNU Make for common commands, and git to track your project files.
 
 If you run into troubles getting any of this working, ask for help by
 [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be in touch!
@@ -134,12 +138,6 @@ If you've finished working and want to shut down the servers, run
 make stop
 ```
 
-If you want to delete the docker images, you can do this with
-
-```sh
-make clean
-```
-
 You can also run your own commands in the container itself. Check out the Makefile for examples of how you might do
 this. Here are some examples to get you started:
 
@@ -154,6 +152,15 @@ docker-compose exec members_area bundle install
 # Run migrations after changing branches
 docker-compose exec members_area bundle exec rake db:migrate
 ```
+
+If you want to delete the docker images and volumes, you can do this with:
+
+```sh
+make clean
+```
+
+From here you can delete the project files if you're done, or just run `make start` and everything will be built again
+from scratch.
 
 # Running in Production
 
