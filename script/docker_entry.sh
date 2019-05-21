@@ -29,6 +29,6 @@ if [[ -z $RAILS_ENV ]]; then
   bin/rake dev:bootstrap
 fi
 
-# Start the server, anything that comes in on 3000 is accepted
+# Run migrations and start the server, anything that comes in on 3000 is accepted
 bin/rake db:migrate
 bin/rails server -b 0.0.0.0
