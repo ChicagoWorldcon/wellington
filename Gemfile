@@ -39,6 +39,7 @@ group :development, :test do
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-nav"                                       # adds 'step' and 'next' to pry
   gem "rspec-rails"                                   # testing framework
+  gem "rubocop", "0.66.0"                             # FIXME pin to stop namespace warnings
   gem "rubocop-github"                                # ruby ilnting to keep things clean
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage
