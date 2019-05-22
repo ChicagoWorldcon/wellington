@@ -25,7 +25,7 @@ gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON
 gem "markerb"              # Renders Html and Text email from Markdown template
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
-gem "rails"                # framework for building websites <3
+gem "rails", "5.2.3"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "stripe"               # payment provider

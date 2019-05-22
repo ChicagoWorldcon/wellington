@@ -284,7 +284,7 @@ DEPENDENCIES
   pry-nav
   pry-rails
   puma
-  rails
+  rails (= 5.2.3)
   redcarpet
   rspec-rails
   rubocop-github
