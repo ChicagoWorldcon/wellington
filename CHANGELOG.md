@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Moved task `check:models` to `test:models` to keep namespaces tight
 
 ### Removed
 - Nothing significant in this release
@@ -32,7 +32,7 @@ Some quality of life improvements for support, and general cleanup with things w
   bundle exec rake stripe:sync:charges
 
   # Detect invalid records on your systems with
-  bundle exec rake check:models
+  bundle exec rake test:models
   ```
 - CoNZealand images are now served from the project rather than GitHub to consolidate infrastructure
 - When purchasing a new membership, if you've got existing memberships you now get linked to the 'Review Memberships'
