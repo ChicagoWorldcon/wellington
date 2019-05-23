@@ -30,6 +30,10 @@ if Rails.env.development?
   # mail catcher
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = { address: "0.0.0.0", port: 1025 }
+elsif Rails.env.test?
+  config.action_mailer.default_url_options = {
+    host: "localhost"
+  }
 else
   # Setup SMTP
   # https://guides.rubyonrails.org/action_mailer_basics.html
