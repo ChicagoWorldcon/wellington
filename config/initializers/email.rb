@@ -37,6 +37,7 @@ elsif Rails.env.test?
 else
   # Setup SMTP
   # https://guides.rubyonrails.org/action_mailer_basics.html
+  config.action_mailer.delivery_method = :smtp
   Rails.application.config.action_mailer.tap do |action_mailer|
     action_mailer.raise_delivery_errors = true
     action_mailer.smtp_settings = {
