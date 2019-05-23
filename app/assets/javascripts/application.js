@@ -39,8 +39,7 @@ $(document).ready(function initStyleToggler() {
   var button = $("<input>").attr({
     value: "Toggle Styles",
     title: "Stripe test keys present, this makes it clear you're in a staging environment",
-    class: "btn",
-    style: "position: relative; bottom: -2em; right: -2em;"
+    class: "btn btn-api-toggle-styles",
   });
   $("body").append(button);
   button.on("click", function() {
