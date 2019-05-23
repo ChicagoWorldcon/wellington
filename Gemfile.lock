@@ -48,6 +48,8 @@ GEM
     ast (2.4.0)
     bcrypt (3.1.12)
     bindex (0.7.0)
+    bootsnap (1.4.4)
+      msgpack (~> 1.0)
     builder (3.2.3)
     byebug (11.0.1)
     capybara (3.20.2)
@@ -112,6 +114,7 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
+    msgpack (1.2.10)
     multi_json (1.13.1)
     multipart-post (2.1.1)
     net-http-persistent (3.0.1)
@@ -267,6 +270,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootsnap
   byebug
   capybara
   devise
