@@ -30,9 +30,5 @@ module Conzealand
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
-    # Reconfigure mailer preview path to rspec
-    # see https://stackoverflow.com/a/39204340/81271
-    config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"
   end
 end
