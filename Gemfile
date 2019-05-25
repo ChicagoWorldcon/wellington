@@ -19,13 +19,14 @@
 
 source "https://rubygems.org"
 
+gem "bootsnap"             # boot large ruby/rails apps faster
 gem "devise"               # authentication solution for Rails with Warden
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "markerb"              # Renders Html and Text email from Markdown template
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
-gem "rails"                # framework for building websites <3
+gem "rails", "5.2.3"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "stripe"               # payment provider
@@ -39,6 +40,7 @@ group :development, :test do
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-nav"                                       # adds 'step' and 'next' to pry
   gem "rspec-rails"                                   # testing framework
+  gem "rubocop", "0.66.0"                             # FIXME pin to stop namespace warnings
   gem "rubocop-github"                                # ruby ilnting to keep things clean
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage

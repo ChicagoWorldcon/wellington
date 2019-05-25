@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing significant in this release
+- Turned on [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
+  for the site for security hygiene
+- Run rails upgrades for 5.2 so we gret the most out of our setup
+- Upgrade Ruby from 2.5.1 to 2.5.3
+- Update gems to the latest versions
 
 ### Changed
-- Nothing significant in this release
+- Moved task `check:models` to `test:models` to keep namespaces tight
 
 ### Removed
 - Nothing significant in this release
@@ -32,7 +36,7 @@ Some quality of life improvements for support, and general cleanup with things w
   bundle exec rake stripe:sync:charges
 
   # Detect invalid records on your systems with
-  bundle exec rake check:models
+  bundle exec rake test:models
   ```
 - CoNZealand images are now served from the project rather than GitHub to consolidate infrastructure
 - When purchasing a new membership, if you've got existing memberships you now get linked to the 'Review Memberships'

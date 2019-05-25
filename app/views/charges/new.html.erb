@@ -15,11 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
+
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-md-8">
       <div class="l-panel">
-        <%= form_tag(charges_path, id: "purchase-form") do %>
+        <%= form_tag(charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@purchase)) do %>
           <article>
             <div id="error_explanation"></div>
 
@@ -46,44 +47,3 @@
     </div>
   </div>
 </section>
-
-<script>
-var handler = StripeCheckout.configure({
-  key: '<%= Rails.configuration.stripe[:publishable_key] %>',
-  locale: 'auto',
-  currency: 'NZD',
-  name: 'CoNZealand',
-  description: '<%= "CoNZealand #{@membership.name} membership" %>',
-  email: '<%= current_user.email %>',
-  token: function(token) {
-    document.querySelector('input#stripeToken').value = token.id;
-    document.querySelector('input#stripeEmail').value = token.email;
-
-    document.querySelector('form#purchase-form').submit();
-  }
-});
-
-document.querySelector('#purchase-button').addEventListener('click', function(e) {
-  e.preventDefault();
-
-  document.querySelector('#error_explanation').innerHtml = '';
-
-  var amount = document.querySelector('select#amount').value;
-  amount = amount.replace(/\$/g, '').replace(/\,/g, '')
-
-  amount = parseInt(amount);
-
-  if (isNaN(amount)) {
-    document.querySelector('#error_explanation').innerHtml = '<p>Please enter a valid amount in NZD ($).</p>';
-  } else {
-    handler.open({
-      amount: amount
-    })
-  }
-});
-
-// Close Checkout on page navigation:
-window.addEventListener('popstate', function() {
-  handler.close();
-});
-</script>

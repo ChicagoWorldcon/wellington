@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
-
-require "bundler/setup" # Set up gems listed in the Gemfile.
-require "bootsnap/setup" # Speed up boot time by caching expensive operations.
+module ChargesHelper
+  def stripe_config(purchase)
+    {
+      "key" => Rails.configuration.stripe[:publishable_key],
+      "description" => "CoNZealand #{@membership.name} membership",
+      "email" => purchase.user.email,
+    }.to_json
+  end
+end

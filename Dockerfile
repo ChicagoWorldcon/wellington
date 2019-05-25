@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ruby:2.6.1-stretch as base
+FROM ruby:2.6.3-stretch as base
 
 RUN apt-get update && apt-get install -y \
     build-essential \

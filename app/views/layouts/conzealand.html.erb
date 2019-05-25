@@ -47,6 +47,7 @@
   <meta name="description" content="CoNZealand is a convention for science fiction enthusiasts.">
   <meta name="keywords" content="conzealand, science fiction, convention, meet up, sci-fi" />
 </head>
+
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
   <%# TODO Style this to flash or something dramatic %>
   <% if support_signed_in? %>
@@ -55,7 +56,7 @@
       <%= button_to(
         "Logout of Support (#{current_support.email})",
         destroy_support_session_path,
-        action: :delete, method: :delete, class: "button", style: "display: inline-block"
+        action: :delete, method: :delete, class: "button"
       ) %>
     </div>
   <% end %>
@@ -93,22 +94,5 @@
       <p>&copy; CoNZealand <%= Date.today.year %>. Contact <a href="mailto:registration@conzealand.nz">registration@conzealand.nz</a></p>
     </div>
   </footer>
-
-  <% if $stripe_test_keys %>
-    <script>
-      (function initStyleToggler() {
-        var button = $("<input>").attr({
-          value: "Toggle Styles",
-          title: "Stripe test keys present, this makes it clear you're in a staging environment",
-          class: "btn",
-          style: "position: relative; bottom: -2em; right: -2em;"
-        });
-        $("body").append(button);
-        button.on("click", function() {
-          $('body').toggleClass("api-test-keys");
-        });
-      })();
-    </script>
-  <% end%>
 </body>
 </html>

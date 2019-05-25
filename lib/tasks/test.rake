@@ -30,11 +30,12 @@ namespace :test do
         authored_files = `git log origin/master.. --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
           next if file.match(/LICENSE/)
-          next if file.match(/schema.rb$/)
-          next if file.match(/\.ruby-version$/)
-          next if file.match(/\.lock$/)
-          next if file.match(/\.md$/)
-          next if file.match("app/assets/images/")
+          next if file.ends_with?("schema.rb")
+          next if file.ends_with?(".ruby-version")
+          next if file.ends_with?(".lock")
+          next if file.ends_with?(".md")
+          next if file.starts_with?("app/assets/images/")
+          next if file.starts_with?("bin/")
           next if !FileTest.exist?(file)
 
           if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
@@ -77,6 +78,25 @@ namespace :test do
         end
 
         exit 1 # Fails CI
+      end
+    end
+  end
+
+  desc "Iterate through all models, find invalid ones, print them for further investigation"
+  task models: :environment do
+    model_files = Rails.root.join("app/models/*.rb")
+    Dir[model_files.to_s].each do |filename|
+      klass = File.basename(filename, ".rb").camelize.constantize
+      next unless klass.ancestors.include?(ActiveRecord::Base)
+      next if klass.abstract_class?
+
+      invalid_models = klass.all.reject(&:valid?)
+      if invalid_models.count > 0
+        puts "#{klass} has #{invalid_models.count} bad models, #{klass}.where(id: #{invalid_models.map(&:id)})"
+      elsif klass.count == 0
+        puts "#{klass} has no models"
+      else
+        puts "#{klass} has valid models"
       end
     end
   end

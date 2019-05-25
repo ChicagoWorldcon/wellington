@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 # limitations under the License.
 
 require_relative "boot"
-
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
@@ -30,9 +29,5 @@ module Conzealand
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
-    # Reconfigure mailer preview path to rspec
-    # see https://stackoverflow.com/a/39204340/81271
-    config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"
   end
 end
