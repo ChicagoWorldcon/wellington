@@ -18,7 +18,6 @@
 require "rails_helper"
 
 RSpec.describe PurchasesController, type: :controller do
-  include Warden::Test::Helpers
   render_views
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
