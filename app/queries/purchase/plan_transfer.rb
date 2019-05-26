@@ -25,4 +25,8 @@ class Purchase::PlanTransfer
 
   validates :purchase_id, presence: true
   validates :new_owner, presence: true, format: Devise.email_regexp
+
+  def purchase
+    Purchase.find(purchase_id)
+  end
 end

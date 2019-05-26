@@ -31,4 +31,15 @@ RSpec.describe Purchase::PlanTransfer do
     expect(described_class.new(purchase_id: purchase.id)).to_not be_valid
     expect(described_class.new(purchase_id: purchase.id, new_owner: "silly")).to_not be_valid
   end
+
+  describe "#purchase" do
+    it "raises exception when it can't find the purchase" do
+      query = described_class.new(new_owner: email_address, purchase_id: 42)
+      expect { query.purchase }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "finds the corrosponding purchase model" do
+      expect(query.purchase).to eq purchase
+    end
+  end
 end
