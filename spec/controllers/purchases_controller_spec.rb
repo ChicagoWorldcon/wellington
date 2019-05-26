@@ -73,10 +73,11 @@ RSpec.describe PurchasesController, type: :controller do
     end
 
     context "when signed in as support" do
+      before { sign_in(support) }
+
       it "can view any membership" do
-        sign_in(support)
         get :show, params: { id: existing_purchase.id }
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -119,6 +120,16 @@ RSpec.describe PurchasesController, type: :controller do
     it "can't be found when not signed in" do
       expect { get :show, params: valid_params }
         .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context "when signed in as support" do
+      before { sign_in(support) }
+
+      it "updates when all values present" do
+        post :update, params: valid_params
+        expect(flash[:notice]).to match(/updated/i)
+        expect(Detail.last.address_line_1).to eq updated_address
+      end
     end
 
     context "when signed in as user" do

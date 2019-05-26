@@ -18,5 +18,7 @@ FactoryBot.define do
   factory :support do
     email { Faker::Internet.unique.email }
     password { "secret agent man" }
+    confirmed_at { 1.day.ago }
+    confirmation_sent_at { 1.day.ago }
   end
 end
