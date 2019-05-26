@@ -42,4 +42,24 @@ RSpec.describe Purchase::PlanTransfer do
       expect(query.purchase).to eq purchase
     end
   end
+
+  describe "#from_user" do
+    subject(:from_user) { query.from_user }
+    it { is_expected.to_not be_nil }
+  end
+
+  describe "#to_user" do
+    subject(:to_user) { query.to_user }
+
+    it "creates users when they're not present" do
+      query # forcs all the setup of the class
+      expect { to_user }.to change { User.count }.by(1)
+    end
+
+    it "doesn't create users if they're present" do
+      query # forcs all the setup of the class
+      User.create!(email: email_address)
+      expect { to_user }.to_not change { User.count }
+    end
+  end
 end

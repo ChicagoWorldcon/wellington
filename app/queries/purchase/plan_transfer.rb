@@ -29,4 +29,12 @@ class Purchase::PlanTransfer
   def purchase
     Purchase.find(purchase_id)
   end
+
+  def from_user
+    purchase.user
+  end
+
+  def to_user
+    User.find_or_create_by(email: new_owner)
+  end
 end
