@@ -28,6 +28,8 @@ class ApplicationController < ActionController::Base
   end
 
   def assert_support!
-    # FIXME set 403 if not support
+    if !support_signed_in?
+      head :unauthorized
+    end
   end
 end

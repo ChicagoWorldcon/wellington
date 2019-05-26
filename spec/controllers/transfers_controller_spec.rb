@@ -17,5 +17,29 @@
 require "rails_helper"
 
 RSpec.describe TransfersController, type: :controller do
-  # TODO tests around access
+  render_views
+
+  let!(:purchase) { create(:purchase, :with_claim_from_user, :with_order_against_membership) }
+  let!(:support) { create(:support) }
+
+  let(:new_params) do
+    { purchase_id: purchase.id }
+  end
+
+  describe "#new" do
+    it "bounces you if you're not logged in as support" do
+      get :new, params: new_params
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    context "when signed in as support" do
+      before { sign_in(support) }
+
+      it "renders with the email address of the person being transferred from" do
+        get :new, params: new_params
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(purchase.user.email)
+      end
+    end
+  end
 end
