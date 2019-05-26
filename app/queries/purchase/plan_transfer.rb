@@ -16,6 +16,8 @@
 
 # Purchase::PlanTransfer is here to capture information about a planned transfer
 class Purchase::PlanTransfer
+  FORM_FALSE_VALUES = ["0", false].freeze
+
   include ActiveModel::Model
   include ActiveModel::Validations::ClassMethods
 
@@ -36,5 +38,10 @@ class Purchase::PlanTransfer
 
   def to_user
     User.find_or_create_by(email: new_owner)
+  end
+
+  # Workaround, forms post 0 or 1 strings for checkboxes
+  def copy_details?
+    !copy_details.in?(FORM_FALSE_VALUES)
   end
 end

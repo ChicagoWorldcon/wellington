@@ -62,4 +62,20 @@ RSpec.describe Purchase::PlanTransfer do
       expect { to_user }.to_not change { User.count }
     end
   end
+
+  describe "#copy_details?" do
+    ["1", "2", true].each do |value|
+      it "is true when set to #{value}" do
+        query = described_class.new(copy_details: value)
+        expect(query.copy_details?).to be_truthy
+      end
+    end
+
+    ["0", false].each do |value|
+      it "is false when set to #{value}" do
+        query = described_class.new(copy_details: value)
+        expect(query.copy_details?).to be_falsey
+      end
+    end
+  end
 end
