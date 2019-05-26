@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TransferMembership command makes old claims to purchase inactive and sets up new claim for receiver
+# Purchase::ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
-class TransferMembership
+class Purchase::ApplyTransfer
   attr_reader :purchase, :sender, :receiver, :errors
 
   def initialize(purchase, from:, to:)
