@@ -29,7 +29,7 @@ class Purchase::PlanTransfer
   validates :new_owner, presence: true, format: Devise.email_regexp
 
   def purchase
-    Purchase.find(purchase_id)
+    @Purchase ||= Purchase.find(purchase_id)
   end
 
   def from_user
@@ -38,6 +38,10 @@ class Purchase::PlanTransfer
 
   def to_user
     User.find_or_create_by(email: new_owner)
+  end
+
+  def detail
+    purchase.active_claim.detail
   end
 
   # Workaround, forms post 0 or 1 strings for checkboxes

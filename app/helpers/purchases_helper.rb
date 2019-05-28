@@ -22,4 +22,11 @@ module PurchasesHelper
       "card text-white bg-dark border-light"
     end
   end
+
+  def update_transfer_url(transfer)
+    purchase_transfers_path(
+      purchase_id: transfer.purchase_id,
+      id: transfer.new_owner,
+    )
+  end
 end

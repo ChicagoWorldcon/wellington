@@ -23,27 +23,18 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
-        <%= form_for(purchase_transfer_path) do |f| %>
-          <h2>
-            From
-            <%= @detail %>
-            &lt;<%= @purchase.user.email %>&gt;
-          </h2>
+        <%= form_for(@transfer, url: update_transfer_url(@transfer)) do |f| %>
+          <h2>#<%= @transfer.purchase.membership_number %> <%= @transfer.detail %></h2>
+          <p>Transferring from <%= @transfer.from_user.email %></p>
+          <p>Transferring to <%= @transfer.to_user.email %><p>
+
+          <%= f.hidden_field(:new_owner) %>
+          <%= f.hidden_field(:purchase_id) %>
 
           <div class="form-options">
             <%= f.check_box(:copy_details, class: "form-control form-control-m-checkbox", id: "copy_details") %>
-            <label for="copy_details">Keep membership details, including name, badge name, and address</label>
+            <label for="copy_details">Keep membership details? This includes name, badge name, and address</label>
           </div>
-
-          <p>
-            From <%= @from %>
-            <%= hidden_field_tag(:from, @from) %>
-          </p>
-
-          <p>
-            To <%= @to %>
-            <%= hidden_field_tag(:to, @to) %>
-          </p>
 
           <fieldset class="l-v-spacing">
             <div class="row">
@@ -51,7 +42,7 @@
                 <%= link_to "Go back to transfer list", new_purchase_transfer_path, class: "btn btn-m-full-width" %>
               </div>
               <div class="col-12 col-md-6">
-                <input type="submit" value="Email users and start transfer" class="btn btn-m-full-width">
+                <input type="submit" value="Email users and transfer membership" class="btn btn-m-full-width">
               </div>
             </div>
           </div>

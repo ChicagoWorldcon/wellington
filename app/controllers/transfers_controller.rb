@@ -16,6 +16,8 @@
 
 #
 class TransfersController < ApplicationController
+  helper PurchasesHelper
+
   before_action :assert_support!
 
   def new
@@ -24,10 +26,10 @@ class TransfersController < ApplicationController
   end
 
   def show
-    @purchase = Purchase.find(params[:purchase_id])
-    @detail = @purchase.active_claim.detail
-    @from = @purchase.user.email
-    @to = params[:id]
+    @transfer = Purchase::PlanTransfer.new(
+      new_owner: params[:id],
+      purchase_id: params[:purchase_id],
+    )
   end
 
   def create

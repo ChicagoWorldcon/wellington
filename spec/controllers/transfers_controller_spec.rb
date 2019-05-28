@@ -21,9 +21,18 @@ RSpec.describe TransfersController, type: :controller do
 
   let!(:purchase) { create(:purchase, :with_claim_from_user, :with_order_against_membership) }
   let!(:support) { create(:support) }
+  let!(:old_user) { purchase.user }
+  let!(:new_user) { create(:user) }
 
   let(:new_params) do
     { purchase_id: purchase.id }
+  end
+
+  let(:transfer_params) do
+    {
+      id: old_user.email,
+      purchase_id: purchase.id,
+    }
   end
 
   describe "#new" do
@@ -38,7 +47,24 @@ RSpec.describe TransfersController, type: :controller do
       it "renders with the email address of the person being transferred from" do
         get :new, params: new_params
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(purchase.user.email)
+        expect(response.body).to include(old_user.email)
+      end
+    end
+  end
+
+  describe "#show" do
+    it "bounces you if you're not logged in as support" do
+      get :new, params: new_params
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    context "when signed in as support" do
+      before { sign_in(support) }
+
+      it "renders" do
+        get :show, params: transfer_params
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(old_user.email)
       end
     end
   end
