@@ -24,7 +24,7 @@ module PurchasesHelper
   end
 
   def update_transfer_url(transfer)
-    purchase_transfers_path(
+    purchase_transfer_path(
       purchase_id: transfer.purchase_id,
       id: transfer.new_owner,
     )

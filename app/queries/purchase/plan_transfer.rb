@@ -16,7 +16,7 @@
 
 # Purchase::PlanTransfer is here to capture information about a planned transfer
 class Purchase::PlanTransfer
-  FORM_FALSE_VALUES = ["0", false].freeze
+  FORM_FALSE_VALUES = ["0", false, nil].freeze
 
   include ActiveModel::Model
   include ActiveModel::Validations::ClassMethods

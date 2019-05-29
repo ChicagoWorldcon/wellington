@@ -37,6 +37,10 @@ class Purchase::ApplyTransfer
     end
   end
 
+  def error_message
+    errors.to_sentence
+  end
+
   private
 
   def check_purchase

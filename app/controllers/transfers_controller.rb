@@ -19,6 +19,7 @@ class TransfersController < ApplicationController
   helper PurchasesHelper
 
   before_action :assert_support!
+  before_action :setup_transfer, only: [:show, :update]
 
   def new
     @purchase = Purchase.find(params[:purchase_id])
@@ -26,12 +27,46 @@ class TransfersController < ApplicationController
   end
 
   def show
+  end
+
+  def update
+    current_support.transaction do
+      old_detail = @transfer.detail
+
+      service = Purchase::ApplyTransfer.new(@transfer.purchase, from: @transfer.from_user, to: @transfer.to_user)
+      new_claim = service.call
+
+      if !new_claim
+        flash[:error] = service.error_message
+        redirect_to purchases_path
+        return
+      end
+
+      if @transfer.copy_details?
+        new_claim.update!(detail: old_detail.dup)
+      end
+
+      flash[:notice] = %{
+        Transferred membership ##{@transfer.purchase.membership_number}
+        to #{@transfer.to_user.email}
+      }
+
+      redirect_to purchases_path
+    end
+  end
+
+  private
+
+  def setup_transfer
     @transfer = Purchase::PlanTransfer.new(
       new_owner: params[:id],
       purchase_id: params[:purchase_id],
+      copy_details: params.dig(:purchase_plan_transfer, :copy_details),
     )
-  end
 
-  def create
+    if !@transfer.valid?
+      flash[:error] = @transfer.errors.full_messages.to_sentences
+      redirect_to purchases_path
+    end
   end
 end

@@ -28,9 +28,9 @@ RSpec.describe TransfersController, type: :controller do
     { purchase_id: purchase.id }
   end
 
-  let(:transfer_params) do
+  let(:update_parans) do
     {
-      id: old_user.email,
+      id: new_user.email,
       purchase_id: purchase.id,
     }
   end
@@ -62,9 +62,56 @@ RSpec.describe TransfersController, type: :controller do
       before { sign_in(support) }
 
       it "renders" do
-        get :show, params: transfer_params
+        get :show
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(old_user.email)
+      end
+    end
+  end
+
+  describe "#update" do
+    before { sign_in(support) }
+    subject(:update_purchase_transfer) { patch(:update, params: transfer_params) }
+
+    it "transfers between users" do
+      expect { update_purchase_transfer }
+        .to change { purchase.reload.user }
+        .from(old_user)
+        .to(new_user)
+    end
+
+    it "doens't copy details" do
+      expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
+      expect(new_user.reload.claims.last.detail).to be_nil
+    end
+
+    context "when #copy_details is set" do
+      let(:transfer_params) do
+        {
+          id: new_user.email,
+          purchase_id: purchase.id,
+          copy_details: "1",
+        }
+      end
+
+      it "does copy details over" do
+        expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
+        expect(new_user.reload.claims.last.detail).to be_present
+      end
+    end
+
+    context "when there are errors with submission" do
+      before do
+        purchase.update!(state: Purchase::INSTALLMENT)
+        patch :update, params: transfer_params
+      end
+
+      it "sets errors" do
+        expect(flash[:error]).to be_present
+      end
+
+      it "redirects back to transfers path" do
+        expect(response).to redirect_to(purchases_path)
       end
     end
   end
