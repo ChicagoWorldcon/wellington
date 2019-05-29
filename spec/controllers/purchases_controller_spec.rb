@@ -112,6 +112,7 @@ RSpec.describe PurchasesController, type: :controller do
           last_name: "is",
           address_line_1: updated_address,
           country: "valid",
+          publication_format: Detail::PAPERPUBS_NONE,
         }
       }
     end
@@ -128,6 +129,18 @@ RSpec.describe PurchasesController, type: :controller do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
         expect(Detail.last.address_line_1).to eq updated_address
+      end
+
+      context "with no details set" do
+        before do
+          Detail.where(claim_id: original_user.active_claims).destroy_all
+        end
+
+        it "updates when all values present" do
+          post :update, params: valid_params
+          expect(flash[:notice]).to match(/updated/i)
+          expect(Detail.last.address_line_1).to eq updated_address
+        end
       end
 
       it "shows error when values not present" do

@@ -77,6 +77,7 @@ class PurchasesController < ApplicationController
   def update
     @purchase.transaction do
       current_details = @purchase.active_claim.detail
+      current_details ||= Detail.new(claim: @purchase.active_claim)
       submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
       if current_details.update(submitted_values)
         flash[:notice] = "Details for #{current_details} member ##{@purchase.membership_number} have been updated"
