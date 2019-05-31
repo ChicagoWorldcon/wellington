@@ -51,7 +51,12 @@ class TransfersController < ApplicationController
         to #{@transfer.to_user.email}
       }
 
-      MembershipMailer.transfer(@transfer, detail: owner_detail).deliver_later
+      MembershipMailer.transfer(
+        from: @transfer.from_user.email,
+        to: @transfer.to_user.email,
+        owner_name: owner_detail&.to_s,
+        membership_number: @transfer.purchase.membership_number,
+      ).deliver_later
 
       redirect_to purchases_path
     end

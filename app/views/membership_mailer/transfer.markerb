@@ -17,10 +17,10 @@
 %>
 Kia Ora!
 
-You've received this email because <%= @detail || "somebody" %> requested to transfer
-membership #<%= @transfer.purchase.membership_number %>
-from "<%= @transfer.from_user.email %>"
-to "<%= @transfer.to_user.email %>"
+You've received this email because <%= @owner_name || "somebody" %> requested to transfer
+membership #<%= @membership_number %>
+from "<%= @from %>"
+to "<%= @to %>"
 and this should now be in affect.
 
 If you have any questions or concerns, please reply to this email.

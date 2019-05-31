@@ -27,12 +27,11 @@ class MembershipMailer < ApplicationMailer
     end
   end
 
-  def transfer(transfer, detail:)
-    @transfer = transfer
-    @detail = detail
-
-    from = @transfer.from_user.email
-    to = @transfer.to_user.email
+  def transfer(from:, to:, owner_name:, membership_number:)
+    @from = from
+    @to = to
+    @owner_name = owner_name
+    @membership_number = membership_number
 
     mail(
       to: [from, to],
