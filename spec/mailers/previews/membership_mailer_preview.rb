@@ -24,6 +24,12 @@ class MembershipMailerPreview < ActionMailer::Preview
   end
 
   def transfer
-    MembershipMailer.transfer
+    purchase = Purchase.last(30).sample
+    plan_transfer = Purchase::PlanTransfer.new(
+      purchase_id: purchase.id,
+      new_owner: User.all.sample.email,
+    )
+
+    MembershipMailer.transfer(plan_transfer, detail: purchase.active_claim.detail)
   end
 end

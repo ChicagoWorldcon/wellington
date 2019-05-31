@@ -17,23 +17,13 @@
 %>
 Kia Ora!
 
-You've received this email because <%= @detail || "somebody" %> has requested to transfer
-membership #<%= @purchase.membership_number %>
-from "<%= @from.email %>"
-to "<%= @to.email %>"
+You've received this email because <%= @detail || "somebody" %> requested to transfer
+membership #<%= @transfer.purchase.membership_number %>
+from "<%= @transfer.from_user.email %>"
+to "<%= @transfer.to_user.email %>"
+and this should now be in affect.
 
-While this transfer is happening, all rights for that membership are put on hold. After this transfer has completed, any
-unused rights on that membership will belong to "<%= @to.email %>".
-
-Each party has 7 days to complete this transfer, so this process may take up to 2 weeks to complete. If this doesn't
-happen in time, then this transfer will be cancelled and "<%= @from.email %>" will continue to hold the membership.
-
-Please follow one of the links below to proceed
-
-* [transfer membership #<%= @purchase.membership_number %>](http://placekitten.com/200/300),
-* or [cancel this transfer](http://placekitten.com/200/300).
-
-If you have any questions, please reply to this email.
+If you have any questions or concerns, please reply to this email.
 
 CoNZealand – registration@conzealand.nz   
 https://conzealand.nz/

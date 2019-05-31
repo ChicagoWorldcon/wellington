@@ -31,7 +31,7 @@ class TransfersController < ApplicationController
 
   def update
     current_support.transaction do
-      old_detail = @transfer.detail
+      owner_detail = @transfer.detail
 
       service = Purchase::ApplyTransfer.new(@transfer.purchase, from: @transfer.from_user, to: @transfer.to_user)
       new_claim = service.call
@@ -43,13 +43,15 @@ class TransfersController < ApplicationController
       end
 
       if @transfer.copy_details?
-        new_claim.update!(detail: old_detail.dup)
+        new_claim.update!(detail: owner_detail.dup)
       end
 
       flash[:notice] = %{
         Transferred membership ##{@transfer.purchase.membership_number}
         to #{@transfer.to_user.email}
       }
+
+      MembershipMailer.transfer(@transfer, detail: owner_detail).deliver_later
 
       redirect_to purchases_path
     end

@@ -27,11 +27,16 @@ class MembershipMailer < ApplicationMailer
     end
   end
 
-  def transfer
-    @from = User.joins(:purchases).sample
-    @to = User.all.sample
-    @purchase = @from.purchases.sample
-    @detail = @purchase.active_claim.detail
-    mail(to: @to, subject: "CoNZealand Membership Transfer: From #{@from.email} to #{@to.email}")
+  def transfer(transfer, detail:)
+    @transfer = transfer
+    @detail = detail
+
+    from = @transfer.from_user.email
+    to = @transfer.to_user.email
+
+    mail(
+      to: [from, to],
+      subject: "CoNZealand Membership Transfer: From #{from} to #{to}"
+    )
   end
 end

@@ -28,7 +28,7 @@ RSpec.describe TransfersController, type: :controller do
     { purchase_id: purchase.id }
   end
 
-  let(:update_parans) do
+  let(:show_update_params) do
     {
       id: new_user.email,
       purchase_id: purchase.id,
@@ -54,7 +54,7 @@ RSpec.describe TransfersController, type: :controller do
 
   describe "#show" do
     it "bounces you if you're not logged in as support" do
-      get :new, params: new_params
+      get :show, params: show_update_params
       expect(response).to have_http_status(:unauthorized)
     end
 
@@ -62,7 +62,7 @@ RSpec.describe TransfersController, type: :controller do
       before { sign_in(support) }
 
       it "renders" do
-        get :show
+        get :show, params: show_update_params
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(old_user.email)
       end
@@ -71,39 +71,50 @@ RSpec.describe TransfersController, type: :controller do
 
   describe "#update" do
     before { sign_in(support) }
-    subject(:update_purchase_transfer) { patch(:update, params: transfer_params) }
+    subject(:update_purchase_transfer) { patch(:update, params: show_update_params) }
 
-    it "transfers between users" do
-      expect { update_purchase_transfer }
-        .to change { purchase.reload.user }
-        .from(old_user)
-        .to(new_user)
-    end
-
-    it "doens't copy details" do
-      expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
-      expect(new_user.reload.claims.last.detail).to be_nil
-    end
-
-    context "when #copy_details is set" do
-      let(:transfer_params) do
-        {
-          id: new_user.email,
-          purchase_id: purchase.id,
-          copy_details: "1",
-        }
+    context "when there aren't errors" do
+      before do
+        expect(MembershipMailer)
+          .to receive_message_chain(:transfer, :deliver_later)
+          .and_return(true)
       end
 
-      it "does copy details over" do
+      it "transfers between users" do
+        expect { update_purchase_transfer }
+          .to change { purchase.reload.user }
+          .from(old_user)
+          .to(new_user)
+      end
+
+      it "doens't copy details" do
         expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
-        expect(new_user.reload.claims.last.detail).to be_present
+        expect(new_user.reload.claims.last.detail).to be_nil
+      end
+
+      context "when #copy_details is set" do
+        let(:show_update_params) do
+          {
+            id: new_user.email,
+            purchase_id: purchase.id,
+            purchase_plan_transfer: {
+              copy_details: "1",
+            }
+          }
+        end
+
+        it "does copy details over" do
+          expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
+          expect(new_user.reload.claims.last.detail).to be_present
+        end
       end
     end
 
     context "when there are errors with submission" do
       before do
+        expect(MembershipMailer).to_not receive(:transfer)
         purchase.update!(state: Purchase::INSTALLMENT)
-        patch :update, params: transfer_params
+        patch :update, params: show_update_params
       end
 
       it "sets errors" do
