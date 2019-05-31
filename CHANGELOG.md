@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Turned on [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
   for the site for security hygiene
-- Run rails upgrades for 5.2 so we gret the most out of our setup
-- Upgrade Ruby from 2.5.1 to 2.5.3
-- Update gems to the latest versions
+- Support can now transfer memberships between users from a user's detail form
 
 ### Changed
 - Moved task `check:models` to `test:models` to keep namespaces tight
+- Run rails upgrades for 5.2 so we gret the most out of our setup
+- Upgrade Ruby from 2.5.1 to 2.5.3
+- Update gems to the latest versions
+- Bugfix on support list, now transferred memberships show user's details correctly
 
 ### Removed
 - Nothing significant in this release
