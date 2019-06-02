@@ -18,12 +18,12 @@ require "rails_helper"
 
 RSpec.describe MembershipOffer do
   subject(:model) { described_class.new(membership) }
-  let!(:membership) { create(:membership, :adult) }
-
-  it { is_expected.to_not be_nil }
 
   describe "#to_s" do
     subject(:to_s) { model.to_s }
+
+    let!(:membership) { create(:membership, :adult) }
+
     it { is_expected.to match(/adult/i) }
     it { is_expected.to match(/\$\d+\.\d+/) }
     it { is_expected.to match(/NZD/) }
@@ -35,7 +35,19 @@ RSpec.describe MembershipOffer do
   end
 
   describe "#self.options" do
+    before do
+      create(:membership, :kid_in_tow)
+      create(:membership, :young_adult)
+      create(:membership, :adult)
+    end
+
     subject(:options) { MembershipOffer.options }
+
     it { is_expected.to_not be_empty }
+
+    it "orders by price" do
+      expect(subject.first.to_s).to match(/adult/i)
+      expect(subject.last.to_s).to match(/kid/i)
+    end
   end
 end

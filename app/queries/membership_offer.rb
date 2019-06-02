@@ -19,7 +19,9 @@ class MembershipOffer
   attr_reader :membership
 
   def self.options
-    Membership.active.map { |m| MembershipOffer.new(m) }
+    Membership.active.order_by_price.map do |membership|
+      MembershipOffer.new(membership)
+    end
   end
 
   def initialize(membership)
