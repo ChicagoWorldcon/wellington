@@ -19,11 +19,12 @@ require "rails_helper"
 RSpec.describe ApplyTransfer do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
+  let(:support) { create(:support) }
   let(:purchase) { create(:purchase) }
 
   before { Claim.create!(user: seller, purchase: purchase, active_from: purchase.created_at) }
 
-  subject(:command) { described_class.new(purchase, from: seller, to: buyer) }
+  subject(:command) { described_class.new(purchase, from: seller, to: buyer, audit_by: support.email) }
   let(:soonish) { 1.minute.from_now } # ApplyTransfer is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
@@ -36,6 +37,12 @@ RSpec.describe ApplyTransfer do
 
   it "deactivates claim on seller" do
     expect { command.call }.to change { seller.claims.active_at(soonish).count }.by(-1)
+  end
+
+  it "leaves notes on the users" do
+    expect { command.call }.to change { Note.count }.by(2)
+    expect(seller.notes.last.content).to include(support.email)
+    expect(buyer.notes.last.content).to include(support.email)
   end
 
   context "when there's transactions close together" do

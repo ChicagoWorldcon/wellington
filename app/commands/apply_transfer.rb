@@ -17,12 +17,13 @@
 # ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
 class ApplyTransfer
-  attr_reader :purchase, :sender, :receiver, :errors
+  attr_reader :purchase, :sender, :receiver, :errors, :audit_by
 
-  def initialize(purchase, from:, to:)
+  def initialize(purchase, from:, to:, audit_by:)
     @purchase = purchase
     @sender = from
     @receiver = to
+    @audit_by = audit_by
   end
 
   def call
@@ -30,6 +31,10 @@ class ApplyTransfer
     purchase.transaction do
       check_purchase
       return false if errors.any?
+
+      note_content = "#{audit_by} tansferred ##{purchase.membership_number} from #{sender.email} to #{receiver.email}"
+      sender.notes.create!(content: note_content)
+      receiver.notes.create!(content: note_content)
 
       as_at = Time.now
       old_claim.update!(active_to: as_at)

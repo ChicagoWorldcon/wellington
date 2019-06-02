@@ -36,7 +36,8 @@ class TransfersController < ApplicationController
       service = ApplyTransfer.new(
         @transfer.purchase,
         from: @transfer.from_user,
-        to: @transfer.to_user
+        to: @transfer.to_user,
+        audit_by: current_support.email,
       )
       new_claim = service.call
       if !new_claim
