@@ -25,7 +25,17 @@
 <section class="l-section">
   <% if support_signed_in? %>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 col-md-12">
+        <div class="l-panel">
+          <h2><%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h2>
+          <% if @reservation.paid? %>
+            <span>This membership is paid for.</span>
+          <% else %>
+            <p>There is <%= number_to_currency(@outstanding_amount / 100) %> <%= $currency %> outstanding for this membership</p>
+            <%= link_to "Make a payment", new_charge_url(reservation: @reservation) %>
+          <% end %>
+        </div>
+
         <div class="l-panel">
           <h2>Support Actions</h2>
           <p>

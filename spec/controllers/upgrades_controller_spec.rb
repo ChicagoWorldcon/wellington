@@ -21,7 +21,7 @@ RSpec.describe UpgradesController, type: :controller do
   let!(:adult_membership) { create(:membership, :adult) }
   let!(:reservation) { create(:reservation, :with_claim_from_user, membership: silver_fern_membership) }
   let!(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
-  let(:user_pays_path) { new_charge_path(reservation: reservation) }
+  let!(:user_pays_path) { new_charge_path(reservation: reservation) }
 
   let(:old_offer) { UpgradeOffer.new(from: silver_fern_membership, to: old_adult_membership) }
   let(:old_adult_membership) do
@@ -76,6 +76,13 @@ RSpec.describe UpgradesController, type: :controller do
       end
 
       it "fails if the offer changes" do
+        price_change_at = 1.second.ago
+        adult_membership.dup.update!(
+          active_from: price_change_at,
+          price: adult_membership.price + 50_00,
+        )
+        adult_membership.update!(active_to: price_change_at)
+
         put :create, params: { id: reservation.id, offer: old_offer.hash }
         expect(response).to redirect_to(reservations_path)
 

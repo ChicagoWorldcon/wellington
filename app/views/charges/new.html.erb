@@ -25,8 +25,10 @@
           <article>
             <div id="error_explanation"></div>
 
-            <p>You need to pay <%= number_to_currency(@outstanding_amount / 100) %> NZD to cover this membership.
-            Please pay the full amount, or choose an installment from the list.</p>
+            <p>
+              You need to pay <%= number_to_currency(@outstanding_amount / 100) %> <%= $currency %> to cover this
+              membership. Please pay the full amount, or choose an installment from the list.
+            </p>
 
             <label class="amount">
               <span>Amount:

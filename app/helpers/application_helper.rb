@@ -33,6 +33,6 @@ module ApplicationHelper
     return nil if total_cents <= 0
 
     formatted_money = number_to_currency(total_cents / 100)
-    "#{formatted_money} NZD"
+    "#{formatted_money} #{$currency}"
   end
 end
