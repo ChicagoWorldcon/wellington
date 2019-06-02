@@ -84,6 +84,8 @@ HOSTNAME=localhost:3000
 # Generate them here https://dashboard.stripe.com/account/apikeys
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
+# https://stripe.com/docs/currencies
+STRIPE_CURRENCY=NZD
 
 # Con specific mailer configuration
 EMAIL_PAYMENTS=registration@conzealand.nz

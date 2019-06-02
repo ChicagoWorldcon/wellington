@@ -110,7 +110,7 @@ class ChargeDescription
   end
 
   def formatted_amount
-    "#{number_to_currency(charge.amount / 100)} NZD"
+    "#{number_to_currency(charge.amount / 100)} #{$currency}"
   end
 
   # This makes it pretty clear we'll be within the thresholds, avoids floating point errors

@@ -18,8 +18,6 @@
 # CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
 # means the charge failed. Check #errors for failure details.
 class Money::ChargeCustomer
-  CURRENCY = "nzd"
-
   attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
 
   def initialize(reservation, user, token, amount_owed, charge_amount: nil)
@@ -110,7 +108,7 @@ class Money::ChargeCustomer
   def create_stripe_charge
     @stripe_charge = Stripe::Charge.create(
       description: ChargeDescription.new(@charge).for_accounts,
-      currency: CURRENCY,
+      currency: $currency,
       customer: user.stripe_id,
       source: @card_id,
       amount: charge_amount,

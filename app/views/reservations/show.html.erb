@@ -30,7 +30,7 @@
         <% if @reservation.paid? %>
           <span>This membership is paid for.</span>
         <% else %>
-          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
+          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> <%= $currency %> outstanding for this membership</p>
           <%= link_to "Make a payment", new_charge_url(reservation: @reservation) %>
         <% end %>
       </div>

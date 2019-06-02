@@ -61,7 +61,7 @@ class UpgradeOffer
 
   # TODO Extract to i18n
   def formatted_price
-    "$%.2f NZD" % (price * 1.0 / 100)
+    "$%.2f #{$currency}" % (price * 1.0 / 100)
   end
 
   def price
