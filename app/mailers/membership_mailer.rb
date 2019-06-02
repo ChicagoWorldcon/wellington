@@ -35,7 +35,8 @@ class MembershipMailer < ApplicationMailer
 
     mail(
       to: [from, to],
-      subject: "CoNZealand Membership Transfer: From #{from} to #{to}"
+      cc: ENV["EMAIL_PAYMENTS"],
+      subject: "CoNZealand: Transferred ##{membership_number} from #{from} to #{to}"
     )
   end
 end
