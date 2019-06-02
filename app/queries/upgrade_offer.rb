@@ -19,9 +19,17 @@ class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
   def self.from(current_membership, target_membership: nil)
+    # List options that are higher price
     options = Membership.active.where("price > ?", current_membership.price)
+
+    # But don't let the name match, i.e. no upgrade adult to adult upgrade option
+    options = options.where.not(name: current_membership.name)
+
+    # If requested, only create offers for the target
     options = options.where(id: target_membership) if target_membership.present?
-    options.map do |membership|
+
+    # Map matching memberships over the class and return as a list
+    options.order_by_price.map do |membership|
       UpgradeOffer.new(from: current_membership, to: membership)
     end
   end

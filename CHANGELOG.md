@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update gems to the latest versions
 - Bugfix on support list, now transferred memberships show user's details correctly
 - Order displayed membership offers by price, highest to lowest
+- Fixed a bug where you could upgrade Adult to Adult memberships after the price increase
 
 ### Removed
 - Nothing significant in this release
