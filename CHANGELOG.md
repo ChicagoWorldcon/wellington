@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing significant in this release
+- Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
 
 ### Changed
 - Renamed Purchase to Reservation for clarity of purpose
