@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Purchase::PlanTransfer is here to capture information about a planned transfer
-class Purchase::PlanTransfer
+# PlanTransfer is here to capture information about a planned transfer
+class PlanTransfer
   FORM_FALSE_VALUES = ["0", false, nil].freeze
 
   include ActiveModel::Model

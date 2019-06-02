@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe Purchase::ApplyTransfer do
+RSpec.describe ApplyTransfer do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
   let(:purchase) { create(:purchase) }
@@ -24,7 +24,7 @@ RSpec.describe Purchase::ApplyTransfer do
   before { Claim.create!(user: seller, purchase: purchase, active_from: purchase.created_at) }
 
   subject(:command) { described_class.new(purchase, from: seller, to: buyer) }
-  let(:soonish) { 1.minute.from_now } # hack, Purchase::ApplyTransfer is relying on Time.now which is a very small time slice
+  let(:soonish) { 1.minute.from_now } # ApplyTransfer is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
     expect { command.call }.to_not change { Purchase.count }

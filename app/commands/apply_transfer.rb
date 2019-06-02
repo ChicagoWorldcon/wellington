@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Purchase::ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
+# ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
-class Purchase::ApplyTransfer
+class ApplyTransfer
   attr_reader :purchase, :sender, :receiver, :errors
 
   def initialize(purchase, from:, to:)

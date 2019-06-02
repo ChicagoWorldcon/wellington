@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe Purchase::PlanTransfer do
+RSpec.describe PlanTransfer do
   let(:purchase)      { create(:purchase, :with_claim_from_user, :with_order_against_membership) }
   let(:email_address) { Faker::Internet.email }
   subject(:query)     { described_class.new(purchase_id: purchase.id, new_owner: email_address) }

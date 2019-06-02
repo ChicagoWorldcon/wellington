@@ -83,7 +83,7 @@ RSpec.describe PurchasesController, type: :controller do
 
     context "after transferring a membership" do
       before do
-        Purchase::ApplyTransfer.new(existing_purchase, from: original_user, to: another_user).call
+        ApplyTransfer.new(existing_purchase, from: original_user, to: another_user).call
       end
 
       it "can't be found for original user" do

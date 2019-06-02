@@ -33,9 +33,12 @@ class TransfersController < ApplicationController
     current_support.transaction do
       owner_detail = @transfer.detail
 
-      service = Purchase::ApplyTransfer.new(@transfer.purchase, from: @transfer.from_user, to: @transfer.to_user)
+      service = ApplyTransfer.new(
+        @transfer.purchase,
+        from: @transfer.from_user,
+        to: @transfer.to_user
+      )
       new_claim = service.call
-
       if !new_claim
         flash[:error] = service.error_message
         redirect_to purchases_path
@@ -46,17 +49,17 @@ class TransfersController < ApplicationController
         new_claim.update!(detail: owner_detail.dup)
       end
 
-      flash[:notice] = %{
-        Transferred membership ##{@transfer.purchase.membership_number}
-        to #{@transfer.to_user.email}
-      }
-
       MembershipMailer.transfer(
         from: @transfer.from_user.email,
         to: @transfer.to_user.email,
         owner_name: owner_detail&.to_s,
         membership_number: @transfer.purchase.membership_number,
       ).deliver_later
+
+      flash[:notice] = %{
+        Transferred membership ##{@transfer.purchase.membership_number}
+        to #{@transfer.to_user.email}
+      }
 
       redirect_to purchases_path
     end
@@ -65,7 +68,7 @@ class TransfersController < ApplicationController
   private
 
   def setup_transfer
-    @transfer = Purchase::PlanTransfer.new(
+    @transfer = PlanTransfer.new(
       new_owner: params[:id],
       purchase_id: params[:purchase_id],
       copy_details: params.dig(:purchase_plan_transfer, :copy_details),
