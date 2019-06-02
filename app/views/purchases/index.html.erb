@@ -90,7 +90,6 @@
               <th>Membership</th>
             </thead>
             <tbody>
-              <% #Purchase.order(:membership_number).eager_load(:membership, :user, active_claim: :detail).each do |purchase| %>
               <% Claim.active.eager_load(:user, :detail, purchase: :membership).each do |claim| %>
                 <tr>
                   <td><%= claim.purchase.membership_number %></td>
