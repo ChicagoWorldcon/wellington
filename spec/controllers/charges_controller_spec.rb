@@ -18,7 +18,6 @@
 require "rails_helper"
 
 RSpec.describe ChargesController, type: :controller do
-  include Warden::Test::Helpers
   render_views
 
   let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user, :pay_as_you_go) }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,5 +21,15 @@ class MembershipMailerPreview < ActionMailer::Preview
       email: Faker::Internet.email,
       token: JWT.encode({data: "stub"}, "secret", "HS256")
     )
+  end
+
+  def transfer
+    purchase = Purchase.last(30).sample
+    plan_transfer = PlanTransfer.new(
+      purchase_id: purchase.id,
+      new_owner: User.all.sample.email,
+    )
+
+    MembershipMailer.transfer(plan_transfer, detail: purchase.active_claim.detail)
   end
 end

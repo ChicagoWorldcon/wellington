@@ -26,4 +26,10 @@ class ApplicationController < ActionController::Base
     end
     @purchase = visible_purchases.find(params[:id])
   end
+
+  def assert_support!
+    if !support_signed_in?
+      head :unauthorized
+    end
+  end
 end

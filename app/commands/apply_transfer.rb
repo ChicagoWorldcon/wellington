@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TransferMembership command makes old claims to purchase inactive and sets up new claim for receiver
+# ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
-class TransferMembership
-  attr_reader :purchase, :sender, :receiver, :errors
+class ApplyTransfer
+  attr_reader :purchase, :sender, :receiver, :errors, :audit_by
 
-  def initialize(purchase, from:, to:)
+  def initialize(purchase, from:, to:, audit_by:)
     @purchase = purchase
     @sender = from
     @receiver = to
+    @audit_by = audit_by
   end
 
   def call
@@ -31,10 +32,18 @@ class TransferMembership
       check_purchase
       return false if errors.any?
 
+      note_content = "#{audit_by} tansferred ##{purchase.membership_number} from #{sender.email} to #{receiver.email}"
+      sender.notes.create!(content: note_content)
+      receiver.notes.create!(content: note_content)
+
       as_at = Time.now
       old_claim.update!(active_to: as_at)
       receiver.claims.create!(active_from: as_at, purchase: purchase)
     end
+  end
+
+  def error_message
+    errors.to_sentence
   end
 
   private

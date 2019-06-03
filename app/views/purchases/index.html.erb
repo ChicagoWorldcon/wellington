@@ -90,13 +90,13 @@
               <th>Membership</th>
             </thead>
             <tbody>
-              <% Purchase.order(:membership_number).eager_load(:membership, :user, active_claim: :detail).each do |purchase| %>
+              <% Claim.active.eager_load(:user, :detail, purchase: :membership).each do |claim| %>
                 <tr>
-                  <td><%= purchase.membership_number %></td>
-                  <td><%= link_to(purchase.active_claim.detail&.legal_name, purchase_path(purchase)) %></td>
-                  <td><%= purchase.active_claim.detail&.preferred_name %></td>
-                  <td><%= purchase.user.email %></td>
-                  <td><%= purchase.membership.name.humanize %></td>
+                  <td><%= claim.purchase.membership_number %></td>
+                  <td><%= link_to(claim.detail&.legal_name, purchase_path(claim.purchase)) %></td>
+                  <td><%= claim.detail&.preferred_name %></td>
+                  <td><%= claim.user.email %></td>
+                  <td><%= claim.purchase.membership %></td>
                 </tr>
               <% end %>
             </tbody>

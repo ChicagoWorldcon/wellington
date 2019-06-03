@@ -98,7 +98,7 @@ RSpec.describe ChargeDescription do
       # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
       Timecop.return
       Timecop.freeze(2.weeks.ago)
-      TransferMembership.new(purchase, from: owner_1, to: owner_2).call
+      ApplyTransfer.new(purchase, from: owner_1, to: owner_2, audit_by: "sneeky octopus").call
       Timecop.freeze(1.second.from_now)
       UpgradeMembership.new(purchase.reload, to: unicorn_membership).call
       Money::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call

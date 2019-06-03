@@ -17,9 +17,6 @@
 require "rails_helper"
 
 RSpec.describe "Account Management Flows", type: :feature do
-  include Warden::Test::Helpers
-  after(:each) { Warden.test_reset! }
-
   let(:user) { create(:user) }
   let(:email_input) { "input[name=email]" }
   let(:submit_button) { "input[type=submit]" }

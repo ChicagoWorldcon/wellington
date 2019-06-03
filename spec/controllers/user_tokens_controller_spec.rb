@@ -18,8 +18,6 @@
 require "rails_helper"
 
 RSpec.describe UserTokensController, type: :controller do
-  include Warden::Test::Helpers
-
   let(:user) { create(:user) }
   let(:jwt_secret) { "unguessable jwt secret" }
 

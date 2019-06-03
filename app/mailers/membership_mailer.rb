@@ -26,4 +26,17 @@ class MembershipMailer < ApplicationMailer
       format.html
     end
   end
+
+  def transfer(from:, to:, owner_name:, membership_number:)
+    @from = from
+    @to = to
+    @owner_name = owner_name
+    @membership_number = membership_number
+
+    mail(
+      to: [from, to],
+      cc: ENV["EMAIL_PAYMENTS"],
+      subject: "CoNZealand: Transferred ##{membership_number} from #{from} to #{to}"
+    )
+  end
 end

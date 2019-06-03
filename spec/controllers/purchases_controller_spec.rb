@@ -18,7 +18,6 @@
 require "rails_helper"
 
 RSpec.describe PurchasesController, type: :controller do
-  include Warden::Test::Helpers
   render_views
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
@@ -74,16 +73,17 @@ RSpec.describe PurchasesController, type: :controller do
     end
 
     context "when signed in as support" do
+      before { sign_in(support) }
+
       it "can view any membership" do
-        sign_in(support)
         get :show, params: { id: existing_purchase.id }
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:ok)
       end
     end
 
     context "after transferring a membership" do
       before do
-        TransferMembership.new(existing_purchase, from: original_user, to: another_user).call
+        ApplyTransfer.new(existing_purchase, from: original_user, to: another_user, audit_by: support.email).call
       end
 
       it "can't be found for original user" do
@@ -112,6 +112,7 @@ RSpec.describe PurchasesController, type: :controller do
           last_name: "is",
           address_line_1: updated_address,
           country: "valid",
+          publication_format: Detail::PAPERPUBS_NONE,
         }
       }
     end
@@ -121,6 +122,16 @@ RSpec.describe PurchasesController, type: :controller do
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    context "when signed in as support" do
+      before { sign_in(support) }
+
+      it "updates when all values present" do
+        post :update, params: valid_params
+        expect(flash[:notice]).to match(/updated/i)
+        expect(Detail.last.address_line_1).to eq updated_address
+      end
+    end
+
     context "when signed in as user" do
       before { sign_in(original_user) }
 
@@ -128,6 +139,18 @@ RSpec.describe PurchasesController, type: :controller do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
         expect(Detail.last.address_line_1).to eq updated_address
+      end
+
+      context "with no details set" do
+        before do
+          Detail.where(claim_id: original_user.active_claims).destroy_all
+        end
+
+        it "updates when all values present" do
+          post :update, params: valid_params
+          expect(flash[:notice]).to match(/updated/i)
+          expect(Detail.last.address_line_1).to eq updated_address
+        end
       end
 
       it "shows error when values not present" do

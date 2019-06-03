@@ -1,3 +1,4 @@
+<%
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
@@ -13,20 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+%>
+Kia Ora!
 
-module PurchasesHelper
-  def card_classes(purchase)
-    if purchase.paid?
-      "card"
-    else
-      "card text-white bg-dark border-light"
-    end
-  end
+You've received this email because <%= @owner_name || "somebody" %> requested to transfer
+membership #<%= @membership_number %>
+from "<%= @from %>"
+to "<%= @to %>"
+and this should now be in affect.
 
-  def update_transfer_url(transfer)
-    purchase_transfer_path(
-      purchase_id: transfer.purchase_id,
-      id: transfer.new_owner,
-    )
-  end
-end
+If you have any questions or concerns, please reply to this email.
+
+CoNZealand – registration@conzealand.nz   
+https://conzealand.nz/
