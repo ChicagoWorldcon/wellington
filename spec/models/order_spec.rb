@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe Order, type: :model do
-  subject(:model) { create(:order, :with_purchase, :with_membership) }
+  subject(:model) { create(:order, :with_reservation, :with_membership) }
 
   it { is_expected.to be_valid }
 
@@ -25,7 +25,7 @@ RSpec.describe Order, type: :model do
     let(:order_placed_at) { 1.month.ago }
     let(:order_upgraded_at) { order_placed_at + 1.week }
     let!(:closed_order) do
-      create(:order, :with_purchase, :with_membership, active_from: order_placed_at, active_to: order_upgraded_at)
+      create(:order, :with_reservation, :with_membership, active_from: order_placed_at, active_to: order_upgraded_at)
     end
 
     subject(:scope) { Order.active_at(time) }
@@ -52,17 +52,17 @@ RSpec.describe Order, type: :model do
   end
 
   context "with multiple orders" do
-    let(:existing_order) { create(:order, :with_purchase, :with_membership) }
-    let(:new_purchase) { create(:purchase) }
+    let(:existing_order) { create(:order, :with_reservation, :with_membership) }
+    let(:new_reservation) { create(:reservation) }
     let(:another_membership) { create(:membership, :unwaged) }
 
     it "lets you create multiple orders of the same membership" do
-      order = Order.new(purchase: new_purchase, membership: existing_order.membership)
+      order = Order.new(reservation: new_reservation, membership: existing_order.membership)
       expect(order).to be_valid
     end
 
-    context "when against the same purchase" do
-      let(:new_order) { Order.new(purchase: existing_order.purchase, membership: another_membership) }
+    context "when against the same reservation" do
+      let(:new_order) { Order.new(reservation: existing_order.reservation, membership: another_membership) }
       let(:upgraded_at) { 1.minute.ago }
 
       it "shows invalid where there are two active orders" do

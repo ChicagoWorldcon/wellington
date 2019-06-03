@@ -16,14 +16,14 @@
 
 #
 class TransfersController < ApplicationController
-  helper PurchasesHelper
+  helper ReservationsHelper
 
   before_action :assert_support!
   before_action :setup_transfer, only: [:show, :update]
 
   def new
-    @purchase = Purchase.find(params[:purchase_id])
-    @detail = @purchase.active_claim.detail
+    @reservation = Reservation.find(params[:reservation_id])
+    @detail = @reservation.active_claim.detail
   end
 
   def show
@@ -34,7 +34,7 @@ class TransfersController < ApplicationController
       owner_detail = @transfer.detail
 
       service = ApplyTransfer.new(
-        @transfer.purchase,
+        @transfer.reservation,
         from: @transfer.from_user,
         to: @transfer.to_user,
         audit_by: current_support.email,
@@ -42,7 +42,7 @@ class TransfersController < ApplicationController
       new_claim = service.call
       if !new_claim
         flash[:error] = service.error_message
-        redirect_to purchases_path
+        redirect_to reservations_path
         return
       end
 
@@ -54,15 +54,15 @@ class TransfersController < ApplicationController
         from: @transfer.from_user.email,
         to: @transfer.to_user.email,
         owner_name: owner_detail&.to_s,
-        membership_number: @transfer.purchase.membership_number,
+        membership_number: @transfer.reservation.membership_number,
       ).deliver_later
 
       flash[:notice] = %{
-        Transferred membership ##{@transfer.purchase.membership_number}
+        Transferred membership ##{@transfer.reservation.membership_number}
         to #{@transfer.to_user.email}
       }
 
-      redirect_to purchases_path
+      redirect_to reservations_path
     end
   end
 
@@ -71,13 +71,13 @@ class TransfersController < ApplicationController
   def setup_transfer
     @transfer = PlanTransfer.new(
       new_owner: params[:id],
-      purchase_id: params[:purchase_id],
+      reservation_id: params[:reservation_id],
       copy_details: params.dig("plan_transfer", "copy_details"),
     )
 
     if !@transfer.valid?
       flash[:error] = @transfer.errors.full_messages.to_sentences
-      redirect_to purchases_path
+      redirect_to reservations_path
     end
   end
 end

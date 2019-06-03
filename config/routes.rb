@@ -32,10 +32,9 @@ Rails.application.routes.draw do
 
   resources :charges
   resources :landing
-  resources :purchases
   resources :themes
   resources :upgrades
-  resources :purchases do
+  resources :reservations do
     resources :transfers, id: /[^\/]+/
   end
 end

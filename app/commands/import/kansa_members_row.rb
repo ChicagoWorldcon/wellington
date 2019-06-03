@@ -77,9 +77,9 @@ class Import::KansaMembersRow
     end
 
     command = ClaimMembership.new(membership_record, customer: new_user, membership_number: membership_number)
-    new_purchase = command.call
+    new_reservation = command.call
 
-    if !new_purchase
+    if !new_reservation
       errors << command.error_message
       return false
     end
@@ -87,7 +87,7 @@ class Import::KansaMembersRow
     name_splitter = Import::KansaNameSplitter.new(cell_for("Full name"))
 
     details = Detail.new(
-      claim:                            new_purchase.active_claim,
+      claim:                            new_reservation.active_claim,
       title:                            name_splitter.title,
       first_name:                       name_splitter.first_name,
       last_name:                        name_splitter.last_name,
@@ -113,23 +113,23 @@ class Import::KansaMembersRow
       return false
     end
 
-    new_purchase.transaction do
-      if new_purchase.installment? && cell_for("Charge Amount").to_i > 0
+    new_reservation.transaction do
+      if new_reservation.installment? && cell_for("Charge Amount").to_i > 0
         Charge.stripe.successful.create!(
           user: new_user,
-          purchase: new_purchase,
+          reservation: new_reservation,
           amount: cell_for("Charge Amount"),
           stripe_id: cell_for("Stripe Payment ID"),
           comment: cell_for("Payment Comment"),
         )
-        new_purchase.update!(state: Purchase::PAID)
+        new_reservation.update!(state: Reservation::PAID)
       end
 
       details.save!
-      new_purchase.update!(created_at: import_date, updated_at: import_date)
-      new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
-      new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
-      new_purchase.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+      new_reservation.update!(created_at: import_date, updated_at: import_date)
+      new_reservation.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+      new_reservation.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+      new_reservation.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
     end
 
     errors.none?

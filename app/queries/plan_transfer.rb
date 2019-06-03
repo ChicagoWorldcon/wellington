@@ -22,18 +22,18 @@ class PlanTransfer
   include ActiveModel::Validations::ClassMethods
 
   attr_accessor :new_owner
-  attr_accessor :purchase_id
+  attr_accessor :reservation_id
   attr_accessor :copy_details
 
-  validates :purchase_id, presence: true
+  validates :reservation_id, presence: true
   validates :new_owner, presence: true, format: Devise.email_regexp
 
-  def purchase
-    @Purchase ||= Purchase.find(purchase_id)
+  def reservation
+    @reservation ||= Reservation.find(reservation_id)
   end
 
   def from_user
-    purchase.user
+    reservation.user
   end
 
   def to_user
@@ -41,7 +41,7 @@ class PlanTransfer
   end
 
   def detail
-    purchase.active_claim.detail
+    reservation.active_claim.detail
   end
 
   # Workaround, forms post 0 or 1 strings for checkboxes

@@ -17,10 +17,10 @@
 # UpgradeMembership command upgrades membership between two levels
 # Truthy return means upgrade was successful, otherwise check errors for explanation
 class UpgradeMembership
-  attr_reader :purchase, :to_membership
+  attr_reader :reservation, :to_membership
 
-  def initialize(purchase, to:)
-    @purchase = purchase
+  def initialize(reservation, to:)
+    @reservation = reservation
     @to_membership = to
   end
 
@@ -28,11 +28,11 @@ class UpgradeMembership
     check_availability
     return false if errors.any?
 
-    purchase.transaction do
+    reservation.transaction do
       as_at = Time.now
       old_order.update!(active_to: as_at)
-      purchase.orders.create!(active_from: as_at, membership: to_membership)
-      purchase.update!(state: Purchase::INSTALLMENT)
+      reservation.orders.create!(active_from: as_at, membership: to_membership)
+      reservation.update!(state: Reservation::INSTALLMENT)
     end
   end
 
@@ -43,13 +43,13 @@ class UpgradeMembership
   private
 
   def check_availability
-    prices = UpgradeOffer.from(purchase.membership, target_membership: to_membership)
+    prices = UpgradeOffer.from(reservation.membership, target_membership: to_membership)
     if !prices.any?
-      errors << "#{purchase.membership} cannot upgrade to #{to_membership}"
+      errors << "#{reservation.membership} cannot upgrade to #{to_membership}"
     end
   end
 
   def old_order
-    purchase.active_order
+    reservation.active_order
   end
 end

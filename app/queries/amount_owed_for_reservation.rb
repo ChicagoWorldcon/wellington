@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Copyright 2019 AJ Esler
 # Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module PurchasesHelper
-  def card_classes(purchase)
-    if purchase.paid?
-      "card"
-    else
-      "card text-white bg-dark border-light"
-    end
+class AmountOwedForReservation
+  attr_reader :reservation
+
+  def initialize(reservation)
+    @reservation = reservation
   end
 
-  def update_transfer_url(transfer)
-    purchase_transfer_path(
-      purchase_id: transfer.purchase_id,
-      id: transfer.new_owner,
-    )
+  def amount_owed
+    membership_cost = reservation.membership.price
+    paid_so_far = reservation.charges.successful.sum(:amount)
+    membership_cost - paid_so_far
   end
 end

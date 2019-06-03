@@ -18,11 +18,11 @@ class Claim < ApplicationRecord
   include ActiveScopes
 
   belongs_to :user
-  belongs_to :purchase
+  belongs_to :reservation
   has_one :detail
 
-  validates :purchase, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same purchase
+  validates :reservation, uniqueness: {
+    conditions: -> { active } # There can't be other active claims against the same reservation
   }, if: :active?
 
   def transferable?

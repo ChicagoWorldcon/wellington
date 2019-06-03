@@ -93,7 +93,7 @@ RSpec.describe Import::PresupportersRow do
 
   context "with one member" do
     let(:imported_user) { User.last }
-    let(:imported_purchase) { Purchase.last }
+    let(:imported_reservation) { Reservation.last }
 
     it "executes successfully" do
       expect(command.call).to be_truthy
@@ -107,7 +107,7 @@ RSpec.describe Import::PresupportersRow do
 
     it "puts a new active order against that membership" do
       expect { command.call }.to change { supporter.reload.active_orders.count }.by(1)
-      expect(imported_user.purchases).to eq(supporter.purchases)
+      expect(imported_user.reservations).to eq(supporter.reservations)
     end
 
     it "creates detail record from row" do
@@ -140,7 +140,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "sets membership to paid" do
-        expect(imported_purchase.state).to eq Purchase::PAID
+        expect(imported_reservation.state).to eq Reservation::PAID
       end
 
       context "when voted in site selection" do
@@ -152,16 +152,16 @@ RSpec.describe Import::PresupportersRow do
         end
 
         it "sets membership to paid" do
-          expect(imported_purchase.state).to eq Purchase::PAID
+          expect(imported_reservation.state).to eq Reservation::PAID
         end
 
         # Light integration check, sorry if this test knows a lot
         it "lets you upgrade to adult" do
-          upgrader = UpgradeMembership.new(imported_purchase, to: adult)
+          upgrader = UpgradeMembership.new(imported_reservation, to: adult)
           expect(upgrader.call).to be_truthy
-          imported_purchase.reload
-          expect(imported_purchase.membership).to eq(adult)
-          expect(imported_purchase).to be_installment
+          imported_reservation.reload
+          expect(imported_reservation.membership).to eq(adult)
+          expect(imported_reservation).to be_installment
           expect(successful_cash_charges.sum(:amount)).to be > supporter.price
           expect(successful_cash_charges.sum(:amount)).to be < adult.price
         end
@@ -207,13 +207,13 @@ RSpec.describe Import::PresupportersRow do
         end
       end
 
-      it "set created_at on purchase dates based on spreadsheet" do
+      it "set created_at on reservation dates based on spreadsheet" do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
         expect(Claim.last.created_at).to be < 1.week.ago
-        expect(imported_purchase.created_at).to be < 1.week.ago
-        expect(imported_purchase.created_at).to eq(imported_purchase.updated_at)
+        expect(imported_reservation.created_at).to be < 1.week.ago
+        expect(imported_reservation.created_at).to eq(imported_reservation.updated_at)
       end
 
       it "sets the active_from fields based on spreadsheet" do
@@ -229,7 +229,7 @@ RSpec.describe Import::PresupportersRow do
         let(:timestamp) { "" }
 
         it "just uses the current date" do
-          expect(imported_purchase.created_at).to be > 1.minute.ago
+          expect(imported_reservation.created_at).to be > 1.minute.ago
         end
       end
     end

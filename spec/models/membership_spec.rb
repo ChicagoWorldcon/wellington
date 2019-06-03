@@ -17,18 +17,18 @@
 require "rails_helper"
 
 RSpec.describe Membership, type: :model do
-  subject(:model) { create(:membership, :adult, :with_order_for_purchase) }
+  subject(:model) { create(:membership, :adult, :with_order_for_reservation) }
 
   it { is_expected.to be_valid }
 
-  describe "#active_purchases" do
-    it "can access purchases directly" do
-      expect(model.purchases.count).to be(1)
+  describe "#active_reservations" do
+    it "can access reservations directly" do
+      expect(model.reservations.count).to be(1)
     end
 
-    it "doesn't list purchases that become inactive" do
+    it "doesn't list reservations that become inactive" do
       model.orders.update_all(active_to: 1.minute.ago)
-      expect(model.purchases.count).to be(0)
+      expect(model.reservations.count).to be(0)
     end
   end
 

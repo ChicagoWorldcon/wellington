@@ -17,8 +17,8 @@
 %>
 Kia Ora <%= @detail.playful_nickname %>!
 
-We've sent you this email to let you know that you've just finished paying for your <%= @purchase.membership %> membership,
-and that your membership number is #<%= @purchase.membership_number %>.
+We've sent you this email to let you know that you've just finished paying for your <%= @reservation.membership %> membership,
+and that your membership number is #<%= @reservation.membership_number %>.
 
 You paid <%= number_to_currency(@charge.amount / 100) %> NZD which will show up on your statement with the identifier
 "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".

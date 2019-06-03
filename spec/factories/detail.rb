@@ -25,7 +25,7 @@ FactoryBot.define do
 
     trait :with_claim do
       after(:build) do |new_detail, _evaluator|
-        new_detail.claim = create(:claim, :with_user, :with_purchase)
+        new_detail.claim = create(:claim, :with_user, :with_reservation)
       end
     end
 

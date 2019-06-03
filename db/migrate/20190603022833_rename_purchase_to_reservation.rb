@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 AJ Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class AmountOwedForPurchase
-  attr_reader :purchase
-
-  def initialize(purchase)
-    @purchase = purchase
-  end
-
-  def amount_owed
-    membership_cost = purchase.membership.price
-    paid_so_far = purchase.charges.successful.sum(:amount)
-    membership_cost - paid_so_far
+class RenamePurchaseToReservation < ActiveRecord::Migration[5.2]
+  def change
+    rename_table :purchases, :reservations
+    rename_column :charges, :purchase_id, :reservation_id
+    rename_column :claims, :purchase_id, :reservation_id
+    rename_column :orders, :purchase_id, :reservation_id
   end
 end

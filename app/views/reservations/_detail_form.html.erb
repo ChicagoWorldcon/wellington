@@ -21,7 +21,7 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<%= form_for(@purchase) do |purchase_form| %>
+<%= form_for(@reservation) do |reservation_form| %>
   <%= fields_for(@detail) do |detail_form| %>
     <p>
       For more information about how we handle and use your personal information, please read our
@@ -29,18 +29,18 @@
       <a href="https://conzealand.nz/about-conzealand/policies-and-expectations/" target="_blank" rel="noopener">Terms of Service</a>.
     </p>
 
-    <% if !@purchase.persisted? && @current_memberships.present? %>
+    <% if !@reservation.persisted? && @current_memberships.present? %>
       <fieldset class="l-v-spacing">
         <legend>Review Your Memberships</legend>
         <p>
           You also have <%= @current_memberships %>. If you'd rather upgrade, pay for or change those details, head over
-          to the <%= link_to "Review Memberships", purchases_path %> section.
+          to the <%= link_to "Review Memberships", reservations_path %> section.
         </p>
       </fieldset>
     <% end %>
 
     <fieldset class="l-v-spacing">
-      <% if !(@purchase.present? && @purchase.persisted?) %>
+      <% if !(@reservation.present? && @reservation.persisted?) %>
         <legend>New Membership Details</legend>
 
         <div class="form-group">
@@ -253,11 +253,11 @@
 
     <div class="l-v-spacing-both">
       <div class="form-group">
-        <input type="submit" value="<%= detail_form_submit_text(@purchase) %>" class="btn btn-m-full-width">
+        <input type="submit" value="<%= detail_form_submit_text(@reservation) %>" class="btn btn-m-full-width">
       </div>
 
       <p>
-        This purchase will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
+        This charge will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
         payment processor.
       </p>
 

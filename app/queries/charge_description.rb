@@ -77,19 +77,19 @@ class ChargeDescription
   end
 
   def maybe_member_name
-    claims = charge.purchase.claims
+    claims = charge.reservation.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.detail
   end
 
   def membership_type
-    "#{charged_membership} member #{charge.purchase.membership_number}"
+    "#{charged_membership} member #{charge.reservation.membership_number}"
   end
 
   def charged_membership
     return @charged_membership if @charged_membership.present?
 
-    orders = charge.purchase.orders
+    orders = charge.reservation.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
   end
 
@@ -102,11 +102,11 @@ class ChargeDescription
   end
 
   def orders_so_far
-    charge.purchase.orders.where("created_at <= ?", charge_active_at)
+    charge.reservation.orders.where("created_at <= ?", charge_active_at)
   end
 
   def charges_so_far
-    charge.purchase.charges.successful.where("created_at <= ?", charge_active_at)
+    charge.reservation.charges.successful.where("created_at <= ?", charge_active_at)
   end
 
   def formatted_amount

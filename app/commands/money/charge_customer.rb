@@ -20,10 +20,10 @@
 class Money::ChargeCustomer
   CURRENCY = "nzd"
 
-  attr_reader :purchase, :user, :token, :charge_amount, :charge, :amount_owed
+  attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
 
-  def initialize(purchase, user, token, amount_owed, charge_amount: nil)
-    @purchase = purchase
+  def initialize(reservation, user, token, amount_owed, charge_amount: nil)
+    @reservation = reservation
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
@@ -33,7 +33,7 @@ class Money::ChargeCustomer
   def call
     @charge = ::Charge.stripe.pending.create!(
       user: user,
-      purchase: purchase,
+      reservation: reservation,
       stripe_id: token,
       amount: charge_amount,
       comment: "Pending stripe payment",
@@ -59,13 +59,13 @@ class Money::ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    purchase.transaction do
+    reservation.transaction do
       @charge.comment = ChargeDescription.new(@charge).for_users
       @charge.save!
       if fully_paid?
-        purchase.update!(state: Purchase::PAID)
+        reservation.update!(state: Reservation::PAID)
       else
-        purchase.update!(state: Purchase::INSTALLMENT)
+        reservation.update!(state: Reservation::INSTALLMENT)
       end
     end
 
@@ -90,7 +90,7 @@ class Money::ChargeCustomer
       errors << "amount must be more than 0 cents"
     end
     if charge_amount > amount_owed
-      errors << "refusing to overpay for purchase"
+      errors << "refusing to overpay for reservation"
     end
   end
 

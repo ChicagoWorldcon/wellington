@@ -21,7 +21,7 @@ RSpec.describe Token::LookupOrCreateUser do
   let(:good_secret) { "you'll never find the treasure" }
   let(:good_email) { "willy_wönka@chocolate_factory.nz" }
   let(:user) { create(:user) }
-  let(:good_path) { "/purchases" }
+  let(:good_path) { "/reservations" }
   let(:bad_path) { "/notonthelist" }
   let(:encoded_token) { JWT.encode(login_info, good_secret, "HS256") }
 

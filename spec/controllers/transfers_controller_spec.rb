@@ -19,19 +19,19 @@ require "rails_helper"
 RSpec.describe TransfersController, type: :controller do
   render_views
 
-  let!(:purchase) { create(:purchase, :with_claim_from_user, :with_order_against_membership) }
+  let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
   let!(:support) { create(:support) }
-  let!(:old_user) { purchase.user }
+  let!(:old_user) { reservation.user }
   let!(:new_user) { create(:user) }
 
   let(:new_params) do
-    { purchase_id: purchase.id }
+    { reservation_id: reservation.id }
   end
 
   let(:show_update_params) do
     {
       id: new_user.email,
-      purchase_id: purchase.id,
+      reservation_id: reservation.id,
     }
   end
 
@@ -71,7 +71,7 @@ RSpec.describe TransfersController, type: :controller do
 
   describe "#update" do
     before { sign_in(support) }
-    subject(:update_purchase_transfer) { patch(:update, params: show_update_params) }
+    subject(:update_reservation_transfer) { patch(:update, params: show_update_params) }
 
     context "when there aren't errors" do
       before do
@@ -81,14 +81,14 @@ RSpec.describe TransfersController, type: :controller do
       end
 
       it "transfers between users" do
-        expect { update_purchase_transfer }
-          .to change { purchase.reload.user }
+        expect { update_reservation_transfer }
+          .to change { reservation.reload.user }
           .from(old_user)
           .to(new_user)
       end
 
       it "doens't copy details" do
-        expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
+        expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.detail }
         expect(new_user.reload.claims.last.detail).to be_nil
       end
 
@@ -96,7 +96,7 @@ RSpec.describe TransfersController, type: :controller do
         let(:show_update_params) do
           {
             id: new_user.email,
-            purchase_id: purchase.id,
+            reservation_id: reservation.id,
             plan_transfer: {
               copy_details: "1",
             }
@@ -104,7 +104,7 @@ RSpec.describe TransfersController, type: :controller do
         end
 
         it "does copy details over" do
-          expect { update_purchase_transfer }.to_not change { old_user.reload.claims.last.detail }
+          expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.detail }
           expect(new_user.reload.claims.last.detail).to be_present
         end
       end
@@ -113,7 +113,7 @@ RSpec.describe TransfersController, type: :controller do
     context "when there are errors with submission" do
       before do
         expect(MembershipMailer).to_not receive(:transfer)
-        purchase.update!(state: Purchase::INSTALLMENT)
+        reservation.update!(state: Reservation::INSTALLMENT)
         patch :update, params: show_update_params
       end
 
@@ -122,7 +122,7 @@ RSpec.describe TransfersController, type: :controller do
       end
 
       it "redirects back to transfers path" do
-        expect(response).to redirect_to(purchases_path)
+        expect(response).to redirect_to(reservations_path)
       end
     end
   end

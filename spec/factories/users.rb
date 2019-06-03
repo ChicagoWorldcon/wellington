@@ -18,11 +18,11 @@ FactoryBot.define do
   factory :user do
     email { Faker::Internet.unique.email }
 
-    trait :with_purchase do
+    trait :with_reservation do
       after(:create) do |new_user|
-        claim = create(:claim, :with_purchase, user: new_user)
-        membership_price = claim.purchase.membership.price
-        charge = create(:charge, user: new_user, purchase: claim.purchase, amount: membership_price)
+        claim = create(:claim, :with_reservation, user: new_user)
+        membership_price = claim.reservation.membership.price
+        charge = create(:charge, user: new_user, reservation: claim.reservation, amount: membership_price)
         new_user.claims << claim
         new_user.charges << charge
       end

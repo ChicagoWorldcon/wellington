@@ -15,20 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PurchasesController < ApplicationController
-  before_action :lookup_purchase, only: [:show, :update]
+class ReservationsController < ApplicationController
+  before_action :lookup_reservation, only: [:show, :update]
 
   # TODO(issue #24) list all members for people not logged in
   def index
     if user_signed_in?
-      @my_purcahses = Purchase.joins(:user).where(users: {id: current_user})
+      @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
       @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
     end
   end
 
   def new
-    @purchase = Purchase.new
+    @reservation = Reservation.new
     @detail = Detail.new
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
@@ -38,9 +38,9 @@ class PurchasesController < ApplicationController
   end
 
   def show
-    @detail = @purchase.active_claim.detail || Detail.new
-    @my_offer = MembershipOffer.new(@purchase.membership)
-    @outstanding_amount = AmountOwedForPurchase.new(@purchase).amount_owed
+    @detail = @reservation.active_claim.detail || Detail.new
+    @my_offer = MembershipOffer.new(@reservation.membership)
+    @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
 
@@ -53,38 +53,38 @@ class PurchasesController < ApplicationController
       # TODO nicer errors
       raise "Offer not available to user" if !matching_offer.present?
 
-      purchase_service = ClaimMembership.new(matching_offer.membership, customer: current_user)
-      new_purchase = purchase_service.call
+      service = ClaimMembership.new(matching_offer.membership, customer: current_user)
+      new_reservation = service.call
 
       # TODO nicer errors
-      raise "Failed to purchase membership" if !new_purchase.present?
+      raise "Failed to reserve membership" if !new_reservation.present?
 
       detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
-      detail.claim = new_purchase.active_claim
+      detail.claim = new_reservation.active_claim
 
       # TODO nicer errors
       detail.save!
 
-      flash[:notice] = "Congratulations member ##{new_purchase.membership_number}! You've just reserved a #{matching_offer.membership} membership"
-      if new_purchase.membership.price.zero?
-        redirect_to purchases_path
+      flash[:notice] = "Congratulations member ##{new_reservation.membership_number}! You've just reserved a #{matching_offer.membership} membership"
+      if new_reservation.membership.price.zero?
+        redirect_to reservations_path
       else
-        redirect_to new_charge_path(purchase: new_purchase)
+        redirect_to new_charge_path(reservation: new_reservation)
       end
     end
   end
 
   def update
-    @purchase.transaction do
-      current_details = @purchase.active_claim.detail
-      current_details ||= Detail.new(claim: @purchase.active_claim)
+    @reservation.transaction do
+      current_details = @reservation.active_claim.detail
+      current_details ||= Detail.new(claim: @reservation.active_claim)
       submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
       if current_details.update(submitted_values)
-        flash[:notice] = "Details for #{current_details} member ##{@purchase.membership_number} have been updated"
-        redirect_to purchases_path
+        flash[:notice] = "Details for #{current_details} member ##{@reservation.membership_number} have been updated"
+        redirect_to reservations_path
       else
         flash[:error] = current_details.errors.full_messages.to_sentence
-        redirect_to purchase_path(@purchase)
+        redirect_to reservation_path(@reservation)
       end
     end
   end

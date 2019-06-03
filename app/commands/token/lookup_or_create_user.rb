@@ -22,8 +22,8 @@ class Token::LookupOrCreateUser
   attr_reader :secret
 
   PATH_LIST = [
-      "/purchases/new",
-      "/purchases",
+      "/reservations/new",
+      "/reservations",
   ].freeze
 
   def initialize(token:, secret:)

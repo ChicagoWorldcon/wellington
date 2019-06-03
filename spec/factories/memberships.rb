@@ -88,9 +88,9 @@ FactoryBot.define do
       description { "Presupport membership" }
     end
 
-    trait :with_order_for_purchase do
+    trait :with_order_for_reservation do
       after(:create) do |new_membership, _evaluator|
-        new_membership.orders << create(:order, :with_purchase, membership: new_membership)
+        new_membership.orders << create(:order, :with_reservation, membership: new_membership)
       end
     end
   end

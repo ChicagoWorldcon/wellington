@@ -37,6 +37,6 @@ class MembershipsHeldSummary
   private
 
   def memberships
-    Membership.joins(:purchases).where(purchases: {id: current_user.purchases})
+    Membership.joins(:reservations).where(reservations: {id: current_user.reservations})
   end
 end

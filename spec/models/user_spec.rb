@@ -17,19 +17,19 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  subject(:user) { create(:user, :with_purchase) }
+  subject(:user) { create(:user, :with_reservation) }
 
   it { is_expected.to be_valid }
 
   # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
-  # the :with_purchase trait.
+  # the :with_reservation trait.
   describe "user factory links" do
-    it "should be able to access purchase directly" do
-      expect(user.purchases).to include user.claims.active.first.purchase
+    it "should be able to access reservation directly" do
+      expect(user.reservations).to include user.claims.active.first.reservation
     end
 
     it "should have a charge equal to the price of the membership" do
-      expect(user.charges.first.amount).to eq user.purchases.first.membership.price
+      expect(user.charges.first.amount).to eq user.reservations.first.membership.price
     end
   end
 

@@ -19,12 +19,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def lookup_purchase
-    visible_purchases = Purchase.joins(:user)
+  def lookup_reservation
+    visible_reservations = Reservation.joins(:user)
     if !support_signed_in?
-      visible_purchases = visible_purchases.where(users: { id: current_user })
+      visible_reservations = visible_reservations.where(users: { id: current_user })
     end
-    @purchase = visible_purchases.find(params[:id])
+    @reservation = visible_reservations.find(params[:id])
   end
 
   def assert_support!

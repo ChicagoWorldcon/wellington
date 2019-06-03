@@ -22,12 +22,12 @@
 #    v       v       /     \
 #     \     /       /       \
 #      \   /    Product  Membership
-#     Purchase      \       /
+#   Reservation     \       /
 #         \          \     /
 #          \          ^   ^
 #           `--------< Order
 #
-# ClaimMembership takes a user and a membership and creates a claim and purchase for them.
+# ClaimMembership takes a user and a membership and creates a claim and reservation for them.
 class ClaimMembership
   FIRST_MEMBERSHIP_NUMER = 100
 
@@ -41,24 +41,24 @@ class ClaimMembership
 
   def call
     customer.transaction do
-      Purchase.lock # pessimistic membership number uniqueness
+      Reservation.lock # pessimistic membership number uniqueness
       as_at = Time.now
-      purchase = Purchase.create!(
+      reservation = Reservation.create!(
         membership_number: (membership_number || next_membership_number),
-        state: (membership.price.zero? ? Purchase::PAID : Purchase::INSTALLMENT)
+        state: (membership.price.zero? ? Reservation::PAID : Reservation::INSTALLMENT)
       )
-      Order.create!(active_from: as_at, membership: membership, purchase: purchase)
-      Claim.create!(active_from: as_at, user: customer, purchase: purchase)
-      purchase
+      Order.create!(active_from: as_at, membership: membership, reservation: reservation)
+      Claim.create!(active_from: as_at, user: customer, reservation: reservation)
+      reservation
     end
   end
 
   private
 
   def next_membership_number
-    last_purchase = Purchase.order(:membership_number).last
-    if last_purchase.present?
-      last_purchase.membership_number + 1
+    last_reservation = Reservation.order(:membership_number).last
+    if last_reservation.present?
+      last_reservation.membership_number + 1
     else
       FIRST_MEMBERSHIP_NUMER
     end

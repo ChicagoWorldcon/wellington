@@ -18,10 +18,10 @@ class Order < ApplicationRecord
   include ActiveScopes
 
   validates :membership, presence: true
-  validates :purchase, presence: true, uniqueness: {
-    conditions: -> { active } # There can't be other active orders against the same purchase
+  validates :reservation, presence: true, uniqueness: {
+    conditions: -> { active } # There can't be other active orders against the same reservation
   }, if: :active?
 
   belongs_to :membership
-  belongs_to :purchase
+  belongs_to :reservation
 end

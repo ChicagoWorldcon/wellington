@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ApplyTransfer command makes old claims to purchase inactive and sets up new claim for receiver
+# ApplyTransfer command makes old claims to reservation inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
 class ApplyTransfer
-  attr_reader :purchase, :sender, :receiver, :errors, :audit_by
+  attr_reader :reservation, :sender, :receiver, :errors, :audit_by
 
-  def initialize(purchase, from:, to:, audit_by:)
-    @purchase = purchase
+  def initialize(reservation, from:, to:, audit_by:)
+    @reservation = reservation
     @sender = from
     @receiver = to
     @audit_by = audit_by
@@ -28,17 +28,17 @@ class ApplyTransfer
 
   def call
     @errors = []
-    purchase.transaction do
-      check_purchase
+    reservation.transaction do
+      check_reservation
       return false if errors.any?
 
-      note_content = "#{audit_by} tansferred ##{purchase.membership_number} from #{sender.email} to #{receiver.email}"
+      note_content = "#{audit_by} tansferred ##{reservation.membership_number} from #{sender.email} to #{receiver.email}"
       sender.notes.create!(content: note_content)
       receiver.notes.create!(content: note_content)
 
       as_at = Time.now
       old_claim.update!(active_to: as_at)
-      receiver.claims.create!(active_from: as_at, purchase: purchase)
+      receiver.claims.create!(active_from: as_at, reservation: reservation)
     end
   end
 
@@ -48,22 +48,22 @@ class ApplyTransfer
 
   private
 
-  def check_purchase
+  def check_reservation
     if !old_claim.present?
-      errors << "purchase not held"
-      return # bail, avoid leaking information about purchases
+      errors << "reservation not held"
+      return # bail, avoid leaking information about reservations
     end
 
     if !old_claim.transferable?
       errors << "claim is not transferable"
     end
 
-    if !purchase.transferable?
-      errors << "purchase is not transferable"
+    if !reservation.transferable?
+      errors << "reservation is not transferable"
     end
   end
 
   def old_claim
-    @old_claim ||= sender.claims.active.find_by(purchase: purchase)
+    @old_claim ||= sender.claims.active.find_by(reservation: reservation)
   end
 end

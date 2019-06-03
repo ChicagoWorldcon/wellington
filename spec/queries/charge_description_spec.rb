@@ -21,7 +21,7 @@ RSpec.describe ChargeDescription do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:ages_ago) { 1.year.ago } # needs to be available to be purchased
+  let(:ages_ago) { 1.year.ago } # needs to be available to be reserved
 
   let!(:horse_membership)   { create(:membership, name: "horse", price: 100_00, active_from: ages_ago) }
   let!(:pony_membership)    { create(:membership, name: "pony", price: 200_00, active_from: ages_ago) }
@@ -34,17 +34,17 @@ RSpec.describe ChargeDescription do
     subject(:for_accounts) { ChargeDescription.new(charge).for_accounts }
 
     let(:membership_number) { 5423.to_s }
-    let(:charge) { create(:charge, purchase: unicorn_purchase) }
+    let(:charge) { create(:charge, reservation: unicorn_reservation) }
 
-    let(:unicorn_purchase) do
-      create(:purchase, :with_claim_from_user,
+    let(:unicorn_reservation) do
+      create(:reservation, :with_claim_from_user,
         membership_number: membership_number,
         membership: unicorn_membership,
       )
     end
 
     context "with details" do
-      let!(:user_details) { create(:detail, claim: unicorn_purchase.active_claim) }
+      let!(:user_details) { create(:detail, claim: unicorn_reservation.active_claim) }
       it { is_expected.to match %r{\$3.00 NZD Installment for}i }
       it { is_expected.to include(user_details.to_s) }
       it { is_expected.to match %r{as Unicorn member}i }
@@ -56,14 +56,14 @@ RSpec.describe ChargeDescription do
     subject(:for_users) { ChargeDescription.new(charge).for_users }
 
     context "when charge succeeds" do
-      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, purchase: unicorn_purchase) }
+      let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
+      let(:charge) { create(:charge, reservation: unicorn_reservation) }
       it { is_expected.to_not match(/failed/i) }
     end
 
     context "when charge fails" do
-      let(:unicorn_purchase) { create(:purchase, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, :failed, purchase: unicorn_purchase) }
+      let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
+      let(:charge) { create(:charge, :failed, reservation: unicorn_reservation) }
       it { is_expected.to match(/failed/i) }
     end
   end
@@ -75,34 +75,34 @@ RSpec.describe ChargeDescription do
     before do
       # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
       Timecop.freeze(4.weeks.ago)
-      purchase = ClaimMembership.new(horse_membership, customer: owner_1).call
-      expect(purchase).to be_installment
-      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      reservation = ClaimMembership.new(horse_membership, customer: owner_1).call
+      expect(reservation).to be_installment
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
       Timecop.freeze(1.day.from_now)
-      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 49_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 49_00).call
       Timecop.freeze(2.days.from_now)
-      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 1_00).call
-      expect(purchase).to be_paid
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 1_00).call
+      expect(reservation).to be_paid
 
       # 3 weeks ago, we upgraded to a $200 pony and started paying down 1 day at a time
       Timecop.return
       Timecop.freeze(3.weeks.ago)
-      UpgradeMembership.new(purchase.reload, to: pony_membership).call
-      expect(purchase).to be_installment
+      UpgradeMembership.new(reservation.reload, to: pony_membership).call
+      expect(reservation).to be_installment
       Timecop.freeze(1.second.from_now)
-      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
       Timecop.freeze(1.day.from_now)
-      Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
-      expect(purchase).to be_paid
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
+      expect(reservation).to be_paid
 
       # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
       Timecop.return
       Timecop.freeze(2.weeks.ago)
-      ApplyTransfer.new(purchase, from: owner_1, to: owner_2, audit_by: "sneeky octopus").call
+      ApplyTransfer.new(reservation, from: owner_1, to: owner_2, audit_by: "sneeky octopus").call
       Timecop.freeze(1.second.from_now)
-      UpgradeMembership.new(purchase.reload, to: unicorn_membership).call
-      Money::ChargeCustomer.new(purchase, owner_2, stripe_helper.generate_card_token, 100_00).call
-      expect(purchase).to be_paid
+      UpgradeMembership.new(reservation.reload, to: unicorn_membership).call
+      Money::ChargeCustomer.new(reservation, owner_2, stripe_helper.generate_card_token, 100_00).call
+      expect(reservation).to be_paid
     end
 
     # Even after all this setup, you should still be able to call on the origonal charge and get back results that look

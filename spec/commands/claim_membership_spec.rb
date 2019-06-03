@@ -27,7 +27,7 @@ RSpec.describe ClaimMembership do
       expect(command.call).to be_truthy
     end
 
-    it "creates a purchase and gives a claim to the user" do
+    it "creates a reservation and gives a claim to the user" do
       expect { command.call }.to change { user.reload.active_claims.count }.by(1)
     end
 
@@ -39,22 +39,22 @@ RSpec.describe ClaimMembership do
       expect { command.call }.to_not change { Charge.count }
     end
 
-    it "sets purchase to installment" do
+    it "sets reservation to installment" do
       command.call
-      expect(Purchase.last).to be_installment
+      expect(Reservation.last).to be_installment
     end
 
     it "gives us room to add guest of honor and staff" do
       command.call
-      expect(Purchase.last.membership_number).to eq(100)
+      expect(Reservation.last.membership_number).to eq(100)
     end
 
     context "with a zero cost membership" do
       let(:membership) { create(:membership, :kid_in_tow) }
 
-      it "sets purchase to paid" do
+      it "sets reservation to paid" do
         command.call
-        expect(Purchase.last).to be_paid
+        expect(Reservation.last).to be_paid
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe ClaimMembership do
 
       it "sets the membership number" do
         command.call
-        expect(Purchase.last.membership_number).to eq membership_number
+        expect(Reservation.last.membership_number).to eq membership_number
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe ClaimMembership do
       it "increments membership numbers" do
         command.call
         command.call
-        expect(Purchase.second.membership_number - Purchase.first.membership_number).to be 1
+        expect(Reservation.second.membership_number - Reservation.first.membership_number).to be 1
       end
     end
   end

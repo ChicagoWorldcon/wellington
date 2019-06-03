@@ -14,22 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Preview all emails at http://localhost:3000/rails/mailers/membership_mailer
-class MembershipMailerPreview < ActionMailer::Preview
-  def login_link
-    MembershipMailer.login_link(
-      email: Faker::Internet.email,
-      token: JWT.encode({data: "stub"}, "secret", "HS256")
-    )
+module ReservationsHelper
+  def card_classes(reservation)
+    if reservation.paid?
+      "card"
+    else
+      "card text-white bg-dark border-light"
+    end
   end
 
-  def transfer
-    reservation = Reservation.last(30).sample
-    plan_transfer = PlanTransfer.new(
-      reservation_id: reservation.id,
-      new_owner: User.all.sample.email,
+  def update_transfer_url(transfer)
+    reservation_transfer_path(
+      reservation_id: transfer.reservation_id,
+      id: transfer.new_owner,
     )
-
-    MembershipMailer.transfer(plan_transfer, detail: reservation.active_claim.detail)
   end
 end
