@@ -73,7 +73,7 @@ RSpec.describe PlanTransfer do
       end
     end
 
-    ["0", false].each do |value|
+    ["0", false, nil].each do |value|
       it "is false when set to #{value}" do
         query = described_class.new(copy_details: value)
         expect(query.copy_details?).to be_falsey
