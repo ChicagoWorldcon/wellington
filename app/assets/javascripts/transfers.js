@@ -15,5 +15,5 @@
  */
 
 $(document).ready(function() {
-  $(".full-members-list").DataTable();
+  $(".transfer-emails-list").DataTable();
 });

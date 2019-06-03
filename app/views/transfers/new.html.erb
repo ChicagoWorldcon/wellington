@@ -29,15 +29,17 @@
           &lt;<%= @purchase.user.email %>&gt;
         </h2>
 
-        <p>This process will send email to <%= @detail || @purchase.user.email %> and the new email address.</p>
+        <p>
+          This process will send email to <%= @detail || @purchase.user.email %> and the new email address.
+        </p>
 
-        <table class="table table-hover table-striped table-dark table-borderless table-responsive-lg">
+        <table class="transfer-emails-list table table-hover table-striped table-dark table-borderless table-responsive-lg">
           <thead>
             <th>Email</th>
             <th>Membership Details</th>
           </thead>
           <tbody>
-            <%= User.order(:email).eager_load(active_claims: :detail).find_each do |user| %>
+            <%= User.eager_load(active_claims: :detail).find_each do |user| %>
               <tr>
                 <td><%= link_to user.email, purchase_transfer_path(user.email, purchase_id: @purchase)  %></td>
                 <td><%= user.active_claims.map(&:detail).map(&:to_s).to_sentence %></td>
