@@ -56,6 +56,12 @@ RSpec.describe UpgradeOffer do
     context "when adult" do
       let(:current_membership) { adult }
       it { is_expected.to be_empty }
+
+      it "doesn't display adult when prices change" do
+        adult.update!(active_to: 1.second.ago)
+        create(:membership, :adult, price: 500_00)
+        expect(subject).to be_empty
+      end
     end
 
     context "when unwaged" do
@@ -70,6 +76,18 @@ RSpec.describe UpgradeOffer do
       it { is_expected.to include(/adult/i) }
       it { is_expected.to_not include(/unwaged/i) }
       it { is_expected.to_not include(/kid in tow/i) }
+
+      context "when prices change" do
+        before do
+          adult.update!(active_to: 1.second.ago)
+          young_adult.update!(active_to: 1.second.ago)
+          create(:membership, :adult, price: 500_00)
+          create(:membership, :young_adult, price: 450_00)
+        end
+
+        it { is_expected.to include(/adult/i) }
+        it { is_expected.to_not include(/young adult/i) }
+      end
     end
 
     context "when kid_in_tow" do
