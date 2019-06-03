@@ -18,39 +18,79 @@ FactoryBot.define do
   factory :membership do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
+    can_vote { false }
+    can_attend { false }
 
     trait :adult do
       name { :adult }
       price { 370_00 }
+      can_vote { true }
+      can_attend { true }
     end
 
     trait :young_adult do
       name { :young_adult }
       price { 225_00 }
       description { "born in or after 2000" }
+      can_vote { true }
+      can_attend { true }
     end
 
     trait :unwaged do
       name { :unwaged }
       price { 225_00 }
       description { "NZ residents only" }
+      can_vote { true }
+      can_attend { true }
     end
 
     trait :child do
       name { :child }
       price { 105_00 }
       description { "born in or after 2005" }
+      can_attend { true }
     end
 
     trait :kid_in_tow do
       name { :kid_in_tow }
       price { 0 }
       description { "born in or after 2015" }
+      can_attend { true }
     end
 
     trait :supporting do
       name { :supporting }
       price { 75_00 }
+      can_vote { true }
+    end
+
+    # Supporting membership with $50 credit
+    trait :supporting_plus do
+      name { "supporting+" }
+      price { 75_00 + 50_00 }
+      can_vote { true }
+      active_to { 1.day.ago }
+    end
+
+    trait :press_pass do
+      name { :press_pass }
+      price { 0 }
+      can_attend { true }
+      active_to { 1.day.ago }
+    end
+
+    trait :sponsor do
+      name { :sponsor }
+      price { 0 }
+      can_attend { true }
+      active_to { 1.day.ago }
+    end
+
+    trait :dealer do
+      name { :dealer }
+      price { 0 }
+      can_attend { true }
+      active_to { 1.day.ago }
     end
 
     trait :silver_fern do
