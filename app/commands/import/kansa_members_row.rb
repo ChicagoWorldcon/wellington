@@ -76,7 +76,7 @@ class Import::KansaMembersRow
       return false
     end
 
-    command = ReservePurchase.new(membership_record, customer: new_user, membership_number: membership_number)
+    command = ClaimMembership.new(membership_record, customer: new_user, membership_number: membership_number)
     new_purchase = command.call
 
     if !new_purchase

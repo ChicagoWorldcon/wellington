@@ -75,7 +75,7 @@ RSpec.describe ChargeDescription do
     before do
       # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
       Timecop.freeze(4.weeks.ago)
-      purchase = ReservePurchase.new(horse_membership, customer: owner_1).call
+      purchase = ClaimMembership.new(horse_membership, customer: owner_1).call
       expect(purchase).to be_installment
       Money::ChargeCustomer.new(purchase, owner_1, stripe_helper.generate_card_token, 50_00).call
       Timecop.freeze(1.day.from_now)
@@ -112,7 +112,7 @@ RSpec.describe ChargeDescription do
       ChargeDescription.new(charge).for_users
     end
 
-    let(:membership_number) { ReservePurchase::FIRST_MEMBERSHIP_NUMER }
+    let(:membership_number) { ClaimMembership::FIRST_MEMBERSHIP_NUMER }
 
     it "describes installments on horses" do
       expect(for_users(Charge.first)).to eq "$50.00 NZD Installment with Credit Card for Horse member #{membership_number}"

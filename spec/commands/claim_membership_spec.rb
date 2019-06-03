@@ -16,11 +16,11 @@
 
 require "rails_helper"
 
-RSpec.describe ReservePurchase do
+RSpec.describe ClaimMembership do
   let(:membership_number) { nil }
   let(:membership) { create(:membership, :adult) }
   let(:user) { create(:user) }
-  let(:command) { ReservePurchase.new(membership, customer: user, membership_number: membership_number) }
+  let(:command) { ClaimMembership.new(membership, customer: user, membership_number: membership_number) }
 
   context "when successful" do
     it "returns true" do

@@ -86,7 +86,7 @@ class Import::PresupportersRow
         return false
       end
 
-      new_purchase = ReservePurchase.new(membership, customer: new_user).call
+      new_purchase = ClaimMembership.new(membership, customer: new_user).call
       if !new_purchase
         errors << "could not purchase membership"
         return false
