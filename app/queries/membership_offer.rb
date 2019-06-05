@@ -17,6 +17,7 @@
 
 class MembershipOffer
   attr_reader :membership
+  delegate :membership_rights, to: :membership
 
   def self.options
     Membership.active.order_by_price.map do |membership|

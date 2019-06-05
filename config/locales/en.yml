@@ -1,4 +1,4 @@
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,3 +45,13 @@
 
 en:
   hello: "Hello world"
+
+  rights:
+    can_attend:
+      past_tense: You've used your rights to attend CoNZealand
+      present_tence: You can attend CoNZealand
+      future_tence: Can attend CoNZealand in 2020
+    can_vote:
+      past_tense: You've used your voting rights for the Hugo Awards
+      present_tence: You can vote and nominate for the Hugo Awards
+      future_tence: Can vote and nominate works for the Hugo Awards

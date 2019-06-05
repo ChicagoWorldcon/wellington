@@ -30,13 +30,18 @@
           </div>
           <div class="card-body">
             <% if offer.description.present? %>
-              <small>(<%= offer.description %>)</small>
+              <small><%= offer.description %></small>
             <% end %>
             <h5 class="card-title"><%= offer.formatted_price %></h5>
+            <ul class="list-group">
+              <% offer.membership_rights.each do |right| %>
+                <li class="list-group-item"><%= right %></li>
+              <% end %>
+            <ul>
           </div>
           <div class="card-footer">
             <%= link_to(
-              "Lets go!",
+              "#{offer.formatted_price}",
               new_reservation_path(offer: offer),
               class: %w(btn btn-lg btn-block btn-primary)
             ) %>
