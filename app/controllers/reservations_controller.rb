@@ -29,6 +29,9 @@ class ReservationsController < ApplicationController
 
   def new
     @reservation = Reservation.new
+    @my_offer = MembershipOffer.options.find do |offer|
+      offer.to_s == params[:offer]
+    end
     @detail = Detail.new
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }

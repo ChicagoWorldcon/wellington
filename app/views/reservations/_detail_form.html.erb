@@ -40,14 +40,9 @@
     <% end %>
 
     <fieldset class="l-v-spacing">
-      <% if !(@reservation.present? && @reservation.persisted?) %>
-        <legend>New Membership Details</legend>
+      <legend>Membership Details</legend>
 
-        <div class="form-group">
-          <label for="offer">Membership type</span></label>
-          <%= select_tag(:offer, options_for_select(@offers, @my_offer), class: "form-control", id: "membership_type") %>
-        </div>
-      <% end %>
+      <%= hidden_field_tag(:offer, @my_offer) %>
 
       <fieldset class="l-v-spacing">
         <div class="row">
