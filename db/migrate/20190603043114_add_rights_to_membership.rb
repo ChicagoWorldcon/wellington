@@ -15,8 +15,26 @@
 # limitations under the License.
 
 class AddRightsToMembership < ActiveRecord::Migration[5.2]
-  def change
+  def up
     add_column :memberships, :can_vote,   :boolean, default: false, null: false
     add_column :memberships, :can_attend, :boolean, default: false, null: false
+
+    # Data migrations for CoNZealand
+    {
+      "adult"       => { can_attend: true, can_vote: true },
+      "young_adult" => { can_attend: true, can_vote: true },
+      "unwaged"     => { can_attend: true, can_vote: true },
+      "child"       => { can_attend: true, can_vote: false },
+      "kid_in_tow"  => { can_attend: true, can_vote: false },
+      "supporting"  => { can_attend: false, can_vote: true },
+      "supporting+" => { can_attend: false, can_vote: true },
+    }.each do |membership_name, rights|
+      Membership.where(name: membership_name).update_all(rights)
+    end
+  end
+
+  def down
+    remove_column :memberships, :can_vote
+    remove_column :memberships, :can_attend
   end
 end
