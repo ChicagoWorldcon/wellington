@@ -30,11 +30,7 @@ class MembershipOffer
   end
 
   def to_s
-    if membership.description.present?
-      "#{membership} - #{membership.description} (#{formatted_price})"
-    else
-      "#{membership} (#{formatted_price})"
-    end
+    "#{membership} #{formatted_price}"
   end
 
   # TODO Extract to i18n
