@@ -35,14 +35,15 @@
         <% end %>
       </div>
 
-
-      <div class="l-panel">
-        <h2>Support Actions</h2>
-        <p>
-          <%= link_to "Transfer membership", new_purchase_transfer_path(purchase_id: @purchase) %>
-          to another user
-        </p>
-      </div>
+      <% if support_signed_in? %>
+        <div class="l-panel">
+          <h2>Support Actions</h2>
+          <p>
+            <%= link_to "Transfer membership", new_purchase_transfer_path(purchase_id: @purchase) %>
+            to another user
+          </p>
+        </div>
+      <% end %>
     </div>
   </div>
 
