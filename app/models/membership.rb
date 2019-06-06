@@ -33,8 +33,10 @@ class Membership < ApplicationRecord
 
   def membership_rights
     [].tap do |rights|
-      rights << I18n.t("rights.can_attend.future_tence") if can_attend?
-      rights << I18n.t("rights.can_vote.future_tence") if can_vote?
+      rights << I18n.t("rights.attend.describe_future") if can_attend?
+      rights << I18n.t("rights.vote_hugo.describe_future") if can_vote?
+      rights << I18n.t("rights.nominate_hugo.describe_future") if can_vote?
+      rights << I18n.t("rights.nominate_site_selection.describe_future") if can_vote?
     end
   end
 end

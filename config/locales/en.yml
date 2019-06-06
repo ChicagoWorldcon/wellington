@@ -47,11 +47,28 @@ en:
   hello: "Hello world"
 
   rights:
-    can_attend:
-      past_tense: You've used your rights to attend CoNZealand
-      present_tence: You can attend CoNZealand
-      future_tence: Can attend CoNZealand in 2020
-    can_vote:
-      past_tense: You've used your voting rights for the Hugo Awards
-      present_tence: You can vote and nominate for the Hugo Awards
-      future_tence: Can vote and nominate works for the Hugo Awards
+    title: This membership can
+
+    attend:
+      describe_expired: The con is over
+      describe_past: You've used your rights to attend CoNZealand
+      describe_present: You can attend CoNZealand
+      describe_future: Attend in 2020
+
+    nominate_hugo:
+      describe_expired: Nominations are closed
+      describe_past: You've used your voting rights for the Hugo Awards
+      describe_present: You can vote and nominate for the Hugo Awards
+      describe_future: Nominate for Hugo
+
+    vote_hugo:
+      describe_expired: Voting is now closed
+      describe_past: You've used your voting rights for the Hugo Awards
+      describe_present: You can vote and nominate for the Hugo Awards
+      describe_future: Vote for Hugo
+
+    nominate_site_selection:
+      describe_expired: Site selecction is now closed
+      describe_past: You've used your nomination for site selection
+      describe_present: You can nominate for site selection
+      describe_future: Nominate site for 2022

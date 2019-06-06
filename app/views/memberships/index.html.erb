@@ -33,15 +33,18 @@
               <small><%= offer.description %></small>
             <% end %>
             <h5 class="card-title"><%= offer.formatted_price %></h5>
-            <ul class="list-group">
+            <p><%= t("rights.title") %></p>
+            <ul class="list-group list-group-flush mt-3 mb-4">
               <% offer.membership_rights.each do |right| %>
-                <li class="list-group-item"><%= right %></li>
+                <li class="list-group-item">
+                  <%= right %>
+                </li>
               <% end %>
             <ul>
           </div>
           <div class="card-footer">
             <%= link_to(
-              "#{offer.formatted_price}",
+              "Register #{offer.membership}",
               new_reservation_path(offer: offer),
               class: %w(btn btn-lg btn-block btn-primary)
             ) %>

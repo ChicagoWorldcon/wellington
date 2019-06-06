@@ -42,7 +42,7 @@ class MembershipOffer
     if membership.price > 0
       "$%.2f NZD" % (membership.price * 1.0 / 100)
     else
-      "free"
+      "Free"
     end
   end
 
