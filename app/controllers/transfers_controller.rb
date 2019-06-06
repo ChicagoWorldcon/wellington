@@ -72,7 +72,7 @@ class TransfersController < ApplicationController
     @transfer = PlanTransfer.new(
       new_owner: params[:id],
       purchase_id: params[:purchase_id],
-      copy_details: params.dig(:purchase_plan_transfer, :copy_details),
+      copy_details: params.dig("plan_transfer", "copy_details"),
     )
 
     if !@transfer.valid?

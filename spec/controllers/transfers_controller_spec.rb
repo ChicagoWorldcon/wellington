@@ -97,7 +97,7 @@ RSpec.describe TransfersController, type: :controller do
           {
             id: new_user.email,
             purchase_id: purchase.id,
-            purchase_plan_transfer: {
+            plan_transfer: {
               copy_details: "1",
             }
           }
