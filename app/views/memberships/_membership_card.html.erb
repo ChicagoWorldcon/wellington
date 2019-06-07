@@ -50,10 +50,6 @@
     <ul>
   </div>
   <div class="card-footer">
-    <%= link_to(
-      "Register #{offer.membership}",
-      new_reservation_path(offer: offer),
-      class: %w(btn btn-lg btn-block btn-primary)
-    ) %>
+    <%= yield %>
   </div>
 </div>
