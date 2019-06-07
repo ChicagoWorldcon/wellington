@@ -22,6 +22,7 @@ RSpec.describe ReservationsController, type: :controller do
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
+  let!(:offer) { MembershipOffer.new(adult) }
   let!(:existing_reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
   let!(:original_user) { existing_reservation.user }
 
@@ -31,12 +32,12 @@ RSpec.describe ReservationsController, type: :controller do
   describe "#new" do
     it "renders" do
       sign_in(original_user)
-      get :new
+      get :new, params: { offer: offer.to_s }
       expect(response).to have_http_status(:ok)
     end
 
     it "renders when signed out" do
-      get :new
+      get :new, params: { offer: offer.to_s }
       expect(response).to have_http_status(:ok)
     end
   end
@@ -182,8 +183,6 @@ RSpec.describe ReservationsController, type: :controller do
     end
 
     context "when adult offer selected" do
-      let(:offer) { MembershipOffer.new(adult) }
-
       it "redirects to the charges page" do
         post :create, params: {
           detail: valid_detail_params,
