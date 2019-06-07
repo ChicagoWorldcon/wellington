@@ -35,7 +35,7 @@
 
           <div class="card-columns">
             <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
-              <div class="<%= card_classes(reservation) %>">
+              <div class="card <%= card_classes(reservation) %>">
                 <div class="card-body">
                   <h5 class="card-title">
                     #<%= reservation.membership_number %>
