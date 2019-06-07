@@ -25,42 +25,7 @@
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-3">
         <div class="card shadow-sm h-100">
-          <div class="card-header text-nowrap">
-            <h4 class="my-0"><%= offer.name %></h4>
-          </div>
-          <div class="card-body">
-            <% if offer.description.present? %>
-              <small><%= offer.description %></small>
-            <% end %>
-            <h5 class="card-title"><%= offer.formatted_price %></h5>
-            <p><%= t("rights.title") %></p>
-            <ul class="list-group list-group-flush mt-3 mb-4">
-              <% offer.membership_rights.each do |rights_i18n| %>
-                <li class="list-group-item">
-                  <%= rights_i18n[:describe_future] %>
-                  <%= link_to(rights_i18n[:link], target: "_blank") do %>
-                    <%=
-                      octicon("info",
-                        "height" => "15px",
-                        "aria-label" => "More information",
-                        "data-toggle" => "tooltip",
-                        "data-html" => "true",
-                        "data-placement" => "right",
-                        "title" => rights_i18n[:layman],
-                      )
-                    %>
-                  <% end %>
-                </li>
-              <% end %>
-            <ul>
-          </div>
-          <div class="card-footer">
-            <%= link_to(
-              "Register #{offer.membership}",
-              new_reservation_path(offer: offer),
-              class: %w(btn btn-lg btn-block btn-primary)
-            ) %>
-          </div>
+          <%= render "membership_card", offer: offer %>
         </div>
       </div>
     <% end %>
