@@ -23,7 +23,7 @@
 <div class="container text-center">
   <div class="row d-flex align-items-stretch">
     <% @offers.each do |offer| %>
-      <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+      <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-3">
         <div class="card shadow-sm h-100">
           <div class="card-header text-nowrap">
             <h4 class="my-0"><%= offer.name %></h4>
@@ -35,9 +35,21 @@
             <h5 class="card-title"><%= offer.formatted_price %></h5>
             <p><%= t("rights.title") %></p>
             <ul class="list-group list-group-flush mt-3 mb-4">
-              <% offer.membership_rights.each do |right| %>
+              <% offer.membership_rights.each do |rights_i18n| %>
                 <li class="list-group-item">
-                  <%= right %>
+                  <%= rights_i18n[:describe_future] %>
+                  <%= link_to(rights_i18n[:link], target: "_blank") do %>
+                    <%=
+                      octicon("info",
+                        "height" => "15px",
+                        "aria-label" => "More information",
+                        "data-toggle" => "tooltip",
+                        "data-html" => "true",
+                        "data-placement" => "right",
+                        "title" => rights_i18n[:layman],
+                      )
+                    %>
+                  <% end %>
                 </li>
               <% end %>
             <ul>

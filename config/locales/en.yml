@@ -54,21 +54,38 @@ en:
       describe_past: You've used your rights to attend CoNZealand
       describe_present: You can attend CoNZealand
       describe_future: Attend in 2020
+      link: https://conzealand.nz/about-worldcon
+      layman:
+        You get to attend CoNZealand in 2020 with things such as autographing sessions, literary beer/coffee meetups,
+        awards ceremonies, costuming, dancing, a dealers room with sci-fi games/books, film festival, gaming,
+        socialising and much more!
 
     nominate_hugo:
       describe_expired: Nominations are closed
       describe_past: You've used your voting rights for the Hugo Awards
       describe_present: You can vote and nominate for the Hugo Awards
       describe_future: Nominate for Hugo
+      link: https://conzealand.nz/about-worldcon
+      layman:
+        Hugo Nominations are considered as candidates for Hugo Awards, this lets you show appreciation for your
+        favourite author or artist.
 
     vote_hugo:
       describe_expired: Voting is now closed
       describe_past: You've used your voting rights for the Hugo Awards
       describe_present: You can vote and nominate for the Hugo Awards
       describe_future: Vote for Hugo
+      link: https://conzealand.nz/about-worldcon
+      layman:
+        Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+        achievements of the previous year. Your vote will be counted towards these awards in 2020.
 
     nominate_site_selection:
       describe_expired: Site selecction is now closed
       describe_past: You've used your nomination for site selection
       describe_present: You can nominate for site selection
       describe_future: Nominate site for 2022
+      link: http://www.worldcon.org/worldcon-bids/
+      layman:
+        Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
+        able to help choose where the next worldcon will be hosted!
