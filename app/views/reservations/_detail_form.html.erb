@@ -292,8 +292,10 @@
       <div class="form-group">
         <% if @reservation.persisted? %>
           <input type="submit" value="Save Details" class="btn btn-m-full-width">
-        <% else %>
+        <% elsif @my_offer.membership.price > 0  %>
           <input type="submit" value="Reserve Membership and Pay" class="btn btn-m-full-width">
+        <% else %>
+          <input type="submit" value="Reserve Membership" class="btn btn-m-full-width">
         <% end %>
       </div>
 
