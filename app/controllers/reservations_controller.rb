@@ -34,7 +34,7 @@ class ReservationsController < ApplicationController
     end
 
     if !@my_offer.present?
-      flash[:error] = "Sorry, but the offer for #{params[:offer]} is no longer available"
+      flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
       redirect_to memberships_path
       return
     end
@@ -61,7 +61,7 @@ class ReservationsController < ApplicationController
       end
 
       if !matching_offer.present?
-        flash[:error] = "Sorry, but the offer for #{params[:offer]} is no longer available"
+        flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
         redirect_to memberships_path
         return
       end

@@ -46,6 +46,9 @@
 en:
   hello: "Hello world"
 
+  errors:
+    offer_unavailable: Sorry, but that offer %{offer} is no longer available
+
   rights:
     title: This membership can
 
