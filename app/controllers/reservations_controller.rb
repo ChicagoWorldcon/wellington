@@ -60,8 +60,11 @@ class ReservationsController < ApplicationController
         offer.to_s == params[:offer]
       end
 
-      # TODO nicer errors
-      raise "Offer not available to user" if !matching_offer.present?
+      if !matching_offer.present?
+        flash[:error] = "Sorry, but the offer for #{params[:offer]} is no longer available"
+        redirect_to memberships_path
+        return
+      end
 
       service = ClaimMembership.new(matching_offer.membership, customer: current_user)
       new_reservation = service.call

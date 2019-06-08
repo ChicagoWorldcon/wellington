@@ -29,6 +29,17 @@ RSpec.describe ReservationsController, type: :controller do
   let(:another_user) { create(:user) }
   let(:support) { create(:support) }
 
+  let(:valid_detail_params) do
+    FactoryBot.build(:detail).slice(
+      :first_name,
+      :last_name,
+      :publication_format,
+      :address_line_1,
+      :country,
+    )
+  end
+
+
   describe "#new" do
     it "renders" do
       sign_in(original_user)
@@ -42,10 +53,11 @@ RSpec.describe ReservationsController, type: :controller do
     end
   end
 
-  context "when memberships is no longer available" do
+  context "when membership is no longer available" do
     let(:price_change_at) { 1.second.ago }
 
     before do
+      sign_in(original_user)
       adult.update!(active_to: price_change_at)
       adult.dup.save!(
         active_from: price_change_at,
@@ -56,6 +68,24 @@ RSpec.describe ReservationsController, type: :controller do
     describe "#new" do
       before do
         get :new, params: { offer: offer.to_s }
+      end
+
+      it "redirects back to memberships" do
+        expect(response).to have_http_status(:found)
+      end
+
+      it "sets error mentioning the original offer" do
+        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include(offer.to_s)
+      end
+    end
+
+    describe "#create" do
+      before do
+        post :create, params: {
+          detail: valid_detail_params,
+          offer: offer.to_s,
+        }
       end
 
       it "redirects back to memberships" do
@@ -198,16 +228,6 @@ RSpec.describe ReservationsController, type: :controller do
 
   describe "#create" do
     before { sign_in(original_user) }
-
-    let(:valid_detail_params) do
-      FactoryBot.build(:detail).slice(
-        :first_name,
-        :last_name,
-        :publication_format,
-        :address_line_1,
-        :country,
-      )
-    end
 
     context "when adult offer selected" do
       it "redirects to the charges page" do
