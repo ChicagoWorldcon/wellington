@@ -103,7 +103,6 @@ FactoryBot.define do
     trait :kiwi do
       name { :kiwi }
       price { 50_00 }
-      active_to { 1.day.ago }
       description { "Presupport membership" }
     end
 
