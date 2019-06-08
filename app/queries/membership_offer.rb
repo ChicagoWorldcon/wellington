@@ -32,6 +32,11 @@ class MembershipOffer
     "#{membership} #{formatted_price}"
   end
 
+  # Compute a hash-code for this hash. Two offers with the same content will have the same hash code.
+  def hash
+    "#{membership} #{formatted_price}"
+  end
+
   # TODO Extract to i18n
   def formatted_price
     if membership.price > 0

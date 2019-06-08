@@ -43,12 +43,12 @@ RSpec.describe ReservationsController, type: :controller do
   describe "#new" do
     it "renders" do
       sign_in(original_user)
-      get :new, params: { offer: offer.to_s }
+      get :new, params: { offer: offer.hash }
       expect(response).to have_http_status(:ok)
     end
 
     it "renders when signed out" do
-      get :new, params: { offer: offer.to_s }
+      get :new, params: { offer: offer.hash }
       expect(response).to have_http_status(:ok)
     end
   end
@@ -67,7 +67,7 @@ RSpec.describe ReservationsController, type: :controller do
 
     describe "#new" do
       before do
-        get :new, params: { offer: offer.to_s }
+        get :new, params: { offer: offer.hash }
       end
 
       it "redirects back to memberships" do
@@ -76,7 +76,7 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "sets error mentioning the original offer" do
         expect(flash[:error]).to be_present
-        expect(flash[:error]).to include(offer.to_s)
+        expect(flash[:error]).to include(offer.hash)
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe ReservationsController, type: :controller do
       before do
         post :create, params: {
           detail: valid_detail_params,
-          offer: offer.to_s,
+          offer: offer.hash,
         }
       end
 
@@ -94,7 +94,7 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "sets error mentioning the original offer" do
         expect(flash[:error]).to be_present
-        expect(flash[:error]).to include(offer.to_s)
+        expect(flash[:error]).to include(offer.hash)
       end
     end
   end
@@ -234,7 +234,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "redirects to the charges page" do
         post :create, params: {
           detail: valid_detail_params,
-          offer: offer.to_s,
+          offer: offer.hash,
         }
         expect(flash[:error]).to_not be_present
         expect(response.headers["Location"]).to match(/charges/)
@@ -243,7 +243,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "renders the form again when form submission fails" do
         post :create, params: {
           detail: valid_detail_params,
-          offer: offer.to_s,
+          offer: offer.hash,
         }
       end
     end
@@ -257,7 +257,7 @@ RSpec.describe ReservationsController, type: :controller do
             first_name: "Silly",
             last_name: "Billy",
           },
-          offer: offer.to_s,
+          offer: offer.hash,
         }
         expect(response).to have_http_status(:ok)
         expect(flash[:error]).to be_present
