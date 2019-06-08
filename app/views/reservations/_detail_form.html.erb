@@ -290,7 +290,11 @@
 
     <div class="l-v-spacing-both">
       <div class="form-group">
-        <input type="submit" value="<%= detail_form_submit_text(@reservation) %>" class="btn btn-m-full-width">
+        <% if @reservation.persisted? %>
+          <input type="submit" value="Save Details" class="btn btn-m-full-width">
+        <% else %>
+          <input type="submit" value="Reserve Membership and Pay" class="btn btn-m-full-width">
+        <% end %>
       </div>
 
       <p>
