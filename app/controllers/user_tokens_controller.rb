@@ -16,6 +16,8 @@
 # limitations under the License.
 
 class UserTokensController < ApplicationController
+  MAILCATCHER_PATH = "http://localhost:1080"
+
   def new
     redirect_to root_path if signed_in?
     @token = UserToken.new
@@ -40,11 +42,15 @@ class UserTokensController < ApplicationController
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: referrer_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
-      flash[:notice] += " (http://localhost:1080)" if Rails.env.development?
     else
       flash[:error] = send_link_command.errors.to_sentence
     end
-    redirect_to referrer_path
+
+    if Rails.env.development?
+      redirect_to MAILCATCHER_PATH
+    else
+      redirect_to referrer_path
+    end
   end
 
   def kansa_login_link
