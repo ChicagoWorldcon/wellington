@@ -46,6 +46,8 @@
       <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
     <% end %>
 
-    <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
+    <% if request.path != reservation_path(reservation) %>
+      <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
+    <% end %>
   </div>
 </div>
