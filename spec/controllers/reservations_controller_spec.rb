@@ -238,6 +238,13 @@ RSpec.describe ReservationsController, type: :controller do
         expect(flash[:error]).to_not be_present
         expect(response.headers["Location"]).to match(/charges/)
       end
+
+      it "renders the form again when form submission fails" do
+        post :create, params: {
+          detail: valid_detail_params,
+          offer: offer.to_s,
+        }
+      end
     end
 
     context "when free offer selected" do
@@ -245,11 +252,14 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "redirects to the reservation listing page" do
         post :create, params: {
-          detail: valid_detail_params,
+          detail: {
+            first_name: "Silly",
+            last_name: "Billy",
+          },
           offer: offer.to_s,
         }
-        expect(flash[:error]).to_not be_present
-        expect(response).to redirect_to(reservations_path)
+        expect(response).to have_http_status(:ok)
+        expect(flash[:error]).to be_present
       end
     end
   end
