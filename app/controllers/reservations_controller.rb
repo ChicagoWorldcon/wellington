@@ -81,8 +81,11 @@ class ReservationsController < ApplicationController
         flash[:notice] = "Details for #{current_details} member ##{@reservation.membership_number} have been updated"
         redirect_to reservations_path
       else
+        @detail = @reservation.active_claim.detail || Detail.new
+        @my_offer = MembershipOffer.new(@reservation.membership)
+        @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
         flash[:error] = current_details.errors.full_messages.to_sentence
-        redirect_to reservation_path(@reservation)
+        render "reservations/show"
       end
     end
   end

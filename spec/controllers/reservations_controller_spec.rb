@@ -222,6 +222,7 @@ RSpec.describe ReservationsController, type: :controller do
           }
         }
         expect(flash[:error]).to match(/address/i)
+        expect(response).to have_http_status(:ok)
       end
     end
   end
