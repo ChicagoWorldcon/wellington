@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## Tag 1.2.0 - 2019-06-08
+
+Upgraded Ruby and Rails, and support function for transferring memberships.
 
 ### Added
 - Turned on [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
@@ -22,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Nothing significant in this release
+
 
 ## Tag 1.1.0 - 2019-05-22
 
@@ -63,6 +79,7 @@ Some quality of life improvements for support, and general cleanup with things w
 
 ### Removed
 - Nothing significant in this release
+
 
 ## Tag 1.0.0 - 2019-03-29
 
