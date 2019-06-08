@@ -15,31 +15,31 @@
 # limitations under the License.
 
 class UpgradesController < ApplicationController
-  before_action :lookup_purchase
+  before_action :lookup_reservation
 
   def edit
     if !params[:offer].present?
-      redirect_to purchases_path
+      redirect_to reservations_path
       return flash[:error] = "Sorry, something went wrong with your upgrade. Please try again."
     end
 
     # Find the offer that matches the our user clicked on
-    offer = UpgradeOffer.from(@purchase.membership).find do |offer|
+    offer = UpgradeOffer.from(@reservation.membership).find do |offer|
       offer.to_s == params[:offer]
     end
 
     if !offer.present?
-      redirect_to purchases_path
-      return flash[:error] = "Sorry. #{params[:offer]} from #{@purchase.membership} is no longer available"
+      redirect_to reservations_path
+      return flash[:error] = "Sorry. #{params[:offer]} from #{@reservation.membership} is no longer available"
     end
 
-    upgrader = UpgradeMembership.new(@purchase, to: offer.to_membership)
+    upgrader = UpgradeMembership.new(@reservation, to: offer.to_membership)
     if !upgrader.call
-      Rails.logger.error("Failed to upgrade #{current_user.id} to #{@purchase.membership.name}")
-      return flash[:error] = "Sorry. #{params[:offer]} from #{@purchase.membership} could not be upgraded at this time"
+      Rails.logger.error("Failed to upgrade #{current_user.id} to #{@reservation.membership.name}")
+      return flash[:error] = "Sorry. #{params[:offer]} from #{@reservation.membership} could not be upgraded at this time"
     end
 
-    redirect_to new_charge_path(purchase: @purchase)
+    redirect_to new_charge_path(reservation: @reservation)
     flash[:notice] = "We've reserved you one #{offer.to_membership} membership"
   end
 end

@@ -20,15 +20,15 @@ RSpec.describe ApplyTransfer do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
   let(:support) { create(:support) }
-  let(:purchase) { create(:purchase) }
+  let(:reservation) { create(:reservation) }
 
-  before { Claim.create!(user: seller, purchase: purchase, active_from: purchase.created_at) }
+  before { Claim.create!(user: seller, reservation: reservation, active_from: reservation.created_at) }
 
-  subject(:command) { described_class.new(purchase, from: seller, to: buyer, audit_by: support.email) }
+  subject(:command) { described_class.new(reservation, from: seller, to: buyer, audit_by: support.email) }
   let(:soonish) { 1.minute.from_now } # ApplyTransfer is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
-    expect { command.call }.to_not change { Purchase.count }
+    expect { command.call }.to_not change { Reservation.count }
   end
 
   it "adds claim to buyer" do
@@ -57,12 +57,12 @@ RSpec.describe ApplyTransfer do
     end
   end
 
-  context "when purchase is pay by installment" do
-    let(:purchase) { create(:purchase, :pay_as_you_go) }
+  context "when reservation is pay by installment" do
+    let(:reservation) { create(:reservation, :pay_as_you_go) }
 
     it "doesn't let you transfer" do
       expect(command.call).to be_falsey
-      expect(command.errors).to include(/purchase/i)
+      expect(command.errors).to include(/reservation/i)
     end
   end
 end

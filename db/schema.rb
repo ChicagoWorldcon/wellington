@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_22_191637) do
+ActiveRecord::Schema.define(version: 2019_06_03_022833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,20 +24,20 @@ ActiveRecord::Schema.define(version: 2019_04_22_191637) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.bigint "purchase_id", null: false
+    t.bigint "reservation_id", null: false
     t.string "transfer", null: false
-    t.index ["purchase_id"], name: "index_charges_on_purchase_id"
+    t.index ["reservation_id"], name: "index_charges_on_reservation_id"
     t.index ["user_id"], name: "index_charges_on_user_id"
   end
 
   create_table "claims", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "purchase_id", null: false
+    t.bigint "reservation_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "active_from", null: false
     t.datetime "active_to"
-    t.index ["purchase_id"], name: "index_claims_on_purchase_id"
+    t.index ["reservation_id"], name: "index_claims_on_reservation_id"
     t.index ["user_id"], name: "index_claims_on_user_id"
   end
 
@@ -91,17 +91,17 @@ ActiveRecord::Schema.define(version: 2019_04_22_191637) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "purchase_id", null: false
+    t.bigint "reservation_id", null: false
     t.bigint "membership_id", null: false
     t.datetime "active_from", null: false
     t.datetime "active_to"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["membership_id"], name: "index_orders_on_membership_id"
-    t.index ["purchase_id"], name: "index_orders_on_purchase_id"
+    t.index ["reservation_id"], name: "index_orders_on_reservation_id"
   end
 
-  create_table "purchases", force: :cascade do |t|
+  create_table "reservations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
@@ -147,11 +147,11 @@ ActiveRecord::Schema.define(version: 2019_04_22_191637) do
     t.index ["email"], name: "index_users_on_email"
   end
 
-  add_foreign_key "charges", "purchases"
+  add_foreign_key "charges", "reservations"
   add_foreign_key "charges", "users"
-  add_foreign_key "claims", "purchases"
+  add_foreign_key "claims", "reservations"
   add_foreign_key "claims", "users"
   add_foreign_key "notes", "users"
   add_foreign_key "orders", "memberships"
-  add_foreign_key "orders", "purchases"
+  add_foreign_key "orders", "reservations"
 end

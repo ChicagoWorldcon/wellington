@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ require "rails_helper"
 
 RSpec.describe Claim, type: :model do
   let(:user) { create(:user) }
-  let(:purchase) { create(:purchase) }
+  let(:reservation) { create(:reservation) }
 
   describe "#valid?" do
     context "when called without active_from" do
-      subject(:claim) { Claim.create(user: user, purchase: purchase) }
+      subject(:claim) { Claim.create(user: user, reservation: reservation) }
 
       it { is_expected.to be_valid }
 
@@ -38,7 +38,7 @@ RSpec.describe Claim, type: :model do
     context "when called with active_from" do
       let(:sample_time) { 1.week.ago }
 
-      subject(:claim) { Claim.create(user: user, purchase: purchase, active_from: sample_time) }
+      subject(:claim) { Claim.create(user: user, reservation: reservation, active_from: sample_time) }
 
       it { is_expected.to be_valid }
 
@@ -53,7 +53,7 @@ RSpec.describe Claim, type: :model do
       let(:last_week) { Time.now - 1.week }
 
       it "is invalid when dates aren't ordered" do
-        claim = Claim.new(active_from: now, active_to: last_week, user: user, purchase: purchase)
+        claim = Claim.new(active_from: now, active_to: last_week, user: user, reservation: reservation)
         expect(claim).to_not be_valid
         expect(claim.errors.messages.keys).to_not include(:active_from)
         expect(claim.errors.messages.keys).to include(:active_to)
@@ -64,7 +64,7 @@ RSpec.describe Claim, type: :model do
   describe "#active_at" do
     context "with open ended #active_to" do
       let(:start) { 1.week.ago }
-      let!(:current_claim) { Claim.create!(user: user, purchase: purchase, active_from: start) }
+      let!(:current_claim) { Claim.create!(user: user, reservation: reservation, active_from: start) }
 
       it "doesn't set active_to" do
         expect(current_claim.active_to).to be_nil
@@ -86,7 +86,7 @@ RSpec.describe Claim, type: :model do
     describe "#active_at" do
       let(:start) { 1.week.ago }
       let(:finish) { start + 3.days }
-      let!(:closed_claim) { Claim.create!(user: user, purchase: purchase, active_from: start, active_to: finish) }
+      let!(:closed_claim) { Claim.create!(user: user, reservation: reservation, active_from: start, active_to: finish) }
 
       subject(:scope) { Claim.active_at(time) }
 
@@ -113,27 +113,27 @@ RSpec.describe Claim, type: :model do
   end
 
   describe "factory" do
-    subject(:model) { create(:claim, :with_purchase, :with_user) }
+    subject(:model) { create(:claim, :with_reservation, :with_user) }
     it { is_expected.to be_valid }
   end
 
   context "with multiple claims" do
-    let(:existing_claim) { create(:claim, :with_purchase, :with_user, active_from: 1.week.ago) }
+    let(:existing_claim) { create(:claim, :with_reservation, :with_user, active_from: 1.week.ago) }
     let(:new_user) { create(:user) }
     let(:transferred_at) { 1.minute.ago }
 
     it "lets a user have multiple claims" do
-      new_claim = build(:claim, :with_purchase, user: existing_claim.user)
+      new_claim = build(:claim, :with_reservation, user: existing_claim.user)
       expect(new_claim).to be_valid
     end
 
-    it "doen't let multiple users claim the same purchase" do
-      new_claim = build(:claim, :with_user, purchase: existing_claim.purchase)
+    it "doen't let multiple users claim the same reservation" do
+      new_claim = build(:claim, :with_user, reservation: existing_claim.reservation)
       expect(new_claim).to_not be_valid
     end
 
-    it "allows other inactive claims on the same purchase" do
-      new_claim = build(:claim, :with_user, purchase: existing_claim.purchase)
+    it "allows other inactive claims on the same reservation" do
+      new_claim = build(:claim, :with_user, reservation: existing_claim.reservation)
       existing_claim.update!(active_to: transferred_at)
       new_claim.active_from = transferred_at
       expect(existing_claim).to be_valid

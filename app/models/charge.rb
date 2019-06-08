@@ -23,7 +23,7 @@ class Charge < ApplicationRecord
   TRANSFER_CASH = "cash"
 
   belongs_to :user
-  belongs_to :purchase
+  belongs_to :reservation
 
   validates :amount, presence: true
   validates :comment, presence: true

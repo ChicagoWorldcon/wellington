@@ -17,29 +17,29 @@
 require "rails_helper"
 
 RSpec.describe PlanTransfer do
-  let(:purchase)      { create(:purchase, :with_claim_from_user, :with_order_against_membership) }
+  let(:reservation)      { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
   let(:email_address) { Faker::Internet.email }
-  subject(:query)     { described_class.new(purchase_id: purchase.id, new_owner: email_address) }
+  subject(:query)     { described_class.new(reservation_id: reservation.id, new_owner: email_address) }
 
   it { is_expected.to be_valid }
 
-  it "isn't valid without a purchase id" do
+  it "isn't valid without a reservation id" do
     expect(described_class.new(new_owner: email_address)).to_not be_valid
   end
 
   it "needs a valid email address" do
-    expect(described_class.new(purchase_id: purchase.id)).to_not be_valid
-    expect(described_class.new(purchase_id: purchase.id, new_owner: "silly")).to_not be_valid
+    expect(described_class.new(reservation_id: reservation.id)).to_not be_valid
+    expect(described_class.new(reservation_id: reservation.id, new_owner: "silly")).to_not be_valid
   end
 
-  describe "#purchase" do
-    it "raises exception when it can't find the purchase" do
-      query = described_class.new(new_owner: email_address, purchase_id: 42)
-      expect { query.purchase }.to raise_error(ActiveRecord::RecordNotFound)
+  describe "#reservation" do
+    it "raises exception when it can't find the reservation" do
+      query = described_class.new(new_owner: email_address, reservation_id: 42)
+      expect { query.reservation }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "finds the corrosponding purchase model" do
-      expect(query.purchase).to eq purchase
+    it "finds the corrosponding reservation model" do
+      expect(query.reservation).to eq reservation
     end
   end
 

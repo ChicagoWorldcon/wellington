@@ -47,7 +47,7 @@ RSpec.describe Stripe::SyncCustomers do
 
     context "with customers in both stripe and the members area" do
       let(:stripe_customer) { double(Stripe::Customer, email: "zibra@supervillain.net", id: "cus_5zZbB9321888c4") }
-      let!(:user) { create(:user, :with_purchase, email: stripe_customer.email) }
+      let!(:user) { create(:user, :with_reservation, email: stripe_customer.email) }
 
       before do
         expect(Stripe::Customer)
@@ -64,7 +64,7 @@ RSpec.describe Stripe::SyncCustomers do
       context "where the user already has a stripe id" do
         let(:a_while_back) { 1.week.ago }
         let!(:user) do
-          create(:user, :with_purchase,
+          create(:user, :with_reservation,
             stripe_id: stripe_customer.id,
             email: stripe_customer.email,
             updated_at: a_while_back,
@@ -80,7 +80,7 @@ RSpec.describe Stripe::SyncCustomers do
       context "when the user's id is different in stripe" do
         let(:a_while_back) { 1.week.ago }
         let!(:user) do
-          create(:user, :with_purchase,
+          create(:user, :with_reservation,
             stripe_id: "cus_sillyCustomerz",
             email: stripe_customer.email,
             updated_at: a_while_back,

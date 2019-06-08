@@ -20,7 +20,7 @@ require "rails_helper"
 RSpec.describe Token::SendLink do
   let(:good_email) { Faker::Internet.email }
   let(:good_secret) { "you'll never find the treasure" }
-  let(:good_path) { "/purchases" }
+  let(:good_path) { "/reservations" }
   let(:query) { Token::SendLink.new(email: good_email, secret: good_secret, path: "") }
 
   describe "#call" do

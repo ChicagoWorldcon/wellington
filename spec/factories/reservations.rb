@@ -17,26 +17,26 @@
 FactoryBot.define do
   sequence(:next_membership_number)
 
-  factory :purchase do
-    state { Purchase::PAID }
+  factory :reservation do
+    state { Reservation::PAID }
     created_at { 1.week.ago }
     membership_number { generate(:next_membership_number) }
 
     trait :pay_as_you_go do
-      state { Purchase::INSTALLMENT }
+      state { Reservation::INSTALLMENT }
     end
 
     trait :with_order_against_membership do
-      after(:create) do |new_purchase, _evaluator|
-        new_purchase.orders << create(:order, :with_membership, purchase: new_purchase)
+      after(:create) do |new_reservation, _evaluator|
+        new_reservation.orders << create(:order, :with_membership, reservation: new_reservation)
       end
     end
 
     trait :with_claim_from_user do
-      after(:build) do |new_purchase, _evaluator|
-        new_claim = build(:claim, :with_user, purchase: new_purchase)
+      after(:build) do |new_reservation, _evaluator|
+        new_claim = build(:claim, :with_user, reservation: new_reservation)
         new_claim.detail = build(:detail, claim: new_claim)
-        new_purchase.claims << new_claim
+        new_reservation.claims << new_claim
       end
     end
   end

@@ -17,29 +17,29 @@
 
 require "rails_helper"
 
-RSpec.describe AmountOwedForPurchase do
+RSpec.describe AmountOwedForReservation do
 
-  subject(:query) { AmountOwedForPurchase.new(purchase) }
+  subject(:query) { described_class.new(reservation) }
 
   describe "#amount_owed" do
     subject(:amount_owed) { query.amount_owed }
 
     context "with no charges" do
-      let(:purchase) { create(:purchase, :with_order_against_membership) }
-      let(:membership) { purchase.membership }
+      let(:reservation) { create(:reservation, :with_order_against_membership) }
+      let(:membership) { reservation.membership }
 
       it { is_expected.to eq membership.price }
     end
 
     context "with some charges" do
       let(:user) { create(:user) }
-      let(:claim) { create(:claim, :with_purchase, user: user) }
-      let(:membership) { claim.purchase.membership }
+      let(:claim) { create(:claim, :with_reservation, user: user) }
+      let(:membership) { claim.reservation.membership }
       let(:charge_amount) { 1000 }
-      let(:purchase) { claim.purchase }
+      let(:reservation) { claim.reservation }
 
       before do
-        create(:charge, user: user, purchase: claim.purchase, amount: charge_amount)
+        create(:charge, user: user, reservation: claim.reservation, amount: charge_amount)
       end
 
       it "returns the amount owing" do
@@ -48,7 +48,7 @@ RSpec.describe AmountOwedForPurchase do
 
       context "where some have failed" do
         before do
-          create(:charge, user: user, purchase: claim.purchase, amount: charge_amount, state: Charge::STATE_FAILED)
+          create(:charge, user: user, reservation: claim.reservation, amount: charge_amount, state: Charge::STATE_FAILED)
         end
 
         it "returns the amount owing" do

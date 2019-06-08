@@ -19,9 +19,9 @@ FactoryBot.define do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
 
-    trait :with_purchase do
+    trait :with_reservation do
       before(:create) do |order, _evaluator|
-        order.purchase = create(:purchase)
+        order.reservation = create(:reservation)
       end
     end
 

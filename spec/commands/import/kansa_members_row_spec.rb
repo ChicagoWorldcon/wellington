@@ -66,7 +66,7 @@ RSpec.describe Import::KansaMembersRow do
 
     it "puts a new active order against that membership" do
       expect { command.call }.to change { silver_fern.reload.active_orders.count }.by(1)
-      expect(User.last.purchases).to eq(silver_fern.purchases)
+      expect(User.last.reservations).to eq(silver_fern.reservations)
     end
 
     it "inserts detail rows" do
@@ -122,24 +122,24 @@ RSpec.describe Import::KansaMembersRow do
       end
 
       it "sets membership to paid" do
-        expect(Purchase.last.state).to eq Purchase::PAID
+        expect(Reservation.last.state).to eq Reservation::PAID
       end
 
       it "sets the membership number" do
-        expect(Purchase.last.membership_number).to eq member_number.to_i
+        expect(Reservation.last.membership_number).to eq member_number.to_i
       end
 
       it "set the user note" do
         expect(User.last.notes.first.content).to eq note
       end
 
-      it "set created_at on purchase dates based on spreadsheet" do
+      it "set created_at on reservation dates based on spreadsheet" do
         expect(Detail.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to be < 1.week.ago
+        expect(Reservation.last.created_at).to be < 1.week.ago
         expect(Claim.last.created_at).to be < 1.week.ago
-        expect(Purchase.last.created_at).to eq(Purchase.last.updated_at)
+        expect(Reservation.last.created_at).to eq(Reservation.last.updated_at)
       end
 
       it "set active_from dates based on spreadsheet" do
@@ -160,7 +160,7 @@ RSpec.describe Import::KansaMembersRow do
         let(:created_at) { "" }
 
         it "just uses the current date" do
-          expect(Purchase.last.created_at).to be > 1.minute.ago
+          expect(Reservation.last.created_at).to be > 1.minute.ago
         end
       end
     end

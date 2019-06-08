@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Renamed Purchase to Reservation for clarity of purpose
 
 ### Removed
 - Nothing significant in this release

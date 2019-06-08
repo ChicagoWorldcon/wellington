@@ -35,8 +35,8 @@ RSpec.describe UserTokensController, type: :controller do
     let(:user) { create(:user) }
     let(:user_token) { "asdf" }
     let(:good_email) { "willy_wönka@chocolate_factory.nz" }
-    let(:valid_login_path) { "/purchases/new" }
-    let(:valid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/purchases/new", }, ENV["JWT_SECRET"], "HS256") }
+    let(:valid_login_path) { "/reservations/new" }
+    let(:valid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/reservations/new", }, ENV["JWT_SECRET"], "HS256") }
     let(:invalid_login_path_token) { JWT.encode({exp: (Time.now + 10.minutes).to_i, email: good_email, path: "/notarealpath", }, ENV["JWT_SECRET"], "HS256") }
 
     context "when secret is not set" do

@@ -17,12 +17,12 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
-  let!(:membership) { create(:membership, :young_adult, :with_order_for_purchase) }
+  let!(:membership) { create(:membership, :young_adult, :with_order_for_reservation) }
   let!(:upgrade_membership) { create(:membership, :adult) }
-  let!(:purchase) { membership.purchases.first }
+  let!(:reservation) { membership.reservations.first }
 
   describe "#call" do
-    let(:command) { UpgradeMembership.new(purchase, to: upgrade_membership) }
+    let(:command) { UpgradeMembership.new(reservation, to: upgrade_membership) }
     subject(:call) { command.call }
 
     it { is_expected.to be_truthy }
@@ -33,20 +33,20 @@ RSpec.describe UpgradeMembership do
 
     it "now points at new membership" do
       expect { call }
-        .to change { purchase.reload.membership }
+        .to change { reservation.reload.membership }
         .to(upgrade_membership)
     end
 
 
     it "recalculates PAID state" do
       expect { call }
-        .to change { purchase.reload.state }
-        .from(Purchase::PAID)
-        .to(Purchase::INSTALLMENT)
+        .to change { reservation.reload.state }
+        .from(Reservation::PAID)
+        .to(Reservation::INSTALLMENT)
     end
 
     context "when upgrade is unavailable" do
-      let(:membership) { create(:membership, :adult, :with_order_for_purchase) }
+      let(:membership) { create(:membership, :adult, :with_order_for_reservation) }
 
       it { is_expected.to be_falsey }
 
@@ -57,11 +57,11 @@ RSpec.describe UpgradeMembership do
       end
 
       it "doesn't change orders" do
-        expect { call }.to_not change { purchase.orders }
+        expect { call }.to_not change { reservation.orders }
       end
 
       it "doesn't create new charges" do
-        expect { call }.to_not change { purchase.charges }
+        expect { call }.to_not change { reservation.charges }
       end
     end
   end

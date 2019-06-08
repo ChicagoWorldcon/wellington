@@ -119,7 +119,7 @@ Changes you make to your machine will show up inside the application which you c
 All emails sent from the website will be caught and displayed from http://localhost:1080, including login links and
 receipts.
 
-If you want to run up a console so you can get a seeded user with dummy purchases, you can do this with:
+If you want to run up a console so you can get a seeded user with dummy reservations, you can do this with:
 
 ```sh
 make console

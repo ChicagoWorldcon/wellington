@@ -17,7 +17,7 @@
 FactoryBot.define do
   factory :charge do
     association :user
-    association :purchase
+    association :reservation
 
     comment { "Factory Generated Charge" }
     amount { 300 } # cents

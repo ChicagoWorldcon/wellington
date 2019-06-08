@@ -26,11 +26,11 @@
         <h2>
           From
           <%= @detail %>
-          &lt;<%= @purchase.user.email %>&gt;
+          &lt;<%= @reservation.user.email %>&gt;
         </h2>
 
         <p>
-          This process will send email to <%= @detail || @purchase.user.email %> and the new email address.
+          This process will send email to <%= @detail || @reservation.user.email %> and the new email address.
         </p>
 
         <p>
@@ -45,7 +45,7 @@
           <tbody>
             <%= User.eager_load(active_claims: :detail).find_each do |user| %>
               <tr>
-                <td><%= link_to user.email, purchase_transfer_path(user.email, purchase_id: @purchase)  %></td>
+                <td><%= link_to user.email, reservation_transfer_path(user.email, reservation_id: @reservation)  %></td>
                 <td><%= user.active_claims.map(&:detail).map(&:to_s).to_sentence %></td>
               </p>
             <% end %>

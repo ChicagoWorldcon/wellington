@@ -17,13 +17,13 @@
 
 require "rails_helper"
 
-RSpec.describe PurchasesController, type: :controller do
+RSpec.describe ReservationsController, type: :controller do
   render_views
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
-  let!(:existing_purchase) { create(:purchase, :with_claim_from_user, membership: adult) }
-  let!(:original_user) { existing_purchase.user }
+  let!(:existing_reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+  let!(:original_user) { existing_reservation.user }
 
   let(:another_user) { create(:user) }
   let(:support) { create(:support) }
@@ -56,19 +56,19 @@ RSpec.describe PurchasesController, type: :controller do
 
   describe "#show" do
     it "can't be found when not signed in" do
-      expect { get :show, params: { id: existing_purchase.id } }
+      expect { get :show, params: { id: existing_reservation.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "cant find it when you're signed in as a different user" do
       sign_in(another_user)
-      expect { get :show, params: { id: existing_purchase.id } }
+      expect { get :show, params: { id: existing_reservation.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "can find your own purchases" do
+    it "can find your own reservations" do
       sign_in(original_user)
-      get :show, params: { id: existing_purchase.id }
+      get :show, params: { id: existing_reservation.id }
       expect(response).to have_http_status(:ok)
     end
 
@@ -76,25 +76,25 @@ RSpec.describe PurchasesController, type: :controller do
       before { sign_in(support) }
 
       it "can view any membership" do
-        get :show, params: { id: existing_purchase.id }
+        get :show, params: { id: existing_reservation.id }
         expect(response).to have_http_status(:ok)
       end
     end
 
     context "after transferring a membership" do
       before do
-        ApplyTransfer.new(existing_purchase, from: original_user, to: another_user, audit_by: support.email).call
+        ApplyTransfer.new(existing_reservation, from: original_user, to: another_user, audit_by: support.email).call
       end
 
       it "can't be found for original user" do
         sign_in(original_user)
-        expect { get :show, params: { id: existing_purchase.id } }
+        expect { get :show, params: { id: existing_reservation.id } }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "is found for new user" do
         sign_in(another_user)
-        get :show, params: { id: existing_purchase.id }
+        get :show, params: { id: existing_reservation.id }
         expect(response).to have_http_status(:ok)
       end
     end
@@ -102,11 +102,11 @@ RSpec.describe PurchasesController, type: :controller do
 
   describe "#update" do
     let(:updated_address) { "yolo" }
-    let(:target_details) { existing_purchase.active_claim.detail }
+    let(:target_details) { existing_reservation.active_claim.detail }
 
     let(:valid_params) do
       {
-        id: existing_purchase.reload.id,
+        id: existing_reservation.reload.id,
         detail: {
           first_name: "this",
           last_name: "is",
@@ -155,7 +155,7 @@ RSpec.describe PurchasesController, type: :controller do
 
       it "shows error when values not present" do
         post :update, params: {
-          id: existing_purchase.id,
+          id: existing_reservation.id,
           detail: {
             first_name: "this",
             last_name: "is",
@@ -197,13 +197,13 @@ RSpec.describe PurchasesController, type: :controller do
     context "when free offer selected" do
       let(:offer) { MembershipOffer.new(kid_in_tow) }
 
-      it "redirects to the purchase listing page" do
+      it "redirects to the reservation listing page" do
         post :create, params: {
           detail: valid_detail_params,
           offer: offer.to_s,
         }
         expect(flash[:error]).to_not be_present
-        expect(response).to redirect_to(purchases_path)
+        expect(response).to redirect_to(reservations_path)
       end
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2018 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,33 +16,33 @@
 
 require "rails_helper"
 
-RSpec.describe Purchase, type: :model do
+RSpec.describe Reservation, type: :model do
   context "when adult" do
-    subject(:model) { create(:purchase) }
+    subject(:model) { create(:reservation) }
     it { is_expected.to be_valid }
     it { is_expected.to be_transferable }
 
     it "enforces uniqueness on membership number" do
-      duplicate_membership = build(:purchase, membership_number: subject.membership_number)
+      duplicate_membership = build(:reservation, membership_number: subject.membership_number)
       expect(duplicate_membership).to_not be_valid
     end
   end
 
   context "with order" do
-    subject(:model) { create(:purchase, :with_order_against_membership) }
+    subject(:model) { create(:reservation, :with_order_against_membership) }
 
     it "has access to the active order" do
       expect(model.orders.active.count).to eq 1
       expect(model.active_order).to eq model.orders.active.first
     end
 
-    it "has access to purchase through active orders" do
+    it "has access to reservation through active orders" do
       expect(model.membership).to eq model.orders.active.first.membership
     end
   end
 
   context "with claim" do
-    subject(:model) { create(:purchase, :with_claim_from_user) }
+    subject(:model) { create(:reservation, :with_claim_from_user) }
 
     it "has access ot the active claim" do
       expect(model.claims.active.count).to eq 1
@@ -55,8 +55,8 @@ RSpec.describe Purchase, type: :model do
   end
 
   context "when not active as an adult" do
-    [Purchase::INSTALLMENT, Purchase::DISABLED].each do |inactive_state|
-      subject(:model) { create(:purchase, state: inactive_state) }
+    [Reservation::INSTALLMENT, Reservation::DISABLED].each do |inactive_state|
+      subject(:model) { create(:reservation, state: inactive_state) }
       it { is_expected.to be_valid }
       it { is_expected.to_not be_transferable }
     end

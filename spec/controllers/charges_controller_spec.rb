@@ -20,31 +20,31 @@ require "rails_helper"
 RSpec.describe ChargesController, type: :controller do
   render_views
 
-  let(:purchase) { create(:purchase, :with_order_against_membership, :with_claim_from_user, :pay_as_you_go) }
-  let(:user) { purchase.user }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :pay_as_you_go) }
+  let(:user) { reservation.user }
 
   before { sign_in(user) }
 
   describe "#new" do
-    context "when the purchase is paid for" do
-      before { purchase.update!(state: Purchase::PAID) }
+    context "when the reservation is paid for" do
+      before { reservation.update!(state: Reservation::PAID) }
 
-      it "redirects to the purchase listing page" do
-        get :new, params: { purchase: purchase }
+      it "redirects to the reservation listing page" do
+        get :new, params: { reservation: reservation }
 
-        expect(response).to redirect_to(purchases_path)
+        expect(response).to redirect_to(reservations_path)
       end
 
       it "returns a flash notice" do
-        get :new, params: { purchase: purchase }
+        get :new, params: { reservation: reservation }
 
         expect(flash[:notice]).to match /paid/
       end
     end
 
-    context "when the purchase has not been paid for" do
+    context "when the reservation has not been paid for" do
       it "renders" do
-        get :new, params: { purchase: purchase }
+        get :new, params: { reservation: reservation }
 
         expect(response).to have_http_status(:ok)
       end
@@ -60,14 +60,14 @@ RSpec.describe ChargesController, type: :controller do
       {
         stripeToken: stripe_token,
         amount: amount,
-        purchase: purchase,
+        reservation: reservation,
       }
     end
     let(:charge_double) { instance_double(Charge, amount: amount) }
 
     before do
-      amount_owed_double = instance_double(AmountOwedForPurchase)
-      expect(AmountOwedForPurchase).to receive(:new).and_return(amount_owed_double)
+      amount_owed_double = instance_double(AmountOwedForReservation)
+      expect(AmountOwedForReservation).to receive(:new).and_return(amount_owed_double)
       expect(amount_owed_double).to receive(:amount_owed).and_return(amount_owed)
 
       payment_amount_options_double = instance_double(PaymentAmountOptions)
@@ -94,7 +94,7 @@ RSpec.describe ChargesController, type: :controller do
       it "redirects to the new charge path" do
         post :create, params: params
 
-        expect(response).to redirect_to(new_charge_path(purchase: purchase))
+        expect(response).to redirect_to(new_charge_path(reservation: reservation))
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe ChargesController, type: :controller do
 
       before do
         expect(Money::ChargeCustomer)
-          .to receive(:new).with(purchase, user, stripe_token, amount_owed, charge_amount: amount)
+          .to receive(:new).with(reservation, user, stripe_token, amount_owed, charge_amount: amount)
           .and_return(error_service)
       end
 
@@ -122,7 +122,7 @@ RSpec.describe ChargesController, type: :controller do
         end
 
         it "redirects to the new charge form" do
-          expect(response).to redirect_to(new_charge_path(purchase: purchase))
+          expect(response).to redirect_to(new_charge_path(reservation: reservation))
         end
       end
 
@@ -130,17 +130,17 @@ RSpec.describe ChargesController, type: :controller do
         let(:charge_success) { true }
         let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: nil) }
 
-        context "when the charge is the first for a purchase" do
+        context "when the charge is the first for a reservation" do
           let(:amount_owed) { 0 }
 
           before do
-            create(:charge, amount: 340_00, purchase: purchase, user: user)
+            create(:charge, amount: 340_00, reservation: reservation, user: user)
           end
 
-          it "redirects to the purchase" do
+          it "redirects to the reservation" do
             post :create, params: params
 
-            expect(response).to redirect_to(purchases_path)
+            expect(response).to redirect_to(reservations_path)
           end
 
           it "sets a flash notice" do
@@ -150,19 +150,19 @@ RSpec.describe ChargesController, type: :controller do
           end
         end
 
-        context "when the charge is the not the first for a purchase" do
+        context "when the charge is the not the first for a reservation" do
           let(:amount) { 130_00 }
           let(:amount_owed) { 110_00 }
 
           before do
-            create(:charge, amount: 100_00, purchase: purchase, user: user)
-            create(:charge, amount: amount, purchase: purchase, user: user)
+            create(:charge, amount: 100_00, reservation: reservation, user: user)
+            create(:charge, amount: amount, reservation: reservation, user: user)
           end
 
-          it "redirects to the purchase" do
+          it "redirects to the reservation" do
             post :create, params: params
 
-            expect(response).to redirect_to(purchases_path)
+            expect(response).to redirect_to(reservations_path)
           end
 
           it "sets a flash notice" do

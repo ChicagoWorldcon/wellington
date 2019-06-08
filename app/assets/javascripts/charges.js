@@ -38,7 +38,7 @@ $(document).ready(function() {
     }
   });
 
-  document.querySelector('#purchase-button').addEventListener('click', function(e) {
+  document.querySelector('#reservation-button').addEventListener('click', function(e) {
     e.preventDefault();
 
     document.querySelector('#error_explanation').innerHtml = '';

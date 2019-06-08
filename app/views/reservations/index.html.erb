@@ -34,34 +34,34 @@
           <p>You have <%= @my_purcahses.count %> memberships</p>
 
           <div class="card-columns">
-            <% @my_purcahses.find_each(batch_size: 10) do |purchase| %>
-              <div class="<%= card_classes(purchase) %>">
+            <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
+              <div class="<%= card_classes(reservation) %>">
                 <div class="card-body">
                   <h5 class="card-title">
-                    #<%= purchase.membership_number %>
+                    #<%= reservation.membership_number %>
 
-                    <% if detail = purchase.active_claim.detail %>
+                    <% if detail = reservation.active_claim.detail %>
                       <%= detail %>
                     <% end %>
                   </h5>
 
                   <p class="card-text">
-                    <%= purchase.membership %> Membership
+                    <%= reservation.membership %> Membership
                   </p>
 
-                  <% if purchase.paid? %>
-                    <% UpgradeOffer.from(purchase.membership).each do |offer| %>
+                  <% if reservation.paid? %>
+                    <% UpgradeOffer.from(reservation.membership).each do |offer| %>
                       <p>
-                        <%= upgrade_link(purchase, offer: offer) %><br>
+                        <%= upgrade_link(reservation, offer: offer) %><br>
                         <em><%= offer.link_description %></em>
                       </p>
                     <% end %>
                   <% else %>
                     <p>Reserved, but not fully paid</p>
-                    <p><%= link_to "Make a payment", new_charge_url(purchase: purchase) %></p>
+                    <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
                   <% end %>
 
-                  <p><%= link_to("Review or update details", purchase_path(purchase)) %></p>
+                  <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
                 </div>
               </div>
             <% end %>
@@ -90,13 +90,13 @@
               <th>Membership</th>
             </thead>
             <tbody>
-              <% Claim.active.eager_load(:user, :detail, purchase: :membership).each do |claim| %>
+              <% Claim.active.eager_load(:user, :detail, reservation: :membership).each do |claim| %>
                 <tr>
-                  <td><%= claim.purchase.membership_number %></td>
-                  <td><%= link_to(claim.detail&.legal_name, purchase_path(claim.purchase)) %></td>
+                  <td><%= claim.reservation.membership_number %></td>
+                  <td><%= link_to(claim.detail&.legal_name, reservation_path(claim.reservation)) %></td>
                   <td><%= claim.detail&.preferred_name %></td>
                   <td><%= claim.user.email %></td>
-                  <td><%= claim.purchase.membership %></td>
+                  <td><%= claim.reservation.membership %></td>
                 </tr>
               <% end %>
             </tbody>

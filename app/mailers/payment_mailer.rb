@@ -22,10 +22,10 @@ class PaymentMailer < ApplicationMailer
 
   def paid(user:, charge:)
     @charge = charge
-    @purchase = charge.purchase
-    @detail = @purchase.active_claim.detail
+    @reservation = charge.reservation
+    @detail = @reservation.active_claim.detail
 
-    mail(to: user.email, subject: "CoNZealand Payment: Payment for member ##{@purchase.membership_number}") do |format|
+    mail(to: user.email, subject: "CoNZealand Payment: Payment for member ##{@reservation.membership_number}") do |format|
       # text must be called before html.
       format.text
       format.html
@@ -34,11 +34,11 @@ class PaymentMailer < ApplicationMailer
 
   def installment(user:, charge:, outstanding_amount:)
     @charge = charge
-    @purchase = charge.purchase
-    @detail = @purchase.active_claim.detail
+    @reservation = charge.reservation
+    @detail = @reservation.active_claim.detail
     @outstanding_amount = outstanding_amount
 
-    mail(to: user.email, subject: "CoNZealand Payment: Installment for member ##{@purchase.membership_number}") do |format|
+    mail(to: user.email, subject: "CoNZealand Payment: Installment for member ##{@reservation.membership_number}") do |format|
       # text must be called before html.
       format.text
       format.html

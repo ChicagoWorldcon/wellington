@@ -86,14 +86,14 @@ class Import::PresupportersRow
         return false
       end
 
-      new_purchase = ReservePurchase.new(membership, customer: new_user).call
-      if !new_purchase
-        errors << "could not purchase membership"
+      new_reservation = ClaimMembership.new(membership, customer: new_user).call
+      if !new_reservation
+        errors << "could not reserve membership"
         return false
       end
 
       details = Detail.new(
-        claim:                            new_purchase.active_claim,
+        claim:                            new_reservation.active_claim,
         import_key:                       cell_for("Import Key"),
         title:                            cell_for("Title"),
         first_name:                       cell_for("Given Name"),
@@ -127,8 +127,8 @@ class Import::PresupportersRow
         return false
       end
 
-      new_purchase.transaction do
-        new_purchase.update!(state: Purchase::PAID)
+      new_reservation.transaction do
+        new_reservation.update!(state: Reservation::PAID)
         details.save!
 
         new_user.notes.create!(content: comment)
@@ -137,7 +137,7 @@ class Import::PresupportersRow
         if membership.price > 0
           Charge.cash.successful.create!(
             user: new_user,
-            purchase: new_purchase,
+            reservation: new_reservation,
             amount: membership.price,
             comment: comment,
           )
@@ -146,16 +146,16 @@ class Import::PresupportersRow
         if account_credit.present?
           Charge.cash.successful.create!(
             user: new_user,
-            purchase: new_purchase,
+            reservation: new_reservation,
             amount: account_credit.amount,
             comment: "Account credit: #{account_credit.comment}",
           )
         end
 
-        new_purchase.update!(created_at: import_date, updated_at: import_date)
-        new_purchase.charges.reload.update_all(created_at: import_date, updated_at: import_date)
-        new_purchase.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
-        new_purchase.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+        new_reservation.update!(created_at: import_date, updated_at: import_date)
+        new_reservation.charges.reload.update_all(created_at: import_date, updated_at: import_date)
+        new_reservation.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
+        new_reservation.claims.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)
       end
     end
   end

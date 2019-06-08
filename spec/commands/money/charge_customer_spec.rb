@@ -22,8 +22,8 @@ RSpec.describe Money::ChargeCustomer do
   before { StripeMock.start }
   after { StripeMock.stop }
 
-  let(:purchase) { create(:purchase, :with_order_against_membership) }
-  let(:membership) { purchase.membership }
+  let(:reservation) { create(:reservation, :with_order_against_membership) }
+  let(:membership) { reservation.membership }
   let(:user) { create(:user) }
   let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
@@ -42,7 +42,7 @@ RSpec.describe Money::ChargeCustomer do
   end
 
   context "when stripe customer id is already set" do
-    subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+    subject(:command) { described_class.new(reservation, user, token, amount_owed) }
     let(:initial_stripe_id) { "super vip customer" }
 
     let(:user) { create(:user, stripe_id: initial_stripe_id) }
@@ -54,8 +54,8 @@ RSpec.describe Money::ChargeCustomer do
     end
   end
 
-  context "when paying for a purchase" do
-    subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+  context "when paying for a reservation" do
+    subject(:command) { described_class.new(reservation, user, token, amount_owed) }
 
     it "updates user's stripe id" do
       expect { command.call }.to change { user.reload.stripe_id }.from(nil)
@@ -68,13 +68,13 @@ RSpec.describe Money::ChargeCustomer do
       end
 
       it "does not change the amount paid" do
-        expect { command.call }.not_to change { purchase.reload.charges.successful.sum(:amount) }
+        expect { command.call }.not_to change { reservation.reload.charges.successful.sum(:amount) }
       end
 
       it "creates a failed payment on card decline" do
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
-        expect(purchase).to be_installment
+        expect(reservation).to be_installment
       end
 
       it "delegates the description to our charge description service" do
@@ -98,10 +98,10 @@ RSpec.describe Money::ChargeCustomer do
     end
   end
 
-  context "when paying only part of a purchase" do
+  context "when paying only part of a reservation" do
     let(:amount_paid) { membership.price / 4 }
     let(:amount_left) { membership.price - amount_paid }
-    subject(:command) { described_class.new(purchase, user, token, amount_left, charge_amount: amount_paid) }
+    subject(:command) { described_class.new(reservation, user, token, amount_left, charge_amount: amount_paid) }
 
     it "creates a failed payment on card decline" do
       StripeMock.prepare_card_error(:card_declined)
@@ -125,8 +125,8 @@ RSpec.describe Money::ChargeCustomer do
         expect(Charge.last.amount).to be(amount_paid)
       end
 
-      it "marks purchase state as installment" do
-        expect(purchase).to be_installment
+      it "marks reservation state as installment" do
+        expect(reservation).to be_installment
       end
 
       context "then membership pricing changes" do
@@ -146,9 +146,9 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         it "pays off the membership at the original price" do
-          success = described_class.new(purchase, user, token, amount_left, charge_amount: amount_left).call
+          success = described_class.new(reservation, user, token, amount_left, charge_amount: amount_left).call
           expect(success).to be_truthy
-          expect(purchase.state).to eq(Purchase::PAID)
+          expect(reservation.state).to eq(Reservation::PAID)
         end
       end
     end
@@ -157,32 +157,32 @@ RSpec.describe Money::ChargeCustomer do
   context "when overpaying" do
     let(:amount_paid) { membership.price + 1 }
     let(:amount_owed) { membership.price }
-    subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: amount_paid) }
+    subject(:command) { described_class.new(reservation, user, token, amount_owed, charge_amount: amount_paid) }
 
-    it "refuses to purchase the purchase" do
+    it "refuses to reservation the reservation" do
       expect(command.call).to be_falsey
       expect(command.errors).to include(/Overpay/i)
     end
   end
 
-  context "when paying off a purchase" do
+  context "when paying off a reservation" do
     let(:partial_pay) { membership.price / 4 }
     let(:remainder) { membership.price - partial_pay }
     let(:overpay) { remainder + 1 } # just a cent over
     let(:amount_owed) { remainder }
 
     before do
-      described_class.new(purchase, user, token, membership.price, charge_amount: partial_pay).call
+      described_class.new(reservation, user, token, membership.price, charge_amount: partial_pay).call
     end
 
-    subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: remainder) }
+    subject(:command) { described_class.new(reservation, user, token, amount_owed, charge_amount: remainder) }
 
     it { is_expected.to be_truthy }
 
     it "transitions from installment" do
       expect { command.call }
-        .to change { purchase.state }
-        .from(Purchase::INSTALLMENT).to(Purchase::PAID)
+        .to change { reservation.state }
+        .from(Reservation::INSTALLMENT).to(Reservation::PAID)
     end
 
     it "creates a charge" do
@@ -192,7 +192,7 @@ RSpec.describe Money::ChargeCustomer do
     end
 
     context "when choosing to overpay" do
-      subject(:command) { described_class.new(purchase, user, token, amount_owed, charge_amount: overpay) }
+      subject(:command) { described_class.new(reservation, user, token, amount_owed, charge_amount: overpay) }
 
       it "gives a polite error" do
         expect(command.call).to be_falsey
@@ -201,14 +201,14 @@ RSpec.describe Money::ChargeCustomer do
     end
 
     context "with default behaviour" do
-      subject(:command) { described_class.new(purchase, user, token, amount_owed) }
+      subject(:command) { described_class.new(reservation, user, token, amount_owed) }
 
       it { is_expected.to be_truthy }
 
       it "transitions from installment" do
         expect { command.call }
-          .to change { purchase.state }
-          .from(Purchase::INSTALLMENT).to(Purchase::PAID)
+          .to change { reservation.state }
+          .from(Reservation::INSTALLMENT).to(Reservation::PAID)
       end
 
       it "only pays the price of the membership" do
