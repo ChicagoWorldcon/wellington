@@ -75,7 +75,7 @@ class UserTokensController < ApplicationController
   end
 
   def referrer_path
-    uri = URI(request.headers["HTTP_REFERER"])
+    uri = URI(request.referrer)
     if uri.query.present?
       "#{uri.path}?#{uri.query}"
     else
