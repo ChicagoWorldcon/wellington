@@ -21,6 +21,11 @@ module ReservationsHelper
     end
   end
 
+  def form_input_errors(model, field)
+    model_errors = model.errors.messages[field]
+    model_errors.present? && model_errors.to_sentence.humanize
+  end
+
   def update_transfer_url(transfer)
     reservation_transfer_path(
       reservation_id: transfer.reservation_id,

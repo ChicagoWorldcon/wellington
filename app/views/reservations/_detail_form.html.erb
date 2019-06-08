@@ -50,6 +50,9 @@
             <div class="form-group">
               <label for="title">Title</label>
               <%= detail_form.text_field(:title, class: "form-control", id: "title") %>
+              <% if errors = form_input_errors(@detail, :title) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
 
@@ -57,6 +60,9 @@
             <div class="form-group">
               <label for="first_name">First Name (required)</label>
               <%= detail_form.text_field(:first_name, required: true, class: "form-control", id: "first_name") %>
+              <% if errors = form_input_errors(@detail, :first_name) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
 
@@ -64,6 +70,9 @@
             <div class="form-group">
               <label for="last_name">Last Name (required)</label>
               <%= detail_form.text_field(:last_name, required: true, class: "form-control", id: "last_name") %>
+              <% if errors = form_input_errors(@detail, :last_name) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
         </div>
@@ -79,12 +88,18 @@
             <div class="form-group">
               <label for="preferred_first_name">Public First Name</span></label>
               <%= detail_form.text_field(:preferred_first_name, class: "form-control", id: "preferred_first_name") %>
+              <% if errors = form_input_errors(@detail, :preferred_last_name) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
           <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="preferred_last_name">Public Last Name</label>
               <%= detail_form.text_field(:preferred_last_name, class: "form-control", id: "preferred_last_name") %>
+              <% if errors = form_input_errors(@detail, :preferred_last_name) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
         </div>
@@ -100,12 +115,18 @@
             <div class="form-group">
               <label for="badge_title">Badge Name</label>
               <%= detail_form.text_field(:badge_title, class: "form-control", id: "badge_title") %>
+              <% if errors = form_input_errors(@detail, :badge_title) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
           <div class="col-12 col-md-6">
             <div class="form-group">
               <label for="badge_subtitle">Badge Subtitle</label>
               <%= detail_form.text_field(:badge_subtitle, class: "form-control", id: "badge_subtitle") %>
+              <% if errors = form_input_errors(@detail, :badge_subtitle) %>
+                <p class="form-error"><%= errors %></p>
+              <% end %>
             </div>
           </div>
         </div>
@@ -149,16 +170,25 @@
       <div class="form-group">
         <label for="address_line_1">Address Line 1 (required)</label>
         <%= detail_form.text_field(:address_line_1, required: true, class: "form-control", id: "address_line_1") %>
+        <% if errors = form_input_errors(@detail, :address_line_1) %>
+          <p class="form-error"><%= errors %></p>
+        <% end %>
       </div>
 
       <div class="form-group">
         <label for="address_line_2">Address Line 2</label>
         <%= detail_form.text_field(:address_line_2, class: "form-control", id: "address_line_2") %>
+        <% if errors = form_input_errors(@detail, :address_line_2) %>
+          <p class="form-error"><%= errors %></p>
+        <% end %>
       </div>
 
       <div class="form-group">
         <label for="city">City</label>
         <%= detail_form.text_field(:city, class: "form-control", id: "city") %>
+        <% if errors = form_input_errors(@detail, :city) %>
+          <p class="form-error"><%= errors %></p>
+        <% end %>
       </div>
 
       <fieldset>
@@ -168,6 +198,9 @@
               <div class="form-group">
                 <label for="province">State / Province / Region</label>
                 <%= detail_form.text_field(:province, class: "form-control", id: "province") %>
+                <% if errors = form_input_errors(@detail, :province) %>
+                  <p class="form-error"><%= errors %></p>
+                <% end %>
               </div>
             </div>
           </div>
@@ -177,6 +210,9 @@
               <div class="form-group">
                 <label for="postal">Post code</label>
                 <%= detail_form.text_field(:postal, class: "form-control", id: "postal") %>
+                <% if errors = form_input_errors(@detail, :postal) %>
+                  <p class="form-error"><%= errors %></p>
+                <% end %>
               </div>
             </div>
           </div>
@@ -185,6 +221,9 @@
         <div class="form-group">
           <label for="country">Country (required)</label>
           <%= detail_form.text_field(:country, required: true, class: "form-control", id: "country") %>
+          <% if errors = form_input_errors(@detail, :country) %>
+            <p class="form-error"><%= errors %></p>
+          <% end %>
         </div>
       </fieldset>
 
@@ -194,6 +233,9 @@
           class: "form-control",
           id: "publication_format",
         }) %>
+        <% if errors = form_input_errors(@detail, :publication_format) %>
+          <p class="form-error"><%= errors %></p>
+        <% end %>
       </div>
 
       <p class="form-note form-note-m-group">
