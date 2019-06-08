@@ -25,13 +25,7 @@
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-3">
         <div class="card shadow-sm h-100">
-          <%= render("membership_card", offer: offer) do %>
-            <%= link_to(
-              "Register #{offer.membership}",
-              new_reservation_path(offer: offer),
-              class: %w(btn btn-lg btn-block btn-primary)
-            ) %>
-          <% end %>
+          <%= render("membership_card", offer: offer) %>
         </div>
       </div>
     <% end %>
