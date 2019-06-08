@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Renamed Purchase to Reservation for clarity of purpose
+- Renamed Purchase to Reservation to match the domain more closely
+- Upgraded gems to the latest versions [!76](https://gitlab.com/worldcon/2020-wellington/merge_requests/76)
 
 ### Removed
 - Nothing significant in this release
