@@ -33,6 +33,12 @@ class ReservationsController < ApplicationController
       offer.to_s == params[:offer]
     end
 
+    if !@my_offer.present?
+      flash[:error] = "Sorry, but the offer for #{params[:offer]} is no longer available"
+      redirect_to memberships_path
+      return
+    end
+
     @detail = Detail.new
     @offers = MembershipOffer.options
     @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }

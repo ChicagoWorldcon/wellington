@@ -42,6 +42,33 @@ RSpec.describe ReservationsController, type: :controller do
     end
   end
 
+  context "when memberships is no longer available" do
+    let(:price_change_at) { 1.second.ago }
+
+    before do
+      adult.update!(active_to: price_change_at)
+      adult.dup.save!(
+        active_from: price_change_at,
+        price: adult.price + 50_00,
+      )
+    end
+
+    describe "#new" do
+      before do
+        get :new, params: { offer: offer.to_s }
+      end
+
+      it "redirects back to memberships" do
+        expect(response).to have_http_status(:found)
+      end
+
+      it "sets error mentioning the original offer" do
+        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include(offer.to_s)
+      end
+    end
+  end
+
   describe "#index" do
     it "renders" do
       sign_in(original_user)
