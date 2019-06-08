@@ -1,0 +1,51 @@
+<%#
+  Copyright 2019 Matthew B. Gray
+  Copyright 2019 AJ Esler
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%>
+
+<div class="card <%= card_classes(reservation) %>">
+  <div class="card-body">
+    <h5 class="card-title">
+      #<%= reservation.membership_number %>
+
+      <% if detail = reservation.active_claim.detail %>
+        <%= detail %>
+      <% end %>
+    </h5>
+
+    <p class="card-text">
+      <%= reservation.membership %> Membership
+    </p>
+
+    <% if reservation.paid? %>
+      <% UpgradeOffer.from(reservation.membership).each do |offer| %>
+        <p>
+          <%= upgrade_link(reservation, offer: offer) %><br>
+          <em><%= offer.link_description %></em>
+        </p>
+      <% end %>
+    <% else %>
+      <p>Reserved, but not fully paid</p>
+      <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
+    <% end %>
+
+    <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
+  </div>
+</div>

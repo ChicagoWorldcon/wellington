@@ -35,35 +35,7 @@
 
           <div class="card-columns">
             <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
-              <div class="card <%= card_classes(reservation) %>">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    #<%= reservation.membership_number %>
-
-                    <% if detail = reservation.active_claim.detail %>
-                      <%= detail %>
-                    <% end %>
-                  </h5>
-
-                  <p class="card-text">
-                    <%= reservation.membership %> Membership
-                  </p>
-
-                  <% if reservation.paid? %>
-                    <% UpgradeOffer.from(reservation.membership).each do |offer| %>
-                      <p>
-                        <%= upgrade_link(reservation, offer: offer) %><br>
-                        <em><%= offer.link_description %></em>
-                      </p>
-                    <% end %>
-                  <% else %>
-                    <p>Reserved, but not fully paid</p>
-                    <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
-                  <% end %>
-
-                  <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
-                </div>
-              </div>
+              <%= render("reservation_card", reservation: reservation) %>
             <% end %>
           </div>
         <% end %>
