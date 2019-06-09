@@ -18,6 +18,8 @@
 class MembershipOffer
   attr_reader :membership
 
+  delegate :description, to: :membership
+
   def self.options
     Membership.active.order_by_price.map do |membership|
       MembershipOffer.new(membership)
@@ -48,14 +50,6 @@ class MembershipOffer
 
   def name
     "#{membership}"
-  end
-
-  def description
-    if membership.description.present?
-      "#{membership.description}"
-    else
-      ""
-    end
   end
 
   def membership_rights
