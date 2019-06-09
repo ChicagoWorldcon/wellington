@@ -52,22 +52,8 @@
       </ul>
     <% end %>
   </div>
-  <% case request.path %>
-  <% when memberships_path %>
-    <div class="card-footer">
-      <%= link_to(
-        "Register #{offer.membership}",
-        new_reservation_path(offer: offer.hash),
-        class: %w(btn btn-lg btn-block btn-primary)
-      ) %>
-    </div>
-  <% when reservation_upgrades_path %>
-    <div class="card-footer">
-      <%= link_to(
-        "Upgrade to #{offer.to_membership}",
-        new_reservation_upgrade_path(offer: offer.hash),
-        class: %w(btn btn-lg btn-block btn-primary)
-      ) %>
-    </div>
-  <% end %>
+
+  <div class="card-footer">
+    <%= yield %>
+  </div>
 </div>
