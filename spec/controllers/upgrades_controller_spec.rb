@@ -24,6 +24,32 @@ RSpec.describe UpgradesController, type: :controller do
   let(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
   let(:user_pays_path) { new_charge_path(reservation: reservation) }
 
+  describe "#index" do
+    render_views
+
+    subject(:get_index) { get :index, params: { reservation_id: reservation.id } }
+
+    it "doesn't render when signed out" do
+      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "doesn't render when signed in user doesn't own the membership" do
+      sign_in(create(:user))
+      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context "when the user is signed in" do
+      before do
+        sign_in(reservation.user)
+      end
+
+      it "renders happily" do
+        get_index
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
   describe "#edit" do
     # shallow checks, also tested by reservations_controller_spec for things like transferred membership
     it "fails to find record when you're not signed in" do

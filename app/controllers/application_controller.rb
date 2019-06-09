@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     if !support_signed_in?
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
-    @reservation = visible_reservations.find(params[:id])
+    @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
   end
 
   def assert_support!

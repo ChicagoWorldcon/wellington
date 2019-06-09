@@ -18,6 +18,8 @@
 class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
+  delegate :description, to: :to_membership
+
   def self.from(current_membership, target_membership: nil)
     # List options that are higher price
     options = Membership.active.where("price > ?", current_membership.price)
@@ -45,6 +47,14 @@ class UpgradeOffer
 
   def link_text
     "Upgrade to #{to_membership}"
+  end
+
+  def name
+    "Upgrade to #{to_membership}"
+  end
+
+  def membership_rights
+    to_membership.rights
   end
 
   def link_description

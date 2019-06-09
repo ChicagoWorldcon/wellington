@@ -32,6 +32,13 @@ RSpec.describe UpgradeOffer do
     expect(offer.price).to eq(adult.price - silver_fern.price)
   end
 
+  it "resolves adult rights" do
+    expect(offer.membership_rights).to include "rights.attend"
+    expect(offer.membership_rights).to include "rights.nominate_hugo"
+    expect(offer.membership_rights).to include "rights.vote_hugo"
+    expect(offer.membership_rights).to include "rights.nominate_site_selection"
+  end
+
   describe "#to_s" do
     subject(:to_s) { offer.to_s }
     it { is_expected.to match(/\$\d+\.\d+/i) }
