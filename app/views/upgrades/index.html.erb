@@ -26,7 +26,7 @@
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
         <div class="card shadow-sm h-100">
-          <%= render("/shared/membership_card", offer: offer) do %>
+          <%= render("membership_card", offer: offer) do %>
             <%= link_to(
               "Upgrade to #{offer.to_membership}",
               new_reservation_upgrade_path(offer: offer.hash),
