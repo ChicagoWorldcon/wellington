@@ -21,6 +21,12 @@ class UpgradesController < ApplicationController
     @offers = UpgradeOffer.from(@reservation.membership)
   end
 
+  def new
+    @my_offer = UpgradeOffer.from(@reservation.membership).find do |offer|
+      offer.hash == params[:offer]
+    end
+  end
+
   def edit
     if !params[:offer].present?
       redirect_to reservations_path

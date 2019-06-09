@@ -45,6 +45,10 @@ class UpgradeOffer
     "Upgrade to #{to_membership} (#{formatted_price})"
   end
 
+  def hash
+    "#{to_membership} #{formatted_price}"
+  end
+
   def link_text
     "Upgrade to #{to_membership}"
   end
