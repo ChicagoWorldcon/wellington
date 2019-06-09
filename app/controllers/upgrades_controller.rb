@@ -17,6 +17,10 @@
 class UpgradesController < ApplicationController
   before_action :lookup_reservation
 
+  def index
+    @offers = UpgradeOffer.from(@reservation.membership)
+  end
+
   def edit
     if !params[:offer].present?
       redirect_to reservations_path
