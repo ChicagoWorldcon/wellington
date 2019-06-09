@@ -32,4 +32,19 @@ module ReservationsHelper
       id: transfer.new_owner,
     )
   end
+
+  def index_links(reservation)
+    links = show_links(reservation)
+    links << link_to("Review or update details", reservation_path(reservation))
+  end
+
+  def show_links(reservation)
+    [].tap do |links|
+      if reservation.installment?
+        links << link_to("Make a payment", new_charge_url(reservation: reservation))
+      elsif UpgradeOffer.from(reservation.membership).any?
+        links << link_to("Upgrade membership", reservation_upgrades_path(reservation_id: reservation.id))
+      end
+    end
+  end
 end

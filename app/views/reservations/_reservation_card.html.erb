@@ -34,15 +34,8 @@
       <%= reservation.membership %> Membership
     </p>
 
-    <% if reservation.installment? %>
-      <p>Reserved, but not fully paid</p>
-      <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
-    <% elsif UpgradeOffer.from(reservation.membership).any? %>
-      <p><%= link_to("Upgrade membership", reservation_upgrades_path(reservation_id: reservation.id)) %></p>
-    <% end %>
-
-    <% if request.path != reservation_path(reservation) %>
-      <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
+    <% links.each do |link| %>
+      <p><%= link %></p>
     <% end %>
   </div>
 </div>
