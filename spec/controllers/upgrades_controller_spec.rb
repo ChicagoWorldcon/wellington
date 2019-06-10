@@ -20,9 +20,16 @@ RSpec.describe UpgradesController, type: :controller do
   let!(:silver_fern_membership) { create(:membership, :silver_fern) }
   let!(:adult_membership) { create(:membership, :adult) }
   let!(:reservation) { create(:reservation, :with_claim_from_user, membership: silver_fern_membership) }
-
-  let(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
+  let!(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
   let(:user_pays_path) { new_charge_path(reservation: reservation) }
+
+  let(:old_offer) { UpgradeOffer.new(from: silver_fern_membership, to: old_adult_membership) }
+  let(:old_adult_membership) do
+    create(:membership, :adult,
+      active_to: 1.second.ago,
+      price: adult_membership.price - 1_00
+    )
+  end
 
   describe "#index" do
     render_views
@@ -50,10 +57,10 @@ RSpec.describe UpgradesController, type: :controller do
     end
   end
 
-  describe "#edit" do
+  describe "#create" do
     # shallow checks, also tested by reservations_controller_spec for things like transferred membership
     it "fails to find record when you're not signed in" do
-      expect { put :edit, params: { id: reservation.id } }
+      expect { put :create, params: { id: reservation.id } }
         .to raise_error(ActiveRecord::RecordNotFound)
     end
 
@@ -61,7 +68,7 @@ RSpec.describe UpgradesController, type: :controller do
       before { sign_in(reservation.user) }
 
       it "requires you submit offer text in params" do
-        put :edit, params: { id: reservation.id }
+        put :create, params: { id: reservation.id }
         expect(response).to redirect_to(reservations_path)
 
         expect(reservation.reload.membership).to eq(silver_fern_membership)
@@ -69,7 +76,7 @@ RSpec.describe UpgradesController, type: :controller do
       end
 
       it "fails if the offer changes" do
-        put :edit, params: { id: reservation.id, offer: "Upgrade to Adult ($1.00 NZD)" }
+        put :create, params: { id: reservation.id, offer: old_offer.hash }
         expect(response).to redirect_to(reservations_path)
 
         expect(reservation.reload.membership).to eq(silver_fern_membership)
@@ -77,11 +84,25 @@ RSpec.describe UpgradesController, type: :controller do
       end
 
       it "upgrades your membership when available" do
-        put :edit, params: { id: reservation.id, offer: offer.to_s }
+        put :create, params: { id: reservation.id, offer: offer.hash }
         expect(response).to redirect_to(user_pays_path)
 
         expect(reservation.reload.membership).to eq(offer.to_membership)
-        expect(flash[:notice]).to match(/reserved/i)
+        expect(flash[:notice]).to match(/upgraded/i)
+      end
+    end
+  end
+
+  describe "#new" do
+    context "when signed in" do
+      before { sign_in(reservation.user) }
+
+      it "fails if the offer changes" do
+        put :new, params: { id: reservation.id, offer: old_offer.hash }
+        expect(response).to redirect_to(reservations_path)
+
+        expect(reservation.reload.membership).to eq(silver_fern_membership)
+        expect(flash[:error]).to match(/sorry/i)
       end
     end
   end

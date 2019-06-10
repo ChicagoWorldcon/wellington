@@ -16,40 +16,46 @@
 
 class UpgradesController < ApplicationController
   before_action :lookup_reservation
+  before_action :lookup_offer, except: :index
 
   def index
     @offers = UpgradeOffer.from(@reservation.membership)
   end
 
   def new
+  end
+
+  def create
+    upgrader = UpgradeMembership.new(@reservation, to: @my_offer.to_membership)
+    if !upgrader.call
+      Rails.logger.error("Failed to upgrade #{current_user.id} to #{@reservation.membership.name}")
+      flash[:error] = %{
+        Sorry. #{params[:offer]}
+        from #{@reservation.membership}
+        could not be upgraded at this time
+      }
+      return
+    end
+
+    flash[:notice] = %{
+      You've just upgraded #{@my_offer.from_membership}
+      to #{@my_offer.to_membership}
+    }
+    redirect_to new_charge_path(reservation: @reservation)
+  end
+
+  private
+
+  def lookup_offer
     @my_offer = UpgradeOffer.from(@reservation.membership).find do |offer|
       offer.hash == params[:offer]
     end
-  end
 
-  def edit
-    if !params[:offer].present?
+    if !@my_offer.present?
       redirect_to reservations_path
-      return flash[:error] = "Sorry, something went wrong with your upgrade. Please try again."
+      flash[:error] = %{
+        Sorry. #{params[:offer]} from #{@reservation.membership} is no longer available
+      }
     end
-
-    # Find the offer that matches the our user clicked on
-    offer = UpgradeOffer.from(@reservation.membership).find do |offer|
-      offer.to_s == params[:offer]
-    end
-
-    if !offer.present?
-      redirect_to reservations_path
-      return flash[:error] = "Sorry. #{params[:offer]} from #{@reservation.membership} is no longer available"
-    end
-
-    upgrader = UpgradeMembership.new(@reservation, to: offer.to_membership)
-    if !upgrader.call
-      Rails.logger.error("Failed to upgrade #{current_user.id} to #{@reservation.membership.name}")
-      return flash[:error] = "Sorry. #{params[:offer]} from #{@reservation.membership} could not be upgraded at this time"
-    end
-
-    redirect_to new_charge_path(reservation: @reservation)
-    flash[:notice] = "We've reserved you one #{offer.to_membership} membership"
   end
 end
