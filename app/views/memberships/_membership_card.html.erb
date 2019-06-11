@@ -34,7 +34,7 @@
       <ul class="list-group list-group-flush mt-3 mb-4">
         <% offer.membership_rights.each do |rights_i18n| %>
           <li class="list-group-item">
-            <%= rights_i18n[:describe_future] %>
+            <%= rights_i18n[:description] %>
             <%= link_to(rights_i18n[:link], target: "_blank") do %>
               <%=
                 octicon("info",
