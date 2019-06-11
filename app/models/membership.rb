@@ -30,13 +30,4 @@ class Membership < ApplicationRecord
   def to_s
     name.humanize
   end
-
-  def rights
-    [].tap do |rights|
-      rights << I18n.t("rights.attend") if can_attend?
-      rights << I18n.t("rights.vote_hugo") if can_vote?
-      rights << I18n.t("rights.nominate_hugo") if can_vote?
-      rights << I18n.t("rights.nominate_site_selection") if can_vote?
-    end
-  end
 end

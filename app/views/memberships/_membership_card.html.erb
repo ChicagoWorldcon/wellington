@@ -32,10 +32,10 @@
     <% if offer.membership_rights.any? %>
       <p><%= t("rights.title") %></p>
       <ul class="list-group list-group-flush mt-3 mb-4">
-        <% offer.membership_rights.each do |rights_i18n| %>
+        <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
-            <%= rights_i18n[:description] %>
-            <%= link_to(rights_i18n[:link], target: "_blank") do %>
+            <%= t(:description, scope: membership_right) %>
+            <%= link_to(t(:link, scope: membership_right), target: "_blank") do %>
               <%=
                 octicon("info",
                   "height" => "15px",
@@ -43,7 +43,7 @@
                   "data-toggle" => "tooltip",
                   "data-html" => "true",
                   "data-placement" => "right",
-                  "title" => rights_i18n[:layman],
+                  "title" => t(:layman, scope: membership_right),
                 )
               %>
             <% end %>
