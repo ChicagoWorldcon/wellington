@@ -34,6 +34,27 @@
       <%= reservation.membership %> Membership
     </p>
 
+    <p><%= t("rights.title") %></p>
+    <% if reservation.paid? %>
+      <% reservation.membership.rights.each do |membership_right| %>
+        <p>
+          <%= t(:description, scope: membership_right) %>
+          <%= link_to(t(:link, scope: membership_right), target: "_blank") do %>
+            <%=
+              octicon("info",
+                "height" => "15px",
+                "aria-label" => "More information",
+                "data-toggle" => "tooltip",
+                "data-html" => "true",
+                "data-placement" => "right",
+                "title" => t(:layman, scope: membership_right),
+              )
+            %>
+          <% end %>
+        </p>
+      <% end %>
+    <% end %>
+
     <% links.each do |link| %>
       <p><%= link %></p>
     <% end %>
