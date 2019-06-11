@@ -59,7 +59,7 @@ class MembershipOffer
       end
 
       if membership.can_vote?
-        rights << "rights.attend"
+        rights << "rights.vote_hugo"
         rights << "rights.nominate_hugo"
         rights << "rights.nominate_site_selection"
       end
