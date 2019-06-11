@@ -25,9 +25,7 @@
   <div class="row d-flex align-items-stretch">
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-3">
-        <div class="card shadow-sm h-100">
-          <%= render("membership_card", offer: offer) %>
-        </div>
+        <%= render("membership_card", offer: offer) %>
       </div>
     <% end %>
   </div>
