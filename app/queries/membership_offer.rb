@@ -18,6 +18,8 @@
 class MembershipOffer
   attr_reader :membership
 
+  delegate :description, to: :membership
+
   def self.options
     Membership.active.order_by_price.map do |membership|
       MembershipOffer.new(membership)
@@ -29,11 +31,12 @@ class MembershipOffer
   end
 
   def to_s
-    if membership.description.present?
-      "#{membership} - #{membership.description} (#{formatted_price})"
-    else
-      "#{membership} (#{formatted_price})"
-    end
+    "#{membership} #{formatted_price}"
+  end
+
+  # Compute a hash-code for this hash. Two offers with the same content will have the same hash code.
+  def hash
+    "#{membership} #{formatted_price}"
   end
 
   # TODO Extract to i18n
@@ -41,7 +44,7 @@ class MembershipOffer
     if membership.price > 0
       "$%.2f NZD" % (membership.price * 1.0 / 100)
     else
-      "free"
+      "Free"
     end
   end
 
@@ -49,11 +52,17 @@ class MembershipOffer
     "#{membership}"
   end
 
-  def description
-    if membership.description.present?
-      "#{membership.description}"
-    else
-      ""
+  def membership_rights
+    [].tap do |rights|
+      if membership.can_attend?
+        rights << "rights.attend"
+      end
+
+      if membership.can_vote?
+        rights << "rights.attend"
+        rights << "rights.nominate_hugo"
+        rights << "rights.nominate_site_selection"
+      end
     end
   end
 end

@@ -14,22 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module ReservationsHelper
-  def card_classes(reservation)
-    if !reservation.paid?
-      "text-white bg-dark border-light"
-    end
-  end
-
-  def form_input_errors(model, field)
-    model_errors = model.errors.messages[field]
-    model_errors.present? && model_errors.to_sentence.humanize
-  end
-
-  def update_transfer_url(transfer)
-    reservation_transfer_path(
-      reservation_id: transfer.reservation_id,
-      id: transfer.new_owner,
-    )
+class MembershipsController < ApplicationController
+  def index
+    @offers = MembershipOffer.options
   end
 end

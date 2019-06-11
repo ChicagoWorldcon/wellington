@@ -1,6 +1,6 @@
 <%#
-  Copyright 2019 Jen Zajac (jenofdoom)
   Copyright 2019 Matthew B. Gray
+  Copyright 2019 AJ Esler
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -20,25 +20,34 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<div class="container text-center">
-  <div class="row d-flex align-items-stretch">
+<div class="card <%= card_classes(reservation) %>">
+  <div class="card-body">
+    <h5 class="card-title">
+      #<%= reservation.membership_number %>
 
-    <% @offers.each do |offer| %>
-      <div class="col-sm-12 col-lg-4 mb-4">
-        <div class="card bg-dark text-white shadow-sm h-100">
-          <div class="card-header text-nowrap">
-            <h4 class="my-0"><%= offer.name %></h4>
-          </div>
-          <div class="card-body">
-            <% if offer.description.present? %>
-              <small>(<%= offer.description %>)</small>
-            <% end %>
-            <h5 class="card-title"><%= offer.formatted_price %></h5>
-          </div>
-        </div>
-      </div>
+      <% if detail = reservation.active_claim.detail %>
+        <%= detail %>
+      <% end %>
+    </h5>
+
+    <p class="card-text">
+      <%= reservation.membership %> Membership
+    </p>
+
+    <% if reservation.paid? %>
+      <% UpgradeOffer.from(reservation.membership).each do |offer| %>
+        <p>
+          <%= upgrade_link(reservation, offer: offer) %><br>
+          <em><%= offer.link_description %></em>
+        </p>
+      <% end %>
+    <% else %>
+      <p>Reserved, but not fully paid</p>
+      <p><%= link_to "Make a payment", new_charge_url(reservation: reservation) %></p>
     <% end %>
 
+    <% if request.path != reservation_path(reservation) %>
+      <p><%= link_to("Review or update details", reservation_path(reservation)) %></p>
+    <% end %>
   </div>
 </div>
-<%= render "sign_in_notice" %>

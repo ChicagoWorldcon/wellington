@@ -54,7 +54,7 @@ class Detail < ApplicationRecord
     :interest_performing
   ].freeze
 
-  belongs_to :claim
+  belongs_to :claim, required: false
 
   attr_reader :for_import
 

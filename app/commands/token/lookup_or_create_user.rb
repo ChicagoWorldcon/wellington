@@ -21,9 +21,11 @@ class Token::LookupOrCreateUser
   attr_reader :token
   attr_reader :secret
 
+  # PATH_LIST contains matches for paths we will allow for client redirect
+  # If it's not in this list, then you're going to a default location
   PATH_LIST = [
-      "/reservations/new",
-      "/reservations",
+    "/reservations/new?",
+    "/reservations",
   ].freeze
 
   def initialize(token:, secret:)
@@ -45,12 +47,13 @@ class Token::LookupOrCreateUser
   end
 
   def path
-    path = @token.first["path"]
-    if path.in?(PATH_LIST)
-      path
-    else
-      nil
+    given_path = @token.first["path"]
+
+    PATH_LIST.each do |legal_path|
+      return given_path if given_path.start_with?(legal_path)
     end
+
+    nil
   end
 
   def errors

@@ -21,7 +21,7 @@ RSpec.describe Token::LookupOrCreateUser do
   let(:good_secret) { "you'll never find the treasure" }
   let(:good_email) { "willy_wönka@chocolate_factory.nz" }
   let(:user) { create(:user) }
-  let(:good_path) { "/reservations" }
+  let(:good_path) { "/reservations/new" }
   let(:bad_path) { "/notonthelist" }
   let(:encoded_token) { JWT.encode(login_info, good_secret, "HS256") }
 
@@ -147,6 +147,15 @@ RSpec.describe Token::LookupOrCreateUser do
     it "returns good_path" do
       expect(command.call).to be_truthy
       expect(command.path).to eq(good_path)
+    end
+
+    context "and get params" do
+      let(:good_path) { "/reservations/new?order=Young+adult" }
+
+      it "returns good_path" do
+        expect(command.call).to be_truthy
+        expect(command.path).to eq(good_path)
+      end
     end
   end
 

@@ -14,22 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module ReservationsHelper
-  def card_classes(reservation)
-    if !reservation.paid?
-      "text-white bg-dark border-light"
+require "rails_helper"
+
+RSpec.describe MembershipsController, type: :controller do
+  let(:user) { create(:user) }
+
+  describe "#index" do
+    it "renders when signed out" do
+      get :index
+      expect(response).to have_http_status(:ok)
     end
-  end
 
-  def form_input_errors(model, field)
-    model_errors = model.errors.messages[field]
-    model_errors.present? && model_errors.to_sentence.humanize
-  end
-
-  def update_transfer_url(transfer)
-    reservation_transfer_path(
-      reservation_id: transfer.reservation_id,
-      id: transfer.new_owner,
-    )
+    it "renders when signed in" do
+      sign_in(user)
+      get :index
+      expect(response).to have_http_status(:ok)
+    end
   end
 end

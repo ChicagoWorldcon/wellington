@@ -17,6 +17,8 @@
 
 class ReservationsController < ApplicationController
   before_action :lookup_reservation, only: [:show, :update]
+  before_action :lookup_offer, only: [:new, :create]
+  before_action :setup_paperpubs, except: :index
 
   # TODO(issue #24) list all members for people not logged in
   def index
@@ -31,7 +33,6 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @detail = Detail.new
     @offers = MembershipOffer.options
-    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
     end
@@ -41,31 +42,28 @@ class ReservationsController < ApplicationController
     @detail = @reservation.active_claim.detail || Detail.new
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
-    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
 
   def create
     current_user.transaction do
-      matching_offer = MembershipOffer.options.find do |offer|
-        offer.to_s == params[:offer]
+      @detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
+      if !@detail.valid?
+        @reservation = Reservation.new
+        flash[:error] = @detail.errors.full_messages.to_sentence
+        render "/reservations/new"
+        return
       end
 
-      # TODO nicer errors
-      raise "Offer not available to user" if !matching_offer.present?
-
-      service = ClaimMembership.new(matching_offer.membership, customer: current_user)
+      service = ClaimMembership.new(@my_offer.membership, customer: current_user)
       new_reservation = service.call
+      @detail.claim = new_reservation.active_claim
+      @detail.save!
 
-      # TODO nicer errors
-      raise "Failed to reserve membership" if !new_reservation.present?
+      flash[:notice] = %{
+        Congratulations member ##{new_reservation.membership_number}!
+        You've just reserved a #{@my_offer.membership} membership
+      }
 
-      detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
-      detail.claim = new_reservation.active_claim
-
-      # TODO nicer errors
-      detail.save!
-
-      flash[:notice] = "Congratulations member ##{new_reservation.membership_number}! You've just reserved a #{matching_offer.membership} membership"
       if new_reservation.membership.price.zero?
         redirect_to reservations_path
       else
@@ -83,9 +81,29 @@ class ReservationsController < ApplicationController
         flash[:notice] = "Details for #{current_details} member ##{@reservation.membership_number} have been updated"
         redirect_to reservations_path
       else
+        @detail = @reservation.active_claim.detail || Detail.new
+        @my_offer = MembershipOffer.new(@reservation.membership)
+        @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
         flash[:error] = current_details.errors.full_messages.to_sentence
-        redirect_to reservation_path(@reservation)
+        render "reservations/show"
       end
     end
+  end
+
+  private
+
+  def lookup_offer
+    @my_offer = MembershipOffer.options.find do |offer|
+      offer.hash == params[:offer]
+    end
+
+    if !@my_offer.present?
+      flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
+      redirect_to memberships_path
+    end
+  end
+
+  def setup_paperpubs
+    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
 end

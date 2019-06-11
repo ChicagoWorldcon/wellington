@@ -20,22 +20,18 @@ class PaymentMailerPreview < ActionMailer::Preview
   StubUser = Struct.new(:email, :login_url)
   StubCharge = Struct.new(:id, :amount)
 
-  def new_member
-    # TODO Use models that represent this mailer
-    reservation = StubReservation.new("Adult", 42, true, false)
-    user = StubUser.new("first.user@example.org", "https://members-staging.conzealand.nz/login/test@conzealand.nz/pahJie3v")
-    charge = StubCharge.new("stub-charge-1234", 300_00)
-    outstanding_amount = 70_00
-
-    PaymentMailer.new_member(user: user, reservation: reservation, charge: charge, outstanding_amount: outstanding_amount)
+  def paid
+    PaymentMailer.paid(
+      user: Charge.last.user,
+      charge: Charge.last,
+    )
   end
 
-  def installment_payment
-    reservation = Stubreservation.new("Adult", 42, true, false)
-    user = StubUser.new("first.user@example.org", "https://members-staging.conzealand.nz/login/test@conzealand.nz/pahJie3v")
-    charge = StubCharge.new("stub-charge-1234", 150_00)
-    outstanding_amount = 70_00
-
-    PaymentMailer.installment_payment(user: user, reservation: reservation, charge: charge, outstanding_amount: outstanding_amount)
+  def installment
+    PaymentMailer.installment(
+      user: Charge.last.user,
+      charge: Charge.last,
+      outstanding_amount: 42_00,
+    )
   end
 end

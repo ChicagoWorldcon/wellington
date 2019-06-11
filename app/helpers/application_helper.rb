@@ -46,12 +46,4 @@ module ApplicationHelper
     formatted_money = number_to_currency(total_cents / 100)
     "#{formatted_money} NZD"
   end
-
-  def detail_form_submit_text(reservation)
-    if reservation.persisted?
-      "Save Details"
-    else
-      "Reserve Membership and Pay"
-    end
-  end
 end

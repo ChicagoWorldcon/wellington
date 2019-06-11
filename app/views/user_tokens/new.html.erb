@@ -16,9 +16,9 @@
 
 <%= form_for(UserToken.new) do |f| %>
   <div class="form-group">
-    <%= label_tag(:email, "Email:") %>
-    <%= text_field_tag(:email) %>
-    <%= submit_tag("Send Login Link") %>
+    <label for="email">Email address</label>
+    <%= text_field_tag(:email, nil, class: "form_control", id: "email") %>
+    <%= submit_tag("Send Login Link", class: "btn") %>
   </div>
 
   <p>

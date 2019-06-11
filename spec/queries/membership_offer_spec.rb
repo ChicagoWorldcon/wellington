@@ -19,8 +19,8 @@ require "rails_helper"
 RSpec.describe MembershipOffer do
   subject(:model) { described_class.new(membership) }
 
-  describe "#to_s" do
-    subject(:to_s) { model.to_s }
+  describe "#hash" do
+    subject(:hash) { model.hash }
 
     let!(:membership) { create(:membership, :adult) }
 

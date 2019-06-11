@@ -24,6 +24,7 @@ gem "devise"               # authentication solution for Rails with Warden
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "markerb"              # Renders Html and Text email from Markdown template
+gem "octicons_helper"      # icon pack from github in a handy helper
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
 gem "rails", "5.2.3"       # framework for building websites <3

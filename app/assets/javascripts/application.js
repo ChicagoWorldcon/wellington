@@ -46,3 +46,59 @@ $(document).ready(function initStyleToggler() {
     $('body').toggleClass("api-test-keys");
   });
 });
+
+// Stripe form setup for accepting payments form the charges endpoints
+$(document).ready(function initStripeForm() {
+  var $form = $("#charge-form");
+  if ($form.length === 0) {
+    return;
+  }
+
+  var config = $form.data("stripe");
+  var handler = StripeCheckout.configure({
+    key:          config.key,
+    description:  config.description,
+    email:        config.email,
+    locale:       'auto',
+    currency:     'NZD',
+    name:         'CoNZealand',
+    token: function(token) {
+      $form.find('input#stripeToken').val(token.id);
+      $form.find('input#stripeEmail').val(token.email);
+      $form.submit();
+    }
+  });
+
+  document.querySelector('#reservation-button').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    document.querySelector('#error_explanation').innerHtml = '';
+
+    var amount = document.querySelector('select#amount').value;
+    amount = amount.replace(/\$/g, '').replace(/\,/g, '')
+
+    amount = parseInt(amount);
+
+    if (isNaN(amount)) {
+      document.querySelector('#error_explanation').innerHtml = '<p>Please enter a valid amount in NZD ($).</p>';
+    } else {
+      handler.open({
+        amount: amount
+      })
+    }
+  });
+
+  // Close Checkout on page navigation:
+  window.addEventListener('popstate', function() {
+    handler.close();
+  });
+});
+
+$(document).ready(function initBootstrap() {
+  // DataTable plugin for searchable and sortable tables
+  $(".full-members-list").DataTable();
+  $(".transfer-emails-list").DataTable();
+
+  // Bootstrap tooltip for more information about elements
+  $("[data-toggle=tooltip").tooltip();
+});

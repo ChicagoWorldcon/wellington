@@ -32,6 +32,7 @@ Rails.application.routes.draw do
 
   resources :charges
   resources :landing
+  resources :memberships
   resources :themes
   resources :upgrades
   resources :reservations do
