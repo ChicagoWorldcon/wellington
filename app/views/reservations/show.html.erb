@@ -24,7 +24,7 @@
 <h1>Review Membership</h1>
 <section class="l-section">
   <div class="row">
-    <div class="col-12 col-md-12">
+    <div class="col-12">
       <div class="l-panel">
         <h2><%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h2>
         <% if @reservation.paid? %>
@@ -48,7 +48,7 @@
   </div>
 
   <div class="row">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-lg-4">
       <div class="l-panel l-panel-m-membership-types">
         <div class="l-v-spacing">
           <%= render "reservation_card", reservation: @reservation %>
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8">
       <div class="l-panel">
         <h2>Review your details</h2>
         <%= render "detail_form" %>

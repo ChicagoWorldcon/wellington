@@ -24,12 +24,12 @@
 <h1>Reserve Membership</h1>
 <section class="l-section">
   <div class="row">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-lg-4">
       <div class="l-panel">
         <%= render "/memberships/membership_card", offer: @my_offer %>
       </div>
     </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8">
       <div class="l-panel">
         <% if !user_signed_in? %>
           <%= render "sign_in_notice" %>
