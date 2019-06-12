@@ -33,6 +33,11 @@ module ReservationsHelper
     )
   end
 
+  def amount_to_pay(reservation)
+    amount = AmountOwedForReservation.new(reservation).amount_owed
+    number_to_currency(amount / 100)
+  end
+
   def index_links(reservation)
     links = show_links(reservation)
     links << link_to("Review or update details", reservation_path(reservation))

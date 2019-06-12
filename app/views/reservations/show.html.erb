@@ -21,31 +21,21 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Review Membership</h1>
+<h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
 <section class="l-section">
-  <div class="row">
-    <div class="col-12">
-      <div class="l-panel">
-        <h2><%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h2>
-        <% if @reservation.paid? %>
-          <span>This membership is paid for.</span>
-        <% else %>
-          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
-          <%= link_to "Make a payment", new_charge_url(reservation: @reservation) %>
-        <% end %>
+  <% if support_signed_in? %>
+    <div class="row">
+      <div class="col-12">
+          <div class="l-panel">
+            <h2>Support Actions</h2>
+            <p>
+              <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
+              to another user
+            </p>
+          </div>
       </div>
-
-      <% if support_signed_in? %>
-        <div class="l-panel">
-          <h2>Support Actions</h2>
-          <p>
-            <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
-            to another user
-          </p>
-        </div>
-      <% end %>
     </div>
-  </div>
+  <% end %>
 
   <div class="row">
     <div class="col-12 col-lg-4">
