@@ -39,9 +39,8 @@
       <p><%= amount_to_pay(reservation) %> NZD outstanding</p>
     <% end %>
 
-    <p><%= t("rights.description") %></p>
-
     <% if reservation.paid? %>
+      <p><%= t("rights.description") %></p>
       <% reservation.membership.rights.each do |membership_right| %>
         <p>
           <%= t(:description, scope: membership_right) %>
