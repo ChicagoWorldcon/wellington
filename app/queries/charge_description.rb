@@ -69,7 +69,7 @@ class ChargeDescription
   def installment_or_paid
     if !charge.successful?
       "Payment"
-    elsif charges_so_far.sum(:amount) < charged_membership.price
+    elsif charges_so_far.sum(:amount) + charge.amount < charged_membership.price
       "Installment"
     else
       "Fully Paid"
@@ -106,7 +106,8 @@ class ChargeDescription
   end
 
   def charges_so_far
-    charge.reservation.charges.successful.where("created_at <= ?", charge_active_at)
+    successful = charge.reservation.charges.successful
+    successful.where.not(id: charge.id).where("created_at < ?", charge_active_at)
   end
 
   def formatted_amount
