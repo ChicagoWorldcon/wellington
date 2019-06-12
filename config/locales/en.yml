@@ -50,7 +50,7 @@ en:
     offer_unavailable: Sorry, but that offer %{offer} is no longer available
 
   rights:
-    title: With this membership, you can
+    description: With this membership, you can
 
     attend:
       description: Attend in 2020

@@ -34,7 +34,12 @@
       <%= reservation.membership %> Membership
     </p>
 
-    <p><%= t("rights.title") %></p>
+    <% if reservation.installment? %>
+      <p>Reserved, but not fully paid</p>
+    <% end %>
+
+    <p><%= t("rights.description") %></p>
+
     <% if reservation.paid? %>
       <% reservation.membership.rights.each do |membership_right| %>
         <p>
