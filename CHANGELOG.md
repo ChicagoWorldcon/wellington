@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 1.3.0 - 2019-06-20]
+
+### Added
 - Purchase flow changed to let you select a membership before signing in [!73](https://gitlab.com/worldcon/2020-wellington/merge_requests/73)
 - Prominant prices, membership rights and buttons on all memberships [!73](https://gitlab.com/worldcon/2020-wellington/merge_requests/73)
 
@@ -22,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Removed
-- Nothing significant in this release
+- Paths to resources have changed, /purchases have moved to /reservations
 
 
 ## Tag 1.2.0 - 2019-06-08
