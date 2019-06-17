@@ -31,6 +31,7 @@ class Membership < ApplicationRecord
     name.humanize
   end
 
+  # These match i18n values set in config/locales
   def rights
     [].tap do |rights|
       if can_attend?
