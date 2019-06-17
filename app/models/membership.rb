@@ -38,9 +38,8 @@ class Membership < ApplicationRecord
       end
 
       if can_vote?
-        rights << "rights.vote_hugo"
-        rights << "rights.nominate_hugo"
-        rights << "rights.nominate_site_selection"
+        rights << "rights.hugo"
+        rights << "rights.site_selection"
       end
     end
   end

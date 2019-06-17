@@ -34,9 +34,8 @@ RSpec.describe UpgradeOffer do
 
   it "resolves adult rights" do
     expect(offer.membership_rights).to include "rights.attend"
-    expect(offer.membership_rights).to include "rights.nominate_hugo"
-    expect(offer.membership_rights).to include "rights.vote_hugo"
-    expect(offer.membership_rights).to include "rights.nominate_site_selection"
+    expect(offer.membership_rights).to include "rights.hugo"
+    expect(offer.membership_rights).to include "rights.site_selection"
   end
 
   describe "#to_s" do
