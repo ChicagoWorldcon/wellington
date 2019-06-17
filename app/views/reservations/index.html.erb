@@ -35,7 +35,11 @@
 
           <div class="card-columns">
             <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
-              <%= render("reservation_card", reservation: reservation) %>
+              <%= render("reservation_card", reservation: reservation) do %>
+                <% index_links(reservation).each do |link| %>
+                  <p><%= link %></p>
+                <% end %>
+              <% end %>
             <% end %>
           </div>
         <% end %>

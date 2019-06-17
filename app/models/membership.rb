@@ -30,4 +30,18 @@ class Membership < ApplicationRecord
   def to_s
     name.humanize
   end
+
+  # These match i18n values set in config/locales
+  def rights
+    [].tap do |rights|
+      if can_attend?
+        rights << "rights.attend"
+      end
+
+      if can_vote?
+        rights << "rights.hugo"
+        rights << "rights.site_selection"
+      end
+    end
+  end
 end

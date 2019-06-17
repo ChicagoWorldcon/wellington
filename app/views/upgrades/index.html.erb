@@ -1,7 +1,6 @@
 <%#
-  Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
+  Copyright 2019 Matthew B. Gray
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -21,23 +20,21 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Reserve Membership</h1>
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-lg-4">
-      <div class="l-panel">
-        <%= render "membership_card", offer: @my_offer %>
+<h1>Upgrade options for #<%= @reservation.membership_number %> from <%= @reservation.membership %></h1>
+<div class="container text-center">
+  <div class="row d-flex align-items-stretch">
+    <% @offers.each do |offer| %>
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+        <div class="card shadow-sm h-100">
+          <%= render("membership_card", offer: offer) do %>
+            <%= link_to(
+              "Review #{offer.to_membership}",
+              new_reservation_upgrade_path(offer: offer.hash),
+              class: %w(btn btn-lg btn-block btn-primary)
+            ) %>
+          <% end %>
+        </div>
       </div>
-    </div>
-    <div class="col-12 col-lg-8">
-      <div class="l-panel">
-        <% if !user_signed_in? %>
-          <%= render "sign_in_notice" %>
-        <% else %>
-          <h2>Reserve a New Membership</h2>
-          <%= render "detail_form" %>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
   </div>
-</section>
+</div>

@@ -30,35 +30,28 @@
     <h5 class="card-title"><%= offer.formatted_price %></h5>
 
     <% if offer.membership_rights.any? %>
-      <p><%= t("rights.title") %></p>
+      <p><%= t("rights.description") %></p>
       <ul class="list-group list-group-flush mt-3 mb-4">
         <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
             <%= t(:description, scope: membership_right) %>
-            <%= link_to(t(:link, scope: membership_right), target: "_blank") do %>
-              <%=
-                octicon("info",
-                  "height" => "15px",
-                  "aria-label" => "More information",
-                  "data-toggle" => "tooltip",
-                  "data-html" => "true",
-                  "data-placement" => "right",
-                  "title" => t(:layman, scope: membership_right),
-                )
-              %>
-            <% end %>
+            <%=
+              octicon("info",
+                "height" => "15px",
+                "aria-label" => "More information",
+                "data-toggle" => "tooltip",
+                "data-html" => "true",
+                "data-placement" => "right",
+                "title" => t(:layman, scope: membership_right),
+              )
+            %>
           </li>
         <% end %>
       </ul>
     <% end %>
   </div>
-  <% if request.path == memberships_path %>
-    <div class="card-footer">
-      <%= link_to(
-        "Register #{offer.membership}",
-        new_reservation_path(offer: offer.hash),
-        class: %w(btn btn-lg btn-block btn-primary)
-      ) %>
-    </div>
-  <% end %>
+
+  <div class="card-footer">
+    <%= yield %>
+  </div>
 </div>

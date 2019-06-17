@@ -50,33 +50,24 @@ en:
     offer_unavailable: Sorry, but that offer %{offer} is no longer available
 
   rights:
-    title: This membership can
+    description: With this membership, you can
 
     attend:
       description: Attend in 2020
-      link: https://conzealand.nz/about-worldcon
       layman:
         You get to attend CoNZealand in 2020 with things such as autographing sessions, literary beer/coffee meetups,
         awards ceremonies, costuming, dancing, a dealers room with sci-fi games/books, film festival, gaming,
         socialising and much more!
 
-    nominate_hugo:
-      description: Nominate for Hugo
-      link: https://conzealand.nz/about-worldcon
-      layman:
-        Hugo Nominations are considered as candidates for Hugo Awards, this lets you show appreciation for your
-        favourite author or artist.
-
-    vote_hugo:
+    hugo:
       description: Vote for Hugo
-      link: https://conzealand.nz/about-worldcon
       layman:
-        Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-        achievements of the previous year. Your vote will be counted towards these awards in 2020.
+        The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+        achievements of the previous year. Your vote will choose the Hugo finalists of 2020 and 2021, and the Hugo
+        winners of 2020.
 
-    nominate_site_selection:
-      description: Nominate site for 2022
-      link: http://www.worldcon.org/worldcon-bids/
+    site_selection:
+      description: Vote in Site Selection
       layman:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
-        able to help choose where the next worldcon will be hosted!
+        able to help choose where the worldcon will be hosted in 2022.

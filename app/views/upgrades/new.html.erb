@@ -1,7 +1,5 @@
 <%#
-  Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
-  Copyright 2019 Jen Zajac (jenofdoom)
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -21,23 +19,35 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Reserve Membership</h1>
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-lg-4">
-      <div class="l-panel">
-        <%= render "membership_card", offer: @my_offer %>
+<h1>
+  Confirm Upgrade #<%= @reservation.membership_number %>
+  from <%= @my_offer.from_membership %>
+  to <%= @my_offer.to_membership %>
+</h1>
+
+<div class="container text-center">
+  <div class="row l-panel">
+    <div class="col-md-12 col-lg-4 mb-3">
+      <div class="card shadow-sm h-100">
+        <%= render("reservation_card", reservation: @reservation) %>
       </div>
     </div>
-    <div class="col-12 col-lg-8">
-      <div class="l-panel">
-        <% if !user_signed_in? %>
-          <%= render "sign_in_notice" %>
-        <% else %>
-          <h2>Reserve a New Membership</h2>
-          <%= render "detail_form" %>
+
+    <div class="col-md-12 col-lg-4 mb-3">
+      is getting upgraded to...
+    </div>
+
+    <div class="col-md-12 col-lg-4 mb-3">
+      <div class="card shadow-sm h-100">
+        <%= render("membership_card", offer: @my_offer) do  %>
+          <%= link_to(
+            @my_offer,
+            reservation_upgrades_path(offer: @my_offer.hash),
+            class: %w(btn btn-lg btn-block btn-primary),
+            method: :post,
+          ) %>
         <% end %>
       </div>
     </div>
   </div>
-</section>
+</div>

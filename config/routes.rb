@@ -37,5 +37,6 @@ Rails.application.routes.draw do
   resources :upgrades
   resources :reservations do
     resources :transfers, id: /[^\/]+/
+    resources :upgrades
   end
 end

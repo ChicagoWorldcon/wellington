@@ -21,21 +21,11 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Review Membership</h1>
+<h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
 <section class="l-section">
-  <div class="row">
-    <div class="col-12">
-      <div class="l-panel">
-        <h2><%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h2>
-        <% if @reservation.paid? %>
-          <span>This membership is paid for.</span>
-        <% else %>
-          <p>There is <%= number_to_currency(@outstanding_amount / 100) %> NZD outstanding for this membership</p>
-          <%= link_to "Make a payment", new_charge_url(reservation: @reservation) %>
-        <% end %>
-      </div>
-
-      <% if support_signed_in? %>
+  <% if support_signed_in? %>
+    <div class="row">
+      <div class="col-12">
         <div class="l-panel">
           <h2>Support Actions</h2>
           <p>
@@ -43,16 +33,40 @@
             to another user
           </p>
         </div>
-      <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <div class="row">
     <div class="col-12 col-lg-4">
       <div class="l-panel l-panel-m-membership-types">
         <div class="l-v-spacing">
-          <%= render "reservation_card", reservation: @reservation %>
+          <%= render("reservation_card", reservation: @reservation) do %>
+            <% show_links(@reservation).each do |link| %>
+              <p><%= link %></p>
+            <% end %>
+          <% end %>
         </div>
+
+        <% if @reservation.membership.price > 0 %>
+          <div class="l-v-spacing">
+            <h2 class="h4">Payment History</h2>
+            <ul class="list-group text-dark list-group-flush mt-3 mb-4">
+              <% if @reservation.charges.none? %>
+                <li class="list-group-item list-group-item-danger">
+                  We have not received payments for this membership! You may loose this membership if you don't make
+                  payments towards it.
+                </li>
+              <% else %>
+                <% @reservation.charges.order(:created_at).find_each do |charge| %>
+                  <li class="list-group-item">
+                    <%= charge.comment %> at
+                    <%= charge.created_at %>
+                <% end %>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
         <div class="l-v-spacing">
           <h2 class="h4">Membership Transfer</h2>

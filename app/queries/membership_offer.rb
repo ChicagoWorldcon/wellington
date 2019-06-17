@@ -53,16 +53,6 @@ class MembershipOffer
   end
 
   def membership_rights
-    [].tap do |rights|
-      if membership.can_attend?
-        rights << "rights.attend"
-      end
-
-      if membership.can_vote?
-        rights << "rights.vote_hugo"
-        rights << "rights.nominate_hugo"
-        rights << "rights.nominate_site_selection"
-      end
-    end
+    membership.rights
   end
 end

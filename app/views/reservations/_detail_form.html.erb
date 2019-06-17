@@ -42,7 +42,7 @@
     <fieldset class="l-v-spacing">
       <legend>Membership Details</legend>
 
-      <%= hidden_field_tag(:offer, @my_offer) %>
+      <%= hidden_field_tag(:offer, @my_offer.hash) %>
 
       <fieldset class="l-v-spacing">
         <div class="row">

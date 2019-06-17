@@ -16,10 +16,10 @@
 # limitations under the License.
 %>
 
-<h1>Make a Payment towards a Membership</h1>
+<h1>Make a Payment towards Membership #<%= @reservation.membership_number %></h1>
 <section class="l-section">
   <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8">
       <div class="l-panel">
         <%= form_tag(charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@reservation)) do %>
           <article>
@@ -44,6 +44,12 @@
             </div>
           </div>
         <% end %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
       </div>
     </div>
   </div>
