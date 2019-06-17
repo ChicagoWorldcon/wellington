@@ -26,13 +26,13 @@
   <% if support_signed_in? %>
     <div class="row">
       <div class="col-12">
-          <div class="l-panel">
-            <h2>Support Actions</h2>
-            <p>
-              <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
-              to another user
-            </p>
-          </div>
+        <div class="l-panel">
+          <h2>Support Actions</h2>
+          <p>
+            <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
+            to another user
+          </p>
+        </div>
       </div>
     </div>
   <% end %>
