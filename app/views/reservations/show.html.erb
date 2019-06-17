@@ -41,7 +41,11 @@
     <div class="col-12 col-lg-4">
       <div class="l-panel l-panel-m-membership-types">
         <div class="l-v-spacing">
-          <%= render "reservation_card", reservation: @reservation, links: show_links(@reservation) %>
+          <%= render("reservation_card", reservation: @reservation) do %>
+            <% show_links(@reservation).each do |link| %>
+              <p><%= link %></p>
+            <% end %>
+          <% end %>
         </div>
 
         <% if @reservation.membership.price > 0 %>
