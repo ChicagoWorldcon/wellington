@@ -54,7 +54,9 @@ class UpgradesController < ApplicationController
     if !@my_offer.present?
       redirect_to reservations_path
       flash[:error] = %{
-        Sorry. #{params[:offer]} from #{@reservation.membership} is no longer available
+        Sorry. #{params[:offer]}
+        from #{@reservation.membership}
+        is no longer available
       }
     end
   end
