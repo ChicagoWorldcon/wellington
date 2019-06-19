@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
-## [Tag 1.3.0 - 2019-06-20]
+## [Tag 1.3.0 - 2019-06-19]
 
 ### Added
 - Purchase flow changed to let you select a membership before signing in [!73](https://gitlab.com/worldcon/2020-wellington/merge_requests/73)
