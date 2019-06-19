@@ -30,13 +30,34 @@ RSpec.describe MergeMembership do
     context "when not owned by the same user" do
       let(:reservation_1) { create(:reservation, user: us) }
       let(:reservation_2) { create(:reservation, user: them) }
+
       it { is_expected.to be_falsey }
+
+      it "mentions context in it's errors" do
+        expect { call }.to change { command.errors }.to include(/owned by the same user/i)
+      end
     end
 
     context "when owned by the same user" do
-      let(:reservation_1) { create(:reservation, user: us) }
-      let(:reservation_2) { create(:reservation, user: us) }
+      let!(:reservation_1) { create(:reservation, user: us) }
+      let!(:reservation_2) { create(:reservation, user: us) }
+
+      before do
+        reservation_1.active_claim.update!(active_from: 1.day.ago)
+        reservation_2.active_claim.update!(active_from: 1.day.ago)
+      end
+
       it { is_expected.to be_truthy }
+
+      it "doesn't have errors" do
+        expect { call }.to_not change { command.errors.count }.from(0)
+      end
+
+      it "removes one membership from us" do
+        expect { call }
+          .to change { us.reservations.count }
+          .by(-1)
+      end
     end
   end
 end

@@ -15,16 +15,40 @@
 # limitations under the License.
 
 class MergeMembership
-  attr_reader :reservations, :errors
+  attr_reader :reservations, :numbers, :errors
 
   def initialize(reservations)
     @reservations = reservations
+    @numbers = reservations.map(&:membership_number)
     @errors = []
   end
 
   def call
     assert_ownership
+
+    if errors.none?
+      to_keep.transaction do
+        to_remove.active_claim.update!(active_to: 1.second.ago)
+
+        # We need to do this dance because memberships can't have the same number
+        to_remove.update!(membership_number: -1)
+        to_keep.update!(membership_number: -2)
+        to_remove.update!(membership_number: numbers.max)
+        to_keep.update!(membership_number: numbers.min)
+      end
+    end
+
     errors.none?
+  end
+
+  private
+
+  def to_keep
+    @to_keep ||= reservations.last
+  end
+
+  def to_remove
+    @to_remove ||= reservations.first
   end
 
   def assert_ownership
