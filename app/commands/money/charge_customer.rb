@@ -33,7 +33,7 @@ class Money::ChargeCustomer
       user: user,
       reservation: reservation,
       stripe_id: token,
-      amount: charge_amount,
+      amount: charge_amount.cents,
       comment: "Pending stripe payment",
     )
 
@@ -111,7 +111,7 @@ class Money::ChargeCustomer
       currency: $currency,
       customer: user.stripe_id,
       source: @card_id,
-      amount: charge_amount,
+      amount: charge_amount.cents,
     )
   rescue Stripe::StripeError => e
     errors << e.message

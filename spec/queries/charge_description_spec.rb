@@ -23,9 +23,9 @@ RSpec.describe ChargeDescription do
 
   let(:ages_ago) { 1.year.ago } # needs to be available to be reserved
 
-  let!(:horse_membership)   { create(:membership, name: "horse", price: 100_00, active_from: ages_ago) }
-  let!(:pony_membership)    { create(:membership, name: "pony", price: 200_00, active_from: ages_ago) }
-  let!(:unicorn_membership) { create(:membership, name: "unicorn", price: 300_00, active_from: ages_ago) }
+  let!(:horse_membership)   { create(:membership, name: "horse", price_cents: 100_00, active_from: ages_ago) }
+  let!(:pony_membership)    { create(:membership, name: "pony", price_cents: 200_00, active_from: ages_ago) }
+  let!(:unicorn_membership) { create(:membership, name: "unicorn", price_cents: 300_00, active_from: ages_ago) }
 
   let!(:owner_1) { create(:user) }
   let!(:owner_2) { create(:user) }
@@ -44,7 +44,7 @@ RSpec.describe ChargeDescription do
     end
 
     context "with details" do
-      let!(:user_details) { create(:detail, claim: unicorn_reservation.active_claim) }
+      let!(:user_details) { unicorn_reservation.active_claim.detail }
       it { is_expected.to include "3.00" }
       it { is_expected.to include "Installment for" }
       it { is_expected.to include user_details.to_s }
@@ -73,16 +73,20 @@ RSpec.describe ChargeDescription do
     let(:reserve_horse_date)  { 4.weeks.ago }
     let(:reserve_pony_date)   { 3.weeks.ago }
 
+    def as_money(cents)
+      Money.new(cents, $currency)
+    end
+
     before do
       # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
       Timecop.freeze(4.weeks.ago)
       reservation = ClaimMembership.new(horse_membership, customer: owner_1).call
       expect(reservation).to be_installment
-      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, as_money(50_00)).call
       Timecop.freeze(1.day.from_now)
-      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 49_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, as_money(49_00)).call
       Timecop.freeze(2.days.from_now)
-      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 1_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, as_money(1_00)).call
       expect(reservation).to be_paid
 
       # 3 weeks ago, we upgraded to a $200 pony and started paying down 1 day at a time
@@ -91,9 +95,9 @@ RSpec.describe ChargeDescription do
       UpgradeMembership.new(reservation.reload, to: pony_membership).call
       expect(reservation).to be_installment
       Timecop.freeze(1.second.from_now)
-      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, as_money(50_00)).call
       Timecop.freeze(1.day.from_now)
-      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, 50_00).call
+      Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, as_money(50_00)).call
       expect(reservation).to be_paid
 
       # 2 weeks ago, we transferred, upgraded to a $300 unicorn and paid it off
@@ -102,7 +106,7 @@ RSpec.describe ChargeDescription do
       ApplyTransfer.new(reservation, from: owner_1, to: owner_2, audit_by: "sneeky octopus").call
       Timecop.freeze(1.second.from_now)
       UpgradeMembership.new(reservation.reload, to: unicorn_membership).call
-      Money::ChargeCustomer.new(reservation, owner_2, stripe_helper.generate_card_token, 100_00).call
+      Money::ChargeCustomer.new(reservation, owner_2, stripe_helper.generate_card_token, as_money(100_00)).call
       expect(reservation).to be_paid
     end
 

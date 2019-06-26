@@ -29,7 +29,7 @@ RSpec.describe Money::ChargeCustomer do
   let(:token) { stripe_helper.generate_card_token }
 
   describe "#comment" do
-    let(:amount_1) { 1_00 }
+    let(:amount_1) { Money.new(1_00, $currency) }
     let(:amount_2) { membership.price - amount_1 }
 
     it "displays purchase state as we go" do
@@ -122,7 +122,7 @@ RSpec.describe Money::ChargeCustomer do
         expect(command.call).to be_falsey
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
-        expect(Charge.last.amount).to be(amount_paid)
+        expect(Charge.last.amount).to be(amount_paid.cents)
       end
 
       context "when payment succeeds" do
@@ -136,7 +136,7 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         it "is of the value passsed in" do
-          expect(Charge.last.amount).to be(amount_paid)
+          expect(Charge.last.amount).to be(amount_paid.cents)
         end
 
         it "marks reservation state as installment" do
@@ -144,15 +144,16 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         context "then membership pricing changes" do
+          let(:price_increase) { Money.new(1_00, $currency) }
           before do
             price_changed_at = 30.minutes.ago
             membership.update!(active_to: price_changed_at)
             expect(membership).to_not be_active_at(price_changed_at)
 
-            new_membership = membership.dup               # based on attrs from existing membership
-            new_membership.active_from = price_changed_at # starts from price change
-            new_membership.active_to = nil                # open ended
-            new_membership.price = membership.price + 100 # price is $1 more
+            new_membership = membership.dup                          # based on attrs from existing membership
+            new_membership.active_from = price_changed_at            # starts from price change
+            new_membership.active_to = nil                           # open ended
+            new_membership.price = membership.price + price_increase # price goes up
             new_membership.save!
 
             expect(new_membership).to be_active_at(price_changed_at)
@@ -169,7 +170,7 @@ RSpec.describe Money::ChargeCustomer do
     end
 
     context "when overpaying" do
-      let(:amount_paid) { membership.price + 1 }
+      let(:amount_paid) { membership.price + Money.new(1, $currency) }
       let(:amount_owed) { membership.price }
       subject(:command) { described_class.new(reservation, user, token, amount_owed, charge_amount: amount_paid) }
 
@@ -182,7 +183,7 @@ RSpec.describe Money::ChargeCustomer do
     context "when paying off a reservation" do
       let(:partial_pay) { membership.price / 4 }
       let(:remainder) { membership.price - partial_pay }
-      let(:overpay) { remainder + 1 } # just a cent over
+      let(:overpay) { remainder + Money.new(1, $currency) } # just a cent over
       let(:amount_owed) { remainder }
 
       before do
@@ -227,7 +228,7 @@ RSpec.describe Money::ChargeCustomer do
 
         it "only pays the price of the membership" do
           command.call
-          expect(user.charges.successful.sum(:amount)).to eq membership.price
+          expect(user.charges.successful.sum(:amount)).to eq membership.price.cents
         end
       end
     end

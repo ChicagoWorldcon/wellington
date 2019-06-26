@@ -69,7 +69,7 @@ class ChargeDescription
   def installment_or_paid
     if !charge.successful?
       "Payment"
-    elsif charges_so_far.sum(:amount) + charge.amount < charged_membership.price
+    elsif charges_so_far.sum(:amount) + charge.amount < charged_membership.price.cents # FIXME
       "Installment"
     else
       "Fully Paid"

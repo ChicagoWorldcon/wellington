@@ -74,7 +74,6 @@ ActiveRecord::Schema.define(version: 2019_06_27_092208) do
 
   create_table "memberships", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "price", null: false
     t.datetime "active_from", null: false
     t.datetime "active_to"
     t.datetime "created_at", null: false
@@ -82,6 +81,8 @@ ActiveRecord::Schema.define(version: 2019_06_27_092208) do
     t.string "description"
     t.boolean "can_vote", default: false, null: false
     t.boolean "can_attend", default: false, null: false
+    t.integer "price_cents", default: 0, null: false
+    t.string "price_currency", default: "NZD", null: false
   end
 
   create_table "notes", force: :cascade do |t|

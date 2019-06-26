@@ -17,6 +17,8 @@
 class Membership < ApplicationRecord
   include ActiveScopes
 
+  monetize :price_cents
+
   validates :active_from, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :name, presence: true
@@ -25,7 +27,7 @@ class Membership < ApplicationRecord
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
 
-  scope :order_by_price, -> { order(price: :desc) }
+  scope :order_by_price, -> { order(price_cents: :desc) }
 
   def to_s
     name.humanize

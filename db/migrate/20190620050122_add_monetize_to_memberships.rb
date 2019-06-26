@@ -14,18 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :user do
-    email { Faker::Internet.unique.email }
+# Update the memberships table to use the Rails Money gem
+# See https://github.com/RubyMoney/money-rails
+class AddMonetizeToMemberships < ActiveRecord::Migration[5.2]
+  def up
+    add_monetize :memberships, :price
+    execute "UPDATE memberships SET price_cents = price"
+    remove_column :memberships, :price
+  end
 
-    trait :with_reservation do
-      after(:create) do |new_user|
-        claim = create(:claim, :with_reservation, user: new_user)
-        membership_price = claim.reservation.membership.price
-        charge = create(:charge, user: new_user, reservation: claim.reservation, amount: membership_price.cents)
-        new_user.claims << claim
-        new_user.charges << charge
-      end
-    end
+  def down
+    add_column :memberships, :price, :integer
+    execute "UPDATE memberships SET price = price_cents"
+    remove_monetize :memberships, :price
+    change_column_null(:memberships, :price, false)
   end
 end

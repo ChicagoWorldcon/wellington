@@ -136,7 +136,8 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "charge covers value of membership" do
-        expect(successful_cash_charges.sum(:amount)).to eq supporter.price
+        covered = Money.new(successful_cash_charges.sum(:amount), $currency)
+        expect(covered).to eq supporter.price
       end
 
       it "sets membership to paid" do
@@ -148,7 +149,7 @@ RSpec.describe Import::PresupportersRow do
         let(:kiwi_site_selection) { "TRUE" }
 
         it "grants more credit to the account" do
-          expect(successful_cash_charges.sum(:amount)).to eq(supporter.price + account_credit)
+          expect(successful_cash_charges.sum(:amount)).to eq(supporter.price.cents + account_credit)
         end
 
         it "sets membership to paid" do
@@ -162,8 +163,8 @@ RSpec.describe Import::PresupportersRow do
           imported_reservation.reload
           expect(imported_reservation.membership).to eq(adult)
           expect(imported_reservation).to be_installment
-          expect(successful_cash_charges.sum(:amount)).to be > supporter.price
-          expect(successful_cash_charges.sum(:amount)).to be < adult.price
+          expect(successful_cash_charges.sum(:amount)).to be > supporter.price_cents
+          expect(successful_cash_charges.sum(:amount)).to be < adult.price_cents
         end
       end
 

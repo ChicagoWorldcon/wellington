@@ -22,7 +22,7 @@ class UpgradeOffer
 
   def self.from(current_membership, target_membership: nil)
     # List options that are higher price
-    options = Membership.active.where("price > ?", current_membership.price)
+    options = Membership.active.where("price_cents > ?", current_membership.price_cents)
 
     # But don't let the name match, i.e. no upgrade adult to adult upgrade option
     options = options.where.not(name: current_membership.name)
@@ -73,9 +73,8 @@ class UpgradeOffer
     "This will upgrade your membership to #{to_membership} at a cost of #{formatted_price}. Are you sure?"
   end
 
-  # TODO Extract to i18n
   def formatted_price
-    "$%.2f #{$currency}" % (price * 1.0 / 100)
+    price.format(translate: true)
   end
 
   def price

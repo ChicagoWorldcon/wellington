@@ -138,7 +138,7 @@ class Import::PresupportersRow
           Charge.cash.successful.create!(
             user: new_user,
             reservation: new_reservation,
-            amount: membership.price,
+            amount: membership.price_cents,
             comment: comment,
           )
         end

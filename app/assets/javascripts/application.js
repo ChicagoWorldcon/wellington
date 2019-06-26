@@ -59,8 +59,8 @@ $(document).ready(function initStripeForm() {
     key:          config.key,
     description:  config.description,
     email:        config.email,
+    currency:     config.currency,
     locale:       'auto',
-    currency:     'NZD',
     name:         'CoNZealand',
     token: function(token) {
       $form.find('input#stripeToken').val(token.id);
@@ -80,7 +80,7 @@ $(document).ready(function initStripeForm() {
     amount = parseInt(amount);
 
     if (isNaN(amount)) {
-      document.querySelector('#error_explanation').innerHtml = '<p>Please enter a valid amount in NZD ($).</p>';
+      alert("Something wen't wrong in the page. Please try refresh, and contact support if this happens again")
     } else {
       handler.open({
         amount: amount

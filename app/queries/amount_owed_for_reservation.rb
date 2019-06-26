@@ -23,8 +23,7 @@ class AmountOwedForReservation
   end
 
   def amount_owed
-    membership_cost = reservation.membership.price
     paid_so_far = reservation.charges.successful.sum(:amount)
-    membership_cost - paid_so_far
+    reservation.membership.price - Money.new(paid_so_far, $currency)
   end
 end

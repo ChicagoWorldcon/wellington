@@ -36,7 +36,7 @@
 
     <% if reservation.installment? %>
       <p>Reserved, but not fully paid</p>
-      <p><%= amount_to_pay(reservation) %> NZD outstanding</p>
+      <p><%= amount_to_pay(reservation) %></p>
     <% end %>
 
     <% if reservation.paid? %>

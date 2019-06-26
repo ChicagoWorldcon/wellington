@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 AJ Esler
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,17 +18,28 @@
 require "rails_helper"
 
 RSpec.describe PaymentAmountOptions, type: :model do
+  def as_money(cents)
+    Money.new(cents, $currency)
+  end
+
   subject(:amounts) { described_class.new(amount_owed).amounts }
 
   context "when the amount owed is less than the minimum payment" do
-    let(:amount_owed) { 32_00 }
+    let(:amount_owed) { as_money(32_00) }
 
     it { is_expected.to eq [amount_owed] }
   end
 
   context "when the amount owed is greater than the minimum payment" do
-    let(:amount_owed) { 193_00 }
+    let(:amount_owed) { as_money(193_00) }
 
-    it("offers a series of payment amounts") { is_expected.to eq [75_00, 125_00, 175_00, amount_owed] }
+    it("offers a series of payment amounts") do
+      is_expected.to eq [
+        as_money(75_00),
+        as_money(125_00),
+        as_money(175_00),
+        amount_owed
+      ]
+    end
   end
 end
