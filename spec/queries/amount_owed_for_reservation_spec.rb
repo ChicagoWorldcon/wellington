@@ -39,7 +39,7 @@ RSpec.describe AmountOwedForReservation do
       let(:reservation) { claim.reservation }
 
       before do
-        create(:charge, user: user, reservation: claim.reservation, amount: charge_amount.cents) # FIXME
+        create(:charge, user: user, reservation: claim.reservation, amount: charge_amount)
       end
 
       it "returns the amount owing" do

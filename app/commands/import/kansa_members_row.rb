@@ -118,7 +118,7 @@ class Import::KansaMembersRow
         Charge.stripe.successful.create!(
           user: new_user,
           reservation: new_reservation,
-          amount: cell_for("Charge Amount"),
+          amount_cents: cell_for("Charge Amount"),
           stripe_id: cell_for("Stripe Payment ID"),
           comment: cell_for("Payment Comment"),
         )

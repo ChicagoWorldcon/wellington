@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 2019_06_27_092208) do
   enable_extension "plpgsql"
 
   create_table "charges", force: :cascade do |t|
-    t.integer "amount", null: false
     t.json "stripe_response"
     t.string "comment", null: false
     t.string "state", null: false
@@ -26,6 +25,8 @@ ActiveRecord::Schema.define(version: 2019_06_27_092208) do
     t.bigint "user_id", null: false
     t.bigint "reservation_id", null: false
     t.string "transfer", null: false
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "NZD", null: false
     t.index ["reservation_id"], name: "index_charges_on_reservation_id"
     t.index ["user_id"], name: "index_charges_on_user_id"
   end

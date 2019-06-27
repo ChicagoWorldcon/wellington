@@ -33,7 +33,7 @@ class Money::ChargeCustomer
       user: user,
       reservation: reservation,
       stripe_id: token,
-      amount: charge_amount.cents,
+      amount: charge_amount,
       comment: "Pending stripe payment",
     )
 
@@ -52,7 +52,7 @@ class Money::ChargeCustomer
 
     if @stripe_charge.present?
       @charge.stripe_id       = @stripe_charge[:id]
-      @charge.amount          = @stripe_charge[:amount]
+      @charge.amount_cents    = @stripe_charge[:amount]
       @charge.comment         = @stripe_charge[:description]
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
@@ -106,6 +106,7 @@ class Money::ChargeCustomer
   end
 
   def create_stripe_charge
+    # Note, stripe does everything in cents
     @stripe_charge = Stripe::Charge.create(
       description: ChargeDescription.new(@charge).for_accounts,
       currency: $currency,

@@ -82,7 +82,7 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         it "does not change the amount paid" do
-          expect { command.call }.not_to change { reservation.reload.charges.successful.sum(:amount) }
+          expect { command.call }.not_to change { reservation.reload.charges.successful.sum(&:amount) }
         end
 
         it "creates a failed payment on card decline" do
@@ -122,7 +122,7 @@ RSpec.describe Money::ChargeCustomer do
         expect(command.call).to be_falsey
         expect(Charge.failed.count).to eq 1
         expect(Charge.last.stripe_id).to be_present
-        expect(Charge.last.amount).to be(amount_paid.cents)
+        expect(Charge.last.amount).to eq amount_paid
       end
 
       context "when payment succeeds" do
@@ -136,7 +136,7 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         it "is of the value passsed in" do
-          expect(Charge.last.amount).to be(amount_paid.cents)
+          expect(Charge.last.amount).to eq amount_paid
         end
 
         it "marks reservation state as installment" do
@@ -228,7 +228,7 @@ RSpec.describe Money::ChargeCustomer do
 
         it "only pays the price of the membership" do
           command.call
-          expect(user.charges.successful.sum(:amount)).to eq membership.price.cents
+          expect(user.charges.successful.sum(&:amount)).to eq membership.price
         end
       end
     end
