@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Added unique constraint to membership number data model. Please check and correct duplicates with this:
+  ```
+  Reservation.having("count(membership_number) > 1").group(:membership_number).pluck(:membership_number)
+  ```
 
 ### Removed
 - Nothing significant in this release

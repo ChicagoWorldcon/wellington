@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_03_043114) do
+ActiveRecord::Schema.define(version: 2019_06_27_092208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 2019_06_03_043114) do
     t.datetime "updated_at", null: false
     t.string "state", null: false
     t.integer "membership_number", null: false
+    t.index ["membership_number"], name: "index_reservations_on_membership_number", unique: true
   end
 
   create_table "supports", force: :cascade do |t|
