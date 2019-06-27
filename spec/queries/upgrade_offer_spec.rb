@@ -40,7 +40,7 @@ RSpec.describe UpgradeOffer do
 
   describe "#to_s" do
     subject(:to_s) { offer.to_s }
-    it { is_expected.to match(/\$\d+\.\d+/i) }
+    it { is_expected.to match(/\d+/i) }
     it { is_expected.to include($currency) }
   end
 
@@ -51,7 +51,7 @@ RSpec.describe UpgradeOffer do
 
   describe "#link_description" do
     subject(:to_s) { offer.link_description }
-    it { is_expected.to match(/\$\d+\.\d+/i) }
+    it { is_expected.to match(/\d+/i) }
     it { is_expected.to include($currency) }
   end
 

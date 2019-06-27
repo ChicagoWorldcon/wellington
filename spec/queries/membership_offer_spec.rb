@@ -25,7 +25,7 @@ RSpec.describe MembershipOffer do
     let!(:membership) { create(:membership, :adult) }
 
     it { is_expected.to match(/adult/i) }
-    it { is_expected.to match(/\$\d+\.\d+/) }
+    it { is_expected.to match(/\d+/) }
     it { is_expected.to include($currency) }
 
     context "when membership is free" do

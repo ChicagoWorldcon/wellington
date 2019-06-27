@@ -20,6 +20,7 @@ FactoryBot.define do
     created_at { 1.week.ago }
     can_vote { false }
     can_attend { false }
+    price_currency { $currency }
 
     trait :adult do
       name { :adult }
