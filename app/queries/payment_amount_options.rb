@@ -16,8 +16,8 @@
 # limitations under the License.
 
 class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = Money.new(75_00, $currency)
-  PAYMENT_STEP = Money.new(50_00, $currency)
+  MIN_PAYMENT_AMOUNT = Money.new(75_00)
+  PAYMENT_STEP = Money.new(50_00)
 
   attr_reader :amount_owed
 

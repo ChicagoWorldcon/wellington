@@ -29,7 +29,7 @@ RSpec.describe Money::ChargeCustomer do
   let(:token) { stripe_helper.generate_card_token }
 
   describe "#comment" do
-    let(:amount_1) { Money.new(1_00, $currency) }
+    let(:amount_1) { Money.new(1_00) }
     let(:amount_2) { membership.price - amount_1 }
 
     it "displays purchase state as we go" do
@@ -144,7 +144,7 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         context "then membership pricing changes" do
-          let(:price_increase) { Money.new(1_00, $currency) }
+          let(:price_increase) { Money.new(1_00) }
           before do
             price_changed_at = 30.minutes.ago
             membership.update!(active_to: price_changed_at)
@@ -170,7 +170,7 @@ RSpec.describe Money::ChargeCustomer do
     end
 
     context "when overpaying" do
-      let(:amount_paid) { membership.price + Money.new(1, $currency) }
+      let(:amount_paid) { membership.price + Money.new(1) }
       let(:amount_owed) { membership.price }
       subject(:command) { described_class.new(reservation, user, token, amount_owed, charge_amount: amount_paid) }
 
@@ -183,7 +183,7 @@ RSpec.describe Money::ChargeCustomer do
     context "when paying off a reservation" do
       let(:partial_pay) { membership.price / 4 }
       let(:remainder) { membership.price - partial_pay }
-      let(:overpay) { remainder + Money.new(1, $currency) } # just a cent over
+      let(:overpay) { remainder + Money.new(1) } # just a cent over
       let(:amount_owed) { remainder }
 
       before do

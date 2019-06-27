@@ -61,7 +61,7 @@ RSpec.describe ReservationsController, type: :controller do
       adult.update!(active_to: price_change_at)
       adult.dup.save!(
         active_from: price_change_at,
-        price: adult.price + Money.new(50_00, $currency),
+        price: adult.price + Money.new(50_00),
       )
     end
 

@@ -37,7 +37,7 @@ class ChargesController < ApplicationController
 
   def create
     reservation = current_user.reservations.find(params[:reservation])
-    charge_amount = Money.new(params[:amount].to_i, $currency)
+    charge_amount = Money.new(params[:amount].to_i)
 
     outstanding_before_charge = AmountOwedForReservation.new(reservation).amount_owed
 

@@ -27,7 +27,7 @@ RSpec.describe UpgradesController, type: :controller do
   let(:old_adult_membership) do
     create(:membership, :adult,
       active_to: 1.second.ago,
-      price: adult_membership.price - Money.new(1_00, $currency)
+      price: adult_membership.price - Money.new(1_00)
     )
   end
 
@@ -79,7 +79,7 @@ RSpec.describe UpgradesController, type: :controller do
         price_change_at = 1.second.ago
         adult_membership.dup.update!(
           active_from: price_change_at,
-          price: adult_membership.price + Money.new(50_00, $currency),
+          price: adult_membership.price + Money.new(50_00),
         )
         adult_membership.update!(active_to: price_change_at)
 

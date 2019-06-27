@@ -53,8 +53,8 @@ RSpec.describe ChargesController, type: :controller do
 
   describe "#create" do
     let(:amount_posted) { 230_00 }
-    let(:amount_owed) { Money.new(230_00, $currency) }
-    let(:allowed_payment_amounts) { [Money.new(amount_posted, $currency)] }
+    let(:amount_owed) { Money.new(230_00) }
+    let(:allowed_payment_amounts) { [Money.new(amount_posted)] }
     let(:stripe_token) { "stripe-token" }
     let(:params) do
       {
@@ -85,8 +85,8 @@ RSpec.describe ChargesController, type: :controller do
       let(:amount_posted) { 90_00 }
       let(:allowed_payment_amounts) do
         [
-          Money.new(40_00, $currency),
-          Money.new(80_00, $currency),
+          Money.new(40_00),
+          Money.new(80_00),
           amount_owed,
         ]
       end
@@ -158,7 +158,7 @@ RSpec.describe ChargesController, type: :controller do
 
         context "when the charge is the not the first for a reservation" do
           let(:amount_posted) { 130_00 }
-          let(:amount_owed) { Money.new(110_00, $currency) }
+          let(:amount_owed) { Money.new(110_00) }
 
           before do
             create(:charge, amount: 100_00, reservation: reservation, user: user)

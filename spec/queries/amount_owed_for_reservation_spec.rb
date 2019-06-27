@@ -35,7 +35,7 @@ RSpec.describe AmountOwedForReservation do
       let(:user) { create(:user) }
       let(:claim) { create(:claim, :with_reservation, user: user) }
       let(:membership) { claim.reservation.membership }
-      let(:charge_amount) { Money.new(10_00, $currency) }
+      let(:charge_amount) { Money.new(10_00) }
       let(:reservation) { claim.reservation }
 
       before do

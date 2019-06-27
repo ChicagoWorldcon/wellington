@@ -30,10 +30,6 @@ RSpec.describe Import::KansaMembersRow do
   let(:member_number)     { "7474" }
   let(:created_at)        { "2018-08-19T00:39:07Z" }
 
-  def as_money(cents)
-    Money.new(cents, $currency)
-  end
-
   subject(:command) { Import::KansaMembersRow.new(row_values, my_comment) }
 
   let(:row_values) do

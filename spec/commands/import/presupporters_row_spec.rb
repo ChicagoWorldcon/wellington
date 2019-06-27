@@ -145,7 +145,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       context "when voted in site selection" do
-        let(:account_credit) { Money.new(50_00, $currency) }
+        let(:account_credit) { Money.new(50_00) }
         let(:kiwi_site_selection) { "TRUE" }
 
         it "grants more credit to the account" do
