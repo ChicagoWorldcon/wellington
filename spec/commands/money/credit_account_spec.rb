@@ -18,7 +18,7 @@ require "rails_helper"
 
 RSpec.describe Money::CreditAccount do
   let!(:adult_membership) { create(:membership, :adult) }
-  let!(:reservation) { create(:reservation, :with_claim_from_user, membership: adult_membership) }
+  let!(:reservation) { create(:reservation, :pay_as_you_go, :with_claim_from_user, membership: adult_membership) }
   let!(:amount) { Money.new(50_00) }
 
   subject(:command) { described_class.new(reservation, amount) }
@@ -31,6 +31,12 @@ RSpec.describe Money::CreditAccount do
     it "creates a charge" do
       expect { call }.to change { Charge.count }.by(1)
       expect(Charge.last.amount).to eq amount
+    end
+
+    it "doesn't change status from instalment" do
+      expect { call }
+        .to_not change { reservation.reload.state }
+        .from(Reservation::INSTALLMENT)
     end
   end
 end
