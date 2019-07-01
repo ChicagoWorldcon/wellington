@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def lookup_reservation
+  def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
     if !support_signed_in?
       visible_reservations = visible_reservations.where(users: { id: current_user })

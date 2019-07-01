@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class ReservationsController < ApplicationController
-  before_action :lookup_reservation, only: [:show, :update]
+  before_action :lookup_reservation!, only: [:show, :update]
   before_action :lookup_offer, only: [:new, :create]
   before_action :setup_paperpubs, except: :index
 
