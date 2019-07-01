@@ -111,7 +111,7 @@ class ChargeDescription
   end
 
   def formatted_amount
-    charge.amount.format(translate: true)
+    charge.amount.format(with_currency: true)
   end
 
   # This makes it pretty clear we'll be within the thresholds, avoids floating point errors

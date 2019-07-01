@@ -46,16 +46,6 @@
 en:
   hello: "Hello world"
 
-  number:
-    currency:
-      # This is a workaround for distinguishing between currencies like NZD and USD
-      # This is only needed when calling #format(translate: true) on Money
-      symbol:
-        NZD: "NZD $"
-        USD: "USD $"
-        GBP: "GBP £"
-        EUR: "EUR €"
-
   errors:
     offer_unavailable: Sorry, but that offer %{offer} is no longer available
 

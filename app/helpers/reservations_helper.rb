@@ -35,7 +35,7 @@ module ReservationsHelper
 
   def amount_to_pay(reservation)
     amount = AmountOwedForReservation.new(reservation).amount_owed
-    amount.format(translate: true)
+    amount.format(with_currency: true)
   end
 
   def index_links(reservation)

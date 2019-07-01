@@ -74,7 +74,7 @@ class UpgradeOffer
   end
 
   def formatted_price
-    price.format(translate: true)
+    price.format(with_currency: true)
   end
 
   def price

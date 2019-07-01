@@ -41,7 +41,7 @@ class MembershipOffer
 
   def formatted_price
     if membership.price > 0
-      membership.price.format(translate: true)
+      membership.price.format(with_currency: true)
     else
       "Free"
     end

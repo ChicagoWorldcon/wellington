@@ -67,7 +67,7 @@ class ChargesController < ApplicationController
       PaymentMailer.installment(
         user: current_user,
         charge: service.charge,
-        outstanding_amount: (outstanding_before_charge - charge_amount).format(translate: true)
+        outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
       ).deliver_later
     else
       PaymentMailer.paid(
