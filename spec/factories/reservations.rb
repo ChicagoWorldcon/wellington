@@ -33,10 +33,11 @@ FactoryBot.define do
 
         if new_reservation.paid?
           create(:charge, :generate_description, user: new_reservation.user, reservation: new_reservation, amount: new_reservation.membership.price)
-        else
+        elsif new_reservation.installment?
           number_of_installments = rand(1..3)
           fraction_paid = rand(10..90).to_d / 100
           amount = (fraction_paid * new_reservation.membership.price) / number_of_installments
+
           number_of_installments.times do
             create(:charge, :generate_description, user: new_reservation.user, reservation: new_reservation, amount: amount)
           end
