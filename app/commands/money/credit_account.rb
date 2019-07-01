@@ -29,5 +29,21 @@ class Money::CreditAccount
       amount: amount,
       comment: "account credit",
     )
+
+    if fully_paid?
+      reservation.update!(state: Reservation::PAID)
+    end
+
+    true
+  end
+
+  private
+
+  def fully_paid?
+    successful_payments >= reservation.membership.price
+  end
+
+  def successful_payments
+    reservation.charges.successful.sum(&:amount)
   end
 end

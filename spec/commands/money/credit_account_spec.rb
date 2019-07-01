@@ -38,5 +38,16 @@ RSpec.describe Money::CreditAccount do
         .to_not change { reservation.reload.state }
         .from(Reservation::INSTALLMENT)
     end
+
+    context "when credit amount covers membership" do
+      let(:amount) { adult_membership.price }
+
+      it "flips slate over to paid" do
+        expect { call }
+          .to change { reservation.reload.state }
+          .from(Reservation::INSTALLMENT)
+          .to(Reservation::PAID)
+      end
+    end
   end
 end
