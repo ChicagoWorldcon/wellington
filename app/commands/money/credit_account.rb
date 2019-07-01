@@ -24,11 +24,12 @@ class Money::CreditAccount
   end
 
   def call
-    reservation.charges.successful.cash.create!(
+    account_credit = reservation.charges.successful.cash.create!(
       user: reservation.user,
       amount: amount,
       comment: "account credit",
     )
+    account_credit.update!(comment: ChargeDescription.new(account_credit).for_users)
 
     if fully_paid?
       reservation.update!(state: Reservation::PAID)

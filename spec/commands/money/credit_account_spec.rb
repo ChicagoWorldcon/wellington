@@ -39,6 +39,16 @@ RSpec.describe Money::CreditAccount do
         .from(Reservation::INSTALLMENT)
     end
 
+    it "delegates to ChargeDescription" do
+      test_comment = "testing account credit"
+      expect(ChargeDescription)
+        .to receive_message_chain(:new, :for_users)
+        .and_return(test_comment)
+
+      call
+      expect(Charge.last.comment).to eq test_comment
+    end
+
     context "when credit amount covers membership" do
       let(:amount) { adult_membership.price }
 
