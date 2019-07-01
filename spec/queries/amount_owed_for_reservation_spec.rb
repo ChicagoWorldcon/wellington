@@ -35,7 +35,7 @@ RSpec.describe AmountOwedForReservation do
       let(:user) { create(:user) }
       let(:claim) { create(:claim, :with_reservation, user: user) }
       let(:membership) { claim.reservation.membership }
-      let(:charge_amount) { 1000 }
+      let(:charge_amount) { Money.new(10_00) }
       let(:reservation) { claim.reservation }
 
       before do
@@ -43,7 +43,7 @@ RSpec.describe AmountOwedForReservation do
       end
 
       it "returns the amount owing" do
-        expect(amount_owed).to eq (membership.price - charge_amount)
+        expect(amount_owed.format).to eq (membership.price - charge_amount).format
       end
 
       context "where some have failed" do
@@ -52,7 +52,7 @@ RSpec.describe AmountOwedForReservation do
         end
 
         it "returns the amount owing" do
-          expect(amount_owed).to eq (membership.price - charge_amount)
+          expect(amount_owed.format).to eq (membership.price - charge_amount).format
         end
       end
     end

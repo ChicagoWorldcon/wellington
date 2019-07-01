@@ -222,7 +222,7 @@ class Import::PresupportersRow
   def account_credit
     if cell_for("Kiwi Pre-Support and Voted in Site Selection") == "TRUE"
       OpenStruct.new(
-        amount: 50_00,
+        amount: Money.new(50_00),
         comment: "voted in site selection and held kiwi membership"
       )
     end

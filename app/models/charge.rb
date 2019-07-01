@@ -25,6 +25,8 @@ class Charge < ApplicationRecord
   belongs_to :user
   belongs_to :reservation
 
+  monetize :amount_cents
+
   validates :amount, presence: true
   validates :comment, presence: true
   validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL, STATE_PENDING]}

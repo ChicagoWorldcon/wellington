@@ -24,7 +24,7 @@ RSpec.describe Import::KansaMembersRow do
   let(:email_address)     { Faker::Internet.email }
   let(:my_comment)        { "suite comment" }
   let(:stripe_payment_id) { "ch_1D0MiPEaQ9ZgIF2tWbUtFOnz" }
-  let(:charge_amount)     { "37000" }
+  let(:charge_amount)     { 37000.to_s }
   let(:payment_comment)   { "Imported payment of #{charge_amount} paid by charge #{stripe_payment_id}" }
   let(:note)              { "Enjoys long walks on the beach" }
   let(:member_number)     { "7474" }
@@ -114,7 +114,7 @@ RSpec.describe Import::KansaMembersRow do
       end
 
       it "sets the charge amount" do
-        expect(Charge.last.amount).to match(charge_amount.to_i)
+        expect(Charge.last.amount_cents).to match(charge_amount.to_i)
       end
 
       it "sets the stripe payment id" do

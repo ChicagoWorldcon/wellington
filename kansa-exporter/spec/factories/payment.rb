@@ -22,7 +22,7 @@ FactoryBot.define do
     sequence(:stripe_token) { |n| "tok_#{n.to_s.rjust(15, "0")}" }
     status { "succeeded" }
     amount { 19500 }
-    currency { "nzd" }
+    currency { $currency }
     type { "Adult" }
     category {  "new_member" }
     created { Time.now }

@@ -26,13 +26,4 @@ module ApplicationHelper
       DEFUALT_NAV_CLASSES + %w(bg-dark)
     end.join(" ")
   end
-
-  # Currency conversion, might be superseeded by #58
-  def present_currency_worth_for(reservation)
-    total_cents = reservation.charges.successful.sum(:amount)
-    return nil if total_cents <= 0
-
-    formatted_money = number_to_currency(total_cents / 100)
-    "#{formatted_money} NZD"
-  end
 end

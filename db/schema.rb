@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_03_043114) do
+ActiveRecord::Schema.define(version: 2019_06_27_092208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "charges", force: :cascade do |t|
-    t.integer "amount", null: false
     t.json "stripe_response"
     t.string "comment", null: false
     t.string "state", null: false
@@ -26,6 +25,8 @@ ActiveRecord::Schema.define(version: 2019_06_03_043114) do
     t.bigint "user_id", null: false
     t.bigint "reservation_id", null: false
     t.string "transfer", null: false
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "NZD", null: false
     t.index ["reservation_id"], name: "index_charges_on_reservation_id"
     t.index ["user_id"], name: "index_charges_on_user_id"
   end
@@ -74,7 +75,6 @@ ActiveRecord::Schema.define(version: 2019_06_03_043114) do
 
   create_table "memberships", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "price", null: false
     t.datetime "active_from", null: false
     t.datetime "active_to"
     t.datetime "created_at", null: false
@@ -82,6 +82,8 @@ ActiveRecord::Schema.define(version: 2019_06_03_043114) do
     t.string "description"
     t.boolean "can_vote", default: false, null: false
     t.boolean "can_attend", default: false, null: false
+    t.integer "price_cents", default: 0, null: false
+    t.string "price_currency", default: "NZD", null: false
   end
 
   create_table "notes", force: :cascade do |t|
@@ -108,6 +110,7 @@ ActiveRecord::Schema.define(version: 2019_06_03_043114) do
     t.datetime "updated_at", null: false
     t.string "state", null: false
     t.integer "membership_number", null: false
+    t.index ["membership_number"], name: "index_reservations_on_membership_number", unique: true
   end
 
   create_table "supports", force: :cascade do |t|

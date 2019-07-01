@@ -19,12 +19,11 @@ Kia Ora <%= @detail.playful_nickname %>!
 We've sent you this email to let you know that we've just received an installment towards your
 <%= @reservation.membership %> membership, which is reserved with the membership number #<%= @reservation.membership_number %>.
 
-You paid <%= number_to_currency(@charge.amount / 100) %> NZD which will show up on your statement with the identifier
-"<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".
+You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
+identifier "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".
 
-You still need to pay <%= number_to_currency(@outstanding_amount / 100) %> NZD to cover this membership. You can do this
-anytime by returning to the members area and to make further installments
-or to pay your membership off completely.
+You still need to pay <%= @outstanding_amount %> to cover this membership. You can do this anytime by returning to the
+members area and to make further installments or to pay your membership off completely.
 
 CoNZealand - registration@conzealand.nz  
 https://conzealand.nz/

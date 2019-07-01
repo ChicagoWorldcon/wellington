@@ -69,7 +69,7 @@ class ChargeDescription
   def installment_or_paid
     if !charge.successful?
       "Payment"
-    elsif charges_so_far.sum(:amount) + charge.amount < charged_membership.price
+    elsif charges_so_far.sum(&:amount) + charge.amount < charged_membership.price
       "Installment"
     else
       "Fully Paid"
@@ -111,7 +111,7 @@ class ChargeDescription
   end
 
   def formatted_amount
-    "#{number_to_currency(charge.amount / 100)} NZD"
+    charge.amount.format(with_currency: true)
   end
 
   # This makes it pretty clear we'll be within the thresholds, avoids floating point errors

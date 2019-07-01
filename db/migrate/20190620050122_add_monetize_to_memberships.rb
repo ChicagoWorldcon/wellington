@@ -14,13 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# See https://stripe.com/docs/checkout/rails
-Rails.configuration.stripe = {
-  publishable_key: ENV["STRIPE_PUBLIC_KEY"],
-  secret_key: ENV["STRIPE_PRIVATE_KEY"],
-}
+# Update the memberships table to use the Rails Money gem
+# See https://github.com/RubyMoney/money-rails
+class AddMonetizeToMemberships < ActiveRecord::Migration[5.2]
+  def up
+    add_monetize :memberships, :price
+    execute "UPDATE memberships SET price_cents = price"
+    remove_column :memberships, :price
+  end
 
-Stripe.api_key = Rails.configuration.stripe[:secret_key]
-
-$stripe_test_keys = ENV["STRIPE_PRIVATE_KEY"].present? && !!ENV["STRIPE_PRIVATE_KEY"].match(/^sk_test/)
-$currency = ENV["STRIPE_CURRENCY"]&.upcase || "NZD"
+  def down
+    add_column :memberships, :price, :integer
+    execute "UPDATE memberships SET price = price_cents"
+    remove_monetize :memberships, :price
+    change_column_null(:memberships, :price, false)
+  end
+end

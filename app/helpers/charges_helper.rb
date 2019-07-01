@@ -18,9 +18,10 @@
 module ChargesHelper
   def stripe_config(reservation)
     {
-      "key" => Rails.configuration.stripe[:publishable_key],
-      "description" => "CoNZealand #{@membership.name} membership",
-      "email" => reservation.user.email,
+      key: Rails.configuration.stripe[:publishable_key],
+      description: "CoNZealand #{@membership.name} membership",
+      email: reservation.user.email,
+      currency: $currency,
     }.to_json
   end
 end

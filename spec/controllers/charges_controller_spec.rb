@@ -52,18 +52,18 @@ RSpec.describe ChargesController, type: :controller do
   end
 
   describe "#create" do
-    let(:amount) { 230_00 }
-    let(:amount_owed) { 230_00 }
-    let(:allowed_payment_amounts) { [amount] }
+    let(:amount_posted) { 230_00 }
+    let(:amount_owed) { Money.new(230_00) }
+    let(:allowed_payment_amounts) { [Money.new(amount_posted)] }
     let(:stripe_token) { "stripe-token" }
     let(:params) do
       {
         stripeToken: stripe_token,
-        amount: amount,
+        amount: amount_posted,
         reservation: reservation,
       }
     end
-    let(:charge_double) { instance_double(Charge, amount: amount) }
+    let(:charge_double) { instance_double(Charge, amount: amount_posted) }
 
     before do
       amount_owed_double = instance_double(AmountOwedForReservation)
@@ -82,8 +82,14 @@ RSpec.describe ChargesController, type: :controller do
 
     context "when the charge amount is not allowed" do
       let(:charge_success) { false }
-      let(:amount) { 90_00 }
-      let(:allowed_payment_amounts) { [40_00, 80_00, amount_owed] }
+      let(:amount_posted) { 90_00 }
+      let(:allowed_payment_amounts) do
+        [
+          Money.new(40_00),
+          Money.new(80_00),
+          amount_owed,
+        ]
+      end
 
       it "sets a flash error" do
         post :create, params: params
@@ -109,7 +115,7 @@ RSpec.describe ChargesController, type: :controller do
 
       before do
         expect(Money::ChargeCustomer)
-          .to receive(:new).with(reservation, user, stripe_token, amount_owed, charge_amount: amount)
+          .to receive(:new)
           .and_return(error_service)
       end
 
@@ -151,12 +157,12 @@ RSpec.describe ChargesController, type: :controller do
         end
 
         context "when the charge is the not the first for a reservation" do
-          let(:amount) { 130_00 }
-          let(:amount_owed) { 110_00 }
+          let(:amount_posted) { 130_00 }
+          let(:amount_owed) { Money.new(110_00) }
 
           before do
             create(:charge, amount: 100_00, reservation: reservation, user: user)
-            create(:charge, amount: amount, reservation: reservation, user: user)
+            create(:charge, amount: amount_posted, reservation: reservation, user: user)
           end
 
           it "redirects to the reservation" do

@@ -18,9 +18,10 @@ FactoryBot.define do
   factory :charge do
     association :user
     association :reservation
+    amount_currency { $currency }
 
     comment { "Factory Generated Charge" }
-    amount { 300 } # cents
+    amount_cents { 3_00 } # cents
     stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
     state { Charge::STATE_SUCCESSFUL }
     transfer { Charge::TRANSFER_STRIPE }

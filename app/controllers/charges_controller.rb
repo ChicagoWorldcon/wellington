@@ -31,13 +31,13 @@ class ChargesController < ApplicationController
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
 
     @price_options = price_steps.reverse.map do |price|
-      [format_nzd(price), price]
+      [price.format, price.cents]
     end
   end
 
   def create
     reservation = current_user.reservations.find(params[:reservation])
-    charge_amount = params[:amount].to_i
+    charge_amount = Money.new(params[:amount].to_i)
 
     outstanding_before_charge = AmountOwedForReservation.new(reservation).amount_owed
 
@@ -53,7 +53,7 @@ class ChargesController < ApplicationController
       current_user,
       params[:stripeToken],
       outstanding_before_charge,
-      charge_amount: charge_amount
+      charge_amount: charge_amount,
     )
 
     charge_successful = service.call
@@ -67,7 +67,7 @@ class ChargesController < ApplicationController
       PaymentMailer.installment(
         user: current_user,
         charge: service.charge,
-        outstanding_amount: (outstanding_before_charge - charge_amount)
+        outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
       ).deliver_later
     else
       PaymentMailer.paid(
@@ -76,14 +76,8 @@ class ChargesController < ApplicationController
       ).deliver_later
     end
 
-    message = "Thank you for your #{format_nzd(charge_amount)} payment"
+    message = "Thank you for your #{charge_amount.format} payment"
     (message += ". Your #{reservation.membership} membership has been paid for.") if reservation.paid?
     redirect_to reservations_path, notice: message
-  end
-
-  private
-
-  def format_nzd(price)
-    "#{helpers.number_to_currency(price / 100)} NZD"
   end
 end

@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# See https://stripe.com/docs/checkout/rails
-Rails.configuration.stripe = {
-  publishable_key: ENV["STRIPE_PUBLIC_KEY"],
-  secret_key: ENV["STRIPE_PRIVATE_KEY"],
-}
-
-Stripe.api_key = Rails.configuration.stripe[:secret_key]
-
-$stripe_test_keys = ENV["STRIPE_PRIVATE_KEY"].present? && !!ENV["STRIPE_PRIVATE_KEY"].match(/^sk_test/)
-$currency = ENV["STRIPE_CURRENCY"]&.upcase || "NZD"
+# While difficult to do, it is possible to bypass the application checks in some situations. Putting a unique constraint
+# here stops errors fruther down the line.
+#
+# If this blows up on deploy we have a few things two worry about.
+class AddUniqueConstraintToMembershipNumber < ActiveRecord::Migration[5.2]
+  def change
+    add_index :reservations, :membership_number, unique: true
+  end
+end

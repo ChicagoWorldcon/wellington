@@ -8,10 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing significant in this release
+- Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
+  [!70](https://gitlab.com/worldcon/2020-wellington/merge_requests/70)
 
 ### Changed
-- Nothing significant in this release
+- Added unique constraint to membership number data model
+  [!70](https://gitlab.com/worldcon/2020-wellington/merge_requests/70). Please check and correct duplicates with this:
+  ```
+  Reservation.having("count(membership_number) > 1").group(:membership_number).pluck(:membership_number)
+  ```
+- Upgraded gems to the latest versions [!83](https://gitlab.com/worldcon/2020-wellington/merge_requests/83)
 
 ### Removed
 - Nothing significant in this release
