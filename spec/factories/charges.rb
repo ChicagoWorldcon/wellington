@@ -22,7 +22,7 @@ FactoryBot.define do
 
     comment { "Factory Generated Charge" }
     amount_cents { 3_00 } # cents
-    stripe_id { "ch_faked9EaQ9ZgIF2tWC8ffake" }
+    sequence(:stripe_id) { |n| "ch_faked9EaQ9ZgIF2tWC8ffake#{n}" }
     state { Charge::STATE_SUCCESSFUL }
     transfer { Charge::TRANSFER_STRIPE }
 
