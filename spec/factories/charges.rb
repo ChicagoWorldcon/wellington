@@ -29,5 +29,11 @@ FactoryBot.define do
     trait(:failed) do
       state { Charge::STATE_FAILED }
     end
+
+    trait :generate_description do
+      after(:create) do |new_charge, _evaluator|
+        new_charge.update!(comment: ChargeDescription.new(new_charge).for_users)
+      end
+    end
   end
 end
