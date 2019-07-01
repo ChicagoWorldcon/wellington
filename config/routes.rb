@@ -31,11 +31,14 @@ Rails.application.routes.draw do
   end
 
   resources :charges
+  resources :credits
   resources :landing
   resources :memberships
   resources :themes
   resources :upgrades
+
   resources :reservations do
+    resources :credits
     resources :transfers, id: /[^\/]+/
     resources :upgrades
   end

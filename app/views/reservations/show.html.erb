@@ -32,6 +32,11 @@
             <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>
+
+          <p>
+            <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
+            with payment made via cash or cheque
+          </p>
         </div>
       </div>
     </div>
