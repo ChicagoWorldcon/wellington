@@ -36,6 +36,7 @@ gem "uglifier"             # for minifying javascript and css
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
+  gem "bundler-audit"                                 # checks for insecure gems
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
