@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added brakeman, ruby-audit, and bundler-audit vulnerability scanners to the build process and `make test`
+  [!85](https://gitlab.com/worldcon/2020-wellington/merge_requests/85)
 - Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
   [!70](https://gitlab.com/worldcon/2020-wellington/merge_requests/70)
 
