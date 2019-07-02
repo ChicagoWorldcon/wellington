@@ -26,7 +26,7 @@ module ReservationsHelper
     model_errors.present? && model_errors.to_sentence.humanize
   end
 
-  def update_transfer_url(transfer)
+  def update_transfer_path(transfer)
     reservation_transfer_path(
       reservation_id: transfer.reservation_id,
       id: transfer.new_owner,

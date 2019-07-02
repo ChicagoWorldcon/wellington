@@ -23,7 +23,7 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
-        <%= form_for(@transfer, method: :patch, url: update_transfer_url(@transfer)) do |f| %>
+        <%= form_for(@transfer, method: :patch, url: update_transfer_path(@transfer)) do |f| %>
           <h2>#<%= @transfer.reservation.membership_number %> <%= @transfer.detail %></h2>
           <p>Transferring from <%= @transfer.from_user.email %></p>
           <p>Transferring to <%= @transfer.to_user.email %><p>
