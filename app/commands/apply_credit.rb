@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # CreditAccount takes a reservation and credits an amount towards it
-class Money::CreditAccount
+class ApplyCredit
   attr_reader :reservation, :amount
 
   def initialize(reservation, amount)

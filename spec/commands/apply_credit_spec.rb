@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe Money::CreditAccount do
+RSpec.describe ApplyCredit do
   let!(:adult_membership) { create(:membership, :adult) }
   let!(:reservation) { create(:reservation, :pay_as_you_go, :with_claim_from_user, membership: adult_membership) }
   let!(:amount) { Money.new(50_00) }
