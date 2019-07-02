@@ -1,6 +1,7 @@
 # Copyright 2019 James Polley
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,6 +58,13 @@ licence_check:
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
+
+security_analysis:
+  stage: test
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE bundle update brakeman --quiet
+    - docker run $CONTAINER_TEST_IMAGE bundle exec brakeman --run-all-checks --no-pager
 
 release_image:
   stage: publish
