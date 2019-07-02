@@ -46,6 +46,7 @@ test:
 	docker-compose exec members_area bundle update brakeman --quiet
 	docker-compose exec members_area bundle exec brakeman --run-all-checks --no-pager
 	docker-compose exec members_area bundle audit check --update
+	docker-compose exec members_area bundle exec ruby-audit check
 
 # builds, configures and starts application in the background
 daemon: stop
