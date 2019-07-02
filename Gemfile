@@ -46,6 +46,7 @@ group :development, :test do
   gem "rspec-rails"                                   # testing framework
   gem "rubocop", "0.66.0"                             # FIXME pin to stop namespace warnings
   gem "rubocop-github"                                # ruby ilnting to keep things clean
+  gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
