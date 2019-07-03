@@ -19,7 +19,12 @@ class PlanCredit
   include ActiveModel::Model
   include ActiveModel::Validations::ClassMethods
 
-  attr_accessor :amount_cents
+  attr_accessor :amount # whole dollars, or pounds, or euros
 
-  validates :amount_cents, presence: true, numericality: { greater_than: 0 }
+  validates :amount, presence: true, numericality: { greater_than: 0 }
+
+  # Convert amount to cents so we can store it with the Money gem
+  def money
+    Money.new(amount.to_f * 100)
+  end
 end

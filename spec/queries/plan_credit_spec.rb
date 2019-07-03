@@ -21,9 +21,9 @@ RSpec.describe PlanCredit do
   context "with bad user input" do
     [
       described_class.new,
-      described_class.new(amount_cents: 0),
-      described_class.new(amount_cents: -1),
-      described_class.new(amount_cents: "flubber"),
+      described_class.new(amount: 0),
+      described_class.new(amount: -1),
+      described_class.new(amount: "flubber"),
     ].each.with_index(1) do |model, i|
       it "is invalid in case #{i}" do
         expect(model).to_not be_valid
@@ -33,14 +33,22 @@ RSpec.describe PlanCredit do
 
   context "with good user input" do
     [
-      described_class.new(amount_cents: 1),
-      described_class.new(amount_cents: 10),
-      described_class.new(amount_cents: 100),
-      described_class.new(amount_cents: 1000),
+      described_class.new(amount: 1),
+      described_class.new(amount: 10),
+      described_class.new(amount: 100),
+      described_class.new(amount: 1000),
+      described_class.new(amount: "1.01"),
     ].each.with_index(1) do |model, i|
       it "is valid in case #{i}" do
         expect(model).to be_valid
       end
     end
+  end
+
+  describe "#money" do
+    let(:query) { described_class.new(amount: "1.01") }
+    subject(:money) { query.money }
+    it { is_expected.to be_instance_of(Money) }
+    it { is_expected.to eq Money.new(1_01) }
   end
 end
