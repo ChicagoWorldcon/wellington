@@ -14,23 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# CreditsController allows us to list and grant account credit to a user
-class CreditsController < ApplicationController
-  before_action :assert_support!
-  before_action :lookup_reservation!
-  before_action :lookup_amount_owed
 
-  def new
-    @credit = PlanCredit.new
-  end
-
-  def create
-    redirect_to @reservation
-  end
-
-  private
-
-  def lookup_amount_owed
-    @amount_owed = AmountOwedForReservation.new(@reservation).amount_owed
+module CreditsHelper
+  def pick_an_amount_instruction(max:)
+    "Credit, up to #{max.format(with_currency: true)}"
   end
 end

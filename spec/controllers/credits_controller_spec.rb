@@ -17,5 +17,30 @@
 require "rails_helper"
 
 RSpec.describe CreditsController, type: :controller do
-  # TODO Stub
+  render_views
+
+  let(:user) { create(:user) }
+  let(:support) { create(:support) }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+
+  describe "#new" do
+    subject(:get_new) do
+      get :new, params: { reservation_id: reservation.id }
+    end
+
+    it "doesn't render when signed out" do
+      get_new
+      expect(get_new).to have_http_status(:unauthorized)
+    end
+
+    it "doesn't render for users" do
+      sign_in user
+      expect(get_new).to have_http_status(:unauthorized)
+    end
+
+    it "works for support" do
+      sign_in support
+      expect(get_new).to have_http_status(:ok)
+    end
+  end
 end
