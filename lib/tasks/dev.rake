@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,7 +69,9 @@ namespace :dev do
         new_user = FactoryBot.create(:user)
         memberships_held = rand(2..10)
         all_memberships.sample(memberships_held).each do |rando_membership|
-          FactoryBot.create(:reservation, user: new_user, membership: rando_membership)
+          state = [Reservation::PAID, Reservation::INSTALLMENT].sample
+
+          reservation = FactoryBot.create(:reservation, :with_charges, user: new_user, membership: rando_membership, state: state)
         end
         new_user.active_claims.each do |claim|
           claim.update!(detail: FactoryBot.create(:detail, claim: claim))

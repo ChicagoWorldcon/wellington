@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,6 +25,25 @@ FactoryBot.define do
 
     trait :pay_as_you_go do
       state { Reservation::INSTALLMENT }
+    end
+
+    trait :with_charges do
+      after(:create) do |new_reservation, _evaluator|
+        raise "membership required" unless new_reservation.membership.present?
+        raise "user required" unless new_reservation.user.present?
+
+        if new_reservation.paid?
+          create(:charge, :generate_description, user: new_reservation.user, reservation: new_reservation, amount: new_reservation.membership.price)
+        elsif new_reservation.installment?
+          number_of_installments = rand(1..3)
+          fraction_paid = rand(10..90).to_d / 100
+          amount = (fraction_paid * new_reservation.membership.price) / number_of_installments
+
+          number_of_installments.times do
+            create(:charge, :generate_description, user: new_reservation.user, reservation: new_reservation, amount: amount)
+          end
+        end
+      end
     end
 
     trait :with_order_against_membership do
