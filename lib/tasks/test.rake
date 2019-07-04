@@ -80,6 +80,18 @@ namespace :test do
         exit 1 # Fails CI
       end
     end
+
+    desc "Checks that the changelog was touched in this branch"
+    task :changelog do
+      changed_files = `git diff origin/master.. --name-only`.lines.map(&:chomp)
+      if not "CHANGELOG.md".in?(changed_files)
+        puts "This project has many people downstream who want to know about our changes"
+        puts "In order to keep them informed we try to keep our CHANGELOG.md up to date"
+        puts "Please describe your change under the [Unreleased] section"
+
+        exit 1 # Fails CI
+      end
+    end
   end
 
   desc "Iterate through all models, find invalid ones, print them for further investigation"

@@ -52,11 +52,12 @@ rubocop_linting:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rubocop
 
-licence_check:
+rake_contribution_checks:
   stage: test
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
+    - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:changelog
 
 release_image:
   stage: publish
