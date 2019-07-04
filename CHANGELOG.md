@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Reservation.having("count(membership_number) > 1").group(:membership_number).pluck(:membership_number)
   ```
 - Upgraded gems to the latest versions [!83](https://gitlab.com/worldcon/2020-wellington/merge_requests/83)
+- Generated memberships in testing now have charges
+  [!84](https://gitlab.com/worldcon/2020-wellington/merge_requests/84)
+  and [!86](https://gitlab.com/worldcon/2020-wellington/merge_requests/86)
 
 ### Removed
 - Nothing significant in this release
