@@ -21,7 +21,14 @@ FactoryBot.define do
   factory :reservation do
     state { Reservation::PAID }
     created_at { 1.week.ago }
-    membership_number { generate(:next_membership_number) }
+
+    membership_number do
+      if last_number = Reservation.maximum(:membership_number)
+        last_number + 1
+      else
+        1
+      end
+    end
 
     transient do
       instalment_paid { Money.new(75_00) }
