@@ -22,6 +22,7 @@ class Reservation < ApplicationRecord
 
   has_many :charges
   has_many :claims
+  has_many :nominations
   has_many :orders
 
   has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
