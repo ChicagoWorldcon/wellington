@@ -58,7 +58,7 @@ RSpec.describe ApplyTransfer do
   end
 
   context "when reservation is pay by installment" do
-    let(:reservation) { create(:reservation, :pay_as_you_go) }
+    let(:reservation) { create(:reservation, :installment) }
 
     it "doesn't let you transfer" do
       expect(command.call).to be_falsey

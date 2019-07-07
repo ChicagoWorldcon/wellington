@@ -20,7 +20,7 @@ require "rails_helper"
 RSpec.describe ChargesController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :pay_as_you_go) }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :installment) }
   let(:user) { reservation.user }
 
   before { sign_in(user) }

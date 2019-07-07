@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe ApplyCredit do
   let!(:adult_membership) { create(:membership, :adult) }
   let!(:reservation) do
-    create(:reservation, :pay_as_you_go, :with_claim_from_user,
+    create(:reservation, :installment, :with_claim_from_user,
       membership: adult_membership,
       instalment_paid: 0,
     )

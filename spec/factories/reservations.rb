@@ -27,7 +27,7 @@ FactoryBot.define do
       instalment_paid { Money.new(75_00) }
     end
 
-    trait :pay_as_you_go do
+    trait :installment do
       state { Reservation::INSTALLMENT }
     end
 
