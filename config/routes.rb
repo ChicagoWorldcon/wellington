@@ -38,8 +38,14 @@ Rails.application.routes.draw do
   resources :upgrades
 
   resources :reservations do
-    resources :credits
-    resources :transfers, id: /[^\/]+/
     resources :upgrades
+  end
+
+  # /operator are maintenance routes for support people
+  scope :operator do
+    resources :reservations do
+      resources :credits
+      resources :transfers, id: /[^\/]+/
+    end
   end
 end
