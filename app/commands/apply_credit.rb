@@ -41,10 +41,6 @@ class ApplyCredit
   private
 
   def fully_paid?
-    successful_payments >= reservation.membership.price
-  end
-
-  def successful_payments
-    reservation.charges.successful.sum(&:amount)
+    AmountOwedForReservation.new(reservation).amount_owed <= 0
   end
 end
