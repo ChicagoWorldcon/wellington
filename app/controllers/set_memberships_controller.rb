@@ -16,7 +16,9 @@
 
 class SetMembershipsController < ApplicationController
   before_action :assert_support!
+  before_action :lookup_reservation!
 
   def index
+    @memberships = Membership.all
   end
 end

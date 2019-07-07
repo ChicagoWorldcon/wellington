@@ -21,4 +21,19 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-Stub SetMembershipsController#index
+<h1>Set Membership #<%= @reservation.membership_number %> to Anything</h1>
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        Stub SetMembershipsController#index
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
+      </div>
+    </div>
+  </div>
+</section>
