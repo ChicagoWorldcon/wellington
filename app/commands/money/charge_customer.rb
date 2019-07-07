@@ -63,7 +63,7 @@ class Money::ChargeCustomer
       if fully_paid?
         reservation.update!(state: Reservation::PAID)
       else
-        reservation.update!(state: Reservation::INSTALLMENT)
+        reservation.update!(state: Reservation::INSTALMENT)
       end
     end
 

@@ -63,8 +63,8 @@ class ChargesController < ApplicationController
       return
     end
 
-    if reservation.installment?
-      PaymentMailer.installment(
+    if reservation.instalment?
+      PaymentMailer.instalment(
         user: current_user,
         charge: service.charge,
         outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)

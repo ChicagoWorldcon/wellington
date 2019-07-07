@@ -55,7 +55,7 @@ RSpec.describe Reservation, type: :model do
   end
 
   context "when not active as an adult" do
-    [Reservation::INSTALLMENT, Reservation::DISABLED].each do |inactive_state|
+    [Reservation::INSTALMENT, Reservation::DISABLED].each do |inactive_state|
       subject(:model) { create(:reservation, state: inactive_state) }
       it { is_expected.to be_valid }
       it { is_expected.to_not be_transferable }

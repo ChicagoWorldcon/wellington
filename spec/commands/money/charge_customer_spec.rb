@@ -34,7 +34,7 @@ RSpec.describe Money::ChargeCustomer do
 
     it "displays purchase state as we go" do
       described_class.new(reservation, user, token, amount_1).call
-      expect(Charge.last.comment).to match(/installment/i)
+      expect(Charge.last.comment).to match(/instalment/i)
       described_class.new(reservation, user, token, amount_2).call
       expect(Charge.last.comment).to match(/fully paid/i)
     end
@@ -88,7 +88,7 @@ RSpec.describe Money::ChargeCustomer do
         it "creates a failed payment on card decline" do
           expect(Charge.failed.count).to eq 1
           expect(Charge.last.stripe_id).to be_present
-          expect(reservation).to be_installment
+          expect(reservation).to be_instalment
         end
 
         it "delegates the description to our charge description service" do
@@ -139,8 +139,8 @@ RSpec.describe Money::ChargeCustomer do
           expect(Charge.last.amount).to eq amount_paid
         end
 
-        it "marks reservation state as installment" do
-          expect(reservation).to be_installment
+        it "marks reservation state as instalment" do
+          expect(reservation).to be_instalment
         end
 
         context "then membership pricing changes" do
@@ -194,10 +194,10 @@ RSpec.describe Money::ChargeCustomer do
 
       it { is_expected.to be_truthy }
 
-      it "transitions from installment" do
+      it "transitions from instalment" do
         expect { command.call }
           .to change { reservation.state }
-          .from(Reservation::INSTALLMENT).to(Reservation::PAID)
+          .from(Reservation::INSTALMENT).to(Reservation::PAID)
       end
 
       it "creates a charge" do
@@ -220,10 +220,10 @@ RSpec.describe Money::ChargeCustomer do
 
         it { is_expected.to be_truthy }
 
-        it "transitions from installment" do
+        it "transitions from instalment" do
           expect { command.call }
             .to change { reservation.state }
-            .from(Reservation::INSTALLMENT).to(Reservation::PAID)
+            .from(Reservation::INSTALMENT).to(Reservation::PAID)
         end
 
         it "only pays the price of the membership" do

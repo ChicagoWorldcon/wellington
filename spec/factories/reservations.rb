@@ -27,8 +27,8 @@ FactoryBot.define do
       instalment_paid { Money.new(75_00) }
     end
 
-    trait :installment do
-      state { Reservation::INSTALLMENT }
+    trait :instalment do
+      state { Reservation::INSTALMENT }
     end
 
     after(:create) do |new_reservation, evaluator|
@@ -41,7 +41,7 @@ FactoryBot.define do
           reservation: new_reservation,
           amount: new_reservation.membership.price
         )
-      elsif new_reservation.installment? && evaluator.instalment_paid > 0
+      elsif new_reservation.instalment? && evaluator.instalment_paid > 0
         create(:charge, :generate_description,
           user: new_reservation.user,
           reservation: new_reservation,

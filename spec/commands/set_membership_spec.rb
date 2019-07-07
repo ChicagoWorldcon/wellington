@@ -49,7 +49,7 @@ RSpec.describe SetMembership do
         expect { call }
           .to change { reservation.reload.state }
           .from(Reservation::PAID)
-          .to(Reservation::INSTALLMENT)
+          .to(Reservation::INSTALMENT)
       end
     end
   end

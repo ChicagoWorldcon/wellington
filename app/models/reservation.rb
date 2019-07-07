@@ -18,7 +18,7 @@
 class Reservation < ApplicationRecord
   PAID = "paid"
   DISABLED = "disabled"
-  INSTALLMENT = "installment"
+  INSTALMENT = "instalment"
 
   has_many :charges
   has_many :claims
@@ -30,10 +30,10 @@ class Reservation < ApplicationRecord
   has_one :user, through: :active_claim
 
   validates :membership_number, presence: true, uniqueness: true
-  validates :state, presence: true, inclusion: [PAID, INSTALLMENT, DISABLED]
+  validates :state, presence: true, inclusion: [PAID, INSTALMENT, DISABLED]
 
   scope :disabled, -> { where(state: DISABLED) }
-  scope :installment, -> { where(state: INSTALLMENT) }
+  scope :instalment, -> { where(state: INSTALMENT) }
   scope :paid, -> { where(state: PAID) }
 
   def paid?
@@ -44,7 +44,7 @@ class Reservation < ApplicationRecord
     state == PAID
   end
 
-  def installment?
-    state == INSTALLMENT
+  def instalment?
+    state == INSTALMENT
   end
 end

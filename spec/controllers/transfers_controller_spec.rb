@@ -113,7 +113,7 @@ RSpec.describe TransfersController, type: :controller do
     context "when there are errors with submission" do
       before do
         expect(MembershipMailer).to_not receive(:transfer)
-        reservation.update!(state: Reservation::INSTALLMENT)
+        reservation.update!(state: Reservation::INSTALMENT)
         patch :update, params: show_update_params
       end
 

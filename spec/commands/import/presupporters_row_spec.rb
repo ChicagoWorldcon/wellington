@@ -162,7 +162,7 @@ RSpec.describe Import::PresupportersRow do
           expect(upgrader.call).to be_truthy
           imported_reservation.reload
           expect(imported_reservation.membership).to eq(adult)
-          expect(imported_reservation).to be_installment
+          expect(imported_reservation).to be_instalment
           expect(successful_cash_charges.sum(:amount_cents)).to be > supporter.price_cents
           expect(successful_cash_charges.sum(:amount_cents)).to be < adult.price_cents
         end

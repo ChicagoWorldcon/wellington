@@ -114,7 +114,7 @@ class Import::KansaMembersRow
     end
 
     new_reservation.transaction do
-      if new_reservation.installment? && cell_for("Charge Amount").to_i > 0
+      if new_reservation.instalment? && cell_for("Charge Amount").to_i > 0
         Charge.stripe.successful.create!(
           user: new_user,
           reservation: new_reservation,

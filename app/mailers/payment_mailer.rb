@@ -32,13 +32,13 @@ class PaymentMailer < ApplicationMailer
     end
   end
 
-  def installment(user:, charge:, outstanding_amount:)
+  def instalment(user:, charge:, outstanding_amount:)
     @charge = charge
     @reservation = charge.reservation
     @detail = @reservation.active_claim.detail
     @outstanding_amount = outstanding_amount
 
-    mail(to: user.email, subject: "CoNZealand Payment: Installment for member ##{@reservation.membership_number}") do |format|
+    mail(to: user.email, subject: "CoNZealand Payment: Instalment for member ##{@reservation.membership_number}") do |format|
       # text must be called before html.
       format.text
       format.html

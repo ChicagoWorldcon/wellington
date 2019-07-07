@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class PaymentMailerPreview < ActionMailer::Preview
-  StubReservation = Struct.new(:name, :number, :installment?, :paid?)
+  StubReservation = Struct.new(:name, :number, :instalment?, :paid?)
   StubUser = Struct.new(:email, :login_url)
   StubCharge = Struct.new(:id, :amount)
 
@@ -27,8 +27,8 @@ class PaymentMailerPreview < ActionMailer::Preview
     )
   end
 
-  def installment
-    PaymentMailer.installment(
+  def instalment
+    PaymentMailer.instalment(
       user: Charge.last.user,
       charge: Charge.last,
       outstanding_amount: 42_00,

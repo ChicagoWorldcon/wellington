@@ -69,7 +69,7 @@ namespace :dev do
         new_user = FactoryBot.create(:user)
         memberships_held = rand(2..10)
         all_memberships.sample(memberships_held).each do |rando_membership|
-          state = [Reservation::PAID, Reservation::INSTALLMENT].sample
+          state = [Reservation::PAID, Reservation::INSTALMENT].sample
 
           reservation = FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
         end

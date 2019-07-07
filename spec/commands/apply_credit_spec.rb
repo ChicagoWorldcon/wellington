@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe ApplyCredit do
   let!(:adult_membership) { create(:membership, :adult) }
   let!(:reservation) do
-    create(:reservation, :installment, :with_claim_from_user,
+    create(:reservation, :instalment, :with_claim_from_user,
       membership: adult_membership,
       instalment_paid: 0,
     )
@@ -41,7 +41,7 @@ RSpec.describe ApplyCredit do
     it "doesn't change status from instalment" do
       expect { call }
         .to_not change { reservation.reload.state }
-        .from(Reservation::INSTALLMENT)
+        .from(Reservation::INSTALMENT)
     end
 
     it "delegates to ChargeDescription" do
@@ -60,7 +60,7 @@ RSpec.describe ApplyCredit do
       it "flips slate over to paid" do
         expect { call }
           .to change { reservation.reload.state }
-          .from(Reservation::INSTALLMENT)
+          .from(Reservation::INSTALMENT)
           .to(Reservation::PAID)
       end
     end

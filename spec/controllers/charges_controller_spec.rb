@@ -20,7 +20,7 @@ require "rails_helper"
 RSpec.describe ChargesController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :installment) }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :instalment) }
   let(:user) { reservation.user }
 
   before { sign_in(user) }
@@ -76,7 +76,7 @@ RSpec.describe ChargesController, type: :controller do
 
       # We're not going to assert what type of email was sent.
       # If this becomes more complex, please do make assertions on this.
-      allow(PaymentMailer).to receive_message_chain(:installment, :deliver_later).and_return(true)
+      allow(PaymentMailer).to receive_message_chain(:instalment, :deliver_later).and_return(true)
       allow(PaymentMailer).to receive_message_chain(:paid, :deliver_later).and_return(true)
     end
 
