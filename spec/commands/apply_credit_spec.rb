@@ -18,7 +18,12 @@ require "rails_helper"
 
 RSpec.describe ApplyCredit do
   let!(:adult_membership) { create(:membership, :adult) }
-  let!(:reservation) { create(:reservation, :pay_as_you_go, :with_claim_from_user, membership: adult_membership) }
+  let!(:reservation) do
+    create(:reservation, :pay_as_you_go, :with_claim_from_user,
+      membership: adult_membership,
+      instalment_paid: 0,
+    )
+  end
   let!(:amount) { Money.new(50_00) }
 
   subject(:command) { described_class.new(reservation, amount) }

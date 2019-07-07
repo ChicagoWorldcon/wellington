@@ -23,11 +23,15 @@ FactoryBot.define do
     created_at { 1.week.ago }
     membership_number { generate(:next_membership_number) }
 
+    transient do
+      instalment_paid { Money.new(75_00) }
+    end
+
     trait :pay_as_you_go do
       state { Reservation::INSTALLMENT }
     end
 
-    after(:create) do |new_reservation, _evaluator|
+    after(:create) do |new_reservation, evaluator|
       next unless new_reservation.membership.present?
       next unless new_reservation.user.present?
 
@@ -37,18 +41,12 @@ FactoryBot.define do
           reservation: new_reservation,
           amount: new_reservation.membership.price
         )
-      elsif new_reservation.installment?
-        number_of_installments = rand(1..3)
-        fraction_paid = rand(10..90).to_d / 100
-        amount = (fraction_paid * new_reservation.membership.price) / number_of_installments
-
-        number_of_installments.times do
-          create(:charge, :generate_description,
-            user: new_reservation.user,
-            reservation: new_reservation,
-            amount: amount
-          )
-        end
+      elsif new_reservation.installment? && evaluator.instalment_paid > 0
+        create(:charge, :generate_description,
+          user: new_reservation.user,
+          reservation: new_reservation,
+          amount: evaluator.instalment_paid,
+        )
       end
     end
 
