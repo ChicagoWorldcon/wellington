@@ -40,6 +40,7 @@ RSpec.describe ChargeDescription do
       create(:reservation, :with_claim_from_user, :installment,
         membership_number: membership_number,
         membership: unicorn_membership,
+        instalment_paid: 0,
       )
     end
 

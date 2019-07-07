@@ -20,7 +20,6 @@ class UpgradeMembership < SetMembership
   def call
     check_availability
     return false if errors.any?
-
     super
   end
 

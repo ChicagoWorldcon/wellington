@@ -28,6 +28,9 @@ class SetMembership
       disable_existing_order(as_at)
       create_new_order(as_at)
 
+      # Drop AR caches to #membership and related has_many through relations
+      reservation.reload
+
       if fully_paid?
         reservation.update!(state: Reservation::PAID)
       else
