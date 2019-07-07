@@ -20,5 +20,6 @@ class SetMembershipsController < ApplicationController
 
   def index
     @memberships = Membership.all
+    @as_at = Time.now
   end
 end

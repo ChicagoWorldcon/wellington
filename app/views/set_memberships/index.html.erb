@@ -26,18 +26,34 @@
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <table class="full-members-list table table-hover table-striped table-dark">
+        <table class="full-members-list table table-hover table-striped table-dark table-responsive-lg">
           <thead>
-            <th>Membership display</th>
-            <th>Price <%= $currency %></th>
-            <th>Active?</th>
+            <th>Membership</th>
+            <th>Active From</th>
+            <th>Active To</th>
           </thead>
           <tbody>
             <% @memberships.each do |membership| %>
               <tr>
-                <td><%= membership %></td>
-                <td><%= membership.price.format %></td>
-                <td><%= membership.active? %></td>
+                <td><%= membership %>, worth <%= membership.price.format %></td>
+                <td>
+                  <% case %>
+                  <% when membership.active_from < @as_at %>
+                    <%= time_ago_in_words(membership.active_from) %> ago
+                  <% else %>
+                    <%= time_ago_in_words(membership.active_from) %> from now
+                  <% end %>
+                </td>
+                <td>
+                  <% case %>
+                  <% when membership.active_to.nil? %>
+                    open ended
+                  <% when membership.active_to < @as_at %>
+                    <%= time_ago_in_words(membership.active_to) %> ago
+                  <% else %>
+                    <%= time_ago_in_words(membership.active_to) %> from now
+                  <% end %>
+                </td>
               </tr>
             <% end %>
           </tbody>
