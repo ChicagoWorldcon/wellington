@@ -25,6 +25,16 @@ class CreditsController < ApplicationController
   end
 
   def create
+    credit_params = params.require(:plan_credit).permit(:amount)
+    plan = PlanCredit.new(credit_params)
+    if !plan.valid?
+      flash[:error] = plan.errors.full_messages.to_sentence
+      redirect_to @reservation
+      return
+    end
+
+    ApplyCredit.new(@reservation, plan.money).call
+    flash[:notice] = "Credited ##{@reservation.membership_number} with #{plan.money.format}"
     redirect_to @reservation
   end
 

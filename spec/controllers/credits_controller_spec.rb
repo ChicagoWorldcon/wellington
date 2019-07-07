@@ -43,4 +43,44 @@ RSpec.describe CreditsController, type: :controller do
       expect(get_new).to have_http_status(:ok)
     end
   end
+
+  describe "#create" do
+    before do
+      sign_in support
+    end
+
+    [
+      "-1",
+      "0",
+      "0.001", # no love for fractional cents
+    ].each do |bad_value|
+      it "sets errors for #{bad_value}" do
+        expect {
+          post :create, params: {
+            plan_credit: { amount: bad_value },
+            reservation_id: reservation.id,
+          }
+        }.to_not change { Charge.count }
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    [
+      "0.01",
+      "1",
+      "100",
+      "10_000",
+    ].each do |good_value|
+      it "creates charges for #{good_value}" do
+        expect {
+          post :create, params: {
+            plan_credit: { amount: good_value },
+            reservation_id: reservation.id,
+          }
+        }.to change { Charge.count }.by(1)
+        expect(flash[:error]).to_not be_present
+        expect(flash[:notice]).to be_present
+      end
+    end
+  end
 end

@@ -21,7 +21,7 @@ class PlanCredit
 
   attr_accessor :amount # whole dollars, or pounds, or euros
 
-  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0.01 }
 
   # Convert amount to cents so we can store it with the Money gem
   def money
