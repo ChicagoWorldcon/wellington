@@ -16,24 +16,12 @@
 
 # UpgradeMembership command upgrades membership between two levels
 # Truthy return means upgrade was successful, otherwise check errors for explanation
-class UpgradeMembership
-  attr_reader :reservation, :to_membership
-
-  def initialize(reservation, to:)
-    @reservation = reservation
-    @to_membership = to
-  end
-
+class UpgradeMembership < SetMembership
   def call
     check_availability
     return false if errors.any?
 
-    reservation.transaction do
-      as_at = Time.now
-      old_order.update!(active_to: as_at)
-      reservation.orders.create!(active_from: as_at, membership: to_membership)
-      reservation.update!(state: Reservation::INSTALLMENT)
-    end
+    super
   end
 
   def errors
@@ -47,9 +35,5 @@ class UpgradeMembership
     if prices.none?
       errors << "#{reservation.membership} cannot upgrade to #{to_membership}"
     end
-  end
-
-  def old_order
-    reservation.active_order
   end
 end
