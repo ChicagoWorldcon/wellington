@@ -71,7 +71,7 @@ namespace :dev do
         all_memberships.sample(memberships_held).each do |rando_membership|
           state = [Reservation::PAID, Reservation::INSTALLMENT].sample
 
-          reservation = FactoryBot.create(:reservation, :with_charges, user: new_user, membership: rando_membership, state: state)
+          reservation = FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
         end
         new_user.active_claims.each do |claim|
           claim.update!(detail: FactoryBot.create(:detail, claim: claim))
