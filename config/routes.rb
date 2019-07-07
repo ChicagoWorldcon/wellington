@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   scope :operator do
     resources :reservations do
       resources :credits
+      resources :set_memberships
       resources :transfers, id: /[^\/]+/
     end
   end

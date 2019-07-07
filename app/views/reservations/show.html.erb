@@ -34,6 +34,11 @@
           </p>
 
           <p>
+            <%= link_to "Set membership", reservation_set_memberships_path(reservation_id: @reservation) %>
+            to any level that's been in our system
+          </p>
+
+          <p>
             <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
