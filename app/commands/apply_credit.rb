@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# CreditAccount takes a reservation and credits an amount towards it
+# ApplyCredit takes a reservation and credits an amount towards it
 class ApplyCredit
   attr_reader :reservation, :amount
 
