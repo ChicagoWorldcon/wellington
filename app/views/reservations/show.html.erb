@@ -47,12 +47,16 @@
 
       <div class="col-12 col-md-6">
         <div class="l-panel support-pane">
-          <h2>Account notes</h2>
-          <% current_user.notes.order(created_at: :desc).each do |note| %>
-            <p>
-              <strong><%= note.created_at %></strong>
-              <br><%= note.content %>
-            </p>
+          <h2>Related Notes</h2>
+          <% if @notes.none? %>
+            No notes for this membership
+          <% else %>
+            <% @notes.eager_load(user: {claims: :reservation}).order(created_at: :desc).each do |note| %>
+              <p>
+                <strong><%= note.created_at %> - <%= note.user.email %></strong>
+                <br><%= note.content %>
+              </p>
+            <% end %>
           <% end %>
         </div>
       </div>

@@ -25,8 +25,9 @@ RSpec.describe ApplyCredit do
     )
   end
   let!(:amount) { Money.new(50_00) }
+  let!(:audit_person) { "helper" }
 
-  subject(:command) { described_class.new(reservation, amount) }
+  subject(:command) { described_class.new(reservation, amount, audit_by: audit_person) }
 
   describe "#call" do
     subject(:call) { command.call }
@@ -36,6 +37,11 @@ RSpec.describe ApplyCredit do
     it "creates a charge" do
       expect { call }.to change { Charge.count }.by(1)
       expect(Charge.last.amount).to eq amount
+    end
+
+    it "creates a note" do
+      expect { call }.to change { Note.count }.by(1)
+      expect(Note.last.content).to include audit_person
     end
 
     it "doesn't change status from instalment" do

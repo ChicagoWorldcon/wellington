@@ -25,7 +25,7 @@ class SetMembershipsController < ApplicationController
 
   def update
     membership = Membership.find(params[:id])
-    SetMembership.new(@reservation, to: membership).call
+    SetMembership.new(@reservation, to: membership, audit_by: current_support.email).call
     flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
     redirect_to @reservation
   end

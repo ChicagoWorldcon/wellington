@@ -42,6 +42,7 @@ class ReservationsController < ApplicationController
     @detail = @reservation.active_claim.detail || Detail.new
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
+    @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
   end
 
   def create

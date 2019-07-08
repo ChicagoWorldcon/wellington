@@ -33,7 +33,7 @@ class CreditsController < ApplicationController
       return
     end
 
-    ApplyCredit.new(@reservation, plan.money).call
+    ApplyCredit.new(@reservation, plan.money, audit_by: current_support.email).call
     flash[:notice] = "Credited ##{@reservation.membership_number} with #{plan.money.format}"
     redirect_to @reservation
   end

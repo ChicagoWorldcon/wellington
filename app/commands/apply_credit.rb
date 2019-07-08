@@ -16,20 +16,17 @@
 
 # ApplyCredit takes a reservation and credits an amount towards it
 class ApplyCredit
-  attr_reader :reservation, :amount
+  attr_reader :reservation, :amount, :audit_by
 
-  def initialize(reservation, amount)
+  def initialize(reservation, amount, audit_by:)
     @reservation = reservation
     @amount = amount
+    @audit_by = audit_by
   end
 
   def call
-    account_credit = reservation.charges.successful.cash.create!(
-      user: reservation.user,
-      amount: amount,
-      comment: "account credit",
-    )
-    account_credit.update!(comment: ChargeDescription.new(account_credit).for_users)
+    create_successful_cash_charge
+    create_audit_note
 
     if fully_paid?
       reservation.update!(state: Reservation::PAID)
@@ -42,5 +39,24 @@ class ApplyCredit
 
   def fully_paid?
     AmountOwedForReservation.new(reservation).amount_owed <= 0
+  end
+
+  def create_successful_cash_charge
+    account_credit = reservation.charges.successful.cash.create!(
+      user: reservation.user,
+      amount: amount,
+      comment: "account credit",
+    )
+    account_credit.update!(comment: ChargeDescription.new(account_credit).for_users)
+  end
+
+  def create_audit_note
+    reservation.user.notes.create!(
+      content: %{
+        #{audit_by} set credit
+        for #{amount.format}
+        to ##{reservation.membership_number}
+      }
+    )
   end
 end

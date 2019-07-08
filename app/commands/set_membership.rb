@@ -15,16 +15,19 @@
 # limitations under the License.
 
 class SetMembership
-  attr_reader :reservation, :to_membership
+  attr_reader :reservation, :to_membership, :audit_by
 
-  def initialize(reservation, to:)
+  def initialize(reservation, to:, audit_by: nil)
     @reservation = reservation
     @to_membership = to
+    @audit_by = audit_by
   end
 
   def call
     reservation.transaction do
       as_at = Time.now
+
+      create_audit_note if audit_by.present?
       disable_existing_order(as_at)
       create_new_order(as_at)
 
@@ -47,6 +50,17 @@ class SetMembership
 
   def create_new_order(as_at)
     reservation.orders.create!(active_from: as_at, membership: to_membership)
+  end
+
+  def create_audit_note
+    reservation.user.notes.create!(
+      content: %{
+        #{audit_by} set membership
+        for ##{reservation.membership_number}
+        from #{reservation.membership}
+        to #{to_membership}
+      }
+    )
   end
 
   def fully_paid?
