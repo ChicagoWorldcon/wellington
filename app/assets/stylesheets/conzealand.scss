@@ -322,6 +322,12 @@ select {
   color: $light-blue;
 }
 
+// Fixed height scrollable panes
+.support-pane {
+  height: 300px;
+  overflow: scroll;
+}
+
 // =========================================================================
 // LAYOUT
 // =========================================================================

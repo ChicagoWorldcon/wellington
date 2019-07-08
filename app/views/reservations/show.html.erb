@@ -25,8 +25,8 @@
 <section class="l-section">
   <% if support_signed_in? %>
     <div class="row">
-      <div class="col-12 col-md-12">
-        <div class="l-panel">
+      <div class="col-12 col-md-6">
+        <div class="l-panel support-pane">
           <h2>Support Actions</h2>
           <p>
             <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
@@ -42,6 +42,18 @@
             <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="l-panel support-pane">
+          <h2>Account notes</h2>
+          <% current_user.notes.order(created_at: :desc).each do |note| %>
+            <p>
+              <strong><%= note.created_at %></strong>
+              <br><%= note.content %>
+            </p>
+          <% end %>
         </div>
       </div>
     </div>
