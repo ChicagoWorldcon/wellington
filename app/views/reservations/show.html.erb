@@ -58,7 +58,7 @@
           <% end %>
         </div>
 
-        <% if @reservation.membership.price > 0 %>
+        <% if @reservation.membership.price > 0 || @reservation.charges.any? %>
           <div class="l-v-spacing">
             <h2 class="h4">Payment History</h2>
             <ul class="list-group text-dark list-group-flush mt-3 mb-4">
