@@ -48,7 +48,6 @@ RSpec.describe PlanCredit do
   describe "#money" do
     let(:query) { described_class.new(amount: "1.01") }
     subject(:money) { query.money }
-    it { is_expected.to be_instance_of(Money) }
     it { is_expected.to eq Money.new(1_01) }
   end
 end
