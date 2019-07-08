@@ -18,9 +18,9 @@
 class CreditsController < ApplicationController
   before_action :assert_support!
   before_action :lookup_reservation!
-  before_action :lookup_amount_owed
 
   def new
+    @amount_owed = AmountOwedForReservation.new(@reservation).amount_owed
     @credit = PlanCredit.new
   end
 
@@ -36,11 +36,5 @@ class CreditsController < ApplicationController
     ApplyCredit.new(@reservation, plan.money).call
     flash[:notice] = "Credited ##{@reservation.membership_number} with #{plan.money.format}"
     redirect_to @reservation
-  end
-
-  private
-
-  def lookup_amount_owed
-    @amount_owed = AmountOwedForReservation.new(@reservation).amount_owed
   end
 end
