@@ -25,6 +25,6 @@ class PlanCredit
 
   # Convert amount to cents so we can store it with the Money gem
   def money
-    Money.new(amount.to_f * 100)
+    Money.from_amount(amount.to_f)
   end
 end
