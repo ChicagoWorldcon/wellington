@@ -21,7 +21,9 @@ RSpec.describe SetMembershipsController, type: :controller do
 
   let(:user) { create(:user) }
   let(:support) { create(:support) }
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:young_adult) { create(:membership, :young_adult) }
+  let(:adult) { create(:membership, :adult) }
+  let(:reservation) { create(:reservation, :with_claim_from_user, membership: young_adult) }
 
   describe "#index" do
     subject(:get_index) do
@@ -40,6 +42,28 @@ RSpec.describe SetMembershipsController, type: :controller do
       sign_in(support)
       get_index
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "#update" do
+    before do
+      sign_in(support)
+    end
+
+    it "raises error when membership can't be found" do
+      expect {
+        put :update, params: { reservation_id: reservation.id, id: -1 }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "sets membership to whatever you set" do
+      expect { put(:update, params: { reservation_id: reservation.id, id: adult.id }) }
+        .to change { reservation.reload.membership }
+        .from(young_adult)
+        .to(adult)
+
+      expect(response).to redirect_to(reservation_path(reservation))
+      expect(flash[:notice]).to include adult.to_s
     end
   end
 end

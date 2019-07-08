@@ -14,19 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class SetMembershipsController < ApplicationController
-  before_action :assert_support!
-  before_action :lookup_reservation!
-
-  def index
-    @memberships = Membership.all
-    @as_at = Time.now
-  end
-
-  def update
-    membership = Membership.find(params[:id])
-    SetMembership.new(@reservation, to: membership).call
-    flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
-    redirect_to @reservation
+module SetMembershipsHelper
+  def description(membership)
+    %{
+      #{membership},
+      worth #{membership.price.format}
+    }
   end
 end
