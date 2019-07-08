@@ -26,4 +26,14 @@ module ApplicationHelper
       DEFUALT_NAV_CLASSES + %w(bg-dark)
     end.join(" ")
   end
+
+  def fuzzy_time(as_at)
+    if as_at.nil?
+      "open ended"
+    elsif as_at < Time.now
+      "#{time_ago_in_words(as_at)} ago"
+    else
+      "#{time_ago_in_words(as_at)} from now"
+    end
+  end
 end

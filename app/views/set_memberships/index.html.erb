@@ -45,24 +45,8 @@
                     )
                   %>
                 </td>
-                <td>
-                  <% case %>
-                  <% when membership.active_from < @as_at %>
-                    <%= time_ago_in_words(membership.active_from) %> ago
-                  <% else %>
-                    <%= time_ago_in_words(membership.active_from) %> from now
-                  <% end %>
-                </td>
-                <td>
-                  <% case %>
-                  <% when membership.active_to.nil? %>
-                    open ended
-                  <% when membership.active_to < @as_at %>
-                    <%= time_ago_in_words(membership.active_to) %> ago
-                  <% else %>
-                    <%= time_ago_in_words(membership.active_to) %> from now
-                  <% end %>
-                </td>
+                <td><%= fuzzy_time(membership.active_from) %></td>
+                <td><%= fuzzy_time(membership.active_to) %></td>
               </tr>
             <% end %>
           </tbody>
