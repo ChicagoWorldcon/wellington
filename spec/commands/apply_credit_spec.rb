@@ -17,14 +17,15 @@
 require "rails_helper"
 
 RSpec.describe ApplyCredit do
-  let!(:adult_membership) { create(:membership, :adult) }
+  let!(:adult_price) { Money.from_amount(400) }
+  let!(:adult_membership) { create(:membership, :adult, price: adult_price) }
   let!(:reservation) do
     create(:reservation, :instalment, :with_claim_from_user,
       membership: adult_membership,
       instalment_paid: 0,
     )
   end
-  let!(:amount) { Money.new(50_00) }
+  let!(:amount) { adult_price - Money.from_amount(10) }
   let!(:audit_person) { "helper" }
 
   subject(:command) { described_class.new(reservation, amount, audit_by: audit_person) }
@@ -61,7 +62,7 @@ RSpec.describe ApplyCredit do
     end
 
     context "when credit amount covers membership" do
-      let(:amount) { adult_membership.price }
+      let(:amount) { adult_price }
 
       it "flips slate over to paid" do
         expect { call }
