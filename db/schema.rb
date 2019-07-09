@@ -15,14 +15,6 @@ ActiveRecord::Schema.define(version: 2019_07_07_220026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "categories", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "description", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_categories_on_name"
-  end
-
   create_table "charges", force: :cascade do |t|
     t.json "stripe_response"
     t.string "comment", null: false
@@ -92,16 +84,6 @@ ActiveRecord::Schema.define(version: 2019_07_07_220026) do
     t.boolean "can_attend", default: false, null: false
     t.integer "price_cents", default: 0, null: false
     t.string "price_currency", default: "NZD", null: false
-  end
-
-  create_table "nominations", force: :cascade do |t|
-    t.bigint "category_id", null: false
-    t.bigint "reservation_id", null: false
-    t.string "description", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["category_id"], name: "index_nominations_on_category_id"
-    t.index ["reservation_id"], name: "index_nominations_on_reservation_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -174,8 +156,6 @@ ActiveRecord::Schema.define(version: 2019_07_07_220026) do
   add_foreign_key "charges", "users"
   add_foreign_key "claims", "reservations"
   add_foreign_key "claims", "users"
-  add_foreign_key "nominations", "categories"
-  add_foreign_key "nominations", "reservations"
   add_foreign_key "notes", "users"
   add_foreign_key "orders", "memberships"
   add_foreign_key "orders", "reservations"
