@@ -64,7 +64,7 @@ RSpec.describe ApplyCredit do
     context "when credit amount covers membership" do
       let(:amount) { adult_price }
 
-      it "flips slate over to paid" do
+      it "flips state over to paid" do
         expect { call }
           .to change { reservation.reload.state }
           .from(Reservation::INSTALMENT)
