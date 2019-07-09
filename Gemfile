@@ -35,6 +35,8 @@ gem "stripe"               # payment provider
 gem "uglifier"             # for minifying javascript and css
 
 group :development, :test do
+  gem "brakeman"                                      # vulnerability and static analysis
+  gem "bundler-audit"                                 # checks for insecure gems
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
@@ -44,6 +46,7 @@ group :development, :test do
   gem "rspec-rails"                                   # testing framework
   gem "rubocop", "0.66.0"                             # FIXME pin to stop namespace warnings
   gem "rubocop-github"                                # ruby ilnting to keep things clean
+  gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing

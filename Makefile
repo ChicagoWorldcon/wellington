@@ -1,6 +1,7 @@
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,6 +43,10 @@ test:
 	docker-compose exec members_area bundle exec rspec
 	docker-compose exec members_area rubocop
 	docker-compose exec members_area bundle exec rake test:branch:copyright
+	docker-compose exec members_area bundle update brakeman --quiet
+	docker-compose exec members_area bundle exec brakeman --run-all-checks --no-pager
+	docker-compose exec members_area bundle audit check --update
+	docker-compose exec members_area bundle exec ruby-audit check
 
 # builds, configures and starts application in the background
 daemon: stop
