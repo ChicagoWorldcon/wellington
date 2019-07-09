@@ -26,10 +26,4 @@ class ApplicationController < ActionController::Base
     end
     @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
   end
-
-  def assert_support!
-    if !support_signed_in?
-      head :unauthorized
-    end
-  end
 end

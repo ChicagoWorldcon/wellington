@@ -30,12 +30,13 @@ RSpec.describe CreditsController, type: :controller do
 
     it "doesn't render when signed out" do
       get_new
-      expect(get_new).to have_http_status(:unauthorized)
+      expect(response).to redirect_to(new_support_session_path)
     end
 
     it "doesn't render for users" do
       sign_in user
-      expect(get_new).to have_http_status(:unauthorized)
+      get_new
+      expect(response).to redirect_to(new_support_session_path)
     end
 
     it "works for support" do

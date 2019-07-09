@@ -18,7 +18,7 @@
 class TransfersController < ApplicationController
   helper ReservationsHelper
 
-  before_action :assert_support!
+  before_action :authenticate_support!
   before_action :setup_transfer, only: [:show, :update]
 
   def new

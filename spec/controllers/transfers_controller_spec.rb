@@ -38,7 +38,7 @@ RSpec.describe TransfersController, type: :controller do
   describe "#new" do
     it "bounces you if you're not logged in as support" do
       get :new, params: new_params
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to redirect_to(new_support_session_path)
     end
 
     context "when signed in as support" do
@@ -55,7 +55,7 @@ RSpec.describe TransfersController, type: :controller do
   describe "#show" do
     it "bounces you if you're not logged in as support" do
       get :show, params: show_update_params
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to redirect_to(new_support_session_path)
     end
 
     context "when signed in as support" do

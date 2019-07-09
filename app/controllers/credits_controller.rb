@@ -16,7 +16,7 @@
 
 # CreditsController allows us to list and grant account credit to a user
 class CreditsController < ApplicationController
-  before_action :assert_support!
+  before_action :authenticate_support!
   before_action :lookup_reservation!
 
   def new

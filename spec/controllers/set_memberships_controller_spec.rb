@@ -35,7 +35,7 @@ RSpec.describe SetMembershipsController, type: :controller do
     it "says no when you're not support" do
       sign_in(user)
       get_index
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to redirect_to(new_support_session_path)
     end
 
     it "renders when support signed in" do

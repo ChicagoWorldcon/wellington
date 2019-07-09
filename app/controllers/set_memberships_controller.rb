@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class SetMembershipsController < ApplicationController
-  before_action :assert_support!
+  before_action :authenticate_support!
   before_action :lookup_reservation!
 
   def index
