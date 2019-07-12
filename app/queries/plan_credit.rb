@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# PlanC
+# PlanCredit is useful for form logic, validation and provides everything you'd need to call ApplyCredit
 class PlanCredit
   include ActiveModel::Model
   include ActiveModel::Validations::ClassMethods
