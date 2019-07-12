@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,35 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = Money.new(75_00)
-  PAYMENT_STEP = Money.new(50_00)
+class SetMembershipsController < ApplicationController
+  before_action :authenticate_support!
+  before_action :lookup_reservation!
 
-  attr_reader :amount_owed
-
-  def initialize(amount_owed)
-    @amount_owed = amount_owed
+  def index
+    @memberships = Membership.all
+    @as_at = Time.now
   end
 
-  def amounts
-    return [] if minimum_payment <= 0
-
-    instalments.append(amount_owed)
-  end
-
-  private
-
-  def instalments
-    instalments = []
-    amount = minimum_payment
-    while amount < amount_owed
-      instalments << amount
-      amount += PAYMENT_STEP
-    end
-    instalments
-  end
-
-  def minimum_payment
-    amount_owed < MIN_PAYMENT_AMOUNT ? amount_owed : MIN_PAYMENT_AMOUNT
+  def update
+    membership = Membership.find(params[:id])
+    SetMembership.new(@reservation, to: membership, audit_by: current_support.email).call
+    flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
+    redirect_to @reservation
   end
 end

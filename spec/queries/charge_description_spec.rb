@@ -37,16 +37,17 @@ RSpec.describe ChargeDescription do
     let(:charge) { create(:charge, reservation: unicorn_reservation) }
 
     let(:unicorn_reservation) do
-      create(:reservation, :with_claim_from_user, :pay_as_you_go,
+      create(:reservation, :with_claim_from_user, :instalment,
         membership_number: membership_number,
         membership: unicorn_membership,
+        instalment_paid: 0,
       )
     end
 
     context "with details" do
       let!(:user_details) { unicorn_reservation.active_claim.detail }
       it { is_expected.to include "3.00" }
-      it { is_expected.to include "Installment for" }
+      it { is_expected.to include "Instalment for" }
       it { is_expected.to include user_details.to_s }
       it { is_expected.to include "as Unicorn member" }
       it { is_expected.to include membership_number }
@@ -77,7 +78,7 @@ RSpec.describe ChargeDescription do
       # 4 weeks ago, we reserved a $100 horse and started paying down 1 day at a time
       Timecop.freeze(4.weeks.ago)
       reservation = ClaimMembership.new(horse_membership, customer: owner_1).call
-      expect(reservation).to be_installment
+      expect(reservation).to be_instalment
       Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, Money.new(50_00)).call
       Timecop.freeze(1.day.from_now)
       Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, Money.new(49_00)).call
@@ -89,7 +90,7 @@ RSpec.describe ChargeDescription do
       Timecop.return
       Timecop.freeze(3.weeks.ago)
       UpgradeMembership.new(reservation.reload, to: pony_membership).call
-      expect(reservation).to be_installment
+      expect(reservation).to be_instalment
       Timecop.freeze(1.second.from_now)
       Money::ChargeCustomer.new(reservation, owner_1, stripe_helper.generate_card_token, Money.new(50_00)).call
       Timecop.freeze(1.day.from_now)
@@ -115,19 +116,19 @@ RSpec.describe ChargeDescription do
 
     let(:membership_number) { ClaimMembership::FIRST_MEMBERSHIP_NUMER }
 
-    it "describes installments on horses" do
+    it "describes instalments on horses" do
       expect(for_users(Charge.first)).to include "50.00"
       expect(for_users(Charge.second)).to include "49.00"
       expect(for_users(Charge.third)).to include "1.00"
 
-      expect(for_users(Charge.first)).to include "Installment with Credit Card for Horse member #{membership_number}"
-      expect(for_users(Charge.second)).to include "Installment with Credit Card for Horse member #{membership_number}"
+      expect(for_users(Charge.first)).to include "Instalment with Credit Card for Horse member #{membership_number}"
+      expect(for_users(Charge.second)).to include "Instalment with Credit Card for Horse member #{membership_number}"
       expect(for_users(Charge.third)).to include "Fully Paid with Credit Card for Horse member #{membership_number}"
     end
 
     it "describes upgrades to ponys" do
       expect(for_users(Charge.fourth)).to include "50.00"
-      expect(for_users(Charge.fourth)).to include "Upgrade Installment with Credit Card for Pony member #{membership_number}"
+      expect(for_users(Charge.fourth)).to include "Upgrade Instalment with Credit Card for Pony member #{membership_number}"
       expect(for_users(Charge.fifth)).to include "50.00"
       expect(for_users(Charge.fifth)).to include "Upgrade Fully Paid with Credit Card for Pony member #{membership_number}"
     end

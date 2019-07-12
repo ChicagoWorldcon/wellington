@@ -30,7 +30,7 @@ class ChargeDescription
       maybe_charge_state,
       formatted_amount,
       upgrade_maybe,
-      installment_or_paid,
+      instalment_or_paid,
       "with",
       payment_type,
       "for",
@@ -42,7 +42,7 @@ class ChargeDescription
     [
       formatted_amount,
       upgrade_maybe,
-      installment_or_paid,
+      instalment_or_paid,
       "for",
       maybe_member_name,
       "as",
@@ -66,11 +66,11 @@ class ChargeDescription
     end
   end
 
-  def installment_or_paid
+  def instalment_or_paid
     if !charge.successful?
       "Payment"
     elsif charges_so_far.sum(&:amount) + charge.amount < charged_membership.price
-      "Installment"
+      "Instalment"
     else
       "Fully Paid"
     end

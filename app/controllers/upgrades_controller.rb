@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class UpgradesController < ApplicationController
-  before_action :lookup_reservation
+  before_action :lookup_reservation!
   before_action :lookup_offer, except: :index
 
   def index

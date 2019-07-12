@@ -31,12 +31,22 @@ Rails.application.routes.draw do
   end
 
   resources :charges
+  resources :credits
   resources :landing
   resources :memberships
   resources :themes
   resources :upgrades
+
   resources :reservations do
-    resources :transfers, id: /[^\/]+/
     resources :upgrades
+  end
+
+  # /operator are maintenance routes for support people
+  scope :operator do
+    resources :reservations do
+      resources :credits
+      resources :set_memberships
+      resources :transfers, id: /[^\/]+/
+    end
   end
 end

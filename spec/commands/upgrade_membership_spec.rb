@@ -42,7 +42,7 @@ RSpec.describe UpgradeMembership do
       expect { call }
         .to change { reservation.reload.state }
         .from(Reservation::PAID)
-        .to(Reservation::INSTALLMENT)
+        .to(Reservation::INSTALMENT)
     end
 
     context "when upgrade is unavailable" do

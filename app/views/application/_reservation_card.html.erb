@@ -34,7 +34,7 @@
       <%= reservation.membership %> Membership
     </p>
 
-    <% if reservation.installment? %>
+    <% if reservation.instalment? %>
       <p>Reserved, but not fully paid</p>
       <p><%= amount_to_pay(reservation) %></p>
     <% end %>

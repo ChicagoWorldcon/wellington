@@ -39,9 +39,9 @@ RSpec.describe ClaimMembership do
       expect { command.call }.to_not change { Charge.count }
     end
 
-    it "sets reservation to installment" do
+    it "sets reservation to instalment" do
       command.call
-      expect(Reservation.last).to be_installment
+      expect(Reservation.last).to be_instalment
     end
 
     it "gives us room to add guest of honor and staff" do

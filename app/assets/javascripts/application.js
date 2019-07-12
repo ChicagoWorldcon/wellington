@@ -96,8 +96,7 @@ $(document).ready(function initStripeForm() {
 
 $(document).ready(function initBootstrap() {
   // DataTable plugin for searchable and sortable tables
-  $(".full-members-list").DataTable();
-  $(".transfer-emails-list").DataTable();
+  $(".js-data-table").DataTable();
 
   // Bootstrap tooltip for more information about elements
   $("[data-toggle=tooltip").tooltip();

@@ -45,7 +45,7 @@ class ClaimMembership
       as_at = Time.now
       reservation = Reservation.create!(
         membership_number: (membership_number || next_membership_number),
-        state: (membership.price.zero? ? Reservation::PAID : Reservation::INSTALLMENT)
+        state: (membership.price.zero? ? Reservation::PAID : Reservation::INSTALMENT)
       )
       Order.create!(active_from: as_at, membership: membership, reservation: reservation)
       Claim.create!(active_from: as_at, user: customer, reservation: reservation)

@@ -25,13 +25,39 @@
 <section class="l-section">
   <% if support_signed_in? %>
     <div class="row">
-      <div class="col-12 col-md-12">
-        <div class="l-panel">
+      <div class="col-12 col-md-6">
+        <div class="l-panel support-pane">
           <h2>Support Actions</h2>
           <p>
             <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>
+
+          <p>
+            <%= link_to "Set membership", reservation_set_memberships_path(reservation_id: @reservation) %>
+            to any level that's been in our system
+          </p>
+
+          <p>
+            <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
+            with payment made via cash or cheque
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="l-panel support-pane">
+          <h2>Related Notes</h2>
+          <% if @notes.none? %>
+            No notes for this membership
+          <% else %>
+            <% @notes.eager_load(:user).order(created_at: :desc).each do |note| %>
+              <p>
+                <strong><%= note.created_at %> - <%= note.user.email %></strong>
+                <br><%= note.content %>
+              </p>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>
@@ -48,7 +74,7 @@
           <% end %>
         </div>
 
-        <% if @reservation.membership.price > 0 %>
+        <% if @reservation.membership.price > 0 || @reservation.charges.any? %>
           <div class="l-v-spacing">
             <h2 class="h4">Payment History</h2>
             <ul class="list-group text-dark list-group-flush mt-3 mb-4">
@@ -61,8 +87,26 @@
 
               <% @reservation.charges.order(:created_at).find_each do |charge| %>
                 <li class="list-group-item">
-                  <%= charge.comment %> at
-                  <%= charge.created_at %>
+                  <strong><%= charge.created_at %></strong>
+                  <br><%= charge.comment %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% if @reservation.orders.length > 1 %>
+          <div class="l-v-spacing">
+            <h2 class="h4">Upgrade History</h2>
+            <ul class="list-group text-dark list-group-flush mt-3 mb-4">
+              <% @reservation.orders.eager_load(:membership).order(:created_at).find_each do |order| %>
+                <li class="list-group-item">
+                  <%= order.membership %> membership held
+                  <br>from <%= fuzzy_time(order.active_from) %>
+                  <% if order.active_to %>
+                    <br>to <%= fuzzy_time(order.active_to) %>
+                  <% end %>
+                </li>
               <% end %>
             </ul>
           </div>

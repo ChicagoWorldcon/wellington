@@ -119,7 +119,7 @@ pre supporters.
 
 ### Added
 - Basic forms for purchasing memberships based on CoNZealand paper forms
-- Payments, including pay by installment
+- Payments, including pay by instalment
 - Upgrades between different membership types
 - Login through email links that last 10 minutes
 - Basic support area that lists memberships

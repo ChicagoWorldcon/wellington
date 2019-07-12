@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,35 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = Money.new(75_00)
-  PAYMENT_STEP = Money.new(50_00)
 
-  attr_reader :amount_owed
-
-  def initialize(amount_owed)
-    @amount_owed = amount_owed
-  end
-
-  def amounts
-    return [] if minimum_payment <= 0
-
-    instalments.append(amount_owed)
-  end
-
-  private
-
-  def instalments
-    instalments = []
-    amount = minimum_payment
-    while amount < amount_owed
-      instalments << amount
-      amount += PAYMENT_STEP
-    end
-    instalments
-  end
-
-  def minimum_payment
-    amount_owed < MIN_PAYMENT_AMOUNT ? amount_owed : MIN_PAYMENT_AMOUNT
+module CreditsHelper
+  def pick_an_amount_instruction(max:)
+    "Credit, up to #{max.format(with_currency: true)}"
   end
 end

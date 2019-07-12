@@ -26,4 +26,22 @@ module ApplicationHelper
       DEFUALT_NAV_CLASSES + %w(bg-dark)
     end.join(" ")
   end
+
+  def fuzzy_time(as_at)
+    content_tag(
+      :span,
+      fuzzy_time_in_words(as_at),
+      title: as_at&.iso8601 || "Time not set",
+    )
+  end
+
+  def fuzzy_time_in_words(as_at)
+    if as_at.nil?
+      "open ended"
+    elsif as_at < Time.now
+      "#{time_ago_in_words(as_at)} ago"
+    else
+      "#{time_ago_in_words(as_at)} from now"
+    end
+  end
 end
