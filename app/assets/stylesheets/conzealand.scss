@@ -325,7 +325,7 @@ select {
 // Fixed height scrollable panes
 .support-pane {
   height: 300px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 // =========================================================================
