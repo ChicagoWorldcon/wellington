@@ -28,6 +28,14 @@ module ApplicationHelper
   end
 
   def fuzzy_time(as_at)
+    content_tag(
+      :span,
+      fuzzy_time_in_words(as_at),
+      title: as_at&.iso8601 || "Time not set",
+    )
+  end
+
+  def fuzzy_time_in_words(as_at)
     if as_at.nil?
       "open ended"
     elsif as_at < Time.now
