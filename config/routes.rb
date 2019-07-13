@@ -49,4 +49,9 @@ Rails.application.routes.draw do
       resources :transfers, id: /[^\/]+/
     end
   end
+
+  namespace :kiosk do
+    resources :memberships
+    resources :reservations
+  end
 end
