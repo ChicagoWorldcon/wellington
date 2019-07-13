@@ -76,7 +76,7 @@ class TransfersController < ApplicationController
     )
 
     if !@transfer.valid?
-      flash[:error] = @transfer.errors.full_messages.to_sentences
+      flash[:error] = @transfer.errors.full_messages.to_sentence
       redirect_to reservations_path
     end
   end

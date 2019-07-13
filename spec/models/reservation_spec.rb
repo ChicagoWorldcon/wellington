@@ -54,11 +54,17 @@ RSpec.describe Reservation, type: :model do
     end
   end
 
-  context "when not active as an adult" do
-    [Reservation::INSTALMENT, Reservation::DISABLED].each do |inactive_state|
-      subject(:model) { create(:reservation, state: inactive_state) }
-      it { is_expected.to be_valid }
-      it { is_expected.to_not be_transferable }
+  describe "#transferable?" do
+    [Reservation::INSTALMENT, Reservation::PAID].each do |state|
+      it "is true when #{state}" do
+        expect(build(:reservation, state: state)).to be_transferable
+      end
+    end
+
+    [Reservation::DISABLED].each do |state|
+      it "is false when #{state}" do
+        expect(build(:reservation, state: state)).to_not be_transferable
+      end
     end
   end
 end
