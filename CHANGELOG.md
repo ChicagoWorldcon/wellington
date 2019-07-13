@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generated memberships in testing now have charges
   [!84](https://gitlab.com/worldcon/2020-wellington/merge_requests/84)
   and [!86](https://gitlab.com/worldcon/2020-wellington/merge_requests/86)
+- Support can now transfer memberships that are in instalment
+  ![88](https://gitlab.com/worldcon/2020-wellington/merge_requests/88)
 
 ### Removed
 - Nothing significant in this release
