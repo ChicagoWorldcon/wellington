@@ -38,7 +38,7 @@ namespace :dev do
   namespace :reset do
     desc "Sets db/schema.rb to the same as master"
     task :schema do
-      system("git checkout origin/master db/schema.rb")
+      system("git checkout --force origin/master db/schema.rb")
       system("git reset db/schema.rb")
     end
   end
