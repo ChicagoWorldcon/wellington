@@ -62,7 +62,7 @@ namespace :dev do
   namespace :reset do
     desc "Sets db/structure.sql to the same as master"
     task :structure do
-      system("git checkout origin/master db/structure.sql")
+      system("git checkout --force origin/master db/structure.sql")
       system("git reset db/structure.sql")
     end
   end
