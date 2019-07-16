@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
+  resources :categories
   resources :credits
   resources :landing
   resources :memberships
@@ -37,8 +38,9 @@ Rails.application.routes.draw do
   resources :upgrades
 
   resources :reservations do
-    resources :upgrades
     resources :charges
+    resources :nominations
+    resources :upgrades
   end
 
   # /operator are maintenance routes for support people
