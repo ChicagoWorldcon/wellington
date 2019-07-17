@@ -27,6 +27,26 @@ module ApplicationHelper
     end.join(" ")
   end
 
+  # These match i18n values set in config/locales
+  # see Membership#rights
+  def membership_right_description(membership_right, reservation)
+    %{
+      #{I18n.t(:description, scope: membership_right)}
+      #{information_bubble(I18n.t(:layman, scope: membership_right))}
+    }
+  end
+
+  def information_bubble(tooltip_text)
+    octicon("info",
+      "height" => "15px",
+      "aria-label" => "More information",
+      "data-toggle" => "tooltip",
+      "data-html" => "true",
+      "data-placement" => "right",
+      "title" => tooltip_text,
+    )
+  end
+
   def fuzzy_time(as_at)
     content_tag(
       :span,
