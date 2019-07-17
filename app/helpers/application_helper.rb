@@ -30,10 +30,20 @@ module ApplicationHelper
   # These match i18n values set in config/locales
   # see Membership#rights
   def membership_right_description(membership_right, reservation)
-    %{
-      #{I18n.t(:description, scope: membership_right)}
-      #{information_bubble(I18n.t(:layman, scope: membership_right))}
-    }
+    description = I18n.t(:description, scope: membership_right)
+    tooltip = I18n.t(:layman, scope: membership_right)
+    raw(%{
+      #{link_if_open(description, membership_right, reservation)}
+      #{information_bubble(tooltip)}
+    })
+  end
+
+  def link_if_open(description, membership_right, reservation)
+    if membership_right == "rights.hugo" && $nomination_opens_at < Time.now
+      link_to description, reservation_nominations_path(reservation)
+    else
+      description
+    end
   end
 
   def information_bubble(tooltip_text)
