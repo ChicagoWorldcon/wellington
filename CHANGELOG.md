@@ -125,6 +125,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Kiosk mode, now we can get people to record their details to reduce time handling data entry
   [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
+- Added Hugos state configuration [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Please set these values in your .env on all environments:
+  ```
+  # Times when parts of the members area will become active
+  HUGO_NOMINATIONS_OPEN_AT="2019-07-16T00:00:00+1200"
+  HUGO_VOTING_OPEN_AT="2019-08-16T00:00:00+1200"
+  HUGO_CLOSED_AT="2050-08-02T12:00:00+1200"
+  ```
 
 ### Changed
 - Bugfix, users can now set their title on their membership [!92](https://gitlab.com/worldcon/2020-wellington/merge_requests/92)
