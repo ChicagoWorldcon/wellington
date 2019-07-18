@@ -49,7 +49,7 @@ class UserTokensController < ApplicationController
 
   def kansa_login_link
     sign_out(current_user) if signed_in?
-    flash[:error] = "That login link has expired. Please send another link, or email us at registrations@conzealand.nz"
+    flash[:error] = "That login link has expired. Please send another link, or email us at #{$member_services_email}"
     redirect_to root_path
   end
 
