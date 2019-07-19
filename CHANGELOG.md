@@ -11,11 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- System emails are now configured globally from .env with MEMBER_SERVICES_EMAIL.
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89). Please replace EMAIL_PAYMENTS this in your .env:
+  ```
+  MEMBER_SERVICES_EMAIL=registration@conzealand.nz
+  ```
 
 ### Removed
-- Nothing significant in this release
-
+- EMAIL_PAYMENTS has been depricated and will be removed in the next few releases.
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 
 
 ## [Tag 1.4.1 - 2019-07-22]

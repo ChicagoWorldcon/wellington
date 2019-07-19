@@ -18,7 +18,7 @@
 
 # Preview all emails at http://localhost:3000/rails/mailers/payment_mailer
 class PaymentMailer < ApplicationMailer
-  default from: ENV["EMAIL_PAYMENTS"]
+  default from: $member_services_email
 
   def paid(user:, charge:)
     @charge = charge

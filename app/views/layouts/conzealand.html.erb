@@ -91,7 +91,10 @@
         By using our members area, you are agreeing to follow our
         <a href="https://conzealand.nz/about-conzealand/policies-and-expectations/" target="_blank" rel="noopener">Terms of Service</a>
       </p>
-      <p>&copy; CoNZealand <%= Date.today.year %>. Contact <a href="mailto:registration@conzealand.nz">registration@conzealand.nz</a></p>
+      <p>
+        &copy; CoNZealand <%= Date.today.year %>.
+        Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>
+      </p>
     </div>
   </footer>
 </body>
