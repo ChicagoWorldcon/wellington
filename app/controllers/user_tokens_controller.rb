@@ -31,7 +31,7 @@ class UserTokensController < ApplicationController
       redirect_path = lookup_user_query.path
     else
       error_message = lookup_user_query.errors.to_sentence.humanize
-      flash[:error] = "#{error_message}. Please send another link, or email us at registrations@conzealand.nz"
+      flash[:error] = "#{error_message}. Please send another link, or email us at #{$member_services_email}"
     end
     redirect_to redirect_path || root_path
   end

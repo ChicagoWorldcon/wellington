@@ -31,7 +31,11 @@ namespace :import do
   desc "Imports from conzealand presupporters spreadsheet. Override file location by setting PRESUPPORT_SRC env var"
   task presupporters: :environment do
     presupport_csv = File.open(ENV["PRESUPPORT_SRC"] || DEFAULT_PRESUPPORT_SRC)
-    presupport_importer = Import::Presupporters.new(presupport_csv, description: "CoNZealand master members list, sheet 2", fallback_email: "registrations@conzealand.nz")
+    presupport_importer = Import::Presupporters.new(
+      presupport_csv,
+      description: "CoNZealand master members list, sheet 2",
+      fallback_email: $member_services_email,
+    )
     if !presupport_importer.call
       puts "Presupporters failed to import with these errors..."
       presupport_importer.errors.each { |e| puts e }

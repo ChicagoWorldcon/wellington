@@ -25,5 +25,5 @@ and this should now be in affect.
 
 If you have any questions or concerns, please reply to this email.
 
-CoNZealand – registration@conzealand.nz   
+CoNZealand – <%= $member_services_email %>   
 https://conzealand.nz/

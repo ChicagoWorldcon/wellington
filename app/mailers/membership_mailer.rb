@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class MembershipMailer < ApplicationMailer
-  default from: ENV["EMAIL_PAYMENTS"]
+  default from: $member_services_email
 
   def login_link(token:, email:)
     @token = token
@@ -35,7 +35,7 @@ class MembershipMailer < ApplicationMailer
 
     mail(
       to: [from, to],
-      cc: ENV["EMAIL_PAYMENTS"],
+      cc: $member_services_email,
       subject: "CoNZealand: Transferred ##{membership_number} from #{from} to #{to}"
     )
   end
