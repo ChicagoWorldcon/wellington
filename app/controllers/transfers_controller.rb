@@ -38,16 +38,13 @@ class TransfersController < ApplicationController
         from: @transfer.from_user,
         to: @transfer.to_user,
         audit_by: current_support.email,
+        copy_details: @transfer.copy_details?,
       )
       new_claim = service.call
       if !new_claim
         flash[:error] = service.error_message
         redirect_to reservations_path
         return
-      end
-
-      if @transfer.copy_details?
-        new_claim.update!(detail: owner_detail.dup)
       end
 
       MembershipMailer.transfer(
@@ -76,7 +73,7 @@ class TransfersController < ApplicationController
     )
 
     if !@transfer.valid?
-      flash[:error] = @transfer.errors.full_messages.to_sentences
+      flash[:error] = @transfer.errors.full_messages.to_sentence
       redirect_to reservations_path
     end
   end

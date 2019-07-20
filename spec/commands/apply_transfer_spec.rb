@@ -22,7 +22,14 @@ RSpec.describe ApplyTransfer do
   let(:support) { create(:support) }
   let(:reservation) { create(:reservation) }
 
-  before { Claim.create!(user: seller, reservation: reservation, active_from: reservation.created_at) }
+  before do
+    Claim.create!(
+      user: seller,
+      reservation: reservation,
+      active_from: reservation.created_at,
+      detail: build(:detail),
+    )
+  end
 
   subject(:command) { described_class.new(reservation, from: seller, to: buyer, audit_by: support.email) }
   let(:soonish) { 1.minute.from_now } # ApplyTransfer is relying on Time.now which is a very small time slice
@@ -45,6 +52,26 @@ RSpec.describe ApplyTransfer do
     expect(buyer.notes.last.content).to include(support.email)
   end
 
+  it "doesn't copy over detail by default" do
+    command.call
+    expect(buyer.reload.active_claims.last.detail).to be_nil
+  end
+
+  it "copies detail if requested" do
+    described_class.new(
+      reservation,
+      from: seller,
+      to: buyer,
+      audit_by: support.email,
+      copy_details: true,
+    ).call
+    buyer.reload
+    seller.reload
+
+    expect(buyer.active_claims.last.detail).to be_present
+    expect(buyer.claims.last.detail.to_s).to eq seller.claims.last.detail.to_s
+  end
+
   context "when there's transactions close together" do
     let(:this_instant) { Time.now }
     before { expect(Time).to receive(:now).at_least(1).times.and_return(this_instant) }
@@ -57,8 +84,8 @@ RSpec.describe ApplyTransfer do
     end
   end
 
-  context "when reservation is pay by instalment" do
-    let(:reservation) { create(:reservation, :instalment) }
+  context "when reservation is disabled" do
+    let(:reservation) { create(:reservation, :disabled) }
 
     it "doesn't let you transfer" do
       expect(command.call).to be_falsey

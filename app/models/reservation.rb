@@ -41,7 +41,7 @@ class Reservation < ApplicationRecord
   end
 
   def transferable?
-    state == PAID
+    state != DISABLED
   end
 
   def instalment?

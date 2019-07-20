@@ -31,6 +31,10 @@ FactoryBot.define do
       state { Reservation::INSTALMENT }
     end
 
+    trait :disabled do
+      state { Reservation::DISABLED }
+    end
+
     after(:create) do |new_reservation, evaluator|
       next unless new_reservation.membership.present?
       next unless new_reservation.user.present?
