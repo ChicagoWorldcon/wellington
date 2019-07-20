@@ -94,6 +94,10 @@ $(document).ready(function initStripeForm() {
   });
 });
 
+$(document).ready(function initHugo() {
+  $('#privacy-warning').modal();
+});
+
 $(document).ready(function initBootstrap() {
   // DataTable plugin for searchable and sortable tables
   $(".js-data-table").DataTable();

@@ -19,7 +19,7 @@
   <div class="row d-flex align-items-stretch">
     <div class="row">
       <div class="col-12 col-lg-8">
-        <div class="l-panel l-panel-m-membership-types">
+        <div class="l-panel">
           <% Category.find_each do |category| %>
             <h2 class="h3-like"><%= category.name %></h2>
 
@@ -48,6 +48,32 @@
             <% show_links(@reservation).each do |link| %>
               <p><%= link %></p>
             <% end %>
+          <% end %>
+        </div>
+
+        <div class="l-panel">
+          <h2>Multiple Accounts Warning</h2>
+          <% if @privacy_warning.present? %>
+            <%= render "multiple_accounts_disclaimer" %>
+
+            <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centred" role="document">
+                <div class="modal-content text-dark">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <%= render "multiple_accounts_disclaimer" %>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           <% end %>
         </div>
       </div>
