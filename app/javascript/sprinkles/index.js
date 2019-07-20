@@ -107,3 +107,7 @@ $(document).ready(() => {
     $('body').toggleClass('api-test-keys');
   });
 });
+
+$(document).ready(() => {
+  $('#privacy-warning').modal();
+});
