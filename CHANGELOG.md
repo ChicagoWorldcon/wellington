@@ -8,10 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 1.4.0 - 2019-07-22]
+
+This release has a bit of everything. We're making life better for other cons with support for multi currency, our
+support staff who have more fatures for adjusting memberships, and our developers have better seeded data for something
+that feels better right out of the box.
+
+### Added
 - Added brakeman, ruby-audit, and bundler-audit vulnerability scanners to the build process and `make test`
   [!85](https://gitlab.com/worldcon/2020-wellington/merge_requests/85)
 - Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
   [!70](https://gitlab.com/worldcon/2020-wellington/merge_requests/70)
+- Support can set membership to any level, including past memberships
+  [!87](https://gitlab.com/worldcon/2020-wellington/merge_requests/87)
+- Support can credit memberships with cash, allows support to create and credit memberships
+  [!87](https://gitlab.com/worldcon/2020-wellington/merge_requests/87)
+- User notes are now exposed on the reservation show screen
+  [!87](https://gitlab.com/worldcon/2020-wellington/merge_requests/87)
+- Upgrades and membership changes are now shown to our members
+  [!87](https://gitlab.com/worldcon/2020-wellington/merge_requests/87)
 
 ### Changed
 - Added unique constraint to membership number data model
@@ -24,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!84](https://gitlab.com/worldcon/2020-wellington/merge_requests/84)
   and [!86](https://gitlab.com/worldcon/2020-wellington/merge_requests/86)
 - Support can now transfer memberships that are in instalment
-  ![88](https://gitlab.com/worldcon/2020-wellington/merge_requests/88)
+  [!88](https://gitlab.com/worldcon/2020-wellington/merge_requests/88)
 
 ### Removed
 - Nothing significant in this release
