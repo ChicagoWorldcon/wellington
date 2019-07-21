@@ -17,6 +17,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
+
+## [Tag 1.4.1 - 2019-07-22]
+
+Hotpatch, in 1.4.0 we regressed the payments mailer for instalments which no longer send. This patch release fixes that
+mailer.
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Fixed regression, instalments mailer now sends happily [!91](https://gitlab.com/worldcon/2020-wellington/merge_requests/91)
+
+### Removed
+- Nothing significant in this release
+
+
 ## [Tag 1.4.0 - 2019-07-22]
 
 This release has a bit of everything. We're making life better for other cons with support for multi currency, our
