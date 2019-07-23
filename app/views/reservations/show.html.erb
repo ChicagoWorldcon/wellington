@@ -137,7 +137,9 @@
     <div class="col-12 col-lg-8">
       <div class="l-panel">
         <h2>Review your details</h2>
-        <%= render "detail_form" %>
+        <%= form_for(@reservation) do |form| %>
+          <%= render "detail_form" %>
+        <% end %>
       </div>
     </div>
   </div>

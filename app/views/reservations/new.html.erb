@@ -32,10 +32,13 @@
     <div class="col-12 col-lg-8">
       <div class="l-panel">
         <% if !user_signed_in? %>
+          <h2>Sign in to Reserve Membership</h2>
           <%= render "sign_in_notice" %>
         <% else %>
           <h2>Reserve a New Membership</h2>
-          <%= render "detail_form" %>
+          <%= form_for(@reservation) do |form| %>
+            <%= render "detail_form", reservation_form: form %>
+          <% end %>
         <% end %>
       </div>
     </div>
