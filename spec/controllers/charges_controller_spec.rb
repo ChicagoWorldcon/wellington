@@ -38,7 +38,7 @@ RSpec.describe ChargesController, type: :controller do
       it "returns a flash notice" do
         get :new, params: { reservation: reservation }
 
-        expect(flash[:notice]).to match /paid/
+        expect(flash[:notice]).to match(/paid/)
       end
     end
 
