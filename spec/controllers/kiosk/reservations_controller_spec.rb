@@ -62,7 +62,7 @@ RSpec.describe Kiosk::ReservationsController, type: :controller do
 
     it "redirects to kiosk memberships" do
       get_create
-      expect(response).to redirect_to(kiosk_memberships_path)
+      expect(response).to redirect_to(kiosk_reservation_next_steps_path(Reservation.last))
       expect(flash[:notice]).to be_present
       expect(flash[:error]).to be_nil
     end

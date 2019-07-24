@@ -100,7 +100,7 @@ RSpec.describe ChargesController, type: :controller do
       it "redirects to the new charge path" do
         post :create, params: params
 
-        expect(response).to redirect_to(new_charge_path(reservation: reservation))
+        expect(response).to redirect_to(new_reservation_charge_path(reservation: reservation))
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe ChargesController, type: :controller do
         end
 
         it "redirects to the new charge form" do
-          expect(response).to redirect_to(new_charge_path(reservation: reservation))
+          expect(response).to redirect_to(new_reservation_charge_path(reservation: reservation))
         end
       end
 
