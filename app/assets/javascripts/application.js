@@ -101,3 +101,10 @@ $(document).ready(function initBootstrap() {
   // Bootstrap tooltip for more information about elements
   $("[data-toggle=tooltip").tooltip();
 });
+
+$(document).ready(function initKiosk() {
+  $(document).on("click", "a.close-window", function closeWindow(e) {
+    e.preventDefault();
+    window.close()
+  });
+});
