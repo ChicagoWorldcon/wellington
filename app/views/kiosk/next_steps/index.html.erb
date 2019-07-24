@@ -19,9 +19,8 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Kiosk: Next Steps<h1>
+<h1>Kiosk: Next Steps</h1>
 
-<h1><%= @kiosk && "Kiosk:" %> Reserve Membership</h1>
 <section>
   <div class="row">
     <div class="col-12 col-lg-4">
@@ -29,8 +28,23 @@
         <%= render "reservation_card", reservation: @reservation %>
       </div>
     </div>
+
     <div class="col-12 col-lg-8">
       <div class="l-panel">
+        <p>
+          Congratulations! You've just reserved a <%= @reservation.membership %> membership and it's currently held by
+          <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>.
+        </p>
+        <p>
+          Make sure you create a down payment towards this membership in order to keep it. You can either do this
+          by credit card on this device, or by approaching one of our friendly helpers with Cash or Cheque.
+        </p>
+        <p>
+          Ask one of our helpers to <strong>transfer this membership to an email address you control</strong> to be able
+          to access it through the members website in the future.
+        </p>
+        <p><%= link_to "Finished, close this tab", "#", class: "close-window" %></p>
+        <p><%= link_to "Pay with credit card", "#" %></p>
       </div>
     </div>
   </div>
