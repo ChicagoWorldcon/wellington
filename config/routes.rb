@@ -52,6 +52,6 @@ Rails.application.routes.draw do
 
   namespace :kiosk do
     resources :memberships, only: :index
-    resources :reservations
+    resources :reservations, only: [:new, :create]
   end
 end

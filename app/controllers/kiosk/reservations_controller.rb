@@ -14,24 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class ApplicationController < ActionController::Base
-  layout "conzealand"
+class Kiosk::ReservationsController < ::ReservationsController
+  before_action :set_kiosk
 
-  def member_services_user
-    @member_services_user ||= User.find_or_create_by(email: $member_services_email)
-  end
-
-  protected
-
-  def lookup_reservation!
-    visible_reservations = Reservation.joins(:user)
-    if !support_signed_in?
-      visible_reservations = visible_reservations.where(users: { id: current_user })
-    end
-    @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
-  end
-
-  def set_kiosk
-    @kiosk = true
+  def current_user
+    member_services_user
   end
 end
