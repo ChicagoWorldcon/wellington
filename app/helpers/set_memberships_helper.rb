@@ -21,12 +21,4 @@ module SetMembershipsHelper
       worth #{membership.price.format}
     }
   end
-
-  def register_membership_path(offer)
-    if @kiosk
-      new_kiosk_reservation_path(offer: offer.hash)
-    else
-      new_reservation_path(offer: offer.hash)
-    end
-  end
 end
