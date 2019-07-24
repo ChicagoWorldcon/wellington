@@ -15,4 +15,5 @@
 # limitations under the License.
 
 class Kiosk::MembershipsController < ::MembershipsController
+  before_action :set_kiosk
 end
