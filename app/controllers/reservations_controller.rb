@@ -66,7 +66,7 @@ class ReservationsController < ApplicationController
       }
 
       if @kiosk
-        redirect_to kiosk_memberships_path
+        redirect_to kiosk_reservation_next_steps_path(new_reservation)
       elsif new_reservation.membership.price.zero?
         redirect_to reservations_path
       else
