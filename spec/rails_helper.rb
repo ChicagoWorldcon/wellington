@@ -84,6 +84,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   # Setup helpers for things like #login_as
+  # https://github.com/plataformatec/devise/wiki/How-To:-Test-controllers-with-Rails-(and-RSpec)
   config.include Devise::Test::ControllerHelpers, type: :controller
   include Warden::Test::Helpers
   config.before(:each) do
