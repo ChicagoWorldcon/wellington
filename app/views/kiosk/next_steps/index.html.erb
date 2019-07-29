@@ -35,16 +35,22 @@
           Congratulations! You've just reserved a <%= @reservation.membership %> membership and it's currently held by
           <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>.
         </p>
-        <p>
-          Make sure you create a down payment towards this membership in order to keep it. You can either do this
-          by credit card on this device, or by approaching one of our friendly helpers with Cash or Cheque.
-        </p>
+
         <p>
           Ask one of our helpers to <strong>transfer this membership to an email address you control</strong> to be able
           to access it through the members website in the future.
         </p>
-        <p><%= link_to "Finished, close this tab", "#", class: "close-window" %></p>
-        <p><%= link_to "Pay with credit card", "#" %></p>
+
+        <p>
+          Make sure you create a down payment towards this membership in order to keep it. You can either do this
+          by credit card on this device, or by approaching one of our friendly helpers to pay with Cash or Cheque.
+        </p>
+
+        <p><%= link_to "Pay with credit card", new_kiosk_reservation_charge_path(reservation: @reservation) %></p>
+
+        <p><%= link_to "Close tab and pay by cash or cheque", "#", class: "close-window" %></p>
+
+        <p><%= link_to "Close this tab", "#", class: "close-window" %></p>
       </div>
     </div>
   </div>
