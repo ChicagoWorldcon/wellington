@@ -70,7 +70,7 @@ class ReservationsController < ApplicationController
       elsif new_reservation.membership.price.zero?
         redirect_to reservations_path
       else
-        redirect_to new_charge_path(reservation: new_reservation)
+        redirect_to new_reservation_charge_path(new_reservation)
       end
     end
   end

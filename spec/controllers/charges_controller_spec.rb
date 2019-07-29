@@ -30,13 +30,13 @@ RSpec.describe ChargesController, type: :controller do
       before { reservation.update!(state: Reservation::PAID) }
 
       it "redirects to the reservation listing page" do
-        get :new, params: { reservation: reservation }
+        get :new, params: { reservation_id: reservation.id }
 
         expect(response).to redirect_to(reservations_path)
       end
 
       it "returns a flash notice" do
-        get :new, params: { reservation: reservation }
+        get :new, params: { reservation_id: reservation.id }
 
         expect(flash[:notice]).to match(/paid/)
       end
@@ -44,7 +44,7 @@ RSpec.describe ChargesController, type: :controller do
 
     context "when the reservation has not been paid for" do
       it "renders" do
-        get :new, params: { reservation: reservation }
+        get :new, params: { reservation_id: reservation.id }
 
         expect(response).to have_http_status(:ok)
       end
@@ -58,6 +58,7 @@ RSpec.describe ChargesController, type: :controller do
     let(:stripe_token) { "stripe-token" }
     let(:params) do
       {
+        reservation_id: reservation.id,
         stripeToken: stripe_token,
         amount: amount_posted,
         reservation: reservation,
@@ -100,7 +101,7 @@ RSpec.describe ChargesController, type: :controller do
       it "redirects to the new charge path" do
         post :create, params: params
 
-        expect(response).to redirect_to(new_reservation_charge_path(reservation: reservation))
+        expect(response).to redirect_to(new_reservation_charge_path(reservation_id: reservation))
       end
     end
 
@@ -128,7 +129,7 @@ RSpec.describe ChargesController, type: :controller do
         end
 
         it "redirects to the new charge form" do
-          expect(response).to redirect_to(new_reservation_charge_path(reservation: reservation))
+          expect(response).to redirect_to(new_reservation_charge_path(reservation_id: reservation))
         end
       end
 

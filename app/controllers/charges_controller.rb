@@ -17,9 +17,9 @@
 
 # Test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
-  def new
-    @reservation = current_user.reservations.find(params[:reservation])
+  before_action :lookup_reservation!
 
+  def new
     if @reservation.paid?
       redirect_to reservations_path, notice: "You've paid for this #{@reservation.membership} membership"
       return
@@ -36,20 +36,19 @@ class ChargesController < ApplicationController
   end
 
   def create
-    reservation = current_user.reservations.find(params[:reservation])
     charge_amount = Money.new(params[:amount].to_i)
 
-    outstanding_before_charge = AmountOwedForReservation.new(reservation).amount_owed
+    outstanding_before_charge = AmountOwedForReservation.new(@reservation).amount_owed
 
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !allowed_charge_amounts.include?(charge_amount)
       flash[:error] =  "Amount must be one of the provided payment amounts"
-      redirect_to new_reservation_charge_path(reservation: reservation)
+      redirect_to new_reservation_charge_path
       return
     end
 
     service = Money::ChargeCustomer.new(
-      reservation,
+      @reservation,
       current_user,
       params[:stripeToken],
       outstanding_before_charge,
@@ -59,11 +58,11 @@ class ChargesController < ApplicationController
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to new_reservation_charge_path(reservation: reservation)
+      redirect_to new_reservation_charge_path
       return
     end
 
-    if reservation.instalment?
+    if @reservation.instalment?
       PaymentMailer.instalment(
         user: current_user,
         charge: service.charge,
@@ -77,7 +76,7 @@ class ChargesController < ApplicationController
     end
 
     message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{reservation.membership} membership has been paid for.") if reservation.paid?
+    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
     redirect_to reservations_path, notice: message
   end
 end
