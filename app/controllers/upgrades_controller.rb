@@ -41,7 +41,7 @@ class UpgradesController < ApplicationController
       You've just upgraded #{@my_offer.from_membership}
       to #{@my_offer.to_membership}
     }
-    redirect_to new_reservation_charge_path
+    redirect_to new_reservation_charge_path(@reservation)
   end
 
   private
