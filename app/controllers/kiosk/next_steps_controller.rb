@@ -20,4 +20,8 @@ class Kiosk::NextStepsController < ::MembershipsController
 
   def index
   end
+
+  def current_user
+    member_services_user
+  end
 end
