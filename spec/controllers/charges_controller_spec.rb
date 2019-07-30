@@ -61,10 +61,16 @@ RSpec.describe ChargesController, type: :controller do
         reservation_id: reservation.id,
         stripeToken: stripe_token,
         amount: amount_posted,
-        reservation: reservation,
       }
     end
-    let(:charge_double) { instance_double(Charge, amount: amount_posted) }
+
+    let(:charge) do
+      create(:charge,
+        amount: amount_posted,
+        user: user,
+        reservation: reservation,
+      )
+    end
 
     before do
       amount_owed_double = instance_double(AmountOwedForReservation)
@@ -109,7 +115,7 @@ RSpec.describe ChargesController, type: :controller do
       let(:error_service) do
         instance_double(Money::ChargeCustomer,
           call: charge_success,
-          charge: charge_double,
+          charge: charge,
           error_message: "error"
        )
       end

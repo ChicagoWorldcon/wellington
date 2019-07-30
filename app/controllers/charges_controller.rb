@@ -62,21 +62,31 @@ class ChargesController < ApplicationController
       return
     end
 
-    if @reservation.instalment?
+    message = "Thank you for your #{charge_amount.format} payment"
+    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
+
+    if @kiosk
+      redirect_to kiosk_reservation_next_steps_path, notice: message
+    else
+      trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
+      redirect_to reservations_path, notice: message
+    end
+  end
+
+  private
+
+  def trigger_payment_mailer(charge, outstanding_before_charge, charge_amount)
+    if charge.reservation.instalment?
       PaymentMailer.instalment(
         user: current_user,
-        charge: service.charge,
+        charge: charge,
         outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
       ).deliver_later
     else
       PaymentMailer.paid(
         user: current_user,
-        charge: service.charge,
+        charge: charge,
       ).deliver_later
     end
-
-    message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
-    redirect_to reservations_path, notice: message
   end
 end
