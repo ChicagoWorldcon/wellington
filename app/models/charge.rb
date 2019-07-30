@@ -54,4 +54,8 @@ class Charge < ApplicationRecord
   def pending?
     state == STATE_PENDING
   end
+
+  def failed?
+    state == STATE_FAILED
+  end
 end
