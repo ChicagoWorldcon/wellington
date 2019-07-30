@@ -51,6 +51,8 @@ Rails.application.routes.draw do
   end
 
   namespace :kiosk do
+    root to: "memberships#index"
+
     resources :memberships, only: :index
     resources :reservations, only: [:new, :create] do
       resources :next_steps, only: :index
