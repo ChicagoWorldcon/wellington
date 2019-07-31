@@ -33,7 +33,7 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @detail = Detail.new
     @offers = MembershipOffer.options
-    if user_signed_in?
+    if !@kiosk && user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
     end
   end
