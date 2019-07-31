@@ -22,9 +22,34 @@ RSpec.describe Kiosk::MembershipsController, type: :controller do
   describe "#index" do
     let(:get_index) { get :index }
 
-    it "is expected to render" do
+    it "redirects when kiosk mode expires" do
+      session[:kiosk] = 1.second.ago
+      get_index
+      expect(response).to redirect_to(new_support_session_path)
+      expect(session[:kiosk]).to be_nil
+    end
+
+    it "renders when kiosk mode active" do
+      session[:kiosk] = 1.minute.from_now
       get_index
       expect(response).to have_http_status(:ok)
+    end
+
+    context "when support signed in" do
+      before { sign_in create(:support) }
+
+      it "renders" do
+        get_index
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets kiosk in the session" do
+        expect { get_index }.to change { session[:kiosk] }.from(nil)
+      end
+
+      it "signs out support" do
+        expect { get_index }.to change { controller.support_signed_in? }.to(false)
+      end
     end
   end
 end

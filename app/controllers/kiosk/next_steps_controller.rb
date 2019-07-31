@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class Kiosk::NextStepsController < ::MembershipsController
-  before_action :set_kiosk
+  before_action :set_kiosk!
   before_action :lookup_reservation!
 
   def index

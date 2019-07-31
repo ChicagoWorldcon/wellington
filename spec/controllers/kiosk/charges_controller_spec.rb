@@ -22,11 +22,20 @@ RSpec.describe Kiosk::ChargesController, type: :controller do
   let!(:reservation) { create(:reservation, :instalment, :with_order_against_membership, user: member_services_user) }
   let!(:member_services_user) { create(:user, email: $member_services_email) }
 
+  before { session[:kiosk] = 1.minute.from_now }
+
   describe "#new" do
     subject(:get_index) do
       get :new, params: {
         reservation_id: reservation.id
       }
+    end
+
+    it "redirects to sign in when kiosk mode expires" do
+      session[:kiosk] = 1.second.ago
+      get_index
+      expect(response).to redirect_to(new_support_session_path)
+      expect(session[:kiosk]).to be_nil
     end
 
     it "can't find random people's reservations" do
