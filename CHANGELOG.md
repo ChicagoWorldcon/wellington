@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing significant in this release
+- Kiosk mode, now we can get people to record their details to reduce time handling data entry
+  [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 ### Changed
 - Bugfix, users can now set their title on their membership [!92](https://gitlab.com/worldcon/2020-wellington/merge_requests/92)
