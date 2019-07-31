@@ -23,6 +23,8 @@ RSpec.describe Kiosk::ReservationsController, type: :controller do
   let!(:adult) { create(:membership, :adult) }
   let!(:offer) { MembershipOffer.new(adult) }
 
+  before { session[:kiosk] = 1.minute.from_now }
+
   describe "#new" do
     let(:get_new) do
       get :new, params: { offer: offer.hash }

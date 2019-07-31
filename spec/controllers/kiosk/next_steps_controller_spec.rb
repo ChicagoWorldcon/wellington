@@ -19,6 +19,8 @@ require "rails_helper"
 RSpec.describe Kiosk::NextStepsController, type: :controller do
   render_views
 
+  before { session[:kiosk] = 1.minute.from_now }
+
   describe "#index" do
     let!(:reservation) { create(:reservation, :with_order_against_membership, user: member_services_user) }
     let!(:member_services_user) { create(:user, email: $member_services_email) }

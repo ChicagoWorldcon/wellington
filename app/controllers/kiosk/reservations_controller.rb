@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class Kiosk::ReservationsController < ::ReservationsController
-  before_action :set_kiosk
+  before_action :set_kiosk!
 
   def current_user
     member_services_user
