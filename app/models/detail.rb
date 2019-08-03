@@ -30,6 +30,7 @@ class Detail < ApplicationRecord
   ].freeze
 
   PERMITTED_PARAMS = [
+    :title,
     :first_name,
     :last_name,
     :preferred_first_name,

@@ -224,6 +224,13 @@ RSpec.describe ReservationsController, type: :controller do
         expect(flash[:error]).to match(/address/i)
         expect(response).to have_http_status(:ok)
       end
+
+      it "lets you update title" do
+        detail_attributes = existing_reservation.active_claim.detail.attributes
+        detail_attributes["title"] = "Positively Smashed"
+        post :update, params: { id: existing_reservation.id, detail: detail_attributes }
+        expect(existing_reservation.reload.active_claim.detail.title).to eq "Positively Smashed"
+      end
     end
   end
 
