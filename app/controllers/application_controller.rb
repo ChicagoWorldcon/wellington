@@ -51,4 +51,8 @@ class ApplicationController < ActionController::Base
     # Set kiosk mode, used for views and view actions
     @kiosk = true
   end
+
+  def kiosk?
+    @kiosk.present?
+  end
 end

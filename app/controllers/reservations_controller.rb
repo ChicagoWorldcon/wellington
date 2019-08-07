@@ -33,7 +33,7 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @detail = Detail.new
     @offers = MembershipOffer.options
-    if !@kiosk && user_signed_in?
+    if !kiosk? && user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
     end
   end
@@ -65,7 +65,7 @@ class ReservationsController < ApplicationController
         You've just reserved a #{@my_offer.membership} membership
       }
 
-      if @kiosk
+      if kiosk?
         redirect_to kiosk_reservation_next_steps_path(new_reservation)
       elsif new_reservation.membership.price.zero?
         redirect_to reservations_path

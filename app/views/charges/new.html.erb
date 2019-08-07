@@ -17,7 +17,7 @@
 %>
 
 <h1>
-  <%= @kiosk && "Kiosk:" %>
+  <%= kiosk? && "Kiosk:" %>
   Make a Payment towards #<%= @reservation.membership_number %>
 </h1>
 <section class="l-section">
