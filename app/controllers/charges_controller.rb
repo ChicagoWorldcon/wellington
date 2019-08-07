@@ -65,7 +65,7 @@ class ChargesController < ApplicationController
     message = "Thank you for your #{charge_amount.format} payment"
     (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
 
-    if @kiosk
+    if kiosk?
       redirect_to kiosk_reservation_next_steps_path, notice: message
     else
       trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)

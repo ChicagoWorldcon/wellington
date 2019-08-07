@@ -17,7 +17,7 @@
 
 module ChargesHelper
   def charges_path
-    if @kiosk
+    if kiosk?
       kiosk_reservation_charges_path
     else
       reservation_charges_path

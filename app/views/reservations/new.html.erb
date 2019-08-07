@@ -21,7 +21,7 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1><%= @kiosk && "Kiosk:" %> Reserve Membership</h1>
+<h1><%= kiosk? && "Kiosk:" %> Reserve Membership</h1>
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-lg-4">
@@ -31,8 +31,8 @@
     </div>
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <% if @kiosk %>
-          <h2><%= @kiosk && "Kiosk:" %> Reserve a New Membership</h2>
+        <% if kiosk? %>
+          <h2><%= kiosk? && "Kiosk:" %> Reserve a New Membership</h2>
           <%= form_for(@reservation, url: kiosk_reservations_path) do |form| %>
             <%= render "detail_form", reservation_form: form %>
           <% end %>

@@ -44,4 +44,8 @@ module ApplicationHelper
       "#{time_ago_in_words(as_at)} from now"
     end
   end
+
+  def kiosk?
+    @kiosk.present?
+  end
 end
