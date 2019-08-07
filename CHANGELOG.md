@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Removed
-- EMAIL_PAYMENTS has been depricated and will be removed in the next few releases.
+- EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.
   [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 
