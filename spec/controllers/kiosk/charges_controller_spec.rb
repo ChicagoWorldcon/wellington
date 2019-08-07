@@ -43,7 +43,7 @@ RSpec.describe Kiosk::ChargesController, type: :controller do
       expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "finds resrvation from the member_services_user" do
+    it "finds reservation from the member_services_user" do
       get_index
       expect(response).to have_http_status(:ok)
     end
