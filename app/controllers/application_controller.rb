@@ -25,9 +25,15 @@ class ApplicationController < ActionController::Base
 
   def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
+
     if !support_signed_in?
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
+
+    if kiosk?
+      visible_reservations = visible_reservations.where("reservations.created_at > ?", 1.hour.ago)
+    end
+
     @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
   end
 
