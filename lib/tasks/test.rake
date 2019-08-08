@@ -35,6 +35,7 @@ namespace :test do
           next if file.ends_with?(".lock")
           next if file.ends_with?(".md")
           next if file.starts_with?("app/assets/images/")
+          next if file.starts_with?("vendor/")
           next if file.starts_with?("bin/")
           next if !FileTest.exist?(file)
 
