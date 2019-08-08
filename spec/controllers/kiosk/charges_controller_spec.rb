@@ -87,9 +87,29 @@ RSpec.describe Kiosk::ChargesController, type: :controller do
         expect(reservation.reload.charges.last).to be_failed
       end
 
-      it "sends us back to the payments page with an error" do
+      it "sends us back to the kiosk payments page with an error" do
         post_create
-        expect(response).to redirect_to(new_reservation_charge_path(reservation))
+        expect(response).to redirect_to(new_kiosk_reservation_charge_path(reservation))
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "with silly payment amount" do
+      let(:post_create) do
+        post :create, params: {
+          reservation_id: reservation.id,
+          stripeToken: stripe_token,
+          amount: -1,
+        }
+      end
+
+      it "doesn't create charges" do
+        expect { post_create }.to_not change { Charge.count }
+      end
+
+      it "redirects to kiosk payments page with error" do
+        post_create
+        expect(response).to redirect_to(new_kiosk_reservation_charge_path(reservation))
         expect(flash[:error]).to be_present
       end
     end
