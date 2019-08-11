@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Bugfix, users can now set their title on their membership [!92](https://gitlab.com/worldcon/2020-wellington/merge_requests/92)
+- Assets are now coppied within the project for offline support [!94](https://gitlab.com/worldcon/2020-wellington/merge_requests/94)
 
 ### Removed
 - Nothing significant in this release
