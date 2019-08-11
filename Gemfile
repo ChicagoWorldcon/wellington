@@ -31,6 +31,7 @@ gem "puma"                 # http server for rack
 gem "rails", "5.2.3"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
+gem "seedbank"             # For customizing seeds for all cons
 gem "stripe"               # payment provider
 gem "uglifier"             # for minifying javascript and css
 
