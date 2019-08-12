@@ -34,6 +34,7 @@ gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "seedbank"             # For customizing seeds for all cons
 gem "stripe"               # payment provider
+gem "themes_on_rails"      # Add theming support
 gem "uglifier"             # for minifying javascript and css
 
 group :development, :test do
