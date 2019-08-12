@@ -79,6 +79,8 @@ html {
 }
 html, body {
     font-size: 15px;
+    height: 100%;
+    position: relative;
 }
 
 body {
@@ -92,6 +94,14 @@ body {
   &.api-test-keys {
       filter: hue-rotate(90deg);
   }
+}
+
+.main-container {
+    min-height: 100vh; /* will cover the 100% of viewport */
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding-bottom: 6rem; /* height of your footer */
 }
 
 p {
@@ -195,6 +205,23 @@ a:focus {
 
 .logo img {
   max-height: 200px;
+  height: 56px;
+  left: 48px;
+  pointer-events: none;
+  position: absolute;
+  top: 0 !important;
+  transition: all 600ms;
+  z-index: 9999;
+}
+
+#hero img {
+    float: right;
+    margin: -8px 4% 24px;
+    opacity: 1;
+    position: relative;
+    width: 40%;
+    transition: opacity 1s 2s;
+    z-index: 2;
 }
 
 // =========================================================================
@@ -330,6 +357,10 @@ header {
   padding: .5em 0 1.5em;
 }
 
+.navbar {
+    background: $sk-slate !important;
+}
+
 // -------------------------------
 // FOOTER
 // -------------------------------
@@ -338,6 +369,11 @@ footer {
   background: rgba(0,0,0,.7);
   padding: 1.5em 0;
   text-align: center;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
 }
 
 // -------------------------------
