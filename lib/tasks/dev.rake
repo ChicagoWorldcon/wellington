@@ -3,6 +3,7 @@
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 AJ Esler
+# Copyright 2019 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +22,7 @@ namespace :dev do
   task napalm: %w(db:drop dev:bootstrap)
 
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate dev:setup:seeds)
+  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed dev:setup:seeds)
 
   namespace :setup do
     desc "Recreates the database if there isn't one"
@@ -45,22 +46,6 @@ namespace :dev do
         puts "Database has been seeded"
         next
       end
-
-      announcement = Date.parse("2018-08-25").midday
-      presupport_start = announcement - 2.years
-
-      FactoryBot.create(:membership, :silver_fern , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :kiwi        , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :tuatara     , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :pre_oppose  , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :pre_support , active_from: presupport_start, active_to: announcement)
-
-      FactoryBot.create(:membership, :adult       , active_from: announcement)
-      FactoryBot.create(:membership, :young_adult , active_from: announcement)
-      FactoryBot.create(:membership, :unwaged     , active_from: announcement)
-      FactoryBot.create(:membership, :child       , active_from: announcement)
-      FactoryBot.create(:membership, :kid_in_tow  , active_from: announcement)
-      FactoryBot.create(:membership, :supporting  , active_from: announcement)
 
       all_memberships = Membership.all.to_a
 
