@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class ApplicationController < ActionController::Base
-  layout "conzealand"
+  theme "conzealand"
 
   protected
 
