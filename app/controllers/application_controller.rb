@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class ApplicationController < ActionController::Base
-  theme "conzealand"
+  theme "chicago_bid"
 
   protected
 

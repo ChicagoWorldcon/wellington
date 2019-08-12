@@ -1,14 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chicago bid</title>
-  <%= stylesheet_link_tag    "chicago_bid/all", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "chicago_bid/all", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+    <title>Chicago in 2022 Worldcon Bid</title>
+    <%# TODO move scripts to the bottom of <body> %>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
 
-<%= yield %>
+    <%= stylesheet_link_tag "bootstrap-4.2.1.min.css" %>
+    <%= stylesheet_link_tag "dataTables.bootstrap4-1.10.19.min.css" %>
+
+    <%= javascript_include_tag "jquery-3.3.1.slim.min.js" %>
+    <%= javascript_include_tag "popper-1.14.6.min.js" %>
+    <%= javascript_include_tag "bootstrap-4.2.1.min.js" %>
+    <%= javascript_include_tag "jquery.dataTables-1.10.19.min.js" %>
+    <%= javascript_include_tag "dataTables.bootstrap4-1.10.19.min.js" %>
+
+    <%= favicon_link_tag %>
+
+    <%= stylesheet_link_tag    "chicago_bid/all", media: "all", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "chicago_bid/all", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Registration site for the Chicago in 2022 Worldcon bid.">
+    <meta name="keywords" content="chicago, science fiction, convention, meet up, sci-fi" />
+</head>
+<body class="<%= "api-test-keys" if $stripe_test_keys %>">
+    <% if support_signed_in? %>
+        <div class="alert alert-danger show fixed-top" role="alert">
+            NOTICE: You are logged in as support
+            <%= button_to(
+                "Logout of Support (#{current_support.email})",
+                destroy_support_session_path,
+                action: :delete, method: :delete, class: "button"
+            ) %>
+        </div>
+    <% end %>
+
+    <header>
+        <div class="container l-v-spacing" role="banner">
+            <a href="<%= root_path %>" class="logo">
+                <%= image_tag "chicago_bid/logo.png", alt: "Chicago in 2022", class: "img-responsive" %>
+            </a>
+        </div>
+
+        <div class="container">
+            <%= render "layouts/alerts" %>
+        </div>
+
+        <%= render "/layouts/menu" %>
+    </header>
+
+    <div class="l-main" role="main">
+        <div class="container l-wrapper">
+            <%= yield %>
+        </div>
+    </div>
+
+    <footer role="contentinfo">
+        <div class="container l-wrapper">
+            <p>&copy;  <%= Date.today.year %>, Chicago in 2022 Worldcon Bid. Contact <a href="mailto:info@chicagoworldconbid.org">info@chicagoworldconbid.org</a></p>
+
+        </div>
+    </footer>
 
 </body>
 </html>
