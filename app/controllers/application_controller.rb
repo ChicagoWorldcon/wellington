@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class ApplicationController < ActionController::Base
-  layout "conzealand"
+  theme "conzealand"
 
   def member_services_user
     @member_services_user ||= User.find_or_create_by(email: $member_services_email)
