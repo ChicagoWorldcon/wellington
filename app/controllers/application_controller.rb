@@ -17,13 +17,48 @@
 class ApplicationController < ActionController::Base
   layout "conzealand"
 
+  def member_services_user
+    @member_services_user ||= User.find_or_create_by(email: $member_services_email)
+  end
+
   protected
 
   def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
+
     if !support_signed_in?
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
+
+    if kiosk?
+      visible_reservations = visible_reservations.where("reservations.created_at > ?", 1.hour.ago)
+    end
+
     @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
+  end
+
+  def set_kiosk!
+    # If there's an expired kiosk session, reset it
+    if session[:kiosk].present? && session[:kiosk] < Time.now
+      session.delete(:kiosk)
+    end
+
+    # If there's no kiosk session, force support sign in
+    if session[:kiosk].nil?
+      authenticate_support!
+    end
+
+    # If support signed in, sign out and set kiosk expiry
+    if support_signed_in?
+      sign_out
+      session[:kiosk] = 2.weeks.from_now
+    end
+
+    # Set kiosk mode, used for views and view actions
+    @kiosk = true
+  end
+
+  def kiosk?
+    @kiosk.present?
   end
 end

@@ -25,5 +25,5 @@ identifier "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZea
 
 You can update your detals and access our services any time by returning to the members area.
 
-CoNZealand - registration@conzealand.nz  
+CoNZealand - <%= $member_services_email %>  
 https://conzealand.nz/

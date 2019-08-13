@@ -8,15 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing significant in this release
+- Kiosk mode, now we can get people to record their details to reduce time handling data entry
+  [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 ### Changed
 - Bugfix, users can now set their title on their membership [!92](https://gitlab.com/worldcon/2020-wellington/merge_requests/92)
 - Assets are now coppied within the project for offline support [!94](https://gitlab.com/worldcon/2020-wellington/merge_requests/94)
+- System emails are now configured globally from .env with MEMBER_SERVICES_EMAIL.
+  [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93). Please replace EMAIL_PAYMENTS this in your .env:
+  ```
+  MEMBER_SERVICES_EMAIL=registration@conzealand.nz
+  ```
 
 ### Removed
-- Nothing significant in this release
-
+- EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.
+  [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 
 ## [Tag 1.4.1 - 2019-07-22]

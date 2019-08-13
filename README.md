@@ -88,7 +88,7 @@ STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 STRIPE_CURRENCY=NZD
 
 # Con specific mailer configuration
-EMAIL_PAYMENTS=registration@conzealand.nz
+MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
 
 # Auth secrets, make sure they're super hard to guess!
 JWT_SECRET=838734faa9b935c1f8b68846e37aed9096cc9fb746copypastaf856594409a11b1086535e468edb2e5bbc18482b386b6264ada38703dcdefd94a291ab5a95eb5

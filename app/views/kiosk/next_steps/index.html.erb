@@ -1,7 +1,5 @@
 <%#
-  Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
-  Copyright 2019 Jen Zajac (jenofdoom)
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
   this software and associated documentation files (the "Software"), to deal in
@@ -21,37 +19,39 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>
-  <% if kiosk? %>
-    Kiosk:
-  <% end %>
-  Reserve Membership
-</h1>
+<h1>Kiosk: Next Steps</h1>
 
-<section class="l-section">
+<section>
   <div class="row">
     <div class="col-12 col-lg-4">
       <div class="l-panel">
-        <%= render "membership_card", offer: @my_offer %>
+        <%= render "reservation_card", reservation: @reservation %>
       </div>
     </div>
+
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <% if kiosk? %>
-          <h2><%= kiosk? && "Kiosk:" %> Reserve a New Membership</h2>
-          <%= form_for(@reservation, url: kiosk_reservations_path) do |form| %>
-            <%= render "detail_form", reservation_form: form %>
-          <% end %>
-        <% elsif !user_signed_in? %>
-          <h2>Sign in to Reserve Membership</h2>
-          <%= render "sign_in_notice" %>
-        <% else %>
-          <h2>Reserve a New Membership</h2>
-          <%= form_for(@reservation) do |form| %>
-            <%= render "detail_form", reservation_form: form %>
-          <% end %>
-        <% end %>
+        <p>
+          Congratulations! You've just reserved a <%= @reservation.membership %> membership and it's currently held by
+          <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>.
+        </p>
+
+        <p>
+          Ask one of our helpers to <strong>transfer this membership to an email address you control</strong> to be able
+          to access it through the members website in the future.
+        </p>
+
+        <p>
+          Make sure you create a down payment towards this membership in order to keep it. You can either do this
+          by credit card on this device, or by approaching one of our friendly helpers to pay with Cash or Cheque.
+        </p>
+
+        <p><%= link_to "Pay with credit card", new_kiosk_reservation_charge_path %></p>
+
+        <p><%= link_to "Close tab and pay by cash or cheque", "#", class: "close-window" %></p>
+
+        <p><%= link_to "Close this tab", "#", class: "close-window" %></p>
       </div>
     </div>
   </div>
-</section>
+</div>

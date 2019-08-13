@@ -16,7 +16,13 @@
 # limitations under the License.
 %>
 
-<h1>Make a Payment towards Membership #<%= @reservation.membership_number %></h1>
+<h1>
+  <% if kiosk? %>
+    Kiosk:
+  <% end %>
+  Make a Payment towards #<%= @reservation.membership_number %>
+</h1>
+
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-lg-8">

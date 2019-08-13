@@ -46,9 +46,9 @@ module ReservationsHelper
   def show_links(reservation)
     [].tap do |links|
       if reservation.instalment?
-        links << link_to("Make a payment", new_charge_url(reservation: reservation))
+        links << link_to("Make a payment", new_reservation_charge_path(reservation))
       elsif UpgradeOffer.from(reservation.membership).any?
-        links << link_to("Upgrade membership", reservation_upgrades_path(reservation_id: reservation.id))
+        links << link_to("Upgrade membership", reservation_upgrades_path(reservation))
       end
     end
   end

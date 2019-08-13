@@ -30,7 +30,6 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  resources :charges
   resources :credits
   resources :landing
   resources :memberships
@@ -39,6 +38,7 @@ Rails.application.routes.draw do
 
   resources :reservations do
     resources :upgrades
+    resources :charges
   end
 
   # /operator are maintenance routes for support people
@@ -47,6 +47,16 @@ Rails.application.routes.draw do
       resources :credits
       resources :set_memberships
       resources :transfers, id: /[^\/]+/
+    end
+  end
+
+  namespace :kiosk do
+    root to: "memberships#index"
+
+    resources :memberships, only: :index
+    resources :reservations, only: [:new, :create] do
+      resources :next_steps, only: :index
+      resources :charges, only: [:new, :create]
     end
   end
 end

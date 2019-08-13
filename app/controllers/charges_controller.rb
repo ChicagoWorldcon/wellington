@@ -17,9 +17,9 @@
 
 # Test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
-  def new
-    @reservation = current_user.reservations.find(params[:reservation])
+  before_action :lookup_reservation!
 
+  def new
     if @reservation.paid?
       redirect_to reservations_path, notice: "You've paid for this #{@reservation.membership} membership"
       return
@@ -36,20 +36,19 @@ class ChargesController < ApplicationController
   end
 
   def create
-    reservation = current_user.reservations.find(params[:reservation])
     charge_amount = Money.new(params[:amount].to_i)
 
-    outstanding_before_charge = AmountOwedForReservation.new(reservation).amount_owed
+    outstanding_before_charge = AmountOwedForReservation.new(@reservation).amount_owed
 
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !allowed_charge_amounts.include?(charge_amount)
-      flash[:error] =  "Amount must be one of the provided payment amounts"
-      redirect_to new_charge_path(reservation: reservation)
+      flash[:error] = "Amount must be one of the provided payment amounts"
+      redirect_to create_failure_redirect_path
       return
     end
 
     service = Money::ChargeCustomer.new(
-      reservation,
+      @reservation,
       current_user,
       params[:stripeToken],
       outstanding_before_charge,
@@ -59,25 +58,50 @@ class ChargesController < ApplicationController
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to new_charge_path(reservation: reservation)
+      redirect_to create_failure_redirect_path
       return
     end
 
-    if reservation.instalment?
+    if !kiosk?
+      trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
+    end
+
+    message = "Thank you for your #{charge_amount.format} payment"
+    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
+
+    redirect_to create_success_redirect_path, notice: message
+  end
+
+  private
+
+  def trigger_payment_mailer(charge, outstanding_before_charge, charge_amount)
+    if charge.reservation.instalment?
       PaymentMailer.instalment(
         user: current_user,
-        charge: service.charge,
+        charge: charge,
         outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
       ).deliver_later
     else
       PaymentMailer.paid(
         user: current_user,
-        charge: service.charge,
+        charge: charge,
       ).deliver_later
     end
+  end
 
-    message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{reservation.membership} membership has been paid for.") if reservation.paid?
-    redirect_to reservations_path, notice: message
+  def create_success_redirect_path
+    if kiosk?
+      kiosk_reservation_next_steps_path
+    else
+      reservations_path
+    end
+  end
+
+  def create_failure_redirect_path
+    if kiosk?
+      new_kiosk_reservation_charge_path
+    else
+      new_reservation_charge_path
+    end
   end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,21 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module ChargesHelper
-  def charges_path
-    if kiosk?
-      kiosk_reservation_charges_path
-    else
-      reservation_charges_path
-    end
-  end
+class Kiosk::ReservationsController < ::ReservationsController
+  before_action :set_kiosk!
 
-  def stripe_config(reservation)
-    {
-      key: Rails.configuration.stripe[:publishable_key],
-      description: "CoNZealand #{@membership.name} membership",
-      email: reservation.user.email,
-      currency: $currency,
-    }.to_json
+  def current_user
+    member_services_user
   end
 end

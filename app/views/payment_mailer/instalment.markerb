@@ -25,5 +25,5 @@ identifier "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZea
 You still need to pay <%= @outstanding_amount %> to cover this membership. You can do this anytime by returning to the
 members area and to make further instalments or to pay your membership off completely.
 
-CoNZealand - registration@conzealand.nz  
+CoNZealand - <%= $member_services_email %>  
 https://conzealand.nz/
