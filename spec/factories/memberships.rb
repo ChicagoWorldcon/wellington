@@ -128,6 +128,24 @@ FactoryBot.define do
       description { "Presupport membership" }
     end
 
+    trait :chicago_donor do
+      name { :donor }
+      price_cents { 20_00 }
+      description { "With our thanks!" }
+    end
+
+    trait :chicago_friend do
+      name { :donor }
+      price_cents { 150_00 }
+      description {  "Will convert to an attending membership automatically if you vote in tion in 2020" }
+    end
+
+    trait :chicago_star do
+      name { :donor }
+      price_cents { 500_00 }
+      description { "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and hing cool for you at the convention! (Shhh…it’s a surprise!)" }
+    end
+
     trait :with_order_for_reservation do
       after(:create) do |new_membership, _evaluator|
         new_membership.orders << create(:order, :with_reservation, membership: new_membership)
