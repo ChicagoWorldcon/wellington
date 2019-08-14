@@ -33,3 +33,19 @@ FactoryBot.create(:membership, :unwaged     , active_from: announcement)
 FactoryBot.create(:membership, :child       , active_from: announcement)
 FactoryBot.create(:membership, :kid_in_tow  , active_from: announcement)
 FactoryBot.create(:membership, :supporting  , active_from: announcement)
+
+all_memberships = Membership.all.to_a
+
+100.times do |count|
+  puts "Seeding #{count} of 100 users" if count % 10 == 0
+  new_user = FactoryBot.create(:user)
+  memberships_held = rand(2..10)
+  all_memberships.sample(memberships_held).each do |rando_membership|
+    state = [Reservation::PAID, Reservation::INSTALMENT].sample
+
+    reservation = FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
+  end
+  new_user.active_claims.each do |claim|
+    claim.update!(detail: FactoryBot.create(:detail, claim: claim))
+  end
+end
