@@ -4,6 +4,7 @@
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,6 +32,7 @@ gem "puma"                 # http server for rack
 gem "rails", "5.2.3"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
+gem "seedbank"             # For customizing seeds for all cons
 gem "stripe"               # payment provider
 gem "uglifier"             # for minifying javascript and css
 

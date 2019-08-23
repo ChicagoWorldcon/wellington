@@ -21,7 +21,7 @@ namespace :dev do
   task napalm: %w(db:drop dev:bootstrap)
 
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate dev:setup:seeds)
+  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed:development:conzealand)
 
   namespace :setup do
     desc "Recreates the database if there isn't one"
@@ -32,51 +32,6 @@ namespace :dev do
       puts "Creating database and tables"
       Rake::Task["db:create"].invoke
       Rake::Task["db:schema:load"].invoke
-    end
-
-    desc "Seeds memberships"
-    task seeds: :environment do
-      if !Rails.env.development?
-        puts "Skipping seeds, rails isn't running in developer mode"
-        next
-      end
-
-      if User.count > 0
-        puts "Database has been seeded"
-        next
-      end
-
-      announcement = Date.parse("2018-08-25").midday
-      presupport_start = announcement - 2.years
-
-      FactoryBot.create(:membership, :silver_fern , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :kiwi        , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :tuatara     , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :pre_oppose  , active_from: presupport_start, active_to: announcement)
-      FactoryBot.create(:membership, :pre_support , active_from: presupport_start, active_to: announcement)
-
-      FactoryBot.create(:membership, :adult       , active_from: announcement)
-      FactoryBot.create(:membership, :young_adult , active_from: announcement)
-      FactoryBot.create(:membership, :unwaged     , active_from: announcement)
-      FactoryBot.create(:membership, :child       , active_from: announcement)
-      FactoryBot.create(:membership, :kid_in_tow  , active_from: announcement)
-      FactoryBot.create(:membership, :supporting  , active_from: announcement)
-
-      all_memberships = Membership.all.to_a
-
-      100.times do |count|
-        puts "Seeding #{count} of 100 users" if count % 10 == 0
-        new_user = FactoryBot.create(:user)
-        memberships_held = rand(2..10)
-        all_memberships.sample(memberships_held).each do |rando_membership|
-          state = [Reservation::PAID, Reservation::INSTALMENT].sample
-
-          reservation = FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
-        end
-        new_user.active_claims.each do |claim|
-          claim.update!(detail: FactoryBot.create(:detail, claim: claim))
-        end
-      end
     end
   end
 

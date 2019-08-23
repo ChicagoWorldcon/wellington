@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
   MEMBER_SERVICES_EMAIL=registration@conzealand.nz
   ```
+- Seeds are installed using seedbank.
 
 ### Removed
 - EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.

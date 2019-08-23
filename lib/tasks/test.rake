@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
+# Copyright 2019 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,14 +28,13 @@ namespace :test do
 
       # Check to see files authored by people in the branch contain their Git usernames
       authors.each do |author|
-        authored_files = `git log origin/master.. --name-only --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
+        authored_files = `git log origin/master.. --name-only --diff-filter=AM --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
         authored_files.each do |file|
+          next if %w(
+            schema.rb .ruby-version .lock .md .gitkeep
+          ).any? { |ext| file.ends_with? ext }
           next if file.match(/LICENSE/)
-          next if file.ends_with?("schema.rb")
-          next if file.ends_with?(".ruby-version")
-          next if file.ends_with?(".lock")
-          next if file.ends_with?(".md")
-          next if file.starts_with?("app/assets/images/")
+          next if file.match(/\/assets\/images/)
           next if file.starts_with?("vendor/")
           next if file.starts_with?("bin/")
           next if !FileTest.exist?(file)
