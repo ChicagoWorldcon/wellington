@@ -1,6 +1,7 @@
 <%#
   Copyright 2019 AJ Esler
   Copyright 2019 Matthew B. Gray
+  Copyright 2019 Chris Rose
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -25,5 +26,5 @@ identifier "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZea
 You still need to pay <%= @outstanding_amount %> to cover this membership. You can do this anytime by returning to the
 members area and to make further instalments or to pay your membership off completely.
 
-CoNZealand - <%= $member_services_email %>  
+CoNZealand - <%= $member_services_email %>
 https://conzealand.nz/
