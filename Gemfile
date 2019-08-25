@@ -33,7 +33,7 @@ gem "rails", "5.2.3"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "seedbank"             # For customizing seeds for all cons
-gem "stripe"               # payment provider
+gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
 gem "uglifier"             # for minifying javascript and css
 
 group :development, :test do
