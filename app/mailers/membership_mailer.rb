@@ -20,11 +20,10 @@ class MembershipMailer < ApplicationMailer
 
   def login_link(token:, email:)
     @token = token
-    mail(to: email, subject: "CoNZealand Login Link for #{email}") do |format|
-      #text must be called before html.
-      format.text
-      format.html
-    end
+    mail(
+      to: email,
+      subject: "CoNZealand Login Link for #{email}"
+    )
   end
 
   def transfer(from:, to:, owner_name:, membership_number:)
