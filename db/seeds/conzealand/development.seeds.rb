@@ -41,7 +41,11 @@ all_memberships = Membership.all.to_a
   new_user = FactoryBot.create(:user)
   memberships_held = rand(2..10)
   all_memberships.sample(memberships_held).each do |rando_membership|
-    state = [Reservation::PAID, Reservation::INSTALMENT].sample
+    if rando_membership.price == 0
+      state = Reservation::PAID
+    else
+      state = [Reservation::PAID, Reservation::INSTALMENT].sample
+    end
 
     reservation = FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
   end
