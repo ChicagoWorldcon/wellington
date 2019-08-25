@@ -49,16 +49,9 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
-  if Rails.env.development?
-    if ENV["EMAIL_PAYMENTS"].present?
-      puts "Depricated: We've renamed EMAIL_PAYMENTS to MEMBER_SERVICES_EMAIL"
-      puts "Please rename this in your .env"
-      exit 1
-    end
-    $member_services_email = ENV["MEMBER_SERVICES_EMAIL"]&.downcase
-  elsif Rails.env.test?
+  if Rails.env.test?
     $member_services_email = "registrations@conzealand.nz"
   else
-    $member_services_email = (ENV["MEMBER_SERVICES_EMAIL"] || ENV["EMAIL_PAYMENTS"])&.downcase
+    $member_services_email = ENV.fetch("MEMBER_SERVICES_EMAIL").downcase
   end
 end
