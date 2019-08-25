@@ -19,7 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
   MEMBER_SERVICES_EMAIL=registration@conzealand.nz
   ```
-- Seeds are installed using seedbank.
+- Seeds are installed using seedbank
+  [!95](https://gitlab.com/worldcon/2020-wellington/merge_requests/95)
+- Upgrade Rails from 5.2 to 6.0 [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Upgraded project gems [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Database seeds to setup your con are now in separate files [!95](https://gitlab.com/worldcon/2020-wellington/merge_requests/95)
 
 ### Removed
 - EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.
@@ -109,7 +113,7 @@ Upgraded Ruby and Rails, and support function for transferring memberships.
 
 ### Changed
 - Moved task `check:models` to `test:models` to keep namespaces tight
-- Run rails upgrades for 5.2 so we gret the most out of our setup
+- Run rails upgrades for 5.2 so we get the most out of our setup
 - Upgrade Ruby from 2.5.1 to 2.5.3
 - Update gems to the latest versions
 - Bugfix on support list, now transferred memberships show user's details correctly
