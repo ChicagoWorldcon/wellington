@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...master)
+## Unreleased, upcoming Major version bump
+### Added
+- Nothing significant in this release
+
+### Changed
+- Rails 6 backards incompatable defaults are now enabled
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+
+### Removed
+- EMAIL_PAYMENTS has been removed. Please set MEMBER_SERVICES_EMAIL in .env everywhere.
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+
+
+## [Unreleased, upcoming Minor version bump](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...master)
 
 ### Added
 - Nothing significant in this release
