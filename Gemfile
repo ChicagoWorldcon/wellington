@@ -29,7 +29,7 @@ gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "octicons_helper"      # icon pack from github in a handy helper
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
-gem "rails", "5.2.3"       # framework for building websites <3
+gem "rails", "6.0.0"       # framework for building websites <3
 gem "redcarpet"            # parser for markerb
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "seedbank"             # For customizing seeds for all cons
