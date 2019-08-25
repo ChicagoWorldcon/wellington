@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# For more information about routes, see http://guides.rubyonrails.org/routing.html
+# For more information about routes, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
   root to: "landing#index"
 
