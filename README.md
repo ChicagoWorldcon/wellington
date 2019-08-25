@@ -145,7 +145,7 @@ this. Here are some examples to get you started:
 
 ```sh
 # Generate migrations
-# see https://edgeguides.rubyonrails.org/active_record_migrations.html
+# see https://guides.rubyonrails.org/active_record_migrations.html
 docker-compose exec members_area bundle exec rails generate migration
 
 # Install a gem you've added to the project's Gemfile
