@@ -3,6 +3,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2019 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,5 +30,5 @@ This link will expire 10 minutes after it was created, but you can always create
 
 If you've got any queries or concerns, please reply to this email.
 
-CoNZealand – <%= $member_services_email %>   
+CoNZealand – <%= $member_services_email %>
 https://conzealand.nz/
