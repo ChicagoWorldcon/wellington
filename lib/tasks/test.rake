@@ -20,7 +20,6 @@ namespace :test do
   namespace :branch do
     desc "Checks all authors in the branch have the correct copyrights"
     task :copyright do
-      clear_attribution = true # Pass on CI
       current_year = Date.today.year
       authors = `git log origin/master.. --format="%an" | sort | uniq`.lines.map(&:chomp)
 
@@ -40,7 +39,6 @@ namespace :test do
           next if !FileTest.exist?(file)
 
           if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
-            clear_attribution = false # Fail on CI
             errors << "Missing 'Copyright #{current_year} #{author}' from '#{file}'"
           end
         end
@@ -52,7 +50,6 @@ namespace :test do
         lines = File.readlines(file_name)
         authors.each do |author|
           if lines.grep(/Copyright #{current_year} .*#{author}/).none?
-            clear_attribution = false
             errors << "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
           end
         end
