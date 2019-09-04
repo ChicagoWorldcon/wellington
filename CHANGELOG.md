@@ -19,7 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
   MEMBER_SERVICES_EMAIL=registration@conzealand.nz
   ```
-- Seeds are installed using seedbank.
+- Seeds are installed using seedbank
+  [!95](https://gitlab.com/worldcon/2020-wellington/merge_requests/95)
+- Copyright checks don't require you to keep your author in all files authored, only enforces Apache boilerplate going
+  forward
+  [!101](https://gitlab.com/worldcon/2020-wellington/merge_requests/101)
 
 ### Removed
 - EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.

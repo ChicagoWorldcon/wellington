@@ -20,29 +20,25 @@ namespace :test do
   namespace :branch do
     desc "Checks all authors in the branch have the correct copyrights"
     task :copyright do
-      clear_attribution = true # Pass on CI
       current_year = Date.today.year
       authors = `git log origin/master.. --format="%an" | sort | uniq`.lines.map(&:chomp)
 
       errors = []
 
-      # Check to see files authored by people in the branch contain their Git usernames
-      authors.each do |author|
-        authored_files = `git log origin/master.. --name-only --diff-filter=AM --author="#{author}" --format="" | sort | uniq`.lines.map(&:chomp)
-        authored_files.each do |file|
-          next if %w(
-            schema.rb .ruby-version .lock .md .gitkeep
-          ).any? { |ext| file.ends_with? ext }
-          next if file.match(/LICENSE/)
-          next if file.match(/\/assets\/images/)
-          next if file.starts_with?("vendor/")
-          next if file.starts_with?("bin/")
-          next if !FileTest.exist?(file)
+      # Check to see files authored in the branch contain Apache boilerplate
+      authored_files = `git log origin/master.. --name-only --format="" | sort | uniq`.lines.map(&:chomp)
+      authored_files.each do |file|
+        next if %w(
+          schema.rb .ruby-version .lock .md .gitkeep
+        ).any? { |ext| file.ends_with? ext }
+        next if file.match(/LICENSE/)
+        next if file.match(/\/assets\/images/)
+        next if file.starts_with?("vendor/")
+        next if file.starts_with?("bin/")
+        next if !FileTest.exist?(file)
 
-          if File.readlines(file).grep(/Copyright #{current_year} .*#{author}/).none?
-            clear_attribution = false # Fail on CI
-            errors << "Missing 'Copyright #{current_year} #{author}' from '#{file}'"
-          end
+        if File.readlines(file).grep(/Licensed under the Apache License/).none?
+          errors << "Missing Apache boilerplate from '#{file}'"
         end
       end
 
@@ -52,7 +48,6 @@ namespace :test do
         lines = File.readlines(file_name)
         authors.each do |author|
           if lines.grep(/Copyright #{current_year} .*#{author}/).none?
-            clear_attribution = false
             errors << "Missing 'Copyright #{current_year} #{author}' in #{file_name} file"
           end
         end
@@ -63,15 +58,6 @@ namespace :test do
         puts "We need clear attribution in order to be able to accept work from other people"
         puts "For more information, please check out our contribution guidelines"
         puts "https://gitlab.com/worldcon/2020-wellington/blob/master/CONTRIBUTING.md"
-        puts
-        puts "This is based on your git commit name"
-        puts "You can change this for this repsitory by running:"
-        puts
-        puts "    git config user.name \"Your Full Name\""
-        puts
-        puts "or in all your git projects with"
-        puts
-        puts "    git config --global user.name \"Your Full Name\""
         puts
 
         errors.each do |error|

@@ -76,10 +76,7 @@ licence that file is under:
 > See the License for the specific language governing permissions and
 > limitations under the License.
 
-Modifying existing files will require modifying their license at the top to include your name and the year. You only
-need to do this for files you authored. Please don't do this for generated files.
-
-There are CI scripts running to make sure this is in place. If you want to run them locally, you can do this by running
+There are CI scripts running to ensure that the license header is in place in all relevant files. To verify this locally, you can run these commands:
 
 ```
 # For docker developers
