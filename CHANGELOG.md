@@ -12,6 +12,8 @@ n.b. Upcoming major version bump
 ### Added
 - Rails 6 backards incompatable defaults are now enabled
   [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- We now use Webpacker to manage JavaScript compilation
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 ### Changed
 - Nothing significant in this release
