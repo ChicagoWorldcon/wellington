@@ -3,7 +3,11 @@
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
-    "@rails/webpacker": "^4.0.7"
+    "@rails/webpacker": "^4.0.7",
+    "bootstrap": "~4",
+    "datatables.net-bs4": "*",
+    "jquery": "*",
+    "popper.js": "*"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.8.0"

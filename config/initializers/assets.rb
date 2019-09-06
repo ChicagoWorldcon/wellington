@@ -28,12 +28,6 @@ Rails.application.config.assets.paths << Rails.root.join("node_modules")
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 Rails.application.config.assets.precompile += %w(
-  bootstrap-4.2.1.min.js
-  dataTables.bootstrap4-1.10.19.min.js
-  jquery-3.3.1.slim.min.js
-  jquery.dataTables-1.10.19.min.js
-  popper-1.14.6.min.js
-
   bootstrap-4.2.1.min.css
   dataTables.bootstrap4-1.10.19.min.css
 )

@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, or any plugin's
-// vendor/assets/javascripts directory can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file. JavaScript code in this file should be added after the last require_* statement.
-//
-// Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
-// about supported directives.
-//
-//= require rails-ujs
-//= require_tree .
+// This file contains uncomplicated JavaScript. You may even consider this a dated way of doing web development, so feel
+// free to submit things that depricate this in a new merge request <3
 
-// If we've got test keys enabled on the site, then we'll be altering the colours to give some sense of a staging
-// environment. We can turn this off to test look and feel using the button below.
-$(document).ready(function initStyleToggler() {
-  if (!$('body').hasClass("api-test-keys")) {
+import $ from 'jquery'
+import DataTable from 'datatables.net-bs4'
+import popper from 'popper.js'
+import bootstrap from 'bootstrap'
+
+$(document).ready(() => {
+  // If we've got test keys enabled on the site, then we'll be altering the colours to give some sense of a staging
+  // environment. We can turn this off to test look and feel using the button below.
+    if (!$('body').hasClass("api-test-keys")) {
     return;
   }
 
@@ -42,13 +35,13 @@ $(document).ready(function initStyleToggler() {
     class: "btn btn-api-toggle-styles",
   });
   $("body").append(button);
-  button.on("click", function() {
+  button.on("click", () => {
     $('body').toggleClass("api-test-keys");
   });
 });
 
-// Stripe form setup for accepting payments form the charges endpoints
-$(document).ready(function initStripeForm() {
+$(document).ready(() => {
+  // Stripe form setup for accepting payments form the charges endpoints
   var $form = $("#charge-form");
   if ($form.length === 0) {
     return;
@@ -62,14 +55,14 @@ $(document).ready(function initStripeForm() {
     currency:     config.currency,
     locale:       'auto',
     name:         'CoNZealand',
-    token: function(token) {
+    token: (token) => {
       $form.find('input#stripeToken').val(token.id);
       $form.find('input#stripeEmail').val(token.email);
       $form.submit();
     }
   });
 
-  document.querySelector('#reservation-button').addEventListener('click', function(e) {
+  document.querySelector('#reservation-button').addEventListener('click', (e) => {
     e.preventDefault();
 
     document.querySelector('#error_explanation').innerHtml = '';
@@ -89,12 +82,12 @@ $(document).ready(function initStripeForm() {
   });
 
   // Close Checkout on page navigation:
-  window.addEventListener('popstate', function() {
+  window.addEventListener('popstate', () => {
     handler.close();
   });
 });
 
-$(document).ready(function initBootstrap() {
+$(document).ready(() => {
   // DataTable plugin for searchable and sortable tables
   $(".js-data-table").DataTable();
 
@@ -102,8 +95,8 @@ $(document).ready(function initBootstrap() {
   $("[data-toggle=tooltip").tooltip();
 });
 
-$(document).ready(function initKiosk() {
-  $(document).on("click", "a.close-window", function closeWindow(e) {
+$(document).ready(() => {
+  $(document).on("click", "a.close-window", (e) => {
     e.preventDefault();
     window.close()
   });
