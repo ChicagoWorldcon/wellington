@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-// Rails defaults
-require("@rails/ujs").start()
-require("@rails/activestorage").start()
-require("channels")
-
 // This file contains uncomplicated JavaScript. You may even consider this a dated way of doing web development, so feel
 // free to submit things that depricate this in a new merge request <3
+
 import $ from 'jquery'
 import DataTable from 'datatables.net-bs4'
 import popper from 'popper.js'
 import bootstrap from 'bootstrap'
 
 $(document).ready(() => {
-  // If we've got test keys enabled on the site, then we'll be altering the colours to give some sense of a staging
-  // environment. We can turn this off to test look and feel using the button below.
-    if (!$('body').hasClass("api-test-keys")) {
-    return;
-  }
+  // DataTable plugin for searchable and sortable tables
+  $(".js-data-table").DataTable();
 
-  var button = $("<input>").attr({
-    value: "Toggle Styles",
-    title: "Stripe test keys present, this makes it clear you're in a staging environment",
-    class: "btn btn-api-toggle-styles",
-  });
-  $("body").append(button);
-  button.on("click", () => {
-    $('body').toggleClass("api-test-keys");
+  // Bootstrap tooltip for more information about elements
+  $("[data-toggle=tooltip").tooltip();
+});
+
+$(document).ready(() => {
+  // Kiosk mode
+  $(document).on("click", "a.close-window", (e) => {
+    e.preventDefault();
+    window.close()
   });
 });
 
@@ -92,16 +86,19 @@ $(document).ready(() => {
 });
 
 $(document).ready(() => {
-  // DataTable plugin for searchable and sortable tables
-  $(".js-data-table").DataTable();
+  // If we've got test keys enabled on the site, then we'll be altering the colours to give some sense of a staging
+  // environment. We can turn this off to test look and feel using the button below.
+    if (!$('body').hasClass("api-test-keys")) {
+    return;
+  }
 
-  // Bootstrap tooltip for more information about elements
-  $("[data-toggle=tooltip").tooltip();
-});
-
-$(document).ready(() => {
-  $(document).on("click", "a.close-window", (e) => {
-    e.preventDefault();
-    window.close()
+  var button = $("<input>").attr({
+    value: "Toggle Styles",
+    title: "Stripe test keys present, this makes it clear you're in a staging environment",
+    class: "btn btn-api-toggle-styles",
+  });
+  $("body").append(button);
+  button.on("click", () => {
+    $('body').toggleClass("api-test-keys");
   });
 });
