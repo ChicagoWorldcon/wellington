@@ -49,9 +49,13 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
-  if Rails.env.test?
-    $member_services_email = "registrations@conzealand.nz"
-  else
-    $member_services_email = ENV.fetch("MEMBER_SERVICES_EMAIL").downcase
+  $member_services_email = ENV.fetch(
+    "MEMBER_SERVICES_EMAIL",
+    "registrations@conzealand.nz"
+  ).downcase
+
+  if Rails.env.production? && ENV["MEMBER_SERVICES_EMAIL"].nil?
+    puts "Please set MEMBER_SERVICES_EMAIL to show where system emails come from"
+    exit 1
   end
 end
