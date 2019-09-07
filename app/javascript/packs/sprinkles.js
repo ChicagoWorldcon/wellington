@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+// Rails defaults
+require("@rails/ujs").start()
+require("@rails/activestorage").start()
+require("channels")
+
 // This file contains uncomplicated JavaScript. You may even consider this a dated way of doing web development, so feel
 // free to submit things that depricate this in a new merge request <3
-
 import $ from 'jquery'
 import DataTable from 'datatables.net-bs4'
 import popper from 'popper.js'
