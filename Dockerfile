@@ -36,6 +36,11 @@ RUN bundle install
 ADD . /app
 WORKDIR /app
 
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g yarn \
+    && yarn install
+
 # Precompile assets for produciton deploy
 RUN bundle exec rake assets:precompile
 
