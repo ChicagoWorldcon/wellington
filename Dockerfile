@@ -14,17 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ruby:2.6.5-stretch as base
+FROM ruby:2.6.5-alpine as base
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    netcat \
-    postgresql-client
+RUN apk add \
+      build-base \
+      netcat-openbsd \
+      nodejs \
+      nodejs-npm \
+      postgresql-client \
+      postgresql-dev \
+      sqlite-dev \
+      tzdata \
+    && rm -rf /var/cache/apk/* \
+    && npm install -g yarn \
+    && gem install bundler mailcatcher
 
-# MailCatcher is incompatible with other gems in bundle development as it uses an older version of rake. So must be
-# installed independently.
-RUN gem install bundler mailcatcher
+# n.b, MailCatcher is incompatible with other gems in bundle
 
 RUN mkdir /setup
 WORKDIR /setup
@@ -33,16 +38,15 @@ ADD Gemfile /setup/Gemfile
 ADD Gemfile.lock /setup/Gemfile.lock
 RUN bundle install
 
+ADD yarn.lock /setup/yarn.lock
+ADD package.json /setup/package.json
+RUN yarn install
+
 ADD . /app
 WORKDIR /app
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g yarn \
-    && yarn install
-
-# Precompile assets for produciton deploy
-RUN bundle exec rake assets:precompile
+RUN mv /setup/node_modules ./node_modules \
+    && bundle exec rake assets:precompile
 
 FROM base as development
 VOLUME /app
