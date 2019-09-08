@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
 - We now use Webpacker to manage Sass assets and JavaScript compilation
   [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Bump ruby from 2.6.3 to 2.6.4
+  [!101](https://gitlab.com/worldcon/2020-wellington/merge_requests/101)
 
 ### Removed
 - EMAIL_PAYMENTS has been removed. Please set MEMBER_SERVICES_EMAIL in .env everywhere.
