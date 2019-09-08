@@ -29,7 +29,7 @@ namespace :test do
       authored_files = `git log origin/master.. --name-only --format="" | sort | uniq`.lines.map(&:chomp)
       authored_files.each do |file|
         next if %w(
-          schema.rb .ruby-version .lock .md .gitkeep
+          schema.rb .ruby-version .lock .md .gitkeep .jpg
         ).any? { |ext| file.ends_with? ext }
         next if file.match(/LICENSE/)
         next if file.match(/\/assets\/images/)

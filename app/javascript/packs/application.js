@@ -35,4 +35,9 @@
 require("@rails/ujs").start()
 require("@rails/activestorage").start()
 require("channels")
+
+// General user facing stuff, i.e. kiosk mode, stripe, test key colours
 require("sprinkles")
+
+// Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
+import "./conzealand.scss"
