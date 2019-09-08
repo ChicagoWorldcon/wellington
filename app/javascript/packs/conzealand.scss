@@ -99,8 +99,7 @@ html, body {
     font-size: 15px;
 }
 body {
-    background-color: $black;
-    background: image-url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    background: url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
 
     // For that test environment feeling
     &.api-test-keys {
