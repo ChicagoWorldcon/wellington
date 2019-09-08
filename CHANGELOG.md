@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Rails 6 backards incompatable defaults are now enabled
   [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
-- We now use Webpacker to manage JavaScript compilation
+- We now use Webpacker to manage Sass assets and JavaScript compilation
   [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 ### Removed
