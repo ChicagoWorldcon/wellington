@@ -5,7 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
+## Unreleased
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## Tag 1.5.0 - 2019-09-10
 
 ### Added
 - Kiosk mode, now we can get people to record their details to reduce time handling data entry
@@ -35,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 
-## [Tag 1.4.1 - 2019-07-22]
+## Tag 1.4.1 - 2019-07-22
 
 Hotpatch, in 1.4.0 we regressed the payments mailer for instalments which no longer send. This patch release fixes that
 mailer.
@@ -50,7 +62,7 @@ mailer.
 - Nothing significant in this release
 
 
-## [Tag 1.4.0 - 2019-07-22]
+## Tag 1.4.0 - 2019-07-22
 
 This release has a bit of everything. We're making life better for other cons with support for multi currency, our
 support staff who have more fatures for adjusting memberships, and our developers have better seeded data for something
@@ -87,7 +99,7 @@ that feels better right out of the box.
 - Nothing significant in this release
 
 
-## [Tag 1.3.0 - 2019-06-19]
+## Tag 1.3.0 - 2019-06-19
 
 ### Added
 - Purchase flow changed to let you select a membership before signing in [!73](https://gitlab.com/worldcon/2020-wellington/merge_requests/73)
