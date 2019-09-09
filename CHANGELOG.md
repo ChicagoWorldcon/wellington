@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright checks don't require you to keep your author in all files authored, only enforces Apache boilerplate going
   forward
   [!101](https://gitlab.com/worldcon/2020-wellington/merge_requests/101)
+- Appplied security patches for
+  [CVE-2015-7580](https://nvd.nist.gov/vuln/detail/CVE-2015-7580),
+  [CVE-2015-7579](https://nvd.nist.gov/vuln/detail/CVE-2015-7579) and
+  [CVE-2015-7578](https://nvd.nist.gov/vuln/detail/CVE-2015-7578) -
+  [!104](https://gitlab.com/worldcon/2020-wellington/merge_requests/104)
 
 ### Removed
 - EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.
