@@ -58,7 +58,13 @@
   <header>
     <div class="container l-v-spacing" role="banner">
       <a href="<%= root_path %>" class="logo">
-        <%= image_tag "conzealand-logo.svg", alt: "CoNZealand", class: "img-responsive" %>
+        <%=
+          image_pack_tag(
+            "media/packs/conzealand-logo.svg",
+            alt: "CoNZealand - The 78th World Science Fiction Convention",
+            class: "img-responsive"
+          )
+        %>
       </a>
     </div>
 
