@@ -33,7 +33,13 @@
   <%= javascript_pack_tag "conzealand" %>
   <%= stylesheet_pack_tag "conzealand", media: "all" %>
 
-  <%= favicon_link_tag %>
+  <%=
+    tag("link", {
+      rel: "shortcut icon",
+      type: "image/x-icon",
+      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
+    })
+  %>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
