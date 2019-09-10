@@ -17,6 +17,8 @@
 require "rails_helper"
 
 RSpec.describe MembershipsController, type: :controller do
+  render_views
+
   let(:user) { create(:user) }
 
   describe "#index" do

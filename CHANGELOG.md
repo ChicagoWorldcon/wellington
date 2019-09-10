@@ -11,10 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Upgrade Rails from 5.2 to 6.0 [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Upgraded project gems [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Fixed a bug in development seeds where $0 memberships have a charge
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 ### Removed
-- Nothing significant in this release
+- Removed dependency on makerb gem to reduce risk and use more core rails features.
+  To maintain both html and text emails you now need to maintain two templates
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 
 ## Tag 1.5.1 - 2019-09-10
@@ -143,7 +148,7 @@ Upgraded Ruby and Rails, and support function for transferring memberships.
 
 ### Changed
 - Moved task `check:models` to `test:models` to keep namespaces tight
-- Run rails upgrades for 5.2 so we gret the most out of our setup
+- Run rails upgrades for 5.2 so we get the most out of our setup
 - Upgrade Ruby from 2.5.1 to 2.5.3
 - Update gems to the latest versions
 - Bugfix on support list, now transferred memberships show user's details correctly

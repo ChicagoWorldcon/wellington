@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-%w(
-  .ruby-version
-  .rbenv-vars
-  .env
-  tmp/restart.txt
-  tmp/caching-dev.txt
-).each { |path| Spring.watch(path) }
+Spring.watch(
+  ".env",
+  ".ruby-version",
+  ".rbenv-vars",
+  "tmp/restart.txt",
+  "tmp/caching-dev.txt"
+)
