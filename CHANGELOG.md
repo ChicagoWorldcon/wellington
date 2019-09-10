@@ -17,6 +17,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
+## Tag 1.5.1 - 2019-09-10
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Last minute security patch for Devise that came up just after release, patches
+  [CVE-2019-16109](https://nvd.nist.gov/vuln/detail/CVE-2019-16109)
+
+### Removed
+- Nothing significant in this release
+
+
 ## Tag 1.5.0 - 2019-09-10
 
 ### Added
