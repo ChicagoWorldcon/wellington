@@ -32,7 +32,6 @@ gem "rails", "6.0.0"       # framework for building websites <3
 gem "sassc-rails"          # sass compiler, an easier way to manage styles
 gem "seedbank"             # For customizing seeds for all cons
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
-gem "uglifier"             # for minifying javascript and css
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
