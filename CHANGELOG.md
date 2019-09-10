@@ -13,9 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade Rails from 5.2 to 6.0 [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 - Upgraded project gems [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Fixed a bug in development seeds where $0 memberships have a charge
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 ### Removed
-- Nothing significant in this release
+- Removed dependency on makerb gem to reduce risk and use more core rails features.
+  To maintain both html and text emails you now need to maintain two templates
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 
 
 ## Tag 1.5.1 - 2019-09-10
