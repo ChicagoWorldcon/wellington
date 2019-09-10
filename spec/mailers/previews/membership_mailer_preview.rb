@@ -25,11 +25,12 @@ class MembershipMailerPreview < ActionMailer::Preview
 
   def transfer
     reservation = Reservation.last(30).sample
-    plan_transfer = PlanTransfer.new(
-      reservation_id: reservation.id,
-      new_owner: User.all.sample.email,
-    )
 
-    MembershipMailer.transfer(plan_transfer, detail: reservation.active_claim.detail)
+    MembershipMailer.transfer(
+      from: Faker::Internet.email,
+      to: Faker::Internet.email,
+      owner_name: reservation.active_claim.detail.to_s,
+      membership_number: reservation.membership_number,
+    )
   end
 end
