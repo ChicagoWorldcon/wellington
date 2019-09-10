@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## Unreleased
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...master)
 
 ### Added
 - Nothing significant in this release
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
-## Tag 1.5.1 - 2019-09-10
+## [Tag 1.5.1 - 2019-09-10](https://gitlab.com/worldcon/2020-wellington/compare/1.5.0...1.5.1)
 
 ### Added
 - Nothing significant in this release
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
-## Tag 1.5.0 - 2019-09-10
+## [Tag 1.5.0 - 2019-09-10](https://gitlab.com/worldcon/2020-wellington/compare/1.4.1...1.5.0)
 
 ### Added
 - Kiosk mode, now we can get people to record their details to reduce time handling data entry
@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!93](https://gitlab.com/worldcon/2020-wellington/merge_requests/93)
 
 
-## Tag 1.4.1 - 2019-07-22
+## [Tag 1.4.1 - 2019-07-22](https://gitlab.com/worldcon/2020-wellington/compare/1.4.0...1.4.1)
 
 Hotpatch, in 1.4.0 we regressed the payments mailer for instalments which no longer send. This patch release fixes that
 mailer.
@@ -75,7 +75,7 @@ mailer.
 - Nothing significant in this release
 
 
-## Tag 1.4.0 - 2019-07-22
+## [Tag 1.4.0 - 2019-07-22](https://gitlab.com/worldcon/2020-wellington/compare/1.3.0...1.4.0)
 
 This release has a bit of everything. We're making life better for other cons with support for multi currency, our
 support staff who have more fatures for adjusting memberships, and our developers have better seeded data for something
@@ -112,7 +112,7 @@ that feels better right out of the box.
 - Nothing significant in this release
 
 
-## Tag 1.3.0 - 2019-06-19
+## [Tag 1.3.0 - 2019-06-19](https://gitlab.com/worldcon/2020-wellington/compare/1.2.0...1.3.0)
 
 ### Added
 - Purchase flow changed to let you select a membership before signing in [!73](https://gitlab.com/worldcon/2020-wellington/merge_requests/73)
@@ -132,7 +132,7 @@ that feels better right out of the box.
 - Paths to resources have changed, /purchases have moved to /reservations
 
 
-## Tag 1.2.0 - 2019-06-08
+## [Tag 1.2.0 - 2019-06-08](https://gitlab.com/worldcon/2020-wellington/compare/1.1.0...1.2.0)
 
 Upgraded Ruby and Rails, and support function for transferring memberships.
 
@@ -154,7 +154,7 @@ Upgraded Ruby and Rails, and support function for transferring memberships.
 - Nothing significant in this release
 
 
-## Tag 1.1.0 - 2019-05-22
+## [Tag 1.1.0 - 2019-05-22](https://gitlab.com/worldcon/2020-wellington/compare/1.0.0...1.1.0)
 
 Some quality of life improvements for support, and general cleanup with things we learnt from our initial release.
 
@@ -196,7 +196,7 @@ Some quality of life improvements for support, and general cleanup with things w
 - Nothing significant in this release
 
 
-## Tag 1.0.0 - 2019-03-29
+## [Tag 1.0.0 - 2019-03-29](https://gitlab.com/worldcon/2020-wellington/compare/af2b82ad46c69485c33de3ba317d95cedb5a2f5c...1.0.0)
 
 Initial release of CoNZealand, intended to give people what they had with Kansa, introduce instalments and bring in our
 pre supporters.
