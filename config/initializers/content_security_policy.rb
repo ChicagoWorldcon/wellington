@@ -37,7 +37,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.connect_src :self, :https, *api_endpoints
 
   # Specify URI for violation reports
-  policy.report_uri "/csp-violation-report-endpoint"
+  # policy.report_uri "/csp-violation-report-endpoint"
 end
 
 # Allow CSP to report but not enforce violations to the configured URL
