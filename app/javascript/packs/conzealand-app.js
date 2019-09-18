@@ -40,4 +40,4 @@ require("channels")
 require("sprinkles")
 
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
-import "./conzealand.scss"
+import "./conzealand-styles"
