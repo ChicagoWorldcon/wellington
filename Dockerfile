@@ -18,6 +18,7 @@ FROM ruby:2.6.5-alpine as base
 
 RUN apk add \
       build-base \
+      git \
       netcat-openbsd \
       nodejs \
       nodejs-npm \
