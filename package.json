@@ -9,7 +9,10 @@
     "@rails/webpacker": "^4.0.7",
     "bootstrap": "~4",
     "datatables.net-bs4": "*",
-    "jquery": "*",
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-import": "*",
+    "eslint-plugin-vue": "*",
     "popper.js": "*"
   },
   "devDependencies": {
