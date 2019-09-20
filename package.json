@@ -13,6 +13,7 @@
     "eslint-config-airbnb-base": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-vue": "*",
+    "jquery": "*",
     "popper.js": "*"
   },
   "devDependencies": {

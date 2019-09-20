@@ -32,12 +32,13 @@
 // const imagePath = (name) => images(name, true)
 
 // Rails defaults
-require("@rails/ujs").start()
-require("@rails/activestorage").start()
-require("channels")
-
-// General user facing stuff, i.e. kiosk mode, stripe, test key colours
-require("sprinkles")
-
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
-import "./conzealand-styles"
+import './conzealand-styles.scss';
+import '../channels';
+import '../sprinkles';
+
+import ujs from '@rails/ujs';
+import activeStorage from '@rails/activestorage';
+
+ujs.start();
+activeStorage.start();
