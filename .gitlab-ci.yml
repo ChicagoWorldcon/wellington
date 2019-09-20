@@ -67,6 +67,7 @@ security_analysis:
     - docker run $CONTAINER_TEST_IMAGE bundle exec brakeman --run-all-checks --no-pager
     - docker run $CONTAINER_TEST_IMAGE bundle audit check --update
     - docker run $CONTAINER_TEST_IMAGE bundle exec ruby-audit check
+    - docker run $CONTAINER_TEST_IMAGE yarn audit
 
 release_image:
   stage: publish
