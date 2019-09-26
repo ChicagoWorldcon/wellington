@@ -21,7 +21,7 @@ namespace :dev do
   task napalm: %w(db:drop dev:bootstrap)
 
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed:development:conzealand)
+  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed:conzealand:development)
 
   namespace :setup do
     desc "Recreates the database if there isn't one"
