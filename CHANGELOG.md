@@ -15,8 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded project gems [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 - Fixed a bug in development seeds where $0 memberships have a charge
   [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+- Fix typo in transfer mailer, affect vs effect
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/111)
 - Patch against vulnerability in rubyzip "zipbombs" CVE-2019-16892
-- [!112](https://gitlab.com/worldcon/2020-wellington/merge_requests/112)
+  [!112](https://gitlab.com/worldcon/2020-wellington/merge_requests/112)
 
 ### Removed
 - Removed dependency on makerb gem to reduce risk and use more core rails features.
