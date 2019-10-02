@@ -5,7 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/1.6.0...master)
+### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 1.6.0 - 2019-10-04](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...1.6.0)
 
 ### Added
 - Nothing significant in this release
