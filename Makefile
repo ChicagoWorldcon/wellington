@@ -24,7 +24,7 @@ stop:
 
 # stops and removes application containers and volumes
 clean: stop
-	docker-compose rm -f # Remove stopped containers; Don't ask to confirm removal
+	docker-compose down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
 
 # tails logs of running application
 logs:
