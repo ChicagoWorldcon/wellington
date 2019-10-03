@@ -31,7 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Patch against vulnerability in rubyzip "zipbombs" CVE-2019-16892
   [!112](https://gitlab.com/worldcon/2020-wellington/merge_requests/112)
 - Bump ruby from 2.6.3 to 2.6.5
-  [!114](https://gitlab.com/worldcon/2020-wellington/merge_requests/101)
+  [!114](https://gitlab.com/worldcon/2020-wellington/merge_requests/101),
+  patches against
+  [CVE-2019-16201](https://nvd.nist.gov/vuln/detail/CVE-2019-16201),
+  [CVE-2019-16254](https://nvd.nist.gov/vuln/detail/CVE-2019-16254),
+  [CVE-2019-15845](https://nvd.nist.gov/vuln/detail/CVE-2019-15845),
+  and [CVE-2019-16255](https://nvd.nist.gov/vuln/detail/CVE-2019-16255)
 
 ### Removed
 - Removed dependency on makerb gem to reduce risk and use more core rails features.
