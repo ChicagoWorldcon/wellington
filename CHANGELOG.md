@@ -28,8 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
 - Fix typo in transfer mailer, affect vs effect
   [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/111)
-- Patch against vulnerability in rubyzip "zipbombs" CVE-2019-16892
-  [!112](https://gitlab.com/worldcon/2020-wellington/merge_requests/112)
+- Fix vulnerability in rubyzip "zipbombs"
+  [!112](https://gitlab.com/worldcon/2020-wellington/merge_requests/112),
+  patches against [CVE-2019-16892](https://nvd.nist.gov/vuln/detail/CVE-2019-16892)
 - Bump ruby from 2.6.3 to 2.6.5
   [!114](https://gitlab.com/worldcon/2020-wellington/merge_requests/101),
   patches against
