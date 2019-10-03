@@ -11,7 +11,7 @@ To manage rubies we can use `rbenv` to manage which ones are running:
 
 ```sh
 brew install rbenv
-rbenv install 2.6.3
+rbenv install 2.6.5
 ```
 
 For rbenv to hook into your `.ruby-version` file, you need to modify your shell configuration. Add this to your
@@ -27,7 +27,7 @@ fi
 To setup a default for your user, create a `.ruby-version` in your home directory:
 
 ```sh
-echo 2.6.3 > ~/.ruby-version
+echo 2.6.5 > ~/.ruby-version
 ```
 
 This will let you run this version of ruby everywhere, not just the project.
