@@ -13,7 +13,11 @@ n.b. Upcoming major version bump
 - Rails 6 backards incompatable defaults are now enabled
   [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
 - We now use Webpacker to manage Sass assets and JavaScript compilation
-  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/99)
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- JavaScript dependencies are now audited on CI
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- JavaScript linting is now enforced in CI
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
 
 ### Changed
 - Nothing significant in this release
