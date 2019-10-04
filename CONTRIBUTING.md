@@ -33,8 +33,13 @@ few guidelines that we need our contributors to follow so that we can have a cha
 * Make commits of logical and atomic units. Ideally, no commit should break tests.
 * Write tests for your work. They need not be exhaustive, but they do need to describe the behaviour of our application.
   Find examples of other specs in the [spec directory](spec).
-* Do check your files with linting rules, either by running `rubocop` or by getting an [editor
-  plugin](https://docs.rubocop.org/en/latest/integration_with_other_tools/) which runs rubocop for you.
+* Do check your files against this project's linting rules.
+  For Ruby we use `rubocop` with the [RuboCop GitHub](https://github.com/github/rubocop-github) rules,
+  and `eslint` against the [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
+  It's recommended that you get an editor plugin
+  [for rubocop](https://docs.rubocop.org/en/latest/integration_with_other_tools/)
+  and [for eslint](https://eslint.org/docs/user-guide/integrations)
+  for quick feedback as you work.
 * [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change in your commit
   messages. For example
   ```

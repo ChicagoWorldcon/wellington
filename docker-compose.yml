@@ -18,6 +18,7 @@ version: '3.7'
 
 volumes:
   pgdata:
+  node_modules:
 
 services:
   postgres:
@@ -39,9 +40,9 @@ services:
     ports:
       - "3000:3000"
       - "1080:1080"
-
     restart: always
     volumes:
-      - ./:/app
+      - ./:/app                         # Current working directory
+      - node_modules:/app/node_modules  # Prefer modules inside to the host
       - type: tmpfs
         target: /app/tmp

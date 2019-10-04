@@ -1,5 +1,22 @@
 {
   "name": "conzealand",
   "private": true,
-  "dependencies": {}
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@rails/actioncable": "^6.0.0-alpha",
+    "@rails/activestorage": "^6.0.0-alpha",
+    "@rails/ujs": "^6.0.0-alpha",
+    "@rails/webpacker": "^4.0.7",
+    "bootstrap": "~4",
+    "datatables.net-bs4": "*",
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-import": "*",
+    "eslint-plugin-vue": "*",
+    "jquery": "*",
+    "popper.js": "*"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.8.0"
+  }
 }

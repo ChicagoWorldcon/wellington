@@ -22,19 +22,20 @@ namespace :test do
     task :copyright do
       current_year = Date.today.year
       authors = `git log origin/master.. --format="%an" | sort | uniq`.lines.map(&:chomp)
+      webpacker_config = YAML.load(File.read("#{Rails.root}/config/webpacker.yml"))
+      static_assets_extensions = webpacker_config.dig("default", "static_assets_extensions")
 
       errors = []
 
       # Check to see files authored in the branch contain Apache boilerplate
       authored_files = `git log origin/master.. --name-only --format="" | sort | uniq`.lines.map(&:chomp)
       authored_files.each do |file|
-        next if %w(
-          schema.rb .ruby-version .lock .md .gitkeep
-        ).any? { |ext| file.ends_with? ext }
+        next if %w(schema.rb .ruby-version .lock .md .gitkeep).any? { |ext| file.ends_with? ext }
+        next if static_assets_extensions.any? { |ext| file.ends_with?(ext) }
         next if file.match(/LICENSE/)
-        next if file.match(/\/assets\/images/)
         next if file.starts_with?("vendor/")
         next if file.starts_with?("bin/")
+        next if file == "package.json"
         next if !FileTest.exist?(file)
 
         if File.readlines(file).grep(/Licensed under the Apache License/).none?

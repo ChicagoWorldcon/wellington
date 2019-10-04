@@ -22,22 +22,21 @@
 <head>
   <title>CoNZealand</title>
   <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
   <%# TODO move scripts to the bottom of <body> %>
   <script src="https://checkout.stripe.com/checkout.js"></script>
 
-  <%= stylesheet_link_tag "bootstrap-4.2.1.min.css" %>
-  <%= stylesheet_link_tag "dataTables.bootstrap4-1.10.19.min.css" %>
-  <%= stylesheet_link_tag "application", media: "all" %>
+  <%= javascript_pack_tag "conzealand-app" %>
+  <%= stylesheet_pack_tag "conzealand-styles", media: "all" %>
 
-  <%= javascript_include_tag "jquery-3.3.1.slim.min.js" %>
-  <%= javascript_include_tag "popper-1.14.6.min.js" %>
-  <%= javascript_include_tag "bootstrap-4.2.1.min.js" %>
-  <%= javascript_include_tag "jquery.dataTables-1.10.19.min.js" %>
-  <%= javascript_include_tag "dataTables.bootstrap4-1.10.19.min.js" %>
-  <%= javascript_include_tag "application" %>
-
-  <%= favicon_link_tag %>
+  <%=
+    tag("link", {
+      rel: "shortcut icon",
+      type: "image/x-icon",
+      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
+    })
+  %>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +61,13 @@
   <header>
     <div class="container l-v-spacing" role="banner">
       <a href="<%= root_path %>" class="logo">
-        <%= image_tag "conzealand-logo.svg", alt: "CoNZealand", class: "img-responsive" %>
+        <%=
+          image_pack_tag(
+            "media/packs/conzealand-logo.svg",
+            alt: "CoNZealand - The 78th World Science Fiction Convention",
+            class: "img-responsive"
+          )
+        %>
       </a>
     </div>
 

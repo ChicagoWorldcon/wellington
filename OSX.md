@@ -32,6 +32,13 @@ echo 2.6.5 > ~/.ruby-version
 
 This will let you run this version of ruby everywhere, not just the project.
 
+We use yarn on nodejs to manage our dependencies. You can get these two executables from brew and npm:
+
+```sh
+brew install node
+npm install -g yarn
+```
+
 We use postgres in production. Here's how you can get a copy of postgres running and starting up on boot:
 
 ```sh

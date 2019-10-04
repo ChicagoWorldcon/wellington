@@ -47,11 +47,12 @@ rspec_tests:
     - docker run -d --name="test-database" --hostname "postgres" postgres:latest
     - docker run --network "container:test-database" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:schema:load spec
 
-rubocop_linting:
+code_style:
   stage: test
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rubocop
+    - docker run $CONTAINER_TEST_IMAGE ./node_modules/eslint/bin/eslint.js app/javascript
 
 licence_check:
   stage: test
@@ -67,6 +68,7 @@ security_analysis:
     - docker run $CONTAINER_TEST_IMAGE bundle exec brakeman --run-all-checks --no-pager
     - docker run $CONTAINER_TEST_IMAGE bundle audit check --update
     - docker run $CONTAINER_TEST_IMAGE bundle exec ruby-audit check
+    - docker run $CONTAINER_TEST_IMAGE yarn audit
 
 release_image:
   stage: publish

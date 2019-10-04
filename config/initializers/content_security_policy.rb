@@ -20,15 +20,24 @@
 
 # Be sure to restart your server when you modify this file.
 Rails.application.config.content_security_policy do |policy|
+  static_hosts = []
+  static_hosts << "https://checkout.stripe.com" if ENV["STRIPE_PUBLIC_KEY"].present?
+
+  api_endpoints = []
+  api_endpoints << "http://localhost:3035" if Rails.env.development?
+  api_endpoints << "ws://localhost:3035" if Rails.env.development?
+
   policy.default_src :self, :https
   policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data
   policy.object_src  :none
-  policy.script_src  :self, :https
+  policy.script_src  :self, :https, *static_hosts
   policy.style_src   :self, :https
 
+  policy.connect_src :self, :https, *api_endpoints
+
   # Specify URI for violation reports
-  policy.report_uri "/csp-violation-report-endpoint"
+  # policy.report_uri "/csp-violation-report-endpoint"
 end
 
 # Allow CSP to report but not enforce violations to the configured URL

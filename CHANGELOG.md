@@ -6,14 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/1.6.0...master)
+
+n.b. Upcoming major version bump
+
 ### Added
-- Nothing significant in this release
+- Rails 6 backards incompatable defaults are now enabled
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- We now use Webpacker to manage Sass assets and JavaScript compilation
+  [!99](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- JavaScript dependencies are now audited on CI
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
+- JavaScript linting is now enforced in CI
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
 
 ### Changed
 - Nothing significant in this release
 
 ### Removed
-- Nothing significant in this release
+- EMAIL_PAYMENTS has been removed. Please set MEMBER_SERVICES_EMAIL in .env everywhere.
+  [!100](https://gitlab.com/worldcon/2020-wellington/merge_requests/100)
 
 
 ## [Tag 1.6.0 - 2019-10-04](https://gitlab.com/worldcon/2020-wellington/compare/1.5.1...1.6.0)

@@ -36,8 +36,8 @@ FactoryBot.create(:membership, :supporting  , active_from: announcement)
 
 all_memberships = Membership.all.to_a
 
-100.times do |count|
-  puts "Seeding #{count} of 100 users" if count % 10 == 0
+50.times do |count|
+  puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
   memberships_held = rand(2..10)
   all_memberships.sample(memberships_held).each do |rando_membership|
