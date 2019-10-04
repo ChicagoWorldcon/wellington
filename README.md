@@ -128,6 +128,14 @@ make console
 User.all.sample.email
 ```
 
+If you need to install or upgrade dependencies, you can get a shell in your environment to run those commands
+
+```sh
+make bash
+yarn upgrade
+bundle update
+```
+
 If you want to run tests for the project you can do this by running
 
 ```sh
