@@ -20,8 +20,10 @@ RSpec.describe UserToken do
   context "with well formed format" do
     [
       "willy_wönka@chocolate_factory.nz",
+      " outer@space.net",
+      "outer@space.net ",
     ].each do |good_email|
-      it "is valid with #{good_email}" do
+      it "is valid with '#{good_email}'" do
         expect(UserToken.new(email: good_email)).to be_valid
       end
     end
@@ -30,7 +32,9 @@ RSpec.describe UserToken do
   context "for unhandled format" do
     [
       "",
-      "not @good.net",
+      "embedded @space.net",
+      "embedded@ space.net",
+      "silly",
     ].each do |bad_email|
       it "is invalid with '#{bad_email}'" do
         expect(UserToken.new(email: bad_email)).to_not be_valid

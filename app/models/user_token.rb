@@ -20,7 +20,15 @@
 # TODO Consider reworking this as a devise model based on database_authenticatable
 class UserToken
   include ActiveModel::Model
+  include ActiveModel::Validations::Callbacks
 
   attr_accessor :email
   validates :email, presence: true, format: Devise.email_regexp
+  before_validation :trim_email
+
+  private
+
+  def trim_email
+    @email = @email.strip
+  end
 end
