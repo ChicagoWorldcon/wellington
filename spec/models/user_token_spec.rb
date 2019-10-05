@@ -17,18 +17,24 @@
 require "rails_helper"
 
 RSpec.describe UserToken do
-  let(:good_email) { "willy_wönka@chocolate_factory.nz" }
-
-  subject(:model) { UserToken.new(email: good_email) }
-  it { is_expected.to be_valid }
-
-  context "missing email" do
-    subject(:model) { UserToken.new(email: "") }
-    it { is_expected.to_not be_valid }
+  context "with well formed format" do
+    [
+      "willy_wönka@chocolate_factory.nz",
+    ].each do |good_email|
+      it "is valid with #{good_email}" do
+        expect(UserToken.new(email: good_email)).to be_valid
+      end
+    end
   end
 
-  context "with bad email" do
-    subject(:model) { UserToken.new(email: "not @good.net") }
-    it { is_expected.to_not be_valid }
+  context "for unhandled format" do
+    [
+      "",
+      "not @good.net",
+    ].each do |bad_email|
+      it "is invalid with '#{bad_email}'" do
+        expect(UserToken.new(email: bad_email)).to_not be_valid
+      end
+    end
   end
 end
