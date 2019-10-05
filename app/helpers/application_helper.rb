@@ -32,10 +32,10 @@ module ApplicationHelper
   def membership_right_description(membership_right, reservation)
     description = I18n.t(:description, scope: membership_right)
     tooltip = I18n.t(:layman, scope: membership_right)
-    raw(%{
+    %{
       #{link_if_open(description, membership_right, reservation)}
       #{information_bubble(tooltip)}
-    })
+    }
   end
 
   def link_if_open(description, membership_right, reservation)
