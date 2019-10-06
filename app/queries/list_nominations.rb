@@ -16,26 +16,26 @@
 
 # ListNominations given a reservation will give you objects to list out nominations for a user
 class ListNominations
-  attr_reader :reservation
+  VOTES_PER_CATEGORY = 5
+
+  attr_reader :reservation, :nominations_by_category
 
   def initialize(reservation)
     @reservation = reservation
+    @nominations_by_category = {}.tap do |nominations_by|
+      Category.find_each do |category|
+        nominations_by[category] = []
+      end
+    end
   end
 
   def call
     check_reservation
     return false if errors.any?
 
-    {}.tap do |accumulator|
-      Category.find_each do |category|
-        accumulator[category] = 5.times.map do
-          Nomination.new(
-            category: category,
-            reservation: reservation,
-          )
-        end
-      end
-    end
+    add_empties_where_needed
+
+    nominations_by_category
   end
 
   def errors
@@ -47,5 +47,18 @@ class ListNominations
   def check_reservation
     errors << "reservation isn't paid for yet" if reservation.instalment?
     errors << "reservation is disabled" if reservation.disabled?
+  end
+
+  def add_empties_where_needed
+    nominations_by_category.keys.each do |category|
+      remaining_votes = VOTES_PER_CATEGORY - nominations_by_category[category].size
+
+      remaining_votes.times do
+        nominations_by_category[category] << Nomination.new(
+          category: category,
+          reservation: reservation,
+        )
+      end
+    end
   end
 end
