@@ -17,7 +17,20 @@
 require "rails_helper"
 
 RSpec.describe ListNominations do
+  let!(:category_best_editor_long_form)    { FactoryBot.create(:category, :best_editor_long_form) }
+  let!(:category_best_editor_short_form)   { FactoryBot.create(:category, :best_editor_short_form) }
+  let!(:category_best_graphic_story)       { FactoryBot.create(:category, :best_graphic_story) }
+  let!(:category_best_novel)               { FactoryBot.create(:category, :best_novel) }
+  let!(:category_best_novelette)           { FactoryBot.create(:category, :best_novelette) }
+  let!(:category_best_novella)             { FactoryBot.create(:category, :best_novella) }
+  let!(:category_best_professional_artist) { FactoryBot.create(:category, :best_professional_artist) }
+  let!(:category_best_related_work)        { FactoryBot.create(:category, :best_related_work) }
+  let!(:category_best_semiprozine)         { FactoryBot.create(:category, :best_semiprozine) }
+  let!(:category_best_short_story)         { FactoryBot.create(:category, :best_short_story) }
+  let!(:category_john_w_campbell_award)    { FactoryBot.create(:category, :john_w_campbell_award) }
+
   let(:reservation) { create(:reservation) }
+
   subject(:service) { described_class.new(reservation) }
 
   it { is_expected.to_not be_nil }
@@ -37,6 +50,17 @@ RSpec.describe ListNominations do
     it "won't list nominations" do
       expect(service.call).to be_falsey
       expect(service.errors).to_not be_empty
+    end
+  end
+
+  context "#call" do
+    subject(:call) { service.call }
+
+    it { is_expected.to be_kind_of(Hash) }
+
+    it "gets keyed by Category" do
+      expect(call.keys.last).to be_kind_of(Category)
+      expect(call.keys.count).to eq(Category.count)
     end
   end
 end

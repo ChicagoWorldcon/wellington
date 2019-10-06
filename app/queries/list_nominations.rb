@@ -24,7 +24,13 @@ class ListNominations
 
   def call
     check_reservation
-    errors.none?
+    return false if errors.any?
+
+    {}.tap do |accumulator|
+      Category.find_each do |category|
+        accumulator[category] = []
+      end
+    end
   end
 
   def errors
