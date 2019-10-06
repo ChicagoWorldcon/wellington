@@ -28,7 +28,12 @@ class ListNominations
 
     {}.tap do |accumulator|
       Category.find_each do |category|
-        accumulator[category] = []
+        accumulator[category] = 5.times.map do
+          Nomination.new(
+            category: category,
+            reservation: reservation,
+          )
+        end
       end
     end
   end
