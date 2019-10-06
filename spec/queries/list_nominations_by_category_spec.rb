@@ -26,7 +26,7 @@ RSpec.describe ListNominationsByCategory do
 
   let(:reservation) { create(:reservation) }
 
-  subject(:service) { described_class.new(reservation) }
+  subject(:service) { described_class.new(reservation: reservation) }
 
   it { is_expected.to_not be_nil }
 

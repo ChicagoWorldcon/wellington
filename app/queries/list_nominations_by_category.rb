@@ -18,24 +18,19 @@
 class ListNominationsByCategory
   VOTES_PER_CATEGORY = 5
 
-  attr_reader :reservation, :nominations_by_category
+  include ActiveModel::Model
+  attr_accessor :reservation # Required to instantiate this model
 
-  def initialize(reservation)
-    @reservation = reservation
-    @nominations_by_category = {}.tap do |nominations_by|
-      Category.find_each do |category|
-        nominations_by[category] = []
-      end
-    end
-  end
+  attr_reader :nominations_by_category
 
   def call
+    reset_nominations
+
     check_reservation
     return false if errors.any?
 
     sort_existing_nominations
     add_empties_where_needed
-
     nominations_by_category
   end
 
@@ -48,6 +43,14 @@ class ListNominationsByCategory
   def check_reservation
     errors << "reservation isn't paid for yet" if reservation.instalment?
     errors << "reservation is disabled" if reservation.disabled?
+  end
+
+  def reset_nominations
+    @nominations_by_category = {}.tap do |nominations_by|
+      Category.find_each do |category|
+        nominations_by[category] = []
+      end
+    end
   end
 
   def sort_existing_nominations
