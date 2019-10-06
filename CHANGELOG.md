@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Allow people to append/prepend whitespace to their email addess
+  [!116](https://gitlab.com/worldcon/2020-wellington/merge_requests/116)
 
 ### Removed
 - Nothing significant in this release
