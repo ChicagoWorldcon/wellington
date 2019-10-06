@@ -48,4 +48,8 @@ class Reservation < ApplicationRecord
   def instalment?
     state == INSTALMENT
   end
+
+  def disabled?
+    state == INSTALMENT
+  end
 end
