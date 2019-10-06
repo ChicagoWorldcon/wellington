@@ -32,9 +32,6 @@
                 <% 5.times do |i| %>
                   <label for="book_title">Nomination <%= i + 1 %></label>
                   <%= text_field(:book_title, class: "form-control", id: "book_title") %>
-                  <%# <% if errors = form_input_errors(@detail, :book_title) %1> %>
-                  <%#   <p class="form-error"><%= errors %1></p> %>
-                  <%# <% end %1> %>
                 <% end %>
               </div>
             </fieldset>
