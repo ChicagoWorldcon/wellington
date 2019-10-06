@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # ListNominations given a reservation will give you objects to list out nominations for a user
-class ListNominations
+class ListNominationsByCategory
   VOTES_PER_CATEGORY = 5
 
   attr_reader :reservation, :nominations_by_category
