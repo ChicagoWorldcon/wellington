@@ -50,6 +50,6 @@ class Reservation < ApplicationRecord
   end
 
   def disabled?
-    state == INSTALMENT
+    state == DISABLED
   end
 end

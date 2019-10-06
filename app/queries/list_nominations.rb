@@ -24,7 +24,7 @@ class ListNominations
 
   def call
     check_reservation
-    nil
+    errors.none?
   end
 
   def errors
@@ -34,8 +34,7 @@ class ListNominations
   private
 
   def check_reservation
-    if reservation.instalment?
-      errors << "membership isn't paid for yet"
-    end
+    errors << "reservation isn't paid for yet" if reservation.instalment?
+    errors << "reservation is disabled" if reservation.disabled?
   end
 end

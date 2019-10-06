@@ -22,6 +22,15 @@ RSpec.describe ListNominations do
 
   it { is_expected.to_not be_nil }
 
+  context "when disabled" do
+    let(:reservation) { create(:reservation, :disabled) }
+
+    it "won't list nominations" do
+      expect(service.call).to be_falsey
+      expect(service.errors).to_not be_empty
+    end
+  end
+
   context "when in instalment" do
     let(:reservation) { create(:reservation, :instalment) }
 
