@@ -33,6 +33,7 @@ class ListNominations
     check_reservation
     return false if errors.any?
 
+    sort_existing_nominations
     add_empties_where_needed
 
     nominations_by_category
@@ -47,6 +48,12 @@ class ListNominations
   def check_reservation
     errors << "reservation isn't paid for yet" if reservation.instalment?
     errors << "reservation is disabled" if reservation.disabled?
+  end
+
+  def sort_existing_nominations
+    reservation.nominations.eager_load(:category).find_each do |n|
+      nominations_by_category[n.category] << n
+    end
   end
 
   def add_empties_where_needed

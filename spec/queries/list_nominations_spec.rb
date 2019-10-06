@@ -66,5 +66,14 @@ RSpec.describe ListNominations do
       expect(best_novel_nominations.count).to be(5)
       expect(best_novel_nominations.map(&:description)).to be_all(&:nil?)
     end
+
+    it "remembers a users past nominations" do
+      first_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
+      second_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
+      expect(best_novel_nominations.count).to be(5)
+      expect(best_novel_nominations.first).to eq first_nomination
+      expect(best_novel_nominations.second).to eq second_nomination
+      expect(best_novel_nominations.third.description).to be_nil
+    end
   end
 end
