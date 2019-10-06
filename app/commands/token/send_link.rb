@@ -23,7 +23,7 @@ class Token::SendLink
   attr_reader :path
 
   def initialize(email:, secret:, path:)
-    @email = email
+    @email = email.strip
     @secret = secret
     @path = path
   end

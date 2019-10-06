@@ -24,10 +24,16 @@ RSpec.describe Token::SendLink do
   let(:query) { Token::SendLink.new(email: good_email, secret: good_secret, path: "") }
 
   describe "#call" do
-    it "sends email" do
-      service = Token::SendLink.new(email: good_email, secret: good_secret, path: "")
-      expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
-      expect(service.call).to be_truthy
+    [
+      "willy_wönka@chocolate_factory.nz",
+      " outer@space.net",
+      "outer@space.net ",
+    ].each do |email|
+      it "sends for well formed email '#{email}'" do
+        service = Token::SendLink.new(email: email, secret: good_secret, path: "")
+        expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
+        expect(service.call).to be_truthy
+      end
     end
 
     it "sends email with good path" do
