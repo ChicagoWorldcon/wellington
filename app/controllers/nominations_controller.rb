@@ -18,6 +18,7 @@ class NominationsController < ApplicationController
   before_action :lookup_reservation!
 
   def index
+    @nominations_by_category = ListNominations.new(@reservation).call
     @privacy_warning = current_user.reservations.count > 1
   end
 end

@@ -20,7 +20,7 @@
     <div class="row">
       <div class="col-12 col-lg-8">
         <div class="l-panel">
-          <% Category.find_each do |category| %>
+          <% @nominations_by_category.each do |category, nominations| %>
             <h2 class="h3-like"><%= category.name %></h2>
 
             <fieldset class="l-v-spacing">
@@ -29,8 +29,8 @@
               </p>
 
               <div class="form-group">
-                <% 5.times do |i| %>
-                  <label for="book_title">Nomination <%= i + 1 %></label>
+                <% nominations.each.with_index(1) do |nomination, n| %>
+                  <label for="book_title">Nomination <%= n %></label>
                   <%= text_field(:book_title, class: "form-control", id: "book_title") %>
                 <% end %>
               </div>
