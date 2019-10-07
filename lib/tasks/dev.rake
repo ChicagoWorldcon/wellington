@@ -26,12 +26,20 @@ namespace :dev do
   namespace :setup do
     desc "Recreates the database if there isn't one"
     task db: :environment do
+      retries ||= 0
       ActiveRecord::Base.establish_connection
       User.count
     rescue ActiveRecord::NoDatabaseError
       puts "Creating database and tables"
       Rake::Task["db:create"].invoke
       Rake::Task["db:schema:load"].invoke
+    rescue
+      # If we fail for any other reason, try again in a moment
+      sleep 1
+      if (retries += 1) < 3
+        puts "Trying again..."
+        retry
+      end
     end
   end
 
