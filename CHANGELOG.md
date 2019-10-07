@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - Seeding a development database creates a support user by default
   [!118](https://gitlab.com/worldcon/2020-wellington/merge_requests/118)
+- New make target to reset database and javascript dependencies quickly
+  [!118](https://gitlab.com/worldcon/2020-wellington/merge_requests/118)
+  ```bash
+  make reset start
+  # faster than `make clean`
+  ```
 
 ### Removed
 - Nothing significant in this release
