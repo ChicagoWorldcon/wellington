@@ -128,7 +128,7 @@ make console
 User.all.sample.email
 ```
 
-A defualt support user is created as part of seeds. You should be able to sign in as this user by
+A default support user is created as part of seeds. You should be able to sign in as this user by
 
 1. navigating to http://localhost:3000/supports/sign_in
 2. signing in with "support@worldcon.org", password 111111
