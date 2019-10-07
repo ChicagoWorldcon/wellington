@@ -53,3 +53,11 @@ all_memberships = Membership.all.to_a
     claim.update!(detail: FactoryBot.create(:detail, claim: claim))
   end
 end
+
+# Create a default support user
+# http://localhost:3000/supports/sign_in
+Support.create(
+  email: "support@worldcon.org",
+  password: 111111,
+  confirmed_at: Time.now,
+)
