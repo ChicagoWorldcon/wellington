@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bundle exec rake gem:licenses  # check Ruby
   yarn licenses list             # check JavaScript
   ```
+- Seeding a development database creates a support user by default
+  [!118](https://gitlab.com/worldcon/2020-wellington/merge_requests/118)
 
 ### Removed
 - Nothing significant in this release

@@ -128,6 +128,11 @@ make console
 User.all.sample.email
 ```
 
+A defualt support user is created as part of seeds. You should be able to sign in as this user by
+
+1. navigating to http://localhost:3000/supports/sign_in
+2. signing in with "support@worldcon.org", password 111111
+
 If you need to install or upgrade dependencies, you can get a shell in your environment to run those commands
 
 ```sh

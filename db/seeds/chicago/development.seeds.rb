@@ -18,3 +18,11 @@
 FactoryBot.create(:membership, :chicago_donor)
 FactoryBot.create(:membership, :chicago_friend)
 FactoryBot.create(:membership, :chicago_star)
+
+# Create a default support user
+# http://localhost:3000/supports/sign_in
+Support.create(
+  email: "support@worldcon.org",
+  password: 111111,
+  confirmed_at: Time.now,
+)
