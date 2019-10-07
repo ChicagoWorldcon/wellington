@@ -22,9 +22,13 @@ start: daemon logs
 stop:
 	docker-compose stop
 
-# stops and removes application containers and volumes
+# stops and removes all docker assets used by this application
 clean: stop
 	docker-compose down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
+
+# stops and removes assets built for the application, leaves base images intact
+reset: stop
+	docker-compose down --volumes --rmi local
 
 # tails logs of running application
 logs:

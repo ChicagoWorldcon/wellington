@@ -168,7 +168,13 @@ docker-compose exec members_area bundle install
 docker-compose exec members_area bundle exec rake db:migrate
 ```
 
-If you want to delete the docker images and volumes, you can do this with:
+If you want to quickly reset your javascript dependencies and database, you can do this with:
+
+```sh
+make reset
+```
+
+If you want to clean up everything from this project you can do this with:
 
 ```sh
 make clean
