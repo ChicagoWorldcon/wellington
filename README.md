@@ -131,7 +131,7 @@ User.all.sample.email
 If you need to install or upgrade dependencies, you can get a shell in your environment to run those commands
 
 ```sh
-make bash
+make shell
 yarn upgrade
 bundle update
 ```

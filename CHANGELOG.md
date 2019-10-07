@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Allow people to append/prepend whitespace to their email addess
   [!116](https://gitlab.com/worldcon/2020-wellington/merge_requests/116)
+- Reduced the size of our install by moving docker base from debian to alpine
+  [!102](https://gitlab.com/worldcon/2020-wellington/merge_requests/102)
 
 ### Removed
 - Nothing significant in this release

@@ -35,8 +35,11 @@ console:
 	docker-compose exec members_area bundle exec rails console
 
 # lets you cd around and have a look at the project
-bash:
-	docker-compose exec members_area bash
+shell:
+	docker-compose exec members_area sh
+
+# Alias for people who have old habbits
+bash: shell
 
 # Tests your setup, similar to CI
 test:
