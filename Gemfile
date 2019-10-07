@@ -22,6 +22,7 @@ source "https://rubygems.org"
 
 gem "bootsnap"             # boot large ruby/rails apps faster
 gem "devise"               # authentication solution for Rails with Warden
+gem "gem-licenses"         # print libraries depended on by this project, grouped by licence
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "money-rails"          # dealing with money and currency conversion in Rails

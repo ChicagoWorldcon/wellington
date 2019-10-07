@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!116](https://gitlab.com/worldcon/2020-wellington/merge_requests/116)
 - Reduced the size of our install by moving docker base from debian to alpine
   [!102](https://gitlab.com/worldcon/2020-wellington/merge_requests/102)
+- Added easy methods for checking licences in depenedencies
+  [!117](https://gitlab.com/worldcon/2020-wellington/merge_requests/117)
+  ```bash
+  bundle exec rake gem:licenses  # check Ruby
+  yarn licenses list             # check JavaScript
+  ```
 
 ### Removed
 - Nothing significant in this release
