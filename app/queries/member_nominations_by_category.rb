@@ -17,11 +17,31 @@
 # ListNominations given a reservation will give you objects to list out nominations for a user
 class MemberNominationsByCategory
   VOTES_PER_CATEGORY = 5
+  NOMINATION_KEYS = (1..VOTES_PER_CATEGORY).to_a.map(&:to_s)
 
   include ActiveModel::Model
   attr_accessor :reservation # Required to instantiate this model
 
   attr_reader :nominations_by_category
+
+  def from_params(params)
+    reset_nominations
+
+    Category.find_each do |category|
+      # Find submitted nominations
+      nominations = params.dig("reservation", "category", category.id.to_s, "nomination")
+      next unless nominations
+
+      # Pull out up to VOTES_PER_CATEGORY of them, use their description field for a new Nomination
+      nominations.slice(*NOMINATION_KEYS).values.each do |nom_params|
+        nominations_by_category[category] << Nomination.new(
+          reservation: reservation,
+          category: category,
+          description: nom_params["description"],
+        )
+      end
+    end
+  end
 
   def call
     reset_nominations

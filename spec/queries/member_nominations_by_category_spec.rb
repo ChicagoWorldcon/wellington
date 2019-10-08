@@ -76,4 +76,51 @@ RSpec.describe MemberNominationsByCategory do
       expect(best_novel_nominations.third.description).to be_nil
     end
   end
+
+  context "when constructed from_params" do
+    before { service.from_params(params) }
+
+    subject(:nominations_by_category) { service.nominations_by_category }
+
+    let(:best_novel_id) { best_novel.id.to_s }
+
+    let(:empty_entry) do
+      { "description" => "" }
+    end
+
+    let(:filled_entry) do
+      { "description" => "The Hobbit" }
+    end
+
+    let(:params) do
+      ActionController::Parameters.new(
+        "reservation"=> {
+          "category"=> {
+            best_novel_id => {
+              "nomination" => {
+                "1" => filled_entry,
+                "2" => empty_entry,
+                "3" => empty_entry,
+                "4" => empty_entry,
+                "5" => empty_entry,
+              },
+            },
+          },
+        },
+      )
+    end
+
+    it { is_expected.to be_kind_of(Hash) }
+
+    let(:best_novel_nominations) { call[best_novel] }
+
+    it "gets keyed by Category" do
+      expect(nominations_by_category.keys.last).to be_kind_of(Category)
+    end
+
+    it "creates new Nomintions for submitted categories" do
+      expect(nominations_by_category[best_novel].first).to be_kind_of(Nomination)
+      expect(nominations_by_category[best_novel].first.description).to eq filled_entry["description"]
+    end
+  end
 end

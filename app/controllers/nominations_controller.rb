@@ -21,4 +21,9 @@ class NominationsController < ApplicationController
     @nominations_by_category = MemberNominationsByCategory.new(reservation: @reservation).call
     @privacy_warning = current_user.reservations.count > 1
   end
+
+  def create
+    model = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
+    @nominations_by_category = model.nominations_by_category
+  end
 end
