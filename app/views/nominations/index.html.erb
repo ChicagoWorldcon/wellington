@@ -18,27 +18,6 @@
 <div class="container">
   <div class="row d-flex align-items-stretch">
     <div class="row">
-      <div class="col-12 col-lg-8">
-        <div class="l-panel">
-          <% @nominations_by_category.each do |category, nominations| %>
-            <h2 class="h3-like"><%= category.name %></h2>
-
-            <fieldset class="l-v-spacing">
-              <p class="form-note form-note-m-group">
-                <%= category.description %>
-              </p>
-
-              <div class="form-group">
-                <% nominations.each.with_index(1) do |nomination, n| %>
-                  <label for="book_title">Nomination <%= n %></label>
-                  <%= text_field(:book_title, class: "form-control", id: "book_title") %>
-                <% end %>
-              </div>
-            </fieldset>
-          <% end %>
-        </div>
-      </div>
-
       <div class="col-12 col-lg-4">
         <div class="l-v-spacing">
           <%= render("reservation_card", reservation: @reservation) do %>
@@ -71,6 +50,27 @@
                 </div>
               </div>
             </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-8">
+        <div class="l-panel">
+          <% @nominations_by_category.each do |category, nominations| %>
+            <h2 class="h3-like"><%= category.name %></h2>
+
+            <fieldset class="l-v-spacing">
+              <p class="form-note form-note-m-group">
+                <%= category.description %>
+              </p>
+
+              <div class="form-group">
+                <% nominations.each.with_index(1) do |nomination, n| %>
+                  <label for="book_title">Nomination <%= n %></label>
+                  <%= text_field(:book_title, class: "form-control", id: "book_title") %>
+                <% end %>
+              </div>
+            </fieldset>
           <% end %>
         </div>
       </div>
