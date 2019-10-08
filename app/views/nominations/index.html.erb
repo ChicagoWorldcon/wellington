@@ -27,50 +27,58 @@
           <% end %>
         </div>
 
-        <div class="l-panel">
-          <h2>Multiple Accounts Warning</h2>
-          <% if @privacy_warning.present? %>
-            <%= render "multiple_accounts_disclaimer" %>
+        <% if @privacy_warning.present? %>
+          <div class="l-panel">
+            <h2>Multiple Accounts Warning</h2>
+              <%= render "multiple_accounts_disclaimer" %>
 
-            <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centred" role="document">
-                <div class="modal-content text-dark">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <%= render "multiple_accounts_disclaimer" %>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centred" role="document">
+                  <div class="modal-content text-dark">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <%= render "multiple_accounts_disclaimer" %>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
       </div>
 
       <div class="col-12 col-lg-8">
         <div class="l-panel">
-          <% @nominations_by_category.each do |category, nominations| %>
-            <h2 class="h3-like"><%= category.name %></h2>
+          <%= form_with(model: @reservation, method: :create, url: reservation_nominations_path) do |reservation_form| %>
+            <% @nominations_by_category.each do |category, nominations| %>
+              <%= reservation_form.fields_for(category, index: category.id) do |category_form| %>
+                <h2 class="h3-like"><%= category.name %></h2>
 
-            <fieldset class="l-v-spacing">
-              <p class="form-note form-note-m-group">
-                <%= category.description %>
-              </p>
+                <fieldset class="l-v-spacing">
+                  <p class="form-note form-note-m-group">
+                    <%= category.description %>
+                  </p>
 
-              <div class="form-group">
-                <% nominations.each.with_index(1) do |nomination, n| %>
-                  <label for="book_title">Nomination <%= n %></label>
-                  <%= text_field(:book_title, class: "form-control", id: "book_title") %>
-                <% end %>
-              </div>
-            </fieldset>
+                  <div class="form-group">
+                    <% nominations.each.with_index(1) do |nomination, counter| %>
+                      <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
+                        <label for="book_title">Nomination <%= counter %></label>
+                        <%= nomination_form.text_field(:description, class: "form-control", id: "book_title") %>
+                        <%= nomination_form.hidden_field(:category_id) %>
+                        <%= nomination_form.hidden_field(:reservation_id) %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </fieldset>
+              <% end %>
+            <% end %>
           <% end %>
         </div>
       </div>
