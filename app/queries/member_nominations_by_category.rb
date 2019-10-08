@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # ListNominations given a reservation will give you objects to list out nominations for a user
-class ListNominationsByCategory
+class MemberNominationsByCategory
   VOTES_PER_CATEGORY = 5
 
   include ActiveModel::Model

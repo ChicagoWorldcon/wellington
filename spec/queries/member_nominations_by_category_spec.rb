@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe ListNominationsByCategory do
+RSpec.describe MemberNominationsByCategory do
   let!(:best_graphic_story)    { FactoryBot.create(:category, :best_graphic_story) }
   let!(:best_novel)            { FactoryBot.create(:category, :best_novel) }
   let!(:best_novelette)        { FactoryBot.create(:category, :best_novelette) }
