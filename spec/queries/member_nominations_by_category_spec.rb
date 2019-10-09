@@ -199,15 +199,24 @@ RSpec.describe MemberNominationsByCategory do
             end
           end
 
-          context "when entries are submitted taht don't match expected keys" do
+          context "when entries are submitted that don't match expected keys" do
             let(:best_novel_nominations) do
-              {
-                "flub" => filled_entry
-              }
+              { "flub" => filled_entry }
             end
 
             it "doesn't save anything" do
               expect { service.save }.to_not change { Nomination.count }.from(0)
+            end
+          end
+
+          context "when there are previous nominations" do
+            let(:best_novel_nominations) { {} }
+
+            it "resets all nominations" do
+              reservation.nominations.create!(category: best_novel, description: "oh la la")
+              expect { service.save }
+                .to change { Nomination.count }
+                .from(1).to(0)
             end
           end
         end

@@ -57,7 +57,10 @@ class MemberNominationsByCategory
     return false if !valid?
 
     valid_nominations = nominations_by_category.values.flatten.select(&:valid?)
-    valid_nominations.map(&:save)
+    reservation.transaction do
+      reservation.nominations.destroy_all
+      valid_nominations.map(&:save)
+    end
 
     true
   end

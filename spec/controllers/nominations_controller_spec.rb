@@ -37,4 +37,36 @@ RSpec.describe NominationsController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
   end
+
+  xdescribe "#create" do
+    before { sign_in user }
+
+    let!(:best_novel) { FactoryBot.create(:category, :best_novel) }
+    let!(:best_novel_id) { best_novel.id.to_s }
+
+    let(:empty_entry) do
+      { "description" => "" }
+    end
+
+    let(:filled_entry) do
+      { "description" => "The Hobbit" }
+    end
+
+    it "renders when submitting good entries" do
+      post :create, params: {
+        reservation_id: reservation.id,
+        "reservation"=> {
+          "category"=> {
+            best_novel_id => {
+              "nomination" => {
+                "1" => filled_entry,
+              },
+            },
+          },
+        },
+      }
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
