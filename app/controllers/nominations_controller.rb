@@ -18,12 +18,13 @@ class NominationsController < ApplicationController
   before_action :lookup_reservation!
 
   def index
-    @nominations_by_category = MemberNominationsByCategory.new(reservation: @reservation).call
+    builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
+    @nominations_by_category = builder.nominations_by_category
     @privacy_warning = current_user.reservations.count > 1
   end
 
   def create
-    model = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
-    @nominations_by_category = model.nominations_by_category
+    builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
+    @nominations_by_category = builder.nominations_by_category
   end
 end

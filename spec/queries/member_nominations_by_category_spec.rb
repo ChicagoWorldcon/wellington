@@ -17,6 +17,8 @@
 require "rails_helper"
 
 RSpec.describe MemberNominationsByCategory do
+  let(:reservation) { create(:reservation) }
+
   let!(:best_graphic_story)    { FactoryBot.create(:category, :best_graphic_story) }
   let!(:best_novel)            { FactoryBot.create(:category, :best_novel) }
   let!(:best_novelette)        { FactoryBot.create(:category, :best_novelette) }
@@ -24,7 +26,33 @@ RSpec.describe MemberNominationsByCategory do
   let!(:best_short_story)      { FactoryBot.create(:category, :best_short_story) }
   let!(:john_w_campbell_award) { FactoryBot.create(:category, :john_w_campbell_award) }
 
-  let(:reservation) { create(:reservation) }
+  let(:best_novel_id) { best_novel.id.to_s }
+
+  let(:empty_entry) do
+    { "description" => "" }
+  end
+
+  let(:filled_entry) do
+    { "description" => "The Hobbit" }
+  end
+
+  let(:params) do
+    ActionController::Parameters.new(
+      "reservation"=> {
+        "category"=> {
+          best_novel_id => {
+            "nomination" => {
+              "1" => filled_entry,
+              "2" => empty_entry,
+              "3" => empty_entry,
+              "4" => empty_entry,
+              "5" => empty_entry,
+            },
+          },
+        },
+      },
+    )
+  end
 
   subject(:service) { described_class.new(reservation: reservation) }
 
@@ -33,99 +61,107 @@ RSpec.describe MemberNominationsByCategory do
   context "when disabled" do
     let(:reservation) { create(:reservation, :disabled) }
 
-    it "won't list nominations" do
-      expect(service.call).to be_falsey
-      expect(service.errors).to_not be_empty
+    it { is_expected.to_not be_valid }
+
+    it "lists errors" do
+      expect { service.valid? }
+        .to change { service.errors }
+        .to be_present
+    end
+
+    it "doesn't build nominations from #from_reservation" do
+      expect { service.from_reservation }
+        .to_not change { service.nominations_by_category }
+        .from(nil)
+    end
+
+    it "doesn't build nominations from #from_params" do
+      expect { service.from_params(params) }
+        .to_not change { service.nominations_by_category }
+        .from(nil)
     end
   end
 
   context "when in instalment" do
     let(:reservation) { create(:reservation, :instalment) }
-
-    it "won't list nominations" do
-      expect(service.call).to be_falsey
-      expect(service.errors).to_not be_empty
-    end
+    it { is_expected.to_not be_valid }
   end
 
-  context "#call" do
-    subject(:call) { service.call }
-
-    it { is_expected.to be_kind_of(Hash) }
-
-    let(:best_novel_nominations) { call[best_novel] }
-
-    it "gets keyed by Category" do
-      expect(call.keys.last).to be_kind_of(Category)
-      expect(call.keys.count).to eq(Category.count)
-    end
-
-    it "lists 5 empty nominations per category" do
-      expect(best_novel_nominations).to be_kind_of(Array)
-      expect(best_novel_nominations.last).to be_kind_of(Nomination)
-      expect(best_novel_nominations.count).to be(5)
-      expect(best_novel_nominations.map(&:description)).to be_all(&:nil?)
+  describe "#from_reservation" do
+    it "is chainable" do
+      expect(service.from_reservation).to eq service
     end
 
     it "remembers a users past nominations" do
       first_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
       second_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
+      best_novel_nominations = service.from_reservation.nominations_by_category[best_novel]
       expect(best_novel_nominations.count).to be(5)
       expect(best_novel_nominations.first).to eq first_nomination
       expect(best_novel_nominations.second).to eq second_nomination
       expect(best_novel_nominations.third.description).to be_nil
     end
+
+    context "after called" do
+      before do
+        service.from_reservation
+      end
+
+      describe "#nominations_by_category" do
+        subject(:nominations_by_category) { service.nominations_by_category }
+
+        it { is_expected.to be_kind_of(Hash) }
+
+        it "gets keyed by Category" do
+          expect(subject.keys.last).to be_kind_of(Category)
+          expect(subject.keys.count).to eq(Category.count)
+        end
+
+        it "lists 5 empty nominations per category" do
+          expect(subject[best_novel]).to be_kind_of(Array)
+          expect(subject[best_novel].last).to be_kind_of(Nomination)
+          expect(subject[best_novel].count).to be(5)
+          expect(subject[best_novel].map(&:description)).to be_all(&:nil?)
+        end
+      end
+    end
   end
 
   describe "#from_params" do
-    let(:best_novel_id) { best_novel.id.to_s }
-
-    let(:empty_entry) do
-      { "description" => "" }
-    end
-
-    let(:filled_entry) do
-      { "description" => "The Hobbit" }
-    end
-
-    let(:params) do
-      ActionController::Parameters.new(
-        "reservation"=> {
-          "category"=> {
-            best_novel_id => {
-              "nomination" => {
-                "1" => filled_entry,
-                "2" => empty_entry,
-                "3" => empty_entry,
-                "4" => empty_entry,
-                "5" => empty_entry,
-              },
-            },
-          },
-        },
-      )
-    end
-
     it "is chainable" do
       expect(service.from_params(params)).to eq service
+    end
+
+    it "updates #nominations_by_category" do
+      expect { service.from_params(params) }
+        .to change { service.nominations_by_category }
+        .to be_present
     end
 
     context "after called" do
       before { service.from_params(params) }
 
-      subject(:nominations_by_category) { service.nominations_by_category }
+      describe "#nominations_by_category" do
+        subject(:nominations_by_category) { service.nominations_by_category }
 
-      it { is_expected.to be_kind_of(Hash) }
+        it { is_expected.to be_kind_of(Hash) }
 
-      let(:best_novel_nominations) { call[best_novel] }
+        let(:best_novel_nominations) { subject[best_novel] }
 
-      it "gets keyed by Category" do
-        expect(nominations_by_category.keys.last).to be_kind_of(Category)
-      end
+        it "gets keyed by Category" do
+          expect(subject.keys.last).to be_kind_of(Category)
+        end
 
-      it "creates new Nomintions for submitted categories" do
-        expect(nominations_by_category[best_novel].first).to be_kind_of(Nomination)
-        expect(nominations_by_category[best_novel].first.description).to eq filled_entry["description"]
+        it "creates new Nomintions for submitted categories" do
+          expect(subject[best_novel].first).to be_kind_of(Nomination)
+          expect(subject[best_novel].first.description).to eq filled_entry["description"]
+        end
+
+        xdescribe "#save" do
+          it "creates new Nomination entries" do
+            expect { service.save }.to change { Nomination.count }.by(1)
+          end
+        end
       end
     end
   end
