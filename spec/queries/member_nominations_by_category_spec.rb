@@ -77,11 +77,7 @@ RSpec.describe MemberNominationsByCategory do
     end
   end
 
-  context "when constructed from_params" do
-    before { service.from_params(params) }
-
-    subject(:nominations_by_category) { service.nominations_by_category }
-
+  describe "#from_params" do
     let(:best_novel_id) { best_novel.id.to_s }
 
     let(:empty_entry) do
@@ -110,17 +106,27 @@ RSpec.describe MemberNominationsByCategory do
       )
     end
 
-    it { is_expected.to be_kind_of(Hash) }
-
-    let(:best_novel_nominations) { call[best_novel] }
-
-    it "gets keyed by Category" do
-      expect(nominations_by_category.keys.last).to be_kind_of(Category)
+    it "is chainable" do
+      expect(service.from_params(params)).to eq service
     end
 
-    it "creates new Nomintions for submitted categories" do
-      expect(nominations_by_category[best_novel].first).to be_kind_of(Nomination)
-      expect(nominations_by_category[best_novel].first.description).to eq filled_entry["description"]
+    context "after called" do
+      before { service.from_params(params) }
+
+      subject(:nominations_by_category) { service.nominations_by_category }
+
+      it { is_expected.to be_kind_of(Hash) }
+
+      let(:best_novel_nominations) { call[best_novel] }
+
+      it "gets keyed by Category" do
+        expect(nominations_by_category.keys.last).to be_kind_of(Category)
+      end
+
+      it "creates new Nomintions for submitted categories" do
+        expect(nominations_by_category[best_novel].first).to be_kind_of(Nomination)
+        expect(nominations_by_category[best_novel].first.description).to eq filled_entry["description"]
+      end
     end
   end
 end

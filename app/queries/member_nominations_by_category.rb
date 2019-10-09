@@ -41,6 +41,8 @@ class MemberNominationsByCategory
         )
       end
     end
+
+    self
   end
 
   def call
