@@ -24,9 +24,56 @@ class MemberNominationsByCategory
 
   attr_reader :nominations_by_category
 
-  def from_params(params)
-    reset_nominations
+  def valid?
+    errors << "reservation isn't paid for yet" if reservation.instalment?
+    errors << "reservation is disabled" if reservation.disabled?
+    errors.none?
+  end
 
+  def from_params(params)
+    if valid?
+      reset_nominations
+      record_submitted_nominations(params)
+      add_empties_where_needed
+    end
+
+    self
+  end
+
+  def call
+    if valid?
+      reset_nominations
+      record_user_nominations
+      add_empties_where_needed
+    end
+
+    nominations_by_category
+  end
+
+  def errors
+    @errors ||= []
+  end
+
+  private
+
+  def check_reservation
+  end
+
+  def reset_nominations
+    @nominations_by_category = {}.tap do |nominations_by|
+      Category.find_each do |category|
+        nominations_by[category] = []
+      end
+    end
+  end
+
+  def record_user_nominations
+    reservation.nominations.eager_load(:category).find_each do |n|
+      nominations_by_category[n.category] << n
+    end
+  end
+
+  def record_submitted_nominations(params)
     Category.find_each do |category|
       # Find submitted nominations
       nominations = params.dig("reservation", "category", category.id.to_s, "nomination")
@@ -40,44 +87,6 @@ class MemberNominationsByCategory
           description: nom_params["description"],
         )
       end
-    end
-
-    self
-  end
-
-  def call
-    reset_nominations
-
-    check_reservation
-    return false if errors.any?
-
-    sort_existing_nominations
-    add_empties_where_needed
-    nominations_by_category
-  end
-
-  def errors
-    @errors ||= []
-  end
-
-  private
-
-  def check_reservation
-    errors << "reservation isn't paid for yet" if reservation.instalment?
-    errors << "reservation is disabled" if reservation.disabled?
-  end
-
-  def reset_nominations
-    @nominations_by_category = {}.tap do |nominations_by|
-      Category.find_each do |category|
-        nominations_by[category] = []
-      end
-    end
-  end
-
-  def sort_existing_nominations
-    reservation.nominations.eager_load(:category).find_each do |n|
-      nominations_by_category[n.category] << n
     end
   end
 
