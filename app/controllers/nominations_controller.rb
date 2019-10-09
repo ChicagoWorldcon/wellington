@@ -25,6 +25,7 @@ class NominationsController < ApplicationController
 
   def create
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
+    builder.save
     @nominations_by_category = builder.nominations_by_category
   end
 end

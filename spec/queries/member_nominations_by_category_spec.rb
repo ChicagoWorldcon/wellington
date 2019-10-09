@@ -157,9 +157,58 @@ RSpec.describe MemberNominationsByCategory do
           expect(subject[best_novel].first.description).to eq filled_entry["description"]
         end
 
-        xdescribe "#save" do
-          it "creates new Nomination entries" do
-            expect { service.save }.to change { Nomination.count }.by(1)
+        describe "#save" do
+          let(:params) do
+            ActionController::Parameters.new(
+              "reservation"=> {
+                "category"=> {
+                  best_novel_id => {
+                    "nomination" => best_novel_nominations
+                  }
+                }
+              }
+            )
+          end
+
+          context "when there is a single submitted entry" do
+            let(:best_novel_nominations) do
+              {
+                "1" => filled_entry,
+                "2" => empty_entry,
+              }
+            end
+
+            it "creates new Nomination entries" do
+              expect { service.save }.to change { Nomination.count }.by(1)
+            end
+          end
+
+          context "when there are five entries" do
+            let(:best_novel_nominations) do
+              {
+                "1" => filled_entry,
+                "2" => filled_entry,
+                "3" => filled_entry,
+                "4" => filled_entry,
+                "5" => filled_entry,
+              }
+            end
+
+            it "creates new Nomination entries" do
+              expect { service.save }.to change { Nomination.count }.by(5)
+            end
+          end
+
+          context "when entries are submitted taht don't match expected keys" do
+            let(:best_novel_nominations) do
+              {
+                "flub" => filled_entry
+              }
+            end
+
+            it "doesn't save anything" do
+              expect { service.save }.to_not change { Nomination.count }.from(0)
+            end
           end
         end
       end

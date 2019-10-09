@@ -53,6 +53,15 @@ class MemberNominationsByCategory
     self
   end
 
+  def save
+    return false if !valid?
+
+    valid_nominations = nominations_by_category.values.flatten.select(&:valid?)
+    valid_nominations.map(&:save)
+
+    true
+  end
+
   private
 
   def reset_nominations
