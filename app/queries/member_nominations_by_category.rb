@@ -50,12 +50,6 @@ class MemberNominationsByCategory
     self
   end
 
-  def call
-    from_reservation
-
-    nominations_by_category
-  end
-
   def errors
     @errors ||= []
   end
