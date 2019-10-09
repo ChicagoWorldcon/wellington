@@ -40,12 +40,18 @@ class MemberNominationsByCategory
     self
   end
 
-  def call
+  def from_reservation
     if valid?
       reset_nominations
       record_user_nominations
       add_empties_where_needed
     end
+
+    self
+  end
+
+  def call
+    from_reservation
 
     nominations_by_category
   end
