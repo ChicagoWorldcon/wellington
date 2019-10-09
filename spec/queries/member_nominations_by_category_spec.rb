@@ -65,7 +65,7 @@ RSpec.describe MemberNominationsByCategory do
 
     it "lists errors" do
       expect { service.valid? }
-        .to change { service.errors }
+        .to change { service.errors.messages }
         .to be_present
     end
 

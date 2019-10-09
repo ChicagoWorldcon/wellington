@@ -20,14 +20,17 @@ class MemberNominationsByCategory
   NOMINATION_KEYS = (1..VOTES_PER_CATEGORY).to_a.map(&:to_s)
 
   include ActiveModel::Model
+  include ActiveModel::Validations
+
   attr_accessor :reservation # Required to instantiate this model
+
+  validate :can_nominate
 
   attr_reader :nominations_by_category
 
-  def valid?
-    errors << "reservation isn't paid for yet" if reservation.instalment?
-    errors << "reservation is disabled" if reservation.disabled?
-    errors.none?
+  def can_nominate
+    errors.add(:reservation, "reservation isn't paid for yet") if reservation&.instalment?
+    errors.add(:reservation, "reservation is disabled") if reservation&.disabled?
   end
 
   def from_params(params)
@@ -50,14 +53,7 @@ class MemberNominationsByCategory
     self
   end
 
-  def errors
-    @errors ||= []
-  end
-
   private
-
-  def check_reservation
-  end
 
   def reset_nominations
     @nominations_by_category = {}.tap do |nominations_by|
