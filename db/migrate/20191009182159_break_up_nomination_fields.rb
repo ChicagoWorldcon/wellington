@@ -14,13 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :nomination do
-    association :category
-    association :reservation
+class BreakUpNominationFields < ActiveRecord::Migration[6.0]
+  def change
+    rename_column :nominations, :description, :field_1
+    add_column :nominations, :field_2, :string, null: true
+    add_column :nominations, :field_3, :string, null: true
 
-    field_1 { Faker::Book.title }
-    field_2 { Faker::Book.author }
-    field_3 { Faker::Book.publisher }
+    add_column :categories, :field_1, :string, null: false, default: "Nomination"
+    add_column :categories, :field_2, :string, null: true
+    add_column :categories, :field_3, :string, null: true
   end
 end

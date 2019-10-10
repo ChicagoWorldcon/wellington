@@ -48,7 +48,10 @@ CREATE TABLE public.categories (
     name character varying NOT NULL,
     description character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    field_1 character varying DEFAULT 'Nomination'::character varying NOT NULL,
+    field_2 character varying,
+    field_3 character varying
 );
 
 
@@ -245,9 +248,11 @@ CREATE TABLE public.nominations (
     id bigint NOT NULL,
     category_id bigint NOT NULL,
     reservation_id bigint NOT NULL,
-    description character varying NOT NULL,
+    field_1 character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    field_2 character varying,
+    field_3 character varying
 );
 
 
@@ -888,6 +893,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190707220026'),
 ('20190716055122'),
 ('20190716055132'),
-('20190825022040');
+('20190825022040'),
+('20191009182159');
 
 

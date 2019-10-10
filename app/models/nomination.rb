@@ -18,5 +18,5 @@ class Nomination < ApplicationRecord
   belongs_to :category
   belongs_to :reservation
 
-  validates :description, presence: true
+  validates :field_1, presence: true
 end

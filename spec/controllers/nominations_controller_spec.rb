@@ -45,16 +45,16 @@ RSpec.describe NominationsController, type: :controller do
     let!(:best_novel_id) { best_novel.id.to_s }
 
     let(:empty_entry) do
-      { "description" => "" }
+      { "field_1" => "" }
     end
 
     let(:filled_entry) do
-      { "description" => "The Hobbit" }
+      { "field_1" => "The Hobbit" }
     end
 
     it "renders when submitting good entries" do
       post :create, params: {
-        reservation_id: reservation.id,
+        "reservation_id" => reservation.id,
         "reservation"=> {
           "category"=> {
             best_novel_id => {

@@ -59,7 +59,7 @@
           <%= form_with(model: @reservation, method: :create, url: reservation_nominations_path) do |reservation_form| %>
             <% @nominations_by_category.each do |category, nominations| %>
               <%= reservation_form.fields_for(category, index: category.id) do |category_form| %>
-                <h2 class="h3-like"><%= category.name %></h2>
+                <legend><%= category.name %></legend>
 
                 <fieldset class="l-v-spacing">
                   <p class="form-note form-note-m-group">
@@ -69,8 +69,19 @@
                   <div class="form-group">
                     <% nominations.each.with_index(1) do |nomination, counter| %>
                       <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
-                        <label for="book_title">Nomination <%= counter %></label>
-                        <%= nomination_form.text_field(:description, class: "form-control", id: "book_title") %>
+                        <fieldset class="l-v-spacing">
+                          <p>Nomination <%= counter %></p>
+
+                          <div class="row">
+                            <% [:field_1, :field_2, :field_3].each do |field| %>
+                              <% next if category[field].nil? %>
+                              <div class="col-12 col-md-4">
+                                <label for="<%= field %>"><%= category[field] %></label>
+                                <%= nomination_form.text_field(field, id: field, class: "form-control") %>
+                              </div>
+                            <% end %>
+                          </div>
+                        </fieldset>
                       <% end %>
                     <% end %>
                   </div>

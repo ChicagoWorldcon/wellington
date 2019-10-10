@@ -92,7 +92,9 @@ class MemberNominationsByCategory
         nominations_by_category[category] << Nomination.new(
           reservation: reservation,
           category: category,
-          description: nom_params["description"],
+          field_1: nom_params["field_1"],
+          field_2: nom_params["field_2"],
+          field_3: nom_params["field_3"],
         )
       end
     end

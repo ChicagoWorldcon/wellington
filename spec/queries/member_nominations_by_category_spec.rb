@@ -19,21 +19,24 @@ require "rails_helper"
 RSpec.describe MemberNominationsByCategory do
   let(:reservation) { create(:reservation) }
 
-  let!(:best_graphic_story)    { FactoryBot.create(:category, :best_graphic_story) }
-  let!(:best_novel)            { FactoryBot.create(:category, :best_novel) }
-  let!(:best_novelette)        { FactoryBot.create(:category, :best_novelette) }
-  let!(:best_novella)          { FactoryBot.create(:category, :best_novella) }
-  let!(:best_short_story)      { FactoryBot.create(:category, :best_short_story) }
-  let!(:john_w_campbell_award) { FactoryBot.create(:category, :john_w_campbell_award) }
+  let!(:best_novel)       { FactoryBot.create(:category, :best_novel) }
+  let!(:retro_best_novel) { FactoryBot.create(:category, :retro_best_novel) }
+  let!(:best_novelette)   { FactoryBot.create(:category, :best_novelette) }
+  let!(:best_novella)     { FactoryBot.create(:category, :best_novella) }
+  let!(:best_short_story) { FactoryBot.create(:category, :best_short_story) }
 
   let(:best_novel_id) { best_novel.id.to_s }
 
   let(:empty_entry) do
-    { "description" => "" }
+    { "field_1" => "" }
   end
 
   let(:filled_entry) do
-    { "description" => "The Hobbit" }
+    {
+      "field_1" => "The Hobbit",
+      "field_2" => "J. R. R. Tolkien",
+      "field_3" => "George Allen & Unwin",
+    }
   end
 
   let(:params) do
@@ -93,13 +96,13 @@ RSpec.describe MemberNominationsByCategory do
     end
 
     it "remembers a users past nominations" do
-      first_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
-      second_nomination = reservation.nominations.create!(category: best_novel, description: "oh la la")
+      first_nomination = reservation.nominations.create!(category: best_novel, field_1: "oh la la")
+      second_nomination = reservation.nominations.create!(category: best_novel, field_1: "oh la la")
       best_novel_nominations = service.from_reservation.nominations_by_category[best_novel]
       expect(best_novel_nominations.count).to be(5)
       expect(best_novel_nominations.first).to eq first_nomination
       expect(best_novel_nominations.second).to eq second_nomination
-      expect(best_novel_nominations.third.description).to be_nil
+      expect(best_novel_nominations.third.field_1).to be_nil
     end
 
     context "after called" do
@@ -121,7 +124,7 @@ RSpec.describe MemberNominationsByCategory do
           expect(subject[best_novel]).to be_kind_of(Array)
           expect(subject[best_novel].last).to be_kind_of(Nomination)
           expect(subject[best_novel].count).to be(5)
-          expect(subject[best_novel].map(&:description)).to be_all(&:nil?)
+          expect(subject[best_novel].map(&:field_1)).to be_all(&:nil?)
         end
       end
     end
@@ -154,7 +157,7 @@ RSpec.describe MemberNominationsByCategory do
 
         it "creates new Nomintions for submitted categories" do
           expect(subject[best_novel].first).to be_kind_of(Nomination)
-          expect(subject[best_novel].first.description).to eq filled_entry["description"]
+          expect(subject[best_novel].first.field_1).to eq filled_entry["field_1"]
         end
 
         describe "#save" do
@@ -213,7 +216,7 @@ RSpec.describe MemberNominationsByCategory do
             let(:best_novel_nominations) { {} }
 
             it "resets all nominations" do
-              reservation.nominations.create!(category: best_novel, description: "oh la la")
+              reservation.nominations.create!(category: best_novel, field_1: "oh la la")
               expect { service.save }
                 .to change { Nomination.count }
                 .from(1).to(0)
