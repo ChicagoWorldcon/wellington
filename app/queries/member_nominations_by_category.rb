@@ -16,8 +16,7 @@
 
 # ListNominations given a reservation will give you objects to list out nominations for a user
 class MemberNominationsByCategory
-  VOTES_PER_CATEGORY = 5
-  NOMINATION_KEYS = (1..VOTES_PER_CATEGORY).to_a.map(&:to_s)
+  NOMINATION_KEYS = (1..Nomination::VOTES_PER_CATEGORY).to_a.map(&:to_s)
 
   include ActiveModel::Model
   include ActiveModel::Validations
@@ -102,7 +101,7 @@ class MemberNominationsByCategory
 
   def add_empties_where_needed
     nominations_by_category.keys.each do |category|
-      remaining_votes = VOTES_PER_CATEGORY - nominations_by_category[category].size
+      remaining_votes = Nomination::VOTES_PER_CATEGORY - nominations_by_category[category].size
 
       remaining_votes.times do
         nominations_by_category[category] << Nomination.new(

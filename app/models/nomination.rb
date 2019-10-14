@@ -15,6 +15,8 @@
 # limitations under the License.
 
 class Nomination < ApplicationRecord
+  VOTES_PER_CATEGORY = 5
+
   belongs_to :category
   belongs_to :reservation
 
