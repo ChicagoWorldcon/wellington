@@ -45,6 +45,8 @@ Rails.application.routes.draw do
 
   # /operator are maintenance routes for support people
   scope :operator do
+    resources :hugos
+
     resources :reservations do
       resources :credits
       resources :set_memberships
