@@ -16,6 +16,7 @@
 
 class NominationsController < ApplicationController
   before_action :lookup_reservation!
+  before_action :lookup_category, only: :create
 
   def index
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
@@ -27,5 +28,11 @@ class NominationsController < ApplicationController
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
     @nominations_by_category = builder.nominations_by_category
     render "nominations/index"
+  end
+
+  private
+
+  def lookup_category
+    @category = Category.find(params[:category_id])
   end
 end

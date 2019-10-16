@@ -91,7 +91,7 @@ module ApplicationHelper
   end
 
   def nomination_accordian_state(category)
-    if params[:category_id] == category.id.to_s
+    if @category == category
       "collapse show"
     else
       "collapse"

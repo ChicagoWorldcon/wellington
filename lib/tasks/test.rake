@@ -36,6 +36,7 @@ namespace :test do
         next if file.starts_with?("vendor/")
         next if file.starts_with?("bin/")
         next if file == "package.json"
+        next if file == "config/brakeman.ignore"
         next if !FileTest.exist?(file)
 
         if File.readlines(file).grep(/Licensed under the Apache License/).none?
