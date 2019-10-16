@@ -55,70 +55,64 @@
       </div>
 
       <div class="col-12 col-lg-8">
-        <%= form_with(model: @reservation, method: :create, remote: false, url: reservation_nominations_path) do |reservation_form| %>
-          <div class="accordion" id="accordion">
-            <% @nominations_by_category.each do |category, nominations| %>
-              <div class="card z-depth-0 bordered">
-                <% count_complete = nominations.count(&:persisted?) %>
-                <div
-                  class="card-header pointer <%= nomination_text_colour(count_complete) %>"
-                  id="heading-<%= category.id %>"
-                  aria-expanded="true"
-                  aria-controls="collapse-<%= category.id %>"
-                  data-target="#collapse-<%= category.id %>"
-                  data-toggle="collapse"
-                >
-                  <a class="mb-0">
-                    <%= category.name %>
-                    (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
-                  </a>
-                </div>
+        <div class="accordion" id="accordion">
+          <% @nominations_by_category.each do |category, nominations| %>
+            <div class="card z-depth-0 bordered">
+              <% count_complete = nominations.count(&:persisted?) %>
+              <div
+                class="card-header pointer <%= nomination_text_colour(count_complete) %>"
+                id="heading-<%= category.id %>"
+                aria-expanded="true"
+                aria-controls="collapse-<%= category.id %>"
+                data-target="#collapse-<%= category.id %>"
+                data-toggle="collapse"
+              >
+                <a class="mb-0">
+                  <%= category.name %>
+                  (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
+                </a>
+              </div>
 
-                <div
-                  id="collapse-<%= category.id %>"
-                  class="collapse"
-                  aria-labelledby="heading-<%= category.id %>"
-                  data-parent="#accordion"
-                >
-                  <div class="card-body">
-                    <fieldset class="l-v-spacing">
-                      <p class="form-note-m-group">
-                        <%= category.description %>
-                      </p>
+              <div
+                id="collapse-<%= category.id %>"
+                class="collapse"
+                aria-labelledby="heading-<%= category.id %>"
+                data-parent="#accordion"
+              >
+                <div class="card-body l-v-spacing">
+                  <p class="form-note-m-group">
+                    <%= category.description %>
+                  </p>
 
-                      <div class="form-group">
-                        <% nominations.each.with_index(1) do |nomination, counter| %>
-                          <%# <%= reservation_form.fields_for(category, index: category.id) do |category_form| %1> %>
-                          <%= form_with(model: category, method: :create, remote: false, url: reservation_nominations_path) do |category_form| %>
-                            <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
-                              <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
-                              <fieldset class="l-v-spacing">
-                                <p>Nomination <%= counter %></p>
+                  <div class="form-group">
+                    <%= form_with(model: category, index: category.id, method: :create, url: reservation_nominations_path) do |category_form| %>
+                      <% nominations.each.with_index(1) do |nomination, counter| %>
+                        <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
 
-                                <div class="row">
-                                  <% decorated_nomination.fields.each do |field| %>
-                                    <div class="<%= decorated_nomination.column_classes %>">
-                                      <label for="<%= field %>"><%= category[field] %></label>
-                                      <%= nomination_form.text_field(field, id: field, class: "form-control") %>
-                                    </div>
-                                  <% end %>
-                                </div>
-                              </fieldset>
+                        <fieldset class="l-v-spacing">
+                          <p>Nomination <%= counter %></p>
+
+                          <div class="row">
+                            <% decorated_nomination.fields.each do |field| %>
+                              <div class="<%= decorated_nomination.column_classes %>">
+                                <label for="<%= field %>"><%= category[field] %></label>
+                                <%= category_form.text_field(field, id: field, class: "form-control") %>
+                              </div>
                             <% end %>
-                          <% end %>
-                        <% end %>
-                      </div>
-                    </fieldset>
+                          </div>
+                        </fieldset>
+                      <% end %>
 
-                    <input type="submit" value="Save Details" class="btn btn-m-full-width">
+                      <input type="submit" value="Save Details" class="btn btn-m-full-width">
+                    <% end %>
                   </div>
                 </div>
               </div>
-            <% end %>
-          </div>
+            </div>
+          <% end %>
+        </div>
 
-          <input type="submit" value="Finalise Nominations" class="btn btn-m-full-width">
-        <% end %>
+        <input type="submit" value="Finalise Nominations" class="btn btn-m-full-width">
       </div>
     </div>
   </div>
