@@ -21,4 +21,14 @@ class Category < ApplicationRecord
 
   validates :description, presence: true
   validates :name, presence: true
+
+  # Look up field_x in category where field_x is saved and not null
+  # returns [:field_1, :field_2, :field_3]
+  # Best author would have all 3 fields, best_semiprozine would have just field_1
+  def fields
+    return @fields if @fields.present?
+
+    headings = attributes.slice("field_1", "field_2", "field_3")
+    @fields = headings.compact.keys
+  end
 end

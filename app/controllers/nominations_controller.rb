@@ -24,8 +24,8 @@ class NominationsController < ApplicationController
   end
 
   def create
-    builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
-    builder.save
+    builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
     @nominations_by_category = builder.nominations_by_category
+    render "nominations/index"
   end
 end

@@ -25,22 +25,11 @@ class NominationFormDecorator < SimpleDelegator
   end
 
   def column_classes
-    case fields.count
+    case category.fields.count
     when 3
       "col-12 col-md-4"
     else
       "col-12 col-md-6"
     end
-  end
-
-  # Look up field_x in category where field_x is saved and not null
-  # returns [:field_1, :field_2, :field_3]
-  # Best author would have all 3 fields, best_semiprozine would have just field_1
-  def fields
-    return @fields if @fields.present?
-
-    category_headings = category.attributes.slice("field_1", "field_2", "field_3")
-    present_headings = category_headings.compact.keys
-    @fields = present_headings
   end
 end

@@ -89,4 +89,12 @@ module ApplicationHelper
       "text-dark"
     end
   end
+
+  def nomination_accordian_state(category)
+    if params[:category_id] == category.id.to_s
+      "collapse show"
+    else
+      "collapse"
+    end
+  end
 end
