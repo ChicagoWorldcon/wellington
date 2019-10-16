@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+* text=auto
 # linux scripts must end with LF
 *.sh text eol=lf
 
