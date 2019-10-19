@@ -35,6 +35,7 @@ class MemberNominationsByCategory
   def from_params(params)
     if valid?
       reset_nominations
+      record_user_nominations
       record_submitted_nominations(params)
       add_empties_where_needed
     end
@@ -54,11 +55,15 @@ class MemberNominationsByCategory
 
   def save
     return false if !valid?
+    return false if !@submitted_categories.present?
 
-    valid_nominations = nominations_by_category.values.flatten.select(&:valid?)
+    # Replace nominations in category with submitted values
     reservation.transaction do
-      reservation.nominations.where(category: @submitted_categories).destroy_all
-      valid_nominations.map(&:save)
+      existing_nominations = reservation.nominations.where(category: @submitted_categories)
+      existing_nominations.destroy_all
+
+      submitted_nominations = nominations_by_category.slice(*@submitted_categories).values.flatten
+      submitted_nominations.map(&:save) # n.b. Invalid nominations don't save here
     end
 
     true
@@ -88,8 +93,10 @@ class MemberNominationsByCategory
       nominations = params.dig("category", category.id.to_s, "nomination")
       next unless nominations
 
-      # Record submitted categories for reset later
+      # Reset and record submitted categories
       @submitted_categories << category
+      nominations_by_category[category] = []
+
 
       # Pull out up to VOTES_PER_CATEGORY of them, use their description field for a new Nomination
       nominations.slice(*NOMINATION_KEYS).values.each do |nom_params|

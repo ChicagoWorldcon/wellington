@@ -139,6 +139,59 @@ RSpec.describe MemberNominationsByCategory do
         .to be_present
     end
 
+    it "loads entries from other categories" do
+      reservation.nominations.create!(
+        category: best_short_story,
+        field_1: "The Office of Missing Persons",
+        field_2: "Akil Kumaraswamy",
+        field_3: "Lit Hub",
+      )
+      service.from_params(params)
+      short_story_nominations = service.nominations_by_category[best_short_story]
+      expect(short_story_nominations.first.field_1).to eq "The Office of Missing Persons"
+    end
+
+    context "when there are 5 entries submitted and there were 5 entries saved" do
+      let!(:previous_nominations) do
+        5.times.map do
+          create(:nomination, reservation: reservation, category: best_novel)
+        end
+      end
+
+      let(:params) do
+        ActionController::Parameters.new(
+          "category"=> {
+            best_novel_id => {
+              "nomination" => {
+                "1" => filled_entry,
+                "2" => filled_entry,
+                "3" => filled_entry,
+                "4" => filled_entry,
+                "5" => filled_entry,
+              },
+            },
+          },
+        )
+      end
+
+      before do
+        service.from_params(params)
+      end
+
+      it "succeeds when calling #save" do
+        expect(service.save).to be_truthy
+      end
+
+      it "doesn't #save than 5 entries per category" do
+        expect { service.save }.to_not change { Nomination.count }.from(5)
+      end
+
+      it "replaces entries on #save" do
+        service.from_params(params)
+        expect { service.save }.to change { best_novel.reload.nominations.first }
+      end
+    end
+
     context "after called" do
       before { service.from_params(params) }
 
@@ -156,6 +209,12 @@ RSpec.describe MemberNominationsByCategory do
         it "creates new Nomintions for submitted categories" do
           expect(subject[best_novel].first).to be_kind_of(Nomination)
           expect(subject[best_novel].first.field_1).to eq filled_entry["field_1"]
+        end
+
+        it "has 5 per category" do
+          subject.each do |category, nominations|
+            expect(nominations.count).to eq 5
+          end
         end
       end
 
