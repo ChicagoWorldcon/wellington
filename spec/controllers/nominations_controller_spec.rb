@@ -38,35 +38,62 @@ RSpec.describe NominationsController, type: :controller do
     end
   end
 
-  xdescribe "#create" do
+  describe "#update" do
     before { sign_in user }
 
-    let!(:best_novel) { FactoryBot.create(:category, :best_novel) }
-    let!(:best_novel_id) { best_novel.id.to_s }
-
-    let(:empty_entry) do
-      { "field_1" => "" }
-    end
+    let!(:best_novel) { create(:category, :best_novel) }
+    let!(:best_series) { create(:category, :best_series) }
 
     let(:filled_entry) do
-      { "field_1" => "The Hobbit" }
+      {
+        field_1: "Leviathan Wakes",
+        field_2: "James S. A. Corey",
+        field_3: "Orbit Books",
+      }
     end
 
-    it "renders when submitting good entries" do
-      post :create, params: {
-        "reservation_id" => reservation.id,
-        "reservation"=> {
-          "category"=> {
-            best_novel_id => {
-              "nomination" => {
-                "1" => filled_entry,
-              },
-            },
-          },
-        },
+    let(:partial_entry) do
+      {
+        field_1: "This Side of Paradise",
+        field_2: "Ummm...",
+        field_3: "",
       }
+    end
 
-      expect(response).to have_http_status(:ok)
+    let(:empty_entry) do
+      {
+        field_1: "",
+        field_2: "",
+        field_3: "",
+      }
+    end
+
+    context "when posting valid params" do
+      subject(:post_create) do
+        post(:create, params: {
+          reservation_id: reservation.id,
+          category_id: best_novel.id,
+          category: {
+            best_novel.id => {
+              nomination: {
+                1 => filled_entry,
+                2 => partial_entry,
+                3 => empty_entry,
+                4 => empty_entry,
+                5 => empty_entry,
+              }
+            }
+          },
+        })
+      end
+
+      it "renders ok" do
+        expect(post_create).to have_http_status(:ok)
+      end
+
+      it "creates nominations" do
+        expect { post_create }.to change { Nomination.count }.from(0)
+      end
     end
   end
 end

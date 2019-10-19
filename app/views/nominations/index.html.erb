@@ -76,8 +76,8 @@
               <%=
                 form_for(
                   category,
+                  method: :update,
                   index: category.id,
-                  method: :create,
                   url: [reservation_nominations_path, "#heading-", category.id].join
                 ) do |category_form|
               %>
@@ -113,7 +113,7 @@
                       <% end %>
                     <% end %>
 
-                    <input type="submit" value="Save Details" class="btn btn-m-full-width">
+                    <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
                   </div>
                 </div>
               <% end %>
@@ -121,7 +121,7 @@
           <% end %>
         </div>
 
-        <input type="submit" value="Finalise Nominations" class="btn btn-m-full-width">
+        <input type="submit" disabled="disabled" value="Finalise Nominations" class="btn btn-m-full-width">
       </div>
     </div>
   </div>

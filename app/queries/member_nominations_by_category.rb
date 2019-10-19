@@ -83,7 +83,7 @@ class MemberNominationsByCategory
   def record_submitted_nominations(params)
     Category.find_each do |category|
       # Find submitted nominations
-      nominations = params.dig("reservation", "category", category.id.to_s, "nomination")
+      nominations = params.dig("category", category.id.to_s, "nomination")
       next unless nominations
 
       # Pull out up to VOTES_PER_CATEGORY of them, use their description field for a new Nomination

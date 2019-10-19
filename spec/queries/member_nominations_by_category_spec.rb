@@ -41,16 +41,14 @@ RSpec.describe MemberNominationsByCategory do
 
   let(:params) do
     ActionController::Parameters.new(
-      "reservation"=> {
-        "category"=> {
-          best_novel_id => {
-            "nomination" => {
-              "1" => filled_entry,
-              "2" => empty_entry,
-              "3" => empty_entry,
-              "4" => empty_entry,
-              "5" => empty_entry,
-            },
+      "category"=> {
+        best_novel_id => {
+          "nomination" => {
+            "1" => filled_entry,
+            "2" => empty_entry,
+            "3" => empty_entry,
+            "4" => empty_entry,
+            "5" => empty_entry,
           },
         },
       },
@@ -163,13 +161,11 @@ RSpec.describe MemberNominationsByCategory do
         describe "#save" do
           let(:params) do
             ActionController::Parameters.new(
-              "reservation"=> {
-                "category"=> {
-                  best_novel_id => {
-                    "nomination" => best_novel_nominations
-                  }
-                }
-              }
+              "category"=> {
+                best_novel_id => {
+                  "nomination" => best_novel_nominations
+                },
+              },
             )
           end
 

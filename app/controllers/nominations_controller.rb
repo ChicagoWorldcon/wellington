@@ -25,7 +25,8 @@ class NominationsController < ApplicationController
   end
 
   def create
-    builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
+    builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
+    builder.save
     @nominations_by_category = builder.nominations_by_category
     render "nominations/index"
   end
@@ -34,5 +35,9 @@ class NominationsController < ApplicationController
 
   def lookup_category
     @category = Category.find(params[:category_id])
+  end
+
+  def nomination_params
+    params.require(:category).require(:nomination)
   end
 end
