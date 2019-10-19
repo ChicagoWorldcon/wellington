@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe MemberNominationsByCategory do
-  let(:reservation) { create(:reservation) }
+  let(:reservation) { create(:reservation, :with_order_against_membership) }
 
   let!(:best_novel)       { FactoryBot.create(:category, :best_novel) }
   let!(:retro_best_novel) { FactoryBot.create(:category, :retro_best_novel) }
@@ -85,6 +85,13 @@ RSpec.describe MemberNominationsByCategory do
 
   context "when in instalment" do
     let(:reservation) { create(:reservation, :instalment) }
+    it { is_expected.to_not be_valid }
+  end
+
+  context "when child membership" do
+    let(:child) { create(:membership, :child) }
+    let(:reservation) { create(:reservation, membership: child) }
+
     it { is_expected.to_not be_valid }
   end
 

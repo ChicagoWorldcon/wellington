@@ -28,8 +28,27 @@ class MemberNominationsByCategory
   attr_reader :nominations_by_category
 
   def can_nominate
-    errors.add(:reservation, "reservation isn't paid for yet") if reservation&.instalment?
-    errors.add(:reservation, "reservation is disabled") if reservation&.disabled?
+    if !reservation.present?
+      errors.add(:reservation, "reservation is a required field")
+      return
+    end
+
+    if !reservation.valid? || !reservation.membership.present?
+      errors.add(:reservation, "reservation invalid")
+      return
+    end
+
+    if reservation.instalment?
+      errors.add(:reservation, "reservation isn't paid for yet")
+    end
+
+    if reservation.disabled?
+      errors.add(:reservation, "reservation is disabled")
+    end
+
+    if !reservation.membership.can_vote?
+      errors.add(:reservation, "reservation doesn't have voting rights")
+    end
   end
 
   def from_params(params)
