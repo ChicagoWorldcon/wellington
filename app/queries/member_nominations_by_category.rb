@@ -57,7 +57,7 @@ class MemberNominationsByCategory
 
     valid_nominations = nominations_by_category.values.flatten.select(&:valid?)
     reservation.transaction do
-      reservation.nominations.destroy_all
+      reservation.nominations.where(category: @submitted_categories).destroy_all
       valid_nominations.map(&:save)
     end
 
@@ -81,10 +81,15 @@ class MemberNominationsByCategory
   end
 
   def record_submitted_nominations(params)
+    @submitted_categories = []
+
     Category.find_each do |category|
       # Find submitted nominations
       nominations = params.dig("category", category.id.to_s, "nomination")
       next unless nominations
+
+      # Record submitted categories for reset later
+      @submitted_categories << category
 
       # Pull out up to VOTES_PER_CATEGORY of them, use their description field for a new Nomination
       nominations.slice(*NOMINATION_KEYS).values.each do |nom_params|

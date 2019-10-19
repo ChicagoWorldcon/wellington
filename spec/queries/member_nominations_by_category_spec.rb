@@ -208,14 +208,19 @@ RSpec.describe MemberNominationsByCategory do
             end
           end
 
-          context "when there are previous nominations" do
+          context "with empty form" do
             let(:best_novel_nominations) { {} }
 
-            it "resets all nominations" do
+            it "resets all nominations in that category" do
               reservation.nominations.create!(category: best_novel, field_1: "oh la la")
               expect { service.save }
-                .to change { Nomination.count }
-                .from(1).to(0)
+                .to change { best_novel.nominations.count }
+                .by(-1)
+            end
+
+            it "doesn't reset other categories" do
+              reservation.nominations.create!(category: best_novelette, field_1: "oh la la")
+              expect { service.save } .to_not change { best_novelette.nominations.count }
             end
           end
         end
