@@ -157,71 +157,71 @@ RSpec.describe MemberNominationsByCategory do
           expect(subject[best_novel].first).to be_kind_of(Nomination)
           expect(subject[best_novel].first.field_1).to eq filled_entry["field_1"]
         end
+      end
 
-        describe "#save" do
-          let(:params) do
-            ActionController::Parameters.new(
-              "category"=> {
-                best_novel_id => {
-                  "nomination" => best_novel_nominations
-                },
+      describe "#save" do
+        let(:params) do
+          ActionController::Parameters.new(
+            "category"=> {
+              best_novel_id => {
+                "nomination" => best_novel_nominations
               },
-            )
+            },
+          )
+        end
+
+        context "when there is a single submitted entry" do
+          let(:best_novel_nominations) do
+            {
+              "1" => filled_entry,
+              "2" => empty_entry,
+            }
           end
 
-          context "when there is a single submitted entry" do
-            let(:best_novel_nominations) do
-              {
-                "1" => filled_entry,
-                "2" => empty_entry,
-              }
-            end
+          it "creates new Nomination entries" do
+            expect { service.save }.to change { Nomination.count }.by(1)
+          end
+        end
 
-            it "creates new Nomination entries" do
-              expect { service.save }.to change { Nomination.count }.by(1)
-            end
+        context "when there are five entries" do
+          let(:best_novel_nominations) do
+            {
+              "1" => filled_entry,
+              "2" => filled_entry,
+              "3" => filled_entry,
+              "4" => filled_entry,
+              "5" => filled_entry,
+            }
           end
 
-          context "when there are five entries" do
-            let(:best_novel_nominations) do
-              {
-                "1" => filled_entry,
-                "2" => filled_entry,
-                "3" => filled_entry,
-                "4" => filled_entry,
-                "5" => filled_entry,
-              }
-            end
+          it "creates new Nomination entries" do
+            expect { service.save }.to change { Nomination.count }.by(5)
+          end
+        end
 
-            it "creates new Nomination entries" do
-              expect { service.save }.to change { Nomination.count }.by(5)
-            end
+        context "when entries are submitted that don't match expected keys" do
+          let(:best_novel_nominations) do
+            { "flub" => filled_entry }
           end
 
-          context "when entries are submitted that don't match expected keys" do
-            let(:best_novel_nominations) do
-              { "flub" => filled_entry }
-            end
+          it "doesn't save anything" do
+            expect { service.save }.to_not change { Nomination.count }.from(0)
+          end
+        end
 
-            it "doesn't save anything" do
-              expect { service.save }.to_not change { Nomination.count }.from(0)
-            end
+        context "with empty form" do
+          let(:best_novel_nominations) { {} }
+
+          it "resets all nominations in that category" do
+            reservation.nominations.create!(category: best_novel, field_1: "oh la la")
+            expect { service.save }
+              .to change { best_novel.nominations.count }
+              .by(-1)
           end
 
-          context "with empty form" do
-            let(:best_novel_nominations) { {} }
-
-            it "resets all nominations in that category" do
-              reservation.nominations.create!(category: best_novel, field_1: "oh la la")
-              expect { service.save }
-                .to change { best_novel.nominations.count }
-                .by(-1)
-            end
-
-            it "doesn't reset other categories" do
-              reservation.nominations.create!(category: best_novelette, field_1: "oh la la")
-              expect { service.save } .to_not change { best_novelette.nominations.count }
-            end
+          it "doesn't reset other categories" do
+            reservation.nominations.create!(category: best_novelette, field_1: "oh la la")
+            expect { service.save } .to_not change { best_novelette.nominations.count }
           end
         end
       end
