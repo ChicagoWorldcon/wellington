@@ -22,4 +22,19 @@ RSpec.describe Nomination, type: :model do
   it "generates a valid model" do
     expect(nomination).to be_valid
   end
+
+  [
+    {field_1: "1", field_2: nil, field_3: nil},
+    {field_1: nil, field_2: "2", field_3: nil},
+    {field_1: nil, field_2: nil, field_3: "3"},
+  ].each.with_index(1) do |valid_params, n|
+    it "is valid when submited with case #{n}" do
+      expect(build(:nomination, **valid_params)).to be_valid
+    end
+  end
+
+  it "isn't valid when no fields are set" do
+    invalid_model = build(:nomination, field_1: nil, field_2: nil, field_3: nil)
+    expect(invalid_model).to_not be_valid
+  end
 end
