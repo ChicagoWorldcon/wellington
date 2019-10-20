@@ -57,3 +57,55 @@ Support.create(
   password: 111111,
   confirmed_at: Time.now,
 )
+
+# Hugo setup
+puts "Creating hugo categories"
+FactoryBot.create(:category, :best_novel)
+FactoryBot.create(:category, :best_novella)
+FactoryBot.create(:category, :best_novelette)
+FactoryBot.create(:category, :best_short_story)
+FactoryBot.create(:category, :best_series)
+FactoryBot.create(:category, :best_related_work)
+FactoryBot.create(:category, :best_graphic_story_or_comic)
+FactoryBot.create(:category, :best_dramatic_presentation_long_form)
+FactoryBot.create(:category, :best_dramatic_presentation_short_form)
+FactoryBot.create(:category, :best_professional_editor_short_form)
+FactoryBot.create(:category, :best_professional_editor_long_form)
+FactoryBot.create(:category, :best_professional_artist)
+FactoryBot.create(:category, :best_semiprozine)
+FactoryBot.create(:category, :best_fanzine)
+FactoryBot.create(:category, :best_fancast)
+FactoryBot.create(:category, :best_fan_writer)
+FactoryBot.create(:category, :best_fan_artist)
+FactoryBot.create(:category, :lodestar_award)
+FactoryBot.create(:category, :astounding_award)
+FactoryBot.create(:category, :retro_best_novel)
+FactoryBot.create(:category, :retro_best_novella)
+FactoryBot.create(:category, :retro_best_novelette)
+FactoryBot.create(:category, :retro_best_short_story)
+FactoryBot.create(:category, :retro_best_series)
+FactoryBot.create(:category, :retro_best_related_work)
+FactoryBot.create(:category, :retro_best_graphic_story_or_comic)
+FactoryBot.create(:category, :retro_best_dramatic_presentation_long_form)
+FactoryBot.create(:category, :retro_best_dramatic_presentation_short_form)
+FactoryBot.create(:category, :retro_best_professional_editor_short_form)
+FactoryBot.create(:category, :retro_best_professional_editor_long_form)
+FactoryBot.create(:category, :retro_best_professional_artist)
+FactoryBot.create(:category, :retro_best_semiprozine)
+FactoryBot.create(:category, :retro_best_fanzine)
+FactoryBot.create(:category, :retro_best_fancast)
+FactoryBot.create(:category, :retro_best_fan_writer)
+FactoryBot.create(:category, :retro_best_fan_artist)
+
+all_categories = Category.all.to_a
+nominators = Reservation.paid.joins(:membership).merge(Membership.with_nomination_rights).to_a
+
+nominators.each.with_index(1) do |reservation, count|
+  puts "Generated nominations for #{count}/#{nominators.count} members" if count % 5 == 0
+  sampled_categories = all_categories.sample(rand(0..all_categories.count))
+  sampled_categories.each do |sample_category|
+    rand(1..5).times do
+      FactoryBot.create(:nomination, reservation: reservation, category: sample_category)
+    end
+  end
+end

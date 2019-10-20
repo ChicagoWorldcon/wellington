@@ -28,6 +28,9 @@ class Membership < ApplicationRecord
   has_many :reservations, through: :active_orders
 
   scope :order_by_price, -> { order(price_cents: :desc) }
+  scope :with_attend_rights, -> { where(can_attend: true) }
+  scope :with_nomination_rights, -> { where(can_nominate: true) }
+  scope :with_vote_rights, -> { where(can_vote: true) }
 
   def to_s
     name.humanize
