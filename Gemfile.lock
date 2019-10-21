@@ -202,6 +202,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
+    redcarpet (3.5.0)
     regexp_parser (1.6.0)
     responders (3.0.0)
       actionpack (>= 5.0)
@@ -314,6 +315,7 @@ DEPENDENCIES
   pry-rails
   puma
   rails (= 6.0.0)
+  redcarpet
   rspec-rails
   rubocop (= 0.66.0)
   rubocop-github
