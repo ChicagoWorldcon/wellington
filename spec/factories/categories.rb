@@ -167,9 +167,9 @@ FactoryBot.define do
       name { "Best Dramatic Presentation, Long Form" }
       description {
         %{
-          Any theatrical feature or other production with a complete running time of more than 90 minutes, in any medium
-          of dramatized science fiction, fantasy, or related subjects that has been publicly presented for the first
-          time in its present dramatic form during 2019.
+          Any theatrical feature or other production with a complete running time of **more than 90 minutes**, in any
+          medium of dramatized science fiction, fantasy, or related subjects that has been publicly presented for the
+          first time in its present dramatic form during 2019.
         }.strip_heredoc
       }
       field_1 { "Title" }
@@ -181,9 +181,9 @@ FactoryBot.define do
       name { "Best Dramatic Presentation, Short Form" }
       description {
         %{
-          Any television program or other production with a complete running time of 90 minutes or less, in any medium
-          of dramatized science fiction, fantasy, or related subjects that has been publicly presented for the first
-          time in its present dramatic form during 2019.
+          Any television program or other production with a complete running time of **90 minutes or less**, in any
+          medium of dramatized science fiction, fantasy, or related subjects that has been publicly presented for the
+          first time in its present dramatic form during 2019.
         }.strip_heredoc
       }
       field_1 { "Title" }
@@ -438,9 +438,9 @@ FactoryBot.define do
       name { "Retro Best Dramatic Presentation, Long Form" }
       description {
         %{
-          Any theatrical feature or other production with a complete running time of more than 90 minutes, in any medium
-          of dramatized science fiction, fantasy, or related subjects that was publicly presented for the first time in
-          its present dramatic form during 1944.
+          Any theatrical feature or other production with a complete running time of **more than 90 minutes**, in any
+          medium of dramatized science fiction, fantasy, or related subjects that was publicly presented for the first
+          time in its present dramatic form during 1944.
         }.strip_heredoc
       }
       field_1 { "Title" }
@@ -452,9 +452,9 @@ FactoryBot.define do
       name { "Retro Best Dramatic Presentation, Short Form" }
       description {
         %{
-          Any television program or other production with a complete running time of 90 minutes or less, in any medium
-          of dramatized science fiction, fantasy, or related subjects that was publicly presented for the first time in
-          its then dramatic form during 1944.
+          Any television program or other production with a complete running time of **90 minutes or less**, in any
+          medium of dramatized science fiction, fantasy, or related subjects that was publicly presented for the first
+          time in its then dramatic form during 1944.
         }.strip_heredoc
       }
       field_1 { "Title" }
