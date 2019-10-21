@@ -14,117 +14,196 @@
   limitations under the License.
 %>
 
+<% if @privacy_warning.present? %>
+  <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centred" role="document">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= render "multiple_accounts_disclaimer" %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <h1>Nominate for the Hugo Awards</h1>
 <div class="container">
   <div class="row d-flex align-items-stretch">
-    <div class="row">
-      <div class="col-12 col-lg-4">
-        <div class="l-v-spacing">
-          <%= render("reservation_card", reservation: @reservation) do %>
-            <% show_links(@reservation).each do |link| %>
-              <p><%= link %></p>
-            <% end %>
-          <% end %>
-        </div>
+    <div class="col-12 col-lg-8">
+      <div class="l-v-spacing l-panel hugo-description">
+        <h2>Eligibility to Nominate</h2>
 
-        <% if @privacy_warning.present? %>
-          <div class="l-panel">
-            <h2>Multiple Accounts Warning</h2>
-              <%= render "multiple_accounts_disclaimer" %>
+        <p>
+          You may nominate for the 2020 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
+          for Best New Writer / the 1945 Retro Hugo Awards, if, on or before 31 December 2020, 11:59 PM PDT:
+        </p>
 
-              <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centred" role="document">
-                  <div class="modal-content text-dark">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <%= render "multiple_accounts_disclaimer" %>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+        <ul>
+          <li>you are an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention), or</li>
+          <li>you were an attending or supporting member of Dublin 2019: An Irish Worldcon (the 2019 World Science Fiction Convention).</li>
+        </ul>
+
+        <p>
+          Note: Young Adult memberships count as attending memberships and are eligible to nominate.  Child memberships,
+          one-day memberships and hall passes do not.
+        </p>
+
+        <h2>Deadline</h2>
+
+        <p>
+          All ballots must be received by Friday 13 March 2020, 11:59 PDT.
+        </p>
+
+        <h2>How to Nominate – either by Mail or Online</h2>
+
+        <p>
+          You may nominate up to five persons or works in each category. However, if you are not familiar with the works
+          that fall into that category, you are permitted (and encouraged) to make fewer nominations or none at all.
+          Your nominations are equally weighted – the order in which you list them has no effect on the outcome.
+        </p>
+
+        <p>
+          “No Award” will appear automatically in every single category on the final ballot – there is no need to
+          include that choice on the nomination form.
+        </p>
+
+        <p>
+          If your nominee is not well known, please provide a source where their 2019/1944 work in that category may be
+          found. This information makes it easier for us to identify the work you intend to nominate.
+        </p>
+
+        <p>
+          If you make nominations for Best Series, it will help us if you also list a volume in the series that was
+          published in 2019/1944.
+        </p>
+
+        <p>
+          Please note that nominations in the written fiction and dramatic presentation categories may be relocated to a
+          different category by the Hugo Awards Administrator if close in length to the category boundary.
+        </p>
+
+        <p>
+          If you have any questions about the process or need assistance with nominating, please contact us at
+          <a href="mailto:hugo-help@conzealand.nz">hugo-help@conzealand.nz</a>
+        </p>
+
+        <p>
+          The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
+          by CoNZealand in April 2020. Only members of CoNZealand (including those who join after 31 December 2019) will
+          be eligible to vote on the final ballot.  Please contact hugo-help@conzealand.nz if you have questions.
+        </p>
+
+        <h2>Eligibility for Nominations</h2>
+
+        <p>
+          Works published in 2019/1944 for the first time anywhere are eligible for the Retro Hugo Awards being awarded in
+          2020. So are works published for the first time in English translation in 2019/1944, or for the first time in
+          the United States in 2019/1944, unless they have already appeared on a Hugo Award final ballot.  
+        </p>
+
+        <p>
+          Books are considered to have been published in the year of the publication date, which usually appears with
+          the copyright information on the back of the title page. If there is no stated publication date, the copyright
+          date will be used instead.  A dated periodical is considered to have been published on the cover date,
+          regardless of when it was placed on sale or copyrighted.  Serialized stories or dramatic presentations are
+          eligible in the year in which the last installment appears.
+        </p>
+
+        <p>
+          Nominations may be relocated to a different category by the Hugo administrator if they are within 20% of the
+          category boundary (such as in the case of Novel/Novella, Novella/Novelette, Novelette/Short Story, and
+          Dramatic Presentation, Long Form/Dramatic Presentation, Short Form).
+        </p>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row d-flex align-items-stretch">
+    <div class="col-12">
+      <div class="accordion" id="accordion">
+        <% @nominations_by_category.each do |category, nominations| %>
+          <div class="card z-depth-0 bordered">
+            <% count_complete = nominations.count(&:persisted?) %>
+            <div
+              class="card-header pointer <%= nomination_text_colour(count_complete) %>"
+              id="heading-<%= category.id %>"
+              aria-expanded="true"
+              aria-controls="collapse-<%= category.id %>"
+              data-target="#collapse-<%= category.id %>"
+              data-toggle="collapse"
+            >
+              <a class="mb-0">
+                <%= category.name %>
+                (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
+              </a>
+            </div>
+
+            <%=
+              form_for(
+                category,
+                method: :update,
+                index: category.id,
+                url: [reservation_nominations_path, "#heading-", category.id].join
+              ) do |category_form|
+            %>
+              <div
+                id="collapse-<%= category.id %>"
+                class="<%= nomination_accordian_state(category) %>"
+                aria-labelledby="heading-<%= category.id %>"
+                data-parent="#accordion"
+              >
+                <%= hidden_field_tag(:category_id, category.id) %>
+
+                <div class="card-body">
+                  <div class="form-note-m-group hugo-description">
+                    <%= raw markdown.render(category.description) %>
                   </div>
+
+                  <hr>
+
+                  <% nominations.each.with_index(1) do |nomination, counter| %>
+                    <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
+                      <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
+
+                      <fieldset class="l-v-spacing">
+                        <p>Nomination <%= counter %></p>
+
+                        <div class="row">
+                          <% category.fields.each do |field| %>
+                            <div class="<%= decorated_nomination.column_classes %>">
+                              <label for="<%= field %>"><%= category[field] %></label>
+                              <%= nomination_form.text_field(field, id: field, class: "form-control text-dark") %>
+                            </div>
+                          <% end %>
+                        </div>
+                      </fieldset>
+                    <% end %>
+                  <% end %>
+
+                  <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
                 </div>
               </div>
+            <% end %>
           </div>
         <% end %>
       </div>
 
-      <div class="col-12 col-lg-8">
-        <div class="accordion" id="accordion">
-          <% @nominations_by_category.each do |category, nominations| %>
-            <div class="card z-depth-0 bordered">
-              <% count_complete = nominations.count(&:persisted?) %>
-              <div
-                class="card-header pointer <%= nomination_text_colour(count_complete) %>"
-                id="heading-<%= category.id %>"
-                aria-expanded="true"
-                aria-controls="collapse-<%= category.id %>"
-                data-target="#collapse-<%= category.id %>"
-                data-toggle="collapse"
-              >
-                <a class="mb-0">
-                  <%= category.name %>
-                  (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
-                </a>
-              </div>
-
-              <%=
-                form_for(
-                  category,
-                  method: :update,
-                  index: category.id,
-                  url: [reservation_nominations_path, "#heading-", category.id].join
-                ) do |category_form|
-              %>
-                <div
-                  id="collapse-<%= category.id %>"
-                  class="<%= nomination_accordian_state(category) %>"
-                  aria-labelledby="heading-<%= category.id %>"
-                  data-parent="#accordion"
-                >
-                  <%= hidden_field_tag(:category_id, category.id) %>
-
-                  <div class="card-body">
-                    <div class="form-note-m-group hugo-description">
-                      <%= raw markdown.render(category.description) %>
-                    </div>
-
-                    <hr>
-
-                    <% nominations.each.with_index(1) do |nomination, counter| %>
-                      <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
-                        <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
-
-                        <fieldset class="l-v-spacing">
-                          <p>Nomination <%= counter %></p>
-
-                          <div class="row">
-                            <% category.fields.each do |field| %>
-                              <div class="<%= decorated_nomination.column_classes %>">
-                                <label for="<%= field %>"><%= category[field] %></label>
-                                <%= nomination_form.text_field(field, id: field, class: "form-control text-dark") %>
-                              </div>
-                            <% end %>
-                          </div>
-                        </fieldset>
-                      <% end %>
-                    <% end %>
-
-                    <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-
-        <input type="submit" disabled="disabled" value="Finalise Nominations" class="btn btn-m-full-width">
-      </div>
+      <input type="submit" disabled="disabled" value="Finalise Nominations" class="btn btn-m-full-width">
     </div>
   </div>
 </div>
