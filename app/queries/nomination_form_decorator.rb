@@ -28,8 +28,10 @@ class NominationFormDecorator < SimpleDelegator
     case category.fields.count
     when 3
       "col-12 col-md-4"
-    else
+    when 2
       "col-12 col-md-6"
+    else
+      "col-12"
     end
   end
 end

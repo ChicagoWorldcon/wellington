@@ -44,7 +44,7 @@ RSpec.describe NominationFormDecorator do
       ),
       Test.new(
         FactoryBot.create(:category, :best_semiprozine),
-        "col-12 col-md-6",
+        "col-12",
       ),
     ].each.with_index(1) do |test, n|
       it "has expected classes for case #{n}" do
