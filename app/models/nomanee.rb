@@ -14,12 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Nomination < ApplicationRecord
-  VOTES_PER_CATEGORY = 5
-
-  belongs_to :category
-  belongs_to :nomanee, required: false
-  belongs_to :reservation
+class Nomanee < ApplicationRecord
+  has_many :nominations
 
   # We don't want blank models, it's clutter
   validate :at_least_one_field

@@ -273,6 +273,39 @@ ALTER SEQUENCE public.memberships_id_seq OWNED BY public.memberships.id;
 
 
 --
+-- Name: nomanees; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.nomanees (
+    id bigint NOT NULL,
+    field_1 character varying,
+    field_2 character varying,
+    field_3 character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: nomanees_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.nomanees_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: nomanees_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.nomanees_id_seq OWNED BY public.nomanees.id;
+
+
+--
 -- Name: nominations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -284,7 +317,8 @@ CREATE TABLE public.nominations (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     field_2 character varying,
-    field_3 character varying
+    field_3 character varying,
+    nomanee_id bigint
 );
 
 
@@ -541,6 +575,13 @@ ALTER TABLE ONLY public.memberships ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: nomanees id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomanees ALTER COLUMN id SET DEFAULT nextval('public.nomanees_id_seq'::regclass);
+
+
+--
 -- Name: nominations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -636,6 +677,14 @@ ALTER TABLE ONLY public.elections
 
 ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nomanees nomanees_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomanees
+    ADD CONSTRAINT nomanees_pkey PRIMARY KEY (id);
 
 
 --
@@ -755,6 +804,13 @@ CREATE UNIQUE INDEX index_elections_on_i18n_key ON public.elections USING btree 
 --
 
 CREATE INDEX index_nominations_on_category_id ON public.nominations USING btree (category_id);
+
+
+--
+-- Name: index_nominations_on_nomanee_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_nominations_on_nomanee_id ON public.nominations USING btree (nomanee_id);
 
 
 --
@@ -965,6 +1021,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190825022040'),
 ('20191009182159'),
 ('20191020043744'),
+('20191020055416'),
 ('20191020174055'),
 ('20191024180734'),
 ('20191031051223'),

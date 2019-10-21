@@ -1,0 +1,2 @@
+module NomaneesHelper
+end

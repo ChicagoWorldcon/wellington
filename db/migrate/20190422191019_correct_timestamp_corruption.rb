@@ -17,6 +17,8 @@
 # Imports on v1.0 had timestamps that weren't all accurate. This is an attempt to fix it.
 class CorrectTimestampCorruption < ActiveRecord::Migration[5.2]
   def up
+    return if User.count == 0
+
     imported_users = User.joins(:notes).where("notes.content LIKE ?", "Import%").distinct
     purchases = Purchase.includes(:charges, :orders).joins(claims: :user)
     imported_purchases = purchases.where(users: {id: imported_users})

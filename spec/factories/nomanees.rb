@@ -14,23 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Nomination < ApplicationRecord
-  VOTES_PER_CATEGORY = 5
+FactoryBot.define do
+  factory :nomanee do
+    field_1 { Faker::Book.title }
+    field_2 { Faker::Book.author }
+    field_3 { Faker::Book.publisher }
 
-  belongs_to :category
-  belongs_to :nomanee, required: false
-  belongs_to :reservation
-
-  # We don't want blank models, it's clutter
-  validate :at_least_one_field
-
-  private
-
-  def at_least_one_field
-    if [field_1, field_2, field_3].none?(&:present?)
-      errors.add(:field_1, "must specify at least one field")
-      errors.add(:field_2, "must specify at least one field")
-      errors.add(:field_3, "must specify at least one field")
+    trait :with_nominations do
+      after :create do |new_nomanee, _evaluator|
+        3.times do
+          new_nomanee.nominations << create(:nomination)
+        end
+      end
     end
   end
 end

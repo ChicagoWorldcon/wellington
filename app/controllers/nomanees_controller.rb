@@ -1,0 +1,2 @@
+class NomaneesController < ApplicationController
+end
