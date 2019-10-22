@@ -181,8 +181,6 @@
                       <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
 
                       <fieldset class="l-v-spacing">
-                        <p>Nomination <%= counter %></p>
-
                         <div class="row">
                           <% category.fields.each do |field| %>
                             <div class="<%= decorated_nomination.column_classes %>">
