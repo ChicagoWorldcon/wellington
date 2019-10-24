@@ -21,6 +21,7 @@ FactoryBot.define do
     field_1 { "Title" }
     field_2 { "Author" }
     field_3 { "Publisher" }
+    election { Election.last || create(:election) }
 
     trait :best_novel # Just for completeness, this is the default case
 

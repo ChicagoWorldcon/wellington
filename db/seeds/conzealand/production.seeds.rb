@@ -153,8 +153,8 @@ Membership.create!(
   "price": Money.new(7500),
 )
 
-
-Category.create!(
+hugo = Election.create!(name: "2020 Hugo")
+hugo.categories.create!(
   name: "Best Novel",
   description: %{
     A science fiction or fantasy story of 40,000 words or more, published for the first time in 2019.
@@ -163,7 +163,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Publisher",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Novella",
   description: %{
     A science fiction or fantasy story between 17,500 and 40,000 words, which appeared for the first time in 2019.
@@ -172,7 +172,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Novelette",
   description: %{
     A science fiction or fantasy story between 7,500 and 17,500 words, which appeared for the first time in 2019.
@@ -181,7 +181,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Short Story",
   description: %{
     A science fiction or fantasy story of fewer than 7,500 words, which appeared for the first time in 2019.
@@ -190,7 +190,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Series",
   description: %{
     A multi-volume science fiction or fantasy story, unified by elements such as plot, characters, setting, and
@@ -250,7 +250,7 @@ Category.create!(
   field_2: "Author",
   field_3: "2019 Example from Series",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Related Work",
   description: %{
     Any work related to the field of science fiction, fantasy, or fandom, appearing for the first time in 2019, or
@@ -263,7 +263,7 @@ Category.create!(
   field_2: "Author/Editor",
   field_3: "Publisher",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Graphic Story or Comic",
   description: %{
     Any science fiction or fantasy story told in graphic form, appearing for the first time in 2019.
@@ -272,7 +272,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Publisher",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Dramatic Presentation, Long Form",
   description: %{
     Any theatrical feature or other production with a complete running time of more than 90 minutes, in any medium
@@ -283,7 +283,7 @@ Category.create!(
   field_2: "Studio/Network",
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Dramatic Presentation, Short Form",
   description: %{
     Any television program or other production with a complete running time of 90 minutes or less, in any medium
@@ -294,7 +294,7 @@ Category.create!(
   field_2: "(Series)",
   field_3: "Studio/Network",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Professional Editor, Short Form",
   description: %{
     The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
@@ -304,7 +304,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Professional Editor, Long Form",
   description: %{
     The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
@@ -314,7 +314,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Professional Artist",
   description: %{
     An illustrator whose work has appeared in a professional publication in the field of science fiction or
@@ -330,7 +330,7 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Semiprozine",
   description: %{
     Any generally available non-professional publication devoted to science fiction or fantasy which by the close
@@ -346,7 +346,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Fanzine",
   description: %{
     Any generally available non-professional publication devoted to science fiction, fantasy, or related subjects which,
@@ -362,7 +362,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Fancast",
   description: %{
     Any generally available non-professional audio or video periodical devoted to science fiction, fantasy, or
@@ -374,7 +374,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Fan Writer",
   description: %{
     A person whose writing has appeared in fanzines or semiprozines, or in generally available electronic media in
@@ -385,7 +385,7 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Best Fan Artist",
   description: %{
     An artist or cartoonist whose work has appeared through publication in fanzines, semiprozines, or through any
@@ -396,7 +396,7 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+hugo.categories.create!(
   name: "Lodestar Award for Best Young Adult Book (not a Hugo)",
   description: %{
     A book published for young adult readers in the field of science fiction or fantasy appearing for the first time in
@@ -407,7 +407,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+hugo.categories.create!(
   name: "Astounding Award for the best new science fiction writer, sponsored by Dell Magazines (not a Hugo)",
   description: %{
     A new writer is one whose first work of science fiction or fantasy appeared in 2018 or 2019 in a professional
@@ -420,7 +420,9 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+
+retro_hugo = Election.create!(name: "1945 Retro Hugo")
+retro_hugo.categories.create!(
   name: "Retro Best Novel",
   description: %{
     A science fiction or fantasy story of 40,000 words or more, which appeared for the first time in 1944.
@@ -430,7 +432,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Publisher",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Novella",
   description: %{
     A science fiction or fantasy story between 17,500 and 40,000 words, which appeared for the first time in 1944.
@@ -440,7 +442,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Novelette",
   description: %{
     A science fiction or fantasy story between 7,500 and 17,500 words, which appeared for the first time in 1944.
@@ -450,7 +452,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Short Story",
   description: %{
     A science fiction or fantasy story of fewer than 7,500 words, which appeared for the first time in 1944.
@@ -460,7 +462,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Where Published",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Series",
   description: %{
     A multi-volume science fiction or fantasy story, unified by elements such as plot, characters, setting, and
@@ -475,7 +477,7 @@ Category.create!(
   field_2: "Author",
   field_3: "1944 Example from Series",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Related Work",
   description: %{
     Any work related to the field of science fiction, fantasy, or fandom, appearing for the first time in 1944, or
@@ -487,7 +489,7 @@ Category.create!(
   field_2: "Author/Editor",
   field_3: "Publisher",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Graphic Story or Comic",
   description: %{
     Any science fiction or fantasy story told in graphic form, appearing for the first time in 1944.
@@ -497,7 +499,7 @@ Category.create!(
   field_2: "Author",
   field_3: "Publisher",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Dramatic Presentation, Long Form",
   description: %{
     Any theatrical feature or other production with a complete running time of more than 90 minutes, in any medium
@@ -509,7 +511,7 @@ Category.create!(
   field_2: "Studio/Network",
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Dramatic Presentation, Short Form",
   description: %{
     Any television program or other production with a complete running time of 90 minutes or less, in any medium
@@ -521,7 +523,7 @@ Category.create!(
   field_2: "(Series)",
   field_3: "Studio/Network",
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Professional Editor, Short Form",
   description: %{
     The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
@@ -532,7 +534,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Professional Editor, Long Form",
   description: %{
     The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
@@ -543,7 +545,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Professional Artist",
   description: %{
     An illustrator whose work has appeared in a professional publication in the field of science fiction or
@@ -559,7 +561,7 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Semiprozine",
   description: %{
     Any generally available non-professional publication devoted to science fiction or fantasy which by the close
@@ -576,7 +578,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Fanzine",
   description: %{
     Any generally available non-professional publication devoted to science fiction, fantasy, or related subjects
@@ -593,7 +595,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Fancast",
   description: %{
     Any generally available non-professional audio or video periodical devoted to science fiction, fantasy, or
@@ -605,7 +607,7 @@ Category.create!(
   field_2: nil,
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Fan Writer",
   description: %{
     A person whose writing appeared in fanzines or semiprozines, or in generally available electronic media in
@@ -616,7 +618,7 @@ Category.create!(
   field_2: "Example",
   field_3: nil,
 )
-Category.create!(
+retro_hugo.categories.create!(
   name: "Retro Best Fan Artist",
   description: %{
     An artist or cartoonist whose work appeared through publication in fanzines, semiprozines, or through any

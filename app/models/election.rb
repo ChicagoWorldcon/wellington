@@ -14,22 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Category represents a Hugo Award category
-# see http://www.thehugoawards.org/hugo-categories/
-class Category < ApplicationRecord
-  belongs_to :election
-  has_many :nominations
+# An Election represents a set of categories, nominations and balots
+# If you make 2 elections, they are treated as separate types of nomination and voting in our system
+# An example of this would be Hugo Awards and Retro Hugo awards
+class Election < ApplicationRecord
+  has_many :categories
 
-  validates :description, presence: true
   validates :name, presence: true
-
-  # Look up field_x in category where field_x is saved and not null
-  # returns [:field_1, :field_2, :field_3]
-  # Best author would have all 3 fields, best_semiprozine would have just field_1
-  def fields
-    return @fields if @fields.present?
-
-    headings = attributes.slice("field_1", "field_2", "field_3")
-    @fields = headings.compact.keys
-  end
 end

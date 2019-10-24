@@ -51,7 +51,8 @@ CREATE TABLE public.categories (
     updated_at timestamp without time zone NOT NULL,
     field_1 character varying DEFAULT 'Nomination'::character varying NOT NULL,
     field_2 character varying,
-    field_3 character varying
+    field_3 character varying,
+    election_id bigint NOT NULL
 );
 
 
@@ -200,6 +201,35 @@ CREATE SEQUENCE public.details_id_seq
 --
 
 ALTER SEQUENCE public.details_id_seq OWNED BY public.details.id;
+
+
+--
+-- Name: elections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.elections (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+
+--
+-- Name: elections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.elections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: elections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.elections_id_seq OWNED BY public.elections.id;
 
 
 --
@@ -496,6 +526,13 @@ ALTER TABLE ONLY public.details ALTER COLUMN id SET DEFAULT nextval('public.deta
 
 
 --
+-- Name: elections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.elections ALTER COLUMN id SET DEFAULT nextval('public.elections_id_seq'::regclass);
+
+
+--
 -- Name: memberships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -585,6 +622,14 @@ ALTER TABLE ONLY public.details
 
 
 --
+-- Name: elections elections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.elections
+    ADD CONSTRAINT elections_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -646,6 +691,13 @@ ALTER TABLE ONLY public.supports
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_categories_on_election_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_categories_on_election_id ON public.categories USING btree (election_id);
 
 
 --
@@ -784,6 +836,14 @@ ALTER TABLE ONLY public.nominations
 
 
 --
+-- Name: categories fk_rails_4520a4c84e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT fk_rails_4520a4c84e FOREIGN KEY (election_id) REFERENCES public.elections(id);
+
+
+--
 -- Name: orders fk_rails_4b32829485; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -897,6 +957,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190825022040'),
 ('20191009182159'),
 ('20191020043744'),
-('20191020174055');
+('20191020174055'),
+('20191024180734');
 
 
