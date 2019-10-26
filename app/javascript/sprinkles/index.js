@@ -108,6 +108,23 @@ $(document).ready(() => {
   });
 });
 
+// Javascript running on the user facing hugo pages
+// If this gets complicated, consider moving to a vue.js app
 $(document).ready(() => {
   $('#privacy-warning').modal();
+
+  const hugoShowFormInput = $('input#hugo-show-form');
+  if (hugoShowFormInput.length === 0) {
+    return;
+  }
+
+  'keyup blur change'.split(' ').forEach((event) => {
+    $('#hugo-show-form').on(event, (e) => {
+      const input = $(e.target).val().toLowerCase().trim();
+      const expected = $(e.target).data('name').toLowerCase().trim();
+      if (input === expected) {
+        $('.hugo-show-form-thanks').attr('hidden', false);
+      }
+    });
+  });
 });

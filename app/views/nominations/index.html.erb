@@ -37,8 +37,8 @@
 
 <h1>Nominate for the Hugo Awards</h1>
 <div class="container">
-  <div class="row d-flex align-items-stretch">
-    <div class="col-12 col-lg-8">
+  <div class="row">
+    <div class="col-12">
       <div class="l-v-spacing l-panel hugo-description">
         <h2>Eligibility to Nominate</h2>
 
@@ -127,15 +127,40 @@
         </p>
       </div>
     </div>
+  </div>
 
+  <div class="row">
     <div class="col-12 col-lg-4">
       <div class="l-v-spacing">
         <%= render("reservation_card", reservation: @reservation) %>
       </div>
     </div>
+
+    <div class="col-12 col-lg-8">
+      <div class="l-v-spacing l-panel">
+        <p>
+          Please type
+          <strong><%= @legal_name %></strong>
+          to show you understand the terms stated above.
+          This is based on your legal name as stated on your membership.
+        </p>
+        <p>
+        <input
+          id="hugo-show-form"
+          data-name="<%= @legal_name %>"
+          type="text"
+          class="form-control"
+        ></input>
+        </p>
+
+        <p class="hugo-show-form-thanks" hidden>
+          Thanks. Here's your form!
+        </p>
+      </div>
+    </div>
   </div>
 
-  <div class="row d-flex align-items-stretch">
+  <div class="row align-items-stretch hugo-show-form-thanks" hidden>
     <div class="col-12">
       <div class="accordion" id="accordion">
         <% @nominations_by_category.each do |category, nominations| %>

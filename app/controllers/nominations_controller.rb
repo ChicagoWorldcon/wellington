@@ -17,6 +17,7 @@
 class NominationsController < ApplicationController
   before_action :lookup_reservation!
   before_action :lookup_category, only: :create
+  before_action :lookup_legal_name
 
   def index
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
@@ -32,6 +33,10 @@ class NominationsController < ApplicationController
   end
 
   private
+
+  def lookup_legal_name
+    @legal_name = @reservation.active_claim.detail.legal_name
+  end
 
   def lookup_category
     @category = Category.find(params[:category_id])
