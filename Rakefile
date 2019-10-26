@@ -24,3 +24,17 @@ require "gem-licenses"
 
 Rails.application.load_tasks
 Gem::GemLicenses.install_tasks
+
+# Migrations dump structure.sql after they're run
+# Thanks to https://stackoverflow.com/a/18918552/81271
+Rake::Task["db:migrate"].enhance do
+  if ActiveRecord::Base.schema_format == :sql
+    Rake::Task["db:structure:dump"].invoke
+  end
+end
+
+Rake::Task["db:rollback"].enhance do
+  if ActiveRecord::Base.schema_format == :sql
+    Rake::Task["db:structure:dump"].invoke
+  end
+end
