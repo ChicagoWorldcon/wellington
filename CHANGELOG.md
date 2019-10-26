@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```bash
   rake dev:update
   ```
+- We now use structure.sql instead of schema.rb for database revision tracking
+  [!122](https://gitlab.com/worldcon/2020-wellington/merge_requests/122)
 
 ### Removed
 - Nothing significant in this release
