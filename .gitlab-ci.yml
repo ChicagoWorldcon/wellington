@@ -45,7 +45,7 @@ rspec_tests:
   stage: test
   script:
     - docker run -d --name="test-database" --hostname "postgres" postgres:latest
-    - docker run --network "container:test-database" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:schema:load spec
+    - docker run --network "container:test-database" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:structure:load spec
 
 code_style:
   stage: test

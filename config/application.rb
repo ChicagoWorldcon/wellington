@@ -33,5 +33,11 @@ module Conzealand
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    # https://edgeguides.rubyonrails.org/active_record_migrations.html#schema-dumping-and-you
+    config.active_record.schema_format = :sql
+
+    # Don't bother dumping a schema.rb file to avoid confusing extra files
+    config.active_record.dump_schema_after_migration = false
   end
 end
