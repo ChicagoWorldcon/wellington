@@ -21,7 +21,7 @@ namespace :dev do
   task napalm: %w(db:drop dev:bootstrap)
 
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:setup:db dev:reset:structure db:migrate db:seed:conzealand:development)
+  task bootstrap: %w(dev:reset:structure dev:setup:db db:migrate db:seed:conzealand:development)
 
   desc "Runs update actions across dependencies"
   task :update do
