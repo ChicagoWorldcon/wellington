@@ -170,9 +170,9 @@
         <% else %>
           <% @nominations_by_category.each do |category, nominations| %>
             <div class="card z-depth-0 bordered">
-              <% count_complete = nominations.count(&:persisted?) %>
+              <% decorated_category = CategoryFormDecorator.new(category, nominations) %>
               <div
-                class="card-header pointer <%= nomination_text_colour(count_complete) %>"
+                class="card-header pointer <%= decorated_category.accordion_classes %>"
                 id="heading-<%= category.id %>"
                 aria-expanded="true"
                 aria-controls="collapse-<%= category.id %>"
@@ -180,8 +180,7 @@
                 data-toggle="collapse"
               >
                 <a class="mb-0">
-                  <%= category.name %>
-                  (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
+                  <%= decorated_category.heading %>
                 </a>
               </div>
 
@@ -191,7 +190,8 @@
                   method: :update,
                   remote: true, # xhr save your forms
                   index: category.id,
-                  url: reservation_nominations_path,
+                  # url: reservation_nominations_path,
+                  url: [reservation_nominations_path, "#heading-", category.id].join,
                 ) do |category_form|
               %>
                 <div
@@ -232,6 +232,10 @@
               <% end %>
             </div>
           <% end %>
+
+          <button class="btn btn-m-full-width">
+            Submit all
+          </button>
         <% end %>
       </div>
     </div>

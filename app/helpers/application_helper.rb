@@ -79,17 +79,6 @@ module ApplicationHelper
     @kiosk.present?
   end
 
-  def nomination_text_colour(count_complete)
-    case count_complete
-    when 0
-      "text-primary"
-    when Nomination::VOTES_PER_CATEGORY
-      "text-dark"
-    else
-      "text-dark"
-    end
-  end
-
   def nomination_accordian_state(category)
     if @category == category
       "collapse show"
