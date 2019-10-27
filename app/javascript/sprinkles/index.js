@@ -127,4 +127,10 @@ $(document).ready(() => {
     $heading.prop('class', jsonResponse.updated_classes);
     $heading.text(jsonResponse.updated_heading);
   });
+
+  $('#submit-all').on('click', () => {
+    $('input[type=submit]').each((i, input) => {
+      $(input).trigger('click');
+    });
+  });
 });
