@@ -160,71 +160,77 @@
     </div>
   </div>
 
-  <div class="row align-items-stretch hugo-show-form-thanks" hidden>
+  <div class="row hugo-show-form-thanks" hidden>
     <div class="col-12">
       <div class="accordion" id="accordion">
-        <% @nominations_by_category.each do |category, nominations| %>
-          <div class="card z-depth-0 bordered">
-            <% count_complete = nominations.count(&:persisted?) %>
-            <div
-              class="card-header pointer <%= nomination_text_colour(count_complete) %>"
-              id="heading-<%= category.id %>"
-              aria-expanded="true"
-              aria-controls="collapse-<%= category.id %>"
-              data-target="#collapse-<%= category.id %>"
-              data-toggle="collapse"
-            >
-              <a class="mb-0">
-                <%= category.name %>
-                (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
-              </a>
-            </div>
-
-            <%=
-              form_for(
-                category,
-                method: :update,
-                index: category.id,
-                url: [reservation_nominations_path, "#heading-", category.id].join
-              ) do |category_form|
-            %>
-              <div
-                id="collapse-<%= category.id %>"
-                class="<%= nomination_accordian_state(category) %>"
-                aria-labelledby="heading-<%= category.id %>"
-                data-parent="#accordion"
-              >
-                <%= hidden_field_tag(:category_id, category.id) %>
-
-                <div class="card-body">
-                  <div class="form-note-m-group hugo-description">
-                    <%= raw markdown.render(category.description) %>
-                  </div>
-
-                  <hr>
-
-                  <% nominations.each.with_index(1) do |nomination, counter| %>
-                    <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
-                      <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
-
-                      <fieldset class="l-v-spacing">
-                        <div class="row">
-                          <% category.fields.each do |field| %>
-                            <div class="<%= decorated_nomination.column_classes %>">
-                              <label for="<%= field %>"><%= category[field] %></label>
-                              <%= nomination_form.text_field(field, id: field, class: "form-control text-dark") %>
-                            </div>
-                          <% end %>
-                        </div>
-                      </fieldset>
-                    <% end %>
-                  <% end %>
-
-                  <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
-                </div>
-              </div>
-            <% end %>
+        <% if @nominations_by_category.none? %>
+          <div class="l-panel">
+            Sory, no Hugo categories are loaded in yet.
           </div>
+        <% else %>
+          <% @nominations_by_category.each do |category, nominations| %>
+            <div class="card z-depth-0 bordered">
+              <% count_complete = nominations.count(&:persisted?) %>
+              <div
+                class="card-header pointer <%= nomination_text_colour(count_complete) %>"
+                id="heading-<%= category.id %>"
+                aria-expanded="true"
+                aria-controls="collapse-<%= category.id %>"
+                data-target="#collapse-<%= category.id %>"
+                data-toggle="collapse"
+              >
+                <a class="mb-0">
+                  <%= category.name %>
+                  (<%= count_complete %> of <%= Nomination::VOTES_PER_CATEGORY %> complete)
+                </a>
+              </div>
+
+              <%=
+                form_for(
+                  category,
+                  method: :update,
+                  index: category.id,
+                  url: [reservation_nominations_path, "#heading-", category.id].join
+                ) do |category_form|
+              %>
+                <div
+                  id="collapse-<%= category.id %>"
+                  class="<%= nomination_accordian_state(category) %>"
+                  aria-labelledby="heading-<%= category.id %>"
+                  data-parent="#accordion"
+                >
+                  <%= hidden_field_tag(:category_id, category.id) %>
+
+                  <div class="card-body">
+                    <div class="form-note-m-group hugo-description">
+                      <%= raw markdown.render(category.description) %>
+                    </div>
+
+                    <hr>
+
+                    <% nominations.each.with_index(1) do |nomination, counter| %>
+                      <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
+                        <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
+
+                        <fieldset class="l-v-spacing">
+                          <div class="row">
+                            <% category.fields.each do |field| %>
+                              <div class="<%= decorated_nomination.column_classes %>">
+                                <label for="<%= field %>"><%= category[field] %></label>
+                                <%= nomination_form.text_field(field, id: field, class: "form-control text-dark") %>
+                              </div>
+                            <% end %>
+                          </div>
+                        </fieldset>
+                      <% end %>
+                    <% end %>
+
+                    <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>
