@@ -26,10 +26,10 @@ namespace :dev do
   desc "Runs update actions across dependencies"
   task :update do
     # Create update-deps branch, commit changes to lock files
-    # run!("git checkout -b update-deps origin/master")
+    run!("git checkout -b update-deps origin/master")
     run!("bundle update")
     run!("yarn upgrade")
-    run("git commit -a -m 'maint: Upgrade all gems and npm modules'")
+    run!("git commit -a -m 'maint: Upgrade all gems and npm modules'")
 
     # Push branch, check out where we were and delete branch
     run!("git push -f -u origin update-deps")

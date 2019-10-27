@@ -29,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   make reset start
   # faster than `make clean`
   ```
+- Update project dependencies
+  [!123](https://gitlab.com/worldcon/2020-wellington/merge_requests/123)
+- Script running updates and pushing up the lock files
+  [!123](https://gitlab.com/worldcon/2020-wellington/merge_requests/123)
+  ```bash
+  rake dev:update
+  ```
 
 ### Removed
 - Nothing significant in this release
