@@ -16,7 +16,6 @@
 
 class NominationsController < ApplicationController
   before_action :lookup_reservation!
-  before_action :lookup_category, only: :create
   before_action :lookup_legal_name
 
   def index
@@ -28,6 +27,14 @@ class NominationsController < ApplicationController
   def create
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
     builder.save
+
+    if request.xhr?
+      head :no_content
+      return
+    end
+
+    # If not XHR for some reason, fall back on rendering the form again
+    @category = Category.find(params[:category_id])
     @nominations_by_category = builder.nominations_by_category
     render "nominations/index"
   end
@@ -36,10 +43,6 @@ class NominationsController < ApplicationController
 
   def lookup_legal_name
     @legal_name = @reservation.active_claim.detail.legal_name
-  end
-
-  def lookup_category
-    @category = Category.find(params[:category_id])
   end
 
   def nomination_params
