@@ -30,7 +30,7 @@ namespace :test do
       # Check to see files authored in the branch contain Apache boilerplate
       authored_files = `git log origin/master.. --name-only --format="" | sort | uniq`.lines.map(&:chomp)
       authored_files.each do |file|
-        next if %w(schema.rb .ruby-version .lock .md .gitkeep).any? { |ext| file.ends_with? ext }
+        next if %w(.sql .ruby-version .lock .md .gitkeep).any? { |ext| file.ends_with? ext }
         next if static_assets_extensions.any? { |ext| file.ends_with?(ext) }
         next if file.match(/LICENSE/)
         next if file.starts_with?("vendor/")

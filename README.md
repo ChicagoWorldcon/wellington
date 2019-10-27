@@ -205,7 +205,7 @@ it with just raw docker commands:
 docker run -d --name="test-database" --hostname "postgres" postgres:latest
 
 # Build tables
-docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:latest bundle exec rake db:create db:schema:load
+docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:latest bundle exec rake db:create db:structure:load
 
 # Run rails server, TODO bind ports
 docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:stable bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0

@@ -21,7 +21,7 @@ namespace :dev do
   task napalm: %w(db:drop dev:bootstrap)
 
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed:conzealand:development)
+  task bootstrap: %w(dev:reset:structure dev:setup:db db:migrate db:seed:conzealand:development)
 
   desc "Runs update actions across dependencies"
   task :update do
@@ -48,7 +48,7 @@ namespace :dev do
     rescue ActiveRecord::NoDatabaseError
       puts "Creating database and tables"
       Rake::Task["db:create"].invoke
-      Rake::Task["db:schema:load"].invoke
+      Rake::Task["db:structure:load"].invoke
     rescue
       # If we fail for any other reason, try again in a moment
       sleep 1
@@ -60,10 +60,10 @@ namespace :dev do
   end
 
   namespace :reset do
-    desc "Sets db/schema.rb to the same as master"
-    task :schema do
-      system("git checkout origin/master db/schema.rb")
-      system("git reset db/schema.rb")
+    desc "Sets db/structure.sql to the same as master"
+    task :structure do
+      system("git checkout origin/master db/structure.sql")
+      system("git reset db/structure.sql")
     end
   end
 
