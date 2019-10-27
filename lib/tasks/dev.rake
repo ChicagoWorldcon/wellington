@@ -36,7 +36,7 @@ namespace :dev do
     run!("git checkout -")
     run!("git branch -d update-deps")
     puts "Dependencies updated. Open a MR with this link:"
-    puts "https://gitlab.com/worldcon/2020-wellington/merge_requests/new?merge_request%5Bsource_branch%5D=update-deps"
+    puts "https://gitlab.com/worldcon/2020-wellington/merge_requests/new?merge_request[source_branch]=update-deps&merge_request[force_remove_source_branch]=true"
   end
 
   namespace :setup do
