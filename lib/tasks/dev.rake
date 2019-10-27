@@ -23,6 +23,22 @@ namespace :dev do
   desc "Asserts you've got everything for a running system, doesn't clobber"
   task bootstrap: %w(dev:setup:db dev:reset:schema db:migrate db:seed:conzealand:development)
 
+  desc "Runs update actions across dependencies"
+  task :update do
+    # Create update-deps branch, commit changes to lock files
+    run!("git checkout -b update-deps origin/master")
+    run!("bundle update")
+    run!("yarn upgrade")
+    run!("git commit -a -m 'maint: Upgrade all gems and npm modules'")
+
+    # Push branch, check out where we were and delete branch
+    run!("git push -f -u origin update-deps")
+    run!("git checkout -")
+    run!("git branch -d update-deps")
+    puts "Dependencies updated. Open a MR with this link:"
+    puts "https://gitlab.com/worldcon/2020-wellington/merge_requests/new?merge_request[source_branch]=update-deps&merge_request[force_remove_source_branch]=true"
+  end
+
   namespace :setup do
     desc "Recreates the database if there isn't one"
     task db: :environment do
@@ -49,5 +65,20 @@ namespace :dev do
       system("git checkout origin/master db/schema.rb")
       system("git reset db/schema.rb")
     end
+  end
+
+  def run!(cmd)
+    if !run(cmd)
+      puts "Command failed: #{cmd}"
+      exit(1)
+    end
+
+    true
+  end
+
+  def run(cmd)
+    puts
+    puts "> #{cmd}"
+    system(cmd)
   end
 end
