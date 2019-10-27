@@ -27,6 +27,16 @@ class CategoryFormDecorator
   end
 
   def accordion_classes
+    [
+      "card-header", # bootstrap asks for this
+      "pointer",     # visual indicator that this is clickable
+      text_colour,   # visual indicator for how 'complete' this category is
+    ].join(" ")
+  end
+
+  private
+
+  def text_colour
     case count_complete
     when 0
       "text-primary"
@@ -34,8 +44,6 @@ class CategoryFormDecorator
       "text-dark"
     end
   end
-
-  private
 
   def count_complete
     @count_complete ||= nominations.select(&:persisted?).count

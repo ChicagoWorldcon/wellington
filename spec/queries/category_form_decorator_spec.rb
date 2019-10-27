@@ -47,11 +47,11 @@ RSpec.describe CategoryFormDecorator do
 
   describe "#accordion_classes" do
     subject(:accordion_classes) { query.accordion_classes }
-    it { is_expected.to be "text-dark" }
+    it { is_expected.to include("text-dark") }
 
     context "with no saved nominations" do
       let(:nominations) { build_list(:nomination, 5, category: category) }
-      it { is_expected.to be "text-primary" }
+      it { is_expected.to include("text-primary") }
     end
   end
 end

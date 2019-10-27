@@ -92,12 +92,13 @@ $(document).ready(() => {
 // Javascript running on the user facing hugo pages
 // If this gets complicated, consider moving to a vue.js app
 $(document).ready(() => {
-  $('#privacy-warning').modal();
-
+  // If hugo not on page, don't initialize this functionality
   const hugoShowFormInput = $('input#hugo-show-form');
   if (hugoShowFormInput.length === 0) {
     return;
   }
+
+  $('#privacy-warning').modal();
 
   'keyup blur change'.split(' ').forEach((event) => {
     $('#hugo-show-form').on(event, (e) => {
@@ -107,5 +108,23 @@ $(document).ready(() => {
         $('.hugo-show-form-thanks').attr('hidden', false);
       }
     });
+  });
+
+  // https://github.com/rails/jquery-ujs/wiki/ajax
+  $('form').on('ajax:error', () => {
+    // eslint-disable-next-line no-alert
+    alert('So sorry, but something went wrong. Please try one more time, then contact registrations');
+    window.location.reload();
+  });
+
+  // https://github.com/rails/jquery-ujs/wiki/ajax
+  $('form').on('ajax:success', (event) => {
+    const jsonResponse = event.detail[0];
+    const savedAt = $('<p>').addClass('l-v-spacing').text(`Saved at ${Date()}`);
+    const $form = $(event.target);
+    $form.find('.card-body').append(savedAt);
+    const $heading = $form.closest('.card').find('.card-header');
+    $heading.prop('class', jsonResponse.updated_classes);
+    $heading.text(jsonResponse.updated_heading);
   });
 });

@@ -27,15 +27,19 @@ class NominationsController < ApplicationController
   def create
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
     builder.save
+    @category = Category.find(params[:category_id])
+    @nominations_by_category = builder.nominations_by_category
 
     if request.xhr?
-      head :no_content
+      category_decorator = CategoryFormDecorator.new(@category, @nominations_by_category[@category])
+      render json: {
+        updated_heading: category_decorator.heading,
+        updated_classes: category_decorator.accordion_classes,
+      }
       return
     end
 
     # If not XHR for some reason, fall back on rendering the form again
-    @category = Category.find(params[:category_id])
-    @nominations_by_category = builder.nominations_by_category
     render "nominations/index"
   end
 

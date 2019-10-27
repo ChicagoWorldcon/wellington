@@ -172,7 +172,7 @@
             <div class="card z-depth-0 bordered">
               <% decorated_category = CategoryFormDecorator.new(category, nominations) %>
               <div
-                class="card-header pointer <%= decorated_category.accordion_classes %>"
+                class="<%= decorated_category.accordion_classes %>"
                 id="heading-<%= category.id %>"
                 aria-expanded="true"
                 aria-controls="collapse-<%= category.id %>"
@@ -226,7 +226,9 @@
                       <% end %>
                     <% end %>
 
-                    <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
+                    <div class="l-v-spacing">
+                      <input type="submit" value="Save Nominations for Category" class="btn btn-m-full-width">
+                    </div>
                   </div>
                 </div>
               <% end %>
