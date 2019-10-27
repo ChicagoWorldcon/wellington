@@ -89,25 +89,6 @@ $(document).ready(() => {
   });
 });
 
-$(document).ready(() => {
-  // If we've got test keys enabled on the site, then we'll be altering the colours to give some
-  // sense of a staging environment. We can turn this off to test look and feel using the button
-  // below.
-  if (!$('body').hasClass('api-test-keys')) {
-    return;
-  }
-
-  const button = $('<input>').attr({
-    value: 'Toggle Styles',
-    title: "Stripe test keys present, this makes it clear you're in a staging environment",
-    class: 'btn btn-api-toggle-styles',
-  });
-  $('body').append(button);
-  button.on('click', () => {
-    $('body').toggleClass('api-test-keys');
-  });
-});
-
 // Javascript running on the user facing hugo pages
 // If this gets complicated, consider moving to a vue.js app
 $(document).ready(() => {
