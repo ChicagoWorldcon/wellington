@@ -129,7 +129,6 @@ $(document).ready(() => {
   });
 
   $('#submit-all').on('click', () => {
-    const $button = $(this);
     const $forms = $('form');
     const $progress = $('#save-all-progress');
     let count = 0;

@@ -3,24 +3,24 @@
     {
       "warning_type": "Unscoped Find",
       "warning_code": 82,
-      "fingerprint": "026d1de49076f8cac0f31e61a527e30ba4fbe897f35181769b3816918e0bc9ff",
+      "fingerprint": "1cc1f807606e834ee50fa9981bb218ff8a3c6f179c98468ad6dadb39076593f3",
       "check_name": "UnscopedFind",
       "message": "Unscoped call to `Category#find`",
       "file": "app/controllers/nominations_controller.rb",
-      "line": 37,
+      "line": 30,
       "link": "https://brakemanscanner.org/docs/warning_types/unscoped_find/",
       "code": "Category.find(params[:category_id])",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "NominationsController",
-        "method": "lookup_category"
+        "method": "create"
       },
       "user_input": "params[:category_id]",
       "confidence": "Weak",
-      "note": "Category is not a private model, unscoped find is ok here."
+      "note": "Category is public information, looking it up isn't sensitive."
     }
   ],
-  "updated": "2019-10-27 18:15:53 +1300",
-  "brakeman_version": "4.6.1"
+  "updated": "2019-10-29 18:01:56 +1300",
+  "brakeman_version": "4.7.0"
 }

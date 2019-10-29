@@ -19,8 +19,8 @@ require "rails_helper"
 RSpec.describe NominationsController, type: :controller do
   render_views
 
-  let(:user) { create(:user) }
-  let(:reservation) { create(:reservation, :with_order_against_membership, user: user) }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:user) { reservation.user }
 
   describe "#index" do
     subject(:get_index) do
