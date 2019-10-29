@@ -217,8 +217,9 @@
                           <div class="row">
                             <% category.fields.each do |field| %>
                               <div class="<%= decorated_nomination.column_classes %>">
-                                <label for="<%= field %>"><%= category[field] %></label>
-                                <%= nomination_form.text_field(field, id: field, class: "form-control text-dark") %>
+                                <% id = "cat-#{category.id}-n#{counter}-#{field}" %>
+                                <label for="<%= id %>"><%= category[field] %></label>
+                                <%= nomination_form.text_field(field, id: id, class: "form-control text-dark") %>
                               </div>
                             <% end %>
                           </div>
