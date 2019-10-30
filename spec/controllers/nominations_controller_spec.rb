@@ -31,10 +31,36 @@ RSpec.describe NominationsController, type: :controller do
       expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders ok when signed in" do
-      sign_in user
-      get_index
-      expect(response).to have_http_status(:ok)
+    context "when signed in" do
+      before { sign_in(user) }
+
+      # from config/initializers/hugo.rb
+      after do
+        $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
+        $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
+        $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
+      end
+
+      it "renders during nominatino" do
+        $nomination_opens_at = 1.second.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
+        expect(get_index).to have_http_status(:ok)
+      end
+
+      it "doesn't render before nomination" do
+        $nomination_opens_at = 1.day.from_now
+        $voting_opens_at = 2.days.from_now
+        $hugo_closed_at = 3.days.from_now
+        expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "deosn't renderafter nomination" do
+        $nomination_opens_at = 1.day.ago
+        $voting_opens_at = 1.second.ago
+        $hugo_closed_at = 1.day.from_now
+        expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 

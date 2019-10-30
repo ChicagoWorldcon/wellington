@@ -15,6 +15,7 @@
 # limitations under the License.
 
 class NominationsController < ApplicationController
+  before_action :check_dates!
   before_action :lookup_reservation!
   before_action :lookup_legal_name
 
@@ -44,6 +45,18 @@ class NominationsController < ApplicationController
   end
 
   private
+
+  def check_dates!
+    now = DateTime.now
+
+    if now < $nomination_opens_at
+      raise ActiveRecord::RecordNotFound
+    end
+
+    if $voting_opens_at < now
+      raise ActiveRecord::RecordNotFound
+    end
+  end
 
   def lookup_legal_name
     @legal_name = @reservation.active_claim.detail.legal_name
