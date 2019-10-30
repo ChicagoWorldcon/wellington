@@ -26,6 +26,10 @@ class CategoryFormDecorator
     "#{category.name} (#{count_complete} of #{Nomination::VOTES_PER_CATEGORY} complete)"
   end
 
+  def heading_id
+    "heading-#{category.id}"
+  end
+
   def accordion_classes
     [
       "card-header", # bootstrap asks for this

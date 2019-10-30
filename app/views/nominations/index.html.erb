@@ -171,18 +171,18 @@
           <% @nominations_by_category.each do |category, nominations| %>
             <div class="card z-depth-0 bordered">
               <% decorated_category = CategoryFormDecorator.new(category, nominations) %>
-              <div
-                class="<%= decorated_category.accordion_classes %>"
-                id="heading-<%= category.id %>"
-                aria-expanded="true"
-                aria-controls="collapse-<%= category.id %>"
-                data-target="#collapse-<%= category.id %>"
-                data-toggle="collapse"
-              >
-                <a class="mb-0">
+              <a class="mb-0" href="#<%= decorated_category.heading_id %>">
+                <div
+                  class="<%= decorated_category.accordion_classes %>"
+                  id="<%= decorated_category.heading_id %>"
+                  aria-expanded="true"
+                  aria-controls="collapse-<%= category.id %>"
+                  data-target="#collapse-<%= category.id %>"
+                  data-toggle="collapse"
+                >
                   <%= decorated_category.heading %>
-                </a>
-              </div>
+                </div>
+              </a>
 
               <%=
                 form_for(
