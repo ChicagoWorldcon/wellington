@@ -128,22 +128,10 @@ $(document).ready(() => {
     $heading.text(jsonResponse.updated_heading);
   });
 
-  $('#submit-all').on('click', () => {
-    const $forms = $('form');
-    const $progress = $('#save-all-progress');
-    let count = 0;
-
-    // Submit all forms, 100ms apart
-    $forms.each((i, form) => {
-      $(form).find('input[type=submit]').trigger('click');
-      $(form).on('ajax:success', () => {
-        count += 1;
-
-        const ratio = count / $forms.length;
-        const percentage = Math.ceil(ratio * 100);
-        $progress.prop('aria-valuenow', percentage);
-        $progress.prop('style', `width: ${percentage}%`);
-      });
-    });
+  $('#save-all').on('click', () => {
+    const $inputs = $('#accordion input.form-control[type=text]');
+    const $form = $('form.edit_category').first();
+    $form.find('.card-body').first().append($inputs);
+    $form.submit();
   });
 });

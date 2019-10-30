@@ -201,6 +201,7 @@
                   data-parent="#accordion"
                 >
                   <%= hidden_field_tag(:category_id, category.id) %>
+                  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
                   <div class="card-body">
                     <div class="form-note-m-group hugo-description">
@@ -236,19 +237,9 @@
             </div>
           <% end %>
 
-          <button id="submit-all" class="btn btn-m-full-width">
-            Submit all
+          <button id="save-all" class="btn btn-m-full-width" data-url="<%= reservation_nominations_path %>">
+            Save nominations for all categories
           </button>
-
-          <div id="save-all-progress" class="progress">
-            <div
-              class="progress-bar"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            ></div>
-          </div>
         <% end %>
       </div>
     </div>
