@@ -95,24 +95,24 @@ FactoryBot.define do
 
           **Note regarding 2020 Best Series eligibility**
 
-          Previous winners of the Hugo for Best Series under §3.3.5 of the WSFS Constitution are not eligible in the
+          Previous winners of the Hugo for Best Series under §3.3.5 of the WSFS Constitution are **not** eligible in the
           Best Series category. They are:
 
           * The World of the Five Gods, by Lois McMaster Bujold
           * Wayfarers, by Becky Chambers
 
-          The following finalists for the Hugo Award for Best Series in 2017 are not eligible in 2020 unless they have
-          published at least two (2) additional installments consisting in total of at least 240,000 words between 1
-          January 2017 and 31 December 2019:
+          The following finalists for the Hugo Award for Best Series in 2017 are **not** eligible in 2020 **unless**
+          they have published at least two (2) additional installments consisting in total of at least 240,000 words
+          between 1 January 2017 and 31 December 2019:
 
           * The Craft Sequence, by Max Gladstone
           * The Expanse, by James S. A. Corey
           * The Peter Grant / Rivers of London series, by Ben Aaronovitch
           * The Temeraire series, by Naomi Novik
 
-          The following finalists for the Hugo Award for Best Series in 2018 are not eligible in 2020 unless they have
-          published at least two (2) additional installments consisting in total of at least 240,000 words between 1
-          January 2018 and 31 December 2019:
+          The following finalists for the Hugo Award for Best Series in 2018 are **not** eligible in 2020 **unless**
+          they have published at least two (2) additional installments consisting in total of at least 240,000 words
+          between 1 January 2018 and 31 December 2019:
 
           * The Books of the Raksura, by Martha Wells
           * The Divine Cities, by Robert Jackson Bennett
@@ -120,9 +120,9 @@ FactoryBot.define do
           * The Memoirs of Lady Trent, by Marie Brennan
           * The Stormlight Archive, Brandon Sanderson
 
-          The following finalists for the Hugo Award for Best Series in 2019 are not eligible in 2020 unless they have
-          published at least two (2) additional installments consisting in total of at least 240,000 words between 1
-          January 2019 and 31 December 2019:
+          The following finalists for the Hugo Award for Best Series in 2019 are **not** eligible in 2020 **unless**
+          they have published at least two (2) additional installments consisting in total of at least 240,000 words
+          between 1 January 2019 and 31 December 2019:
 
           * The Centenal Cycle, by Malka Older
           * The Laundry Files, by Charles Stross
