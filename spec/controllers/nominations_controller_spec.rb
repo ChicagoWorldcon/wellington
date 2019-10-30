@@ -31,6 +31,11 @@ RSpec.describe NominationsController, type: :controller do
       expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "404s when you dnn't have nomination rights" do
+      reservation.membership.update!(can_nominate: false)
+      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     context "when signed in" do
       before { sign_in(user) }
 
