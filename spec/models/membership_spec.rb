@@ -64,4 +64,81 @@ RSpec.describe Membership, type: :model do
     subject(:to_s) { create(:membership, :kid_in_tow).to_s }
     it { is_expected.to eq "Kid in tow" }
   end
+
+  describe "#rights" do
+    subject(:rights) { model.rights }
+
+    it { is_expected.to include("rights.attend") }
+    it { is_expected.to include("rights.hugo.vote") }
+    it { is_expected.to include("rights.hugo.nominate") }
+    it { is_expected.to include("rights.site_selection") }
+
+    context "for chid" do
+      let(:model) { create(:membership, :child, :with_order_for_reservation) }
+
+      it { is_expected.to include("rights.attend") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+  end
+
+  describe "#active_rights" do
+    subject(:active_rights) { model.active_rights }
+
+    it { is_expected.to include("rights.attend") }
+
+    # from config/initializers/hugo.rb
+    after do
+      $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
+      $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
+      $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
+    end
+
+    context "before nomination opens" do
+      before do
+        $nomination_opens_at = 1.day.from_now
+        $voting_opens_at = 2.days.from_now
+        $hugo_closed_at = 3.days.from_now
+      end
+
+      it { is_expected.to include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+
+    context "after nomination opens" do
+      before do
+        $nomination_opens_at = 1.second.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+
+    context "when voting opens" do
+      before do
+        $nomination_opens_at = 1.day.ago
+        $voting_opens_at = 1.second.ago
+        $hugo_closed_at = 1.day.from_now
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to include("rights.hugo.vote") }
+    end
+
+    context "when voting closes" do
+      before do
+        $nomination_opens_at = 2.days.ago
+        $voting_opens_at = 1.day.ago
+        $hugo_closed_at = 1.second.ago
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+  end
 end

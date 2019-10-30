@@ -39,7 +39,7 @@ module ApplicationHelper
   end
 
   def link_if_open(description, membership_right, reservation)
-    if membership_right == "rights.nominate_hugo" && $nomination_opens_at < Time.now
+    if membership_right == "rights.hugo.nominate" && $nomination_opens_at < Time.now
       link_to description, reservation_nominations_path(reservation)
     else
       description

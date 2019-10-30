@@ -36,17 +36,45 @@ class Membership < ApplicationRecord
   # These match i18n values set in config/locales
   def rights
     [].tap do |rights|
-      if can_attend?
-        rights << "rights.attend"
-      end
+      rights << "rights.attend" if can_attend?
+      rights << "rights.site_selection" if can_nominate?
 
       if can_vote?
-        rights << "rights.vote_hugo"
+        rights << "rights.hugo.vote"
+        rights << "rights.retro_hugo.vote"
       end
 
       if can_nominate?
-        rights << "rights.nominate_hugo"
-        rights << "rights.site_selection"
+        rights << "rights.hugo.nominate"
+        rights << "rights.retro_hugo.nominate"
+      end
+    end
+  end
+
+  # These are rights that may become visible over time, with the possibility of distinguishing between a right that's
+  # currently able to be used or one that's coming soon. These also match i18n values in config/locales
+  def active_rights
+    [].tap do |rights|
+      rights << "rights.attend" if can_attend?
+      rights << "rights.site_selection" if can_nominate?
+
+      now = Time.now
+
+      if now < $nomination_opens_at
+        if can_nominate?
+          rights << "rights.hugo.nominate_soon"
+          rights << "rights.retro_hugo.nominate_soon"
+        end
+      elsif now.between?($nomination_opens_at, $voting_opens_at)
+        if can_nominate?
+          rights << "rights.hugo.nominate"
+          rights << "rights.retro_hugo.nominate"
+        end
+      elsif now.between?($voting_opens_at, $hugo_closed_at)
+        if can_vote?
+          rights << "rights.hugo.vote"
+          rights << "rights.retro_hugo.vote"
+        end
       end
     end
   end

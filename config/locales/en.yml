@@ -59,22 +59,52 @@ en:
         awards ceremonies, costuming, dancing, a dealers room with sci-fi games/books, film festival, gaming,
         socialising and much more!
 
-    nominate_hugo:
-      description: Nominate in Hugo Awards
-      layman:
-        The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-        achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-        vote for the Hugo winners of 2020.
-
-    vote_hugo:
-      description: Vote in Hugo Awards
-      layman:
-        The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-        achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-        vote for the Hugo winners of 2020.
-
     site_selection:
       description: Vote in Site Selection
       layman:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
         able to help choose where the worldcon will be hosted in 2022.
+
+    hugo:
+      nominate_soon:
+        description: Nominate in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
+
+      nominate:
+        description: Nominate in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
+
+      vote:
+        description: Vote in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
+
+    retro_hugo:
+      nominate_soon:
+        description: Nominate for Retro Hugo
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
+
+      nominate:
+        description: Nominate for Retro Hugo
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
+
+      vote:
+        description: Vote for Retro Hugo
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
+          vote for the Hugo winners of 2020.
