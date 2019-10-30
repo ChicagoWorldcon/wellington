@@ -134,6 +134,14 @@ FactoryBot.define do
       description { "Presupport membership" }
     end
 
+    trait :dublin_supporter do
+      name { :dublin_supporter }
+      price_cents { 0 }
+      active_from { 1.day.ago }
+      active_to { 1.day.ago }
+      description { "Attended Dublin in 2019" }
+    end
+
     trait :chicago_donor do
       name { :donor }
       price_cents { 20_00 }

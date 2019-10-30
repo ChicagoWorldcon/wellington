@@ -21,17 +21,18 @@
 # Setup memberships
 announcement = Date.parse("2018-08-25").midday
 presupport_start = announcement - 2.years
-FactoryBot.create(:membership, :silver_fern , active_from: presupport_start, active_to: announcement)
-FactoryBot.create(:membership, :kiwi        , active_from: presupport_start, active_to: announcement)
-FactoryBot.create(:membership, :tuatara     , active_from: presupport_start, active_to: announcement)
-FactoryBot.create(:membership, :pre_oppose  , active_from: presupport_start, active_to: announcement)
-FactoryBot.create(:membership, :pre_support , active_from: presupport_start, active_to: announcement)
-FactoryBot.create(:membership, :adult       , active_from: announcement)
-FactoryBot.create(:membership, :young_adult , active_from: announcement)
-FactoryBot.create(:membership, :unwaged     , active_from: announcement)
-FactoryBot.create(:membership, :child       , active_from: announcement)
-FactoryBot.create(:membership, :kid_in_tow  , active_from: announcement)
-FactoryBot.create(:membership, :supporting  , active_from: announcement)
+FactoryBot.create(:membership , :silver_fern      , active_from: presupport_start , active_to: announcement)
+FactoryBot.create(:membership , :kiwi             , active_from: presupport_start , active_to: announcement)
+FactoryBot.create(:membership , :tuatara          , active_from: presupport_start , active_to: announcement)
+FactoryBot.create(:membership , :pre_oppose       , active_from: presupport_start , active_to: announcement)
+FactoryBot.create(:membership , :pre_support      , active_from: presupport_start , active_to: announcement)
+FactoryBot.create(:membership , :adult            , active_from: announcement)
+FactoryBot.create(:membership , :young_adult      , active_from: announcement)
+FactoryBot.create(:membership , :unwaged          , active_from: announcement)
+FactoryBot.create(:membership , :child            , active_from: announcement)
+FactoryBot.create(:membership , :kid_in_tow       , active_from: announcement)
+FactoryBot.create(:membership , :supporting       , active_from: announcement)
+FactoryBot.create(:membership , :dublin_supporter , active_from: announcement)
 
 # Setup users
 all_memberships = Membership.all.to_a

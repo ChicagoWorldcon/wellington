@@ -17,6 +17,7 @@
 presupport_open = "2004-09-06".to_time
 con_announced = "2018-08-25".to_time
 price_change_1 = "2019-06-16 23:59:59 NZDT".to_time
+dublin_import = "2019-12-01".to_time
 
 ########################################
 # Presupport membership types
@@ -27,6 +28,7 @@ Membership.create!(
   "active_to": con_announced,
   "description": "Presupport membership",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": false,
   "price": Money.new(32000),
 )
@@ -36,6 +38,7 @@ Membership.create!(
   "active_to": con_announced,
   "description": "Presupport membership",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": false,
   "price": Money.new(5000),
 )
@@ -45,6 +48,7 @@ Membership.create!(
   "active_to": con_announced,
   "description": "Presupport membership",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": false,
   "price": Money.new(0),
 )
@@ -54,6 +58,7 @@ Membership.create!(
   "active_to": con_announced,
   "description": "Presupport membership",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": false,
   "price": Money.new(0),
 )
@@ -63,6 +68,7 @@ Membership.create!(
   "active_to": con_announced,
   "description": "Presupport membership",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": false,
   "price": Money.new(0),
 )
@@ -76,6 +82,7 @@ Membership.create!(
   "active_to": price_change_1,
   "description": nil,
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": true,
   "price": Money.new(37000),
 )
@@ -85,6 +92,7 @@ Membership.create!(
   "active_to": nil,
   "description": nil,
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": true,
   "price": Money.new(40000),
 )
@@ -95,6 +103,7 @@ Membership.create!(
   "active_to": price_change_1,
   "description": "born in or after 2000",
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": true,
   "price": Money.new(22500),
 )
@@ -104,6 +113,7 @@ Membership.create!(
   "active_to": nil,
   "description": "born in or after 2000",
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": true,
   "price": Money.new(25000),
 )
@@ -114,6 +124,7 @@ Membership.create!(
   "active_to": price_change_1,
   "description": nil,
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": false,
   "price": Money.new(12500),
 )
@@ -122,6 +133,7 @@ Membership.create!(
   "active_from": con_announced,
   "active_to": nil, # no planned price rise
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": true,
   "price": Money.new(22500),
 )
@@ -131,6 +143,7 @@ Membership.create!(
   "active_to": nil, # no planned price rise
   "description": "born in or after 2005",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": true,
   "price": Money.new(10500),
 )
@@ -140,6 +153,7 @@ Membership.create!(
   "active_to": nil, # no planned price rise
   "description": "born in or after 2015",
   "can_vote": false,
+  "can_nominate": false,
   "can_attend": true,
   "price": Money.new(0),
 )
@@ -149,8 +163,19 @@ Membership.create!(
   "active_to": nil, # no planned price rise
   "description": nil,
   "can_vote": true,
+  "can_nominate": true,
   "can_attend": false,
   "price": Money.new(7500),
+)
+Membership.create!(
+  "name": "dublin_supporter",
+  "description": "Attended Dublin in 2019",
+  "active_from": dublin_import,
+  "active_to": dublin_import, # not available to the general public
+  "can_vote": false,
+  "can_nominate": true,
+  "can_attend": false, # can nominate, but can't vote
+  "price": Money.new(0),
 )
 
 hugo = Election.create!(name: "2020 Hugo")
