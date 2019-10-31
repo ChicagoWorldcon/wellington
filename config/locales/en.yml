@@ -65,6 +65,7 @@ en:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
         able to help choose where the worldcon will be hosted in 2022.
 
+    # Maps onto text from Election#i18n_key
     hugo:
       nominate_soon:
         description: Nominate in Hugo Awards
@@ -87,6 +88,7 @@ en:
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
           vote for the Hugo winners of 2020.
 
+    # Maps onto text from Election#i18n_key
     retro_hugo:
       nominate_soon:
         description: Nominate for Retro Hugo

@@ -17,9 +17,11 @@
 FactoryBot.define do
   factory :election do
     name { "Hugo" }
+    i18n_key { "hugo" }
 
     trait :retro do
       name { "Retro Hugo" }
+      i18n_key { "retro_hugo" }
     end
 
     trait :with_categories do

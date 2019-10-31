@@ -178,7 +178,7 @@ Membership.create!(
   "price": Money.new(0),
 )
 
-hugo = Election.create!(name: "2020 Hugo")
+hugo = Election.create!(name: "2020 Hugo", i18n_key: "hugo")
 hugo.categories.create!(
   name: "Best Novel",
   description: %{
@@ -446,7 +446,7 @@ hugo.categories.create!(
   field_3: nil,
 )
 
-retro_hugo = Election.create!(name: "1945 Retro Hugo")
+retro_hugo = Election.create!(name: "1945 Retro Hugo", i18n_key: "retro_hugo")
 retro_hugo.categories.create!(
   name: "Retro Best Novel",
   description: %{

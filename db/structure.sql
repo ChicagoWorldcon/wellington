@@ -209,7 +209,8 @@ ALTER SEQUENCE public.details_id_seq OWNED BY public.details.id;
 
 CREATE TABLE public.elections (
     id bigint NOT NULL,
-    name character varying NOT NULL
+    name character varying NOT NULL,
+    i18n_key character varying DEFAULT 'hugo'::character varying NOT NULL
 );
 
 
@@ -958,6 +959,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191009182159'),
 ('20191020043744'),
 ('20191020174055'),
-('20191024180734');
+('20191024180734'),
+('20191031051223');
 
 
