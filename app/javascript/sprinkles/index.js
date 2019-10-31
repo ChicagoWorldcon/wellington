@@ -18,17 +18,22 @@
 // development, so feel free to submit things that depricate this in a new merge request <3
 
 import $ from 'jquery';
-
 import 'datatables.net-bs4';
 import 'popper.js';
 import 'bootstrap';
 
 $(document).ready(() => {
   // DataTable plugin for searchable and sortable tables
-  $('.js-data-table').DataTable();
+  const table = $('.js-data-table');
+  if (table.length !== 0) {
+    table.DataTable();
+  }
 
   // Bootstrap tooltip for more information about elements
-  $('[data-toggle=tooltip').tooltip();
+  const tip = $('[data-toggle=tooltip');
+  if (tip.length !== 0) {
+    tip.tooltip();
+  }
 });
 
 $(document).ready(() => {
