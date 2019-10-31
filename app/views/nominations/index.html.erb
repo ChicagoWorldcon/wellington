@@ -136,7 +136,7 @@
       </div>
     </div>
 
-    <div class="col-12 col-lg-8">
+    <div class="col-12 col-lg-8" <%= "hidden" if request.post? %>>
       <div class="l-v-spacing l-panel">
         <p>
           Please type
@@ -160,7 +160,7 @@
     </div>
   </div>
 
-  <div class="row hugo-show-form-thanks" hidden>
+  <div class="row hugo-show-form-thanks"  <%= "hidden" unless request.post? %>>
     <div class="col-12">
       <div class="accordion" id="accordion">
         <% if @nominations_by_category.none? %>
