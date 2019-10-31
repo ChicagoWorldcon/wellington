@@ -69,6 +69,29 @@ RSpec.describe NominationsController, type: :controller do
     end
   end
 
+  describe "#show" do
+    before { sign_in user }
+
+    let(:hugo) { create(:election) }
+    let(:best_novel) { create(:category, :best_novel, election: hugo) }
+
+    let(:retro_hugo) { create(:election, :retro) }
+    let(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
+
+    context "for hugo" do
+      subject(:get_show) do
+        get :show, params: { id: hugo.id, reservation_id: reservation.id }
+      end
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it "doesn't render retro content" do
+        get_show
+        expect(response.body).to_not include(retro_best_novel.name)
+      end
+    end
+  end
+
   describe "#update" do
     before { sign_in user }
 

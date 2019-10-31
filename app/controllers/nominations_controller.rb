@@ -25,6 +25,14 @@ class NominationsController < ApplicationController
     @privacy_warning = current_user.reservations.count > 1
   end
 
+  def show
+    election = Election.find(params[:id])
+    builder = MemberNominationsByCategory.new(categories: election.categories, reservation: @reservation).from_reservation
+    @nominations_by_category = builder.nominations_by_category
+    @privacy_warning = current_user.reservations.count > 1
+    render "nominations/index"
+  end
+
   def create
     builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
     builder.save
