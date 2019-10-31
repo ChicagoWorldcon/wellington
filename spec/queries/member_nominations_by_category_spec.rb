@@ -19,11 +19,14 @@ require "rails_helper"
 RSpec.describe MemberNominationsByCategory do
   let(:reservation) { create(:reservation, :with_order_against_membership) }
 
-  let!(:best_novel)       { FactoryBot.create(:category, :best_novel) }
-  let!(:retro_best_novel) { FactoryBot.create(:category, :retro_best_novel) }
-  let!(:best_novelette)   { FactoryBot.create(:category, :best_novelette) }
-  let!(:best_novella)     { FactoryBot.create(:category, :best_novella) }
-  let!(:best_short_story) { FactoryBot.create(:category, :best_short_story) }
+  let!(:hugo) { create(:election) }
+  let!(:retro_hugo) { create(:election, :retro) }
+
+  let!(:best_novel)       { create(:category, :best_novel, election: hugo) }
+  let!(:best_novelette)   { create(:category, :best_novelette, election: hugo) }
+  let!(:best_novella)     { create(:category, :best_novella, election: hugo) }
+  let!(:best_short_story) { create(:category, :best_short_story, election: hugo) }
+  let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
 
   let(:best_novel_id) { best_novel.id.to_s }
 
@@ -56,8 +59,23 @@ RSpec.describe MemberNominationsByCategory do
   end
 
   subject(:service) { described_class.new(reservation: reservation) }
-
   it { is_expected.to_not be_nil }
+
+  context "with specified categories" do
+    let(:categories) { hugo.categories }
+
+    subject(:service) { described_class.new(categories: categories, reservation: reservation) }
+    it { is_expected.to_not be_nil }
+
+    describe "#nominations_by_category" do
+      subject(:nominations_by_category) { service.from_reservation.nominations_by_category }
+
+      it "only includes categories from current election" do
+        expect(subject.keys).to include(best_novel)
+        expect(subject.keys).to_not include(retro_best_novel)
+      end
+    end
+  end
 
   context "when disabled" do
     let(:reservation) { create(:reservation, :disabled) }

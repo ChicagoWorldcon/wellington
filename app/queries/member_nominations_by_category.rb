@@ -22,6 +22,7 @@ class MemberNominationsByCategory
   include ActiveModel::Validations
 
   attr_accessor :reservation # Required to instantiate this model
+  attr_accessor :categories
 
   validate :can_nominate
 
@@ -92,7 +93,7 @@ class MemberNominationsByCategory
 
   def reset_nominations
     @nominations_by_category = {}.tap do |nominations_by|
-      Category.find_each do |category|
+      (categories || Category.all.to_a).each do |category|
         nominations_by[category] = []
       end
     end
@@ -107,7 +108,7 @@ class MemberNominationsByCategory
   def record_submitted_nominations(params)
     @submitted_categories = []
 
-    Category.find_each do |category|
+    (categories || Category.all.to_a).each do |category|
       # Find submitted nominations
       nominations = params.dig("category", category.id.to_s, "nomination")
       next unless nominations
