@@ -100,8 +100,16 @@ class MemberNominationsByCategory
   end
 
   def record_user_nominations
-    reservation.nominations.eager_load(:category).find_each do |n|
+    user_nominations.eager_load(:category).find_each do |n|
       nominations_by_category[n.category] << n
+    end
+  end
+
+  def user_nominations
+    if categories.present?
+      reservation.nominations.where(category: categories)
+    else
+      reservation.nominations
     end
   end
 

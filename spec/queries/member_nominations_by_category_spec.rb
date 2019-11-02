@@ -70,8 +70,13 @@ RSpec.describe MemberNominationsByCategory do
     describe "#nominations_by_category" do
       subject(:nominations_by_category) { service.from_reservation.nominations_by_category }
 
-      it "only includes categories from current election" do
+      it "includes categories we used to initalize with" do
+        create(:nomination, reservation: reservation, category: best_novel)
         expect(subject.keys).to include(best_novel)
+      end
+
+      it "excludes categories not specified in initalize" do
+        create(:nomination, reservation: reservation, category: retro_best_novel)
         expect(subject.keys).to_not include(retro_best_novel)
       end
     end
