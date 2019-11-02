@@ -39,8 +39,12 @@ module ApplicationHelper
   end
 
   def link_if_open(description, membership_right, reservation)
-    if membership_right == "rights.hugo.nominate" && $nomination_opens_at < Time.now
-      link_to description, reservation_nominations_path(reservation)
+    if match = membership_right.match(/rights\.(.*)\.nominate/)
+      election_i18n_key = match[1]
+      link_to description, reservation_nomination_path(
+        id: election_i18n_key,
+        reservation_id: reservation,
+      )
     else
       description
     end

@@ -26,7 +26,7 @@ class NominationsController < ApplicationController
   end
 
   def show
-    election = Election.find(params[:id])
+    election = Election.find_by!(i18n_key: params[:id])
     builder = MemberNominationsByCategory.new(categories: election.categories, reservation: @reservation).from_reservation
     @nominations_by_category = builder.nominations_by_category
     @privacy_warning = current_user.reservations.count > 1

@@ -80,7 +80,7 @@ RSpec.describe NominationsController, type: :controller do
 
     context "for hugo" do
       subject(:get_show) do
-        get :show, params: { id: hugo.id, reservation_id: reservation.id }
+        get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
       end
 
       it { is_expected.to have_http_status(:ok) }
