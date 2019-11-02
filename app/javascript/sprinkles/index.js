@@ -133,10 +133,15 @@ $(document).ready(() => {
     $heading.text(jsonResponse.updated_heading);
   });
 
-  $('#save-all').on('click', () => {
+  $('.save-all').on('click', () => {
     const $inputs = $('#accordion input.form-control[type=text]');
     const $form = $('form.edit_category').first();
     $form.find('.card-body').first().append($inputs);
     $form.submit();
+  });
+
+  $('.open-all').on('click', () => {
+    $('#accordion .collapse').addClass('show');
+    $('#accordion .card-header').prop('aria-expanded', true);
   });
 });

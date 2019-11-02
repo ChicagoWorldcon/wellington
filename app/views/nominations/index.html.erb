@@ -168,6 +168,10 @@
             Sory, no Hugo categories are loaded in yet.
           </div>
         <% else %>
+          <button class="open-all btn btn-m-full-width" data-url="<%= reservation_nominations_path %>">
+            Open all categories
+          </button>
+
           <% @nominations_by_category.each do |category, nominations| %>
             <div class="card z-depth-0 bordered">
               <% decorated_category = CategoryFormDecorator.new(category, nominations) %>
@@ -237,7 +241,7 @@
             </div>
           <% end %>
 
-          <button id="save-all" class="btn btn-m-full-width" data-url="<%= reservation_nominations_path %>">
+          <button class="save-all btn btn-m-full-width" data-url="<%= reservation_nominations_path %>">
             Save nominations for all categories
           </button>
         <% end %>
