@@ -191,11 +191,10 @@
               <%=
                 form_for(
                   category,
-                  method: :update,
                   remote: true, # xhr save your forms
                   index: category.id,
                   # url: reservation_nominations_path,
-                  url: [reservation_nominations_path, "#heading-", category.id].join,
+                  url: [request.path, "#heading-", category.id].join,
                 ) do |category_form|
               %>
                 <div

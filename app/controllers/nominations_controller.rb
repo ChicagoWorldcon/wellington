@@ -17,24 +17,19 @@
 class NominationsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
+  before_action :lookup_election!
   before_action :lookup_legal_name
 
-  def index
-    builder = MemberNominationsByCategory.new(reservation: @reservation).from_reservation
-    @nominations_by_category = builder.nominations_by_category
-    @privacy_warning = current_user.reservations.count > 1
-  end
-
   def show
-    election = Election.find_by!(i18n_key: params[:id])
-    builder = MemberNominationsByCategory.new(categories: election.categories, reservation: @reservation).from_reservation
+    builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
+    builder.from_reservation
     @nominations_by_category = builder.nominations_by_category
     @privacy_warning = current_user.reservations.count > 1
-    render "nominations/index"
   end
 
-  def create
-    builder = MemberNominationsByCategory.new(reservation: @reservation).from_params(params)
+  def update
+    builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
+    builder.from_params(params)
     builder.save
     @category = Category.find(params[:category_id])
     @nominations_by_category = builder.nominations_by_category
@@ -48,11 +43,15 @@ class NominationsController < ApplicationController
       return
     end
 
-    # If not XHR for some reason, fall back on rendering the form again
-    render "nominations/index"
+    # Render happens if someone hits the "submit all" button
+    render "nominations/show"
   end
 
   private
+
+  def lookup_election!
+    @election = Election.find_by!(i18n_key: params[:id])
+  end
 
   def check_access!
     now = DateTime.now
