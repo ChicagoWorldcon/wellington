@@ -46,8 +46,6 @@ RUN yarn install
 ADD . /app
 WORKDIR /app
 
-RUN yarn install --check-files
-
 RUN mv /setup/node_modules ./node_modules \
     && bundle exec rake assets:precompile
 
