@@ -21,19 +21,24 @@ RSpec.describe NominationsController, type: :controller do
 
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { reservation.user }
+  let(:hugo) { create(:election) }
 
-  describe "#index" do
-    subject(:get_index) do
-      get :index, params: {reservation_id: reservation.id }
+  describe "#show" do
+    let(:best_novel) { create(:category, :best_novel, election: hugo) }
+    let(:retro_hugo) { create(:election, :retro) }
+    let(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
+
+    subject(:get_show) do
+      get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
     end
 
     it "404s when signed out" do
-      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "404s when you dnn't have nomination rights" do
       reservation.membership.update!(can_nominate: false)
-      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     context "when signed in" do
@@ -50,44 +55,30 @@ RSpec.describe NominationsController, type: :controller do
         $nomination_opens_at = 1.second.ago
         $voting_opens_at = 1.day.from_now
         $hugo_closed_at = 2.days.from_now
-        expect(get_index).to have_http_status(:ok)
+        expect(get_show).to have_http_status(:ok)
       end
 
       it "doesn't render before nomination" do
         $nomination_opens_at = 1.day.from_now
         $voting_opens_at = 2.days.from_now
         $hugo_closed_at = 3.days.from_now
-        expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "deosn't renderafter nomination" do
         $nomination_opens_at = 1.day.ago
         $voting_opens_at = 1.second.ago
         $hugo_closed_at = 1.day.from_now
-        expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
-
-  describe "#show" do
-    before { sign_in user }
-
-    let(:hugo) { create(:election) }
-    let(:best_novel) { create(:category, :best_novel, election: hugo) }
-
-    let(:retro_hugo) { create(:election, :retro) }
-    let(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
-
-    context "for hugo" do
-      subject(:get_show) do
-        get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
+        expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it { is_expected.to have_http_status(:ok) }
+      context "for hugo" do
+        it { is_expected.to have_http_status(:ok) }
 
-      it "doesn't render retro content" do
-        get_show
-        expect(response.body).to_not include(retro_best_novel.name)
+        it "doesn't render retro content" do
+          get_show
+          expect(response.body).to_not include(retro_best_novel.name)
+        end
       end
     end
   end
@@ -123,8 +114,9 @@ RSpec.describe NominationsController, type: :controller do
     end
 
     context "when posting valid params" do
-      subject(:post_create) do
-        post(:create, params: {
+      subject(:post_update) do
+        put(:update, params: {
+          id: hugo.i18n_key,
           reservation_id: reservation.id,
           category_id: best_novel.id,
           category: {
@@ -142,11 +134,11 @@ RSpec.describe NominationsController, type: :controller do
       end
 
       it "renders ok" do
-        expect(post_create).to have_http_status(:ok)
+        expect(post_update).to have_http_status(:ok)
       end
 
       it "creates nominations" do
-        expect { post_create }.to change { Nomination.count }.from(0)
+        expect { post_update }.to change { Nomination.count }.from(0)
       end
     end
   end
