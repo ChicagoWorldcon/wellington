@@ -66,7 +66,10 @@ class Membership < ApplicationRecord
           rights << "rights.retro_hugo.nominate_soon"
         end
       elsif now.between?($nomination_opens_at, $voting_opens_at)
-        if can_nominate?
+        if can_nominate? && !can_vote?
+          rights << "rights.hugo.nominate_only"
+          rights << "rights.retro_hugo.nominate_only"
+        elsif can_nominate?
           rights << "rights.hugo.nominate"
           rights << "rights.retro_hugo.nominate"
         end

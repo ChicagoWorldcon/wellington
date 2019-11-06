@@ -115,6 +115,12 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not include("rights.hugo.nominate_soon") }
       it { is_expected.to include("rights.hugo.nominate") }
       it { is_expected.to_not include("rights.hugo.vote") }
+
+      describe "for dublin supporters" do
+        let(:model) { create(:membership, :dublin_supporter, :with_order_for_reservation) }
+        it { is_expected.to_not include("rights.hugo.nominate") }
+        it { is_expected.to include("rights.hugo.nominate_only") }
+      end
     end
 
     context "when voting opens" do
@@ -127,6 +133,11 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not include("rights.hugo.nominate_soon") }
       it { is_expected.to_not include("rights.hugo.nominate") }
       it { is_expected.to include("rights.hugo.vote") }
+
+      describe "for dublin supporters" do
+        let(:model) { create(:membership, :dublin_supporter, :with_order_for_reservation) }
+        it { is_expected.to_not include("rights.hugo.vote") }
+      end
     end
 
     context "when voting closes" do

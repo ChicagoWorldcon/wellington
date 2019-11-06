@@ -18,6 +18,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+- Dublin Supporters now present in seeds file.
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Add this membership type with:
+  ```ruby
+  dublin_import = "2019-12-01".to_time
+  Membership.create!(
+    "name": "dublin_supporter",
+    "description": "Attended Dublin in 2019",
+    "active_from": dublin_import,
+    "active_to": dublin_import, # not available to the general public
+    "can_vote": false,
+    "can_nominate": true,
+    "can_attend": false, # can nominate, but can't vote
+    "price": Money.new(0),
+  )
+  ```
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion

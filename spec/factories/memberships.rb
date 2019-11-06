@@ -139,7 +139,9 @@ FactoryBot.define do
       price_cents { 0 }
       active_from { 1.day.ago }
       active_to { 1.day.ago }
-      description { "Attended Dublin in 2019" }
+      can_vote { false }
+      can_nominate { true }
+      description { "Attended Dublin in 2019, can Nominate in 2020" }
     end
 
     trait :chicago_donor do
