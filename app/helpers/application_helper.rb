@@ -38,6 +38,7 @@ module ApplicationHelper
     }
   end
 
+  # Create a <a> tag around the passed in description if appropriate
   def link_if_open(description, membership_right, reservation)
     if match = membership_right.match(/rights\.(.*)\.nominate/)
       election_i18n_key = match[1]
