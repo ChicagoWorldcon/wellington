@@ -12,9 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Please set these values in your .env on all environments:
   ```
   # Times when parts of the members area will become active
-  HUGO_NOMINATIONS_OPEN_AT="2019-07-16T00:00:00+1200"
-  HUGO_VOTING_OPEN_AT="2019-08-16T00:00:00+1200"
-  HUGO_CLOSED_AT="2050-08-02T12:00:00+1200"
+  HUGO_NOMINATIONS_OPEN_AT="2019-12-31T23:59:00-08:00"
+  HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"
+  HUGO_CLOSED_AT="2020-08-02T12:00:00+13:00"
   ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
