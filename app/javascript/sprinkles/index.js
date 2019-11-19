@@ -24,16 +24,10 @@ import 'bootstrap';
 
 $(document).ready(() => {
   // DataTable plugin for searchable and sortable tables
-  const table = $('.js-data-table');
-  if (table.length !== 0) {
-    table.DataTable();
-  }
+  $('.js-data-table').DataTable();
 
   // Bootstrap tooltip for more information about elements
-  const tip = $('[data-toggle=tooltip');
-  if (tip.length !== 0) {
-    tip.tooltip();
-  }
+  $('[data-toggle=tooltip').tooltip();
 });
 
 $(document).ready(() => {
