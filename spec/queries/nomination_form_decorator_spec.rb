@@ -31,24 +31,25 @@ RSpec.describe NominationFormDecorator do
   end
 
   describe "#column_classes" do
-    Test = Struct.new(:category, :expected_column_classes)
+    Test = Struct.new(:category_type, :expected_column_classes)
 
     [
       Test.new(
-        FactoryBot.create(:category, :best_novel),
+        :best_novel,
         "col-12 col-md-4",
       ),
       Test.new(
-        FactoryBot.create(:category, :best_professional_artist),
+        :best_professional_artist,
         "col-12 col-md-6",
       ),
       Test.new(
-        FactoryBot.create(:category, :best_semiprozine),
+        :best_semiprozine,
         "col-12",
       ),
     ].each.with_index(1) do |test, n|
       it "has expected classes for case #{n}" do
-        query = described_class.new(nomination, test.category)
+        category = create(:category, test.category_type)
+        query = described_class.new(nomination, category)
         expect(query.column_classes).to eq(test.expected_column_classes)
       end
     end
