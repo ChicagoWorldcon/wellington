@@ -19,14 +19,25 @@ require "rails_helper"
 RSpec.describe NominationsController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
-  let(:user) { reservation.user }
-  let(:hugo) { create(:election) }
+  let!(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let!(:user) { reservation.user }
+
+  let!(:hugo) { create(:election) }
+  let!(:best_novel) { create(:category, :best_novel, election: hugo) }
+  let!(:best_series) { create(:category, :best_series, election: hugo) }
+
+  let!(:retro_hugo) { create(:election, :retro) }
+  let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
+
+  # Reset dates after tests run
+  # pasta from config/initializers/hugo.rb
+  after do
+    $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
+    $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
+    $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
+  end
 
   describe "#show" do
-    let(:best_novel) { create(:category, :best_novel, election: hugo) }
-    let(:retro_hugo) { create(:election, :retro) }
-    let(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
 
     subject(:get_show) do
       get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
@@ -44,18 +55,12 @@ RSpec.describe NominationsController, type: :controller do
     context "when signed in" do
       before { sign_in(user) }
 
-      # from config/initializers/hugo.rb
-      after do
-        $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
-        $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
-        $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
-      end
-
-      it "renders during nominatino" do
+      it "renders during nomination" do
         $nomination_opens_at = 1.second.ago
         $voting_opens_at = 1.day.from_now
         $hugo_closed_at = 2.days.from_now
         expect(get_show).to have_http_status(:ok)
+        expect(response.body).to_not include(retro_best_novel.name)
       end
 
       it "doesn't render before nomination" do
@@ -71,23 +76,17 @@ RSpec.describe NominationsController, type: :controller do
         $hugo_closed_at = 1.day.from_now
         expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
       end
-
-      context "for hugo" do
-        it { is_expected.to have_http_status(:ok) }
-
-        it "doesn't render retro content" do
-          get_show
-          expect(response.body).to_not include(retro_best_novel.name)
-        end
-      end
     end
   end
 
   describe "#update" do
     before { sign_in user }
 
-    let!(:best_novel) { create(:category, :best_novel) }
-    let!(:best_series) { create(:category, :best_series) }
+    before do
+      $nomination_opens_at = 1.second.ago
+      $voting_opens_at = 1.day.from_now
+      $hugo_closed_at = 2.days.from_now
+    end
 
     let(:filled_entry) do
       {
