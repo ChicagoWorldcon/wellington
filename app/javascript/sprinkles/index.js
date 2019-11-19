@@ -128,8 +128,10 @@ $(document).ready(() => {
   });
 
   $('.save-all').on('click', () => {
-    const $inputs = $('#accordion input.form-control[type=text]');
-    const $form = $('form.edit_category').first();
+    const $inputs = $('#accordion input.form-control[type=text]').clone();
+    const $form = $('form.edit_category').first().clone();
+    $form.attr('hidden', 'true');
+    $('body').append($form);
     $form.find('.card-body').first().append($inputs);
     $form.submit();
   });
