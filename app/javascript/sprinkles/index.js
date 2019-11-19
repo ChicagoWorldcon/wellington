@@ -99,6 +99,7 @@ $(document).ready(() => {
 
   $('#privacy-warning').modal();
 
+  // Get people to type in their name to aknowledge they've read the rights.hugo.instructions
   'keyup blur change'.split(' ').forEach((event) => {
     $('#hugo-show-form').on(event, (e) => {
       const input = $(e.target).val().toLowerCase().trim();
