@@ -19,8 +19,39 @@
       "user_input": "params[:category_id]",
       "confidence": "Weak",
       "note": "Category is public information, looking it up isn't sensitive."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "b66dbbf141d2e57ee7c3478648c6cb0cc14409f7b3c55e6f08a2df3c7ca9f642",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/nominations/show.html.erb",
+      "line": 44,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "markdown.render(t(:instructions, :scope => ([:rights, Election.find_by!(:i18n_key => params[:id]).i18n_key])))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "NominationsController",
+          "method": "show",
+          "line": 28,
+          "file": "app/controllers/nominations_controller.rb",
+          "rendered": {
+            "name": "nominations/show",
+            "file": "app/views/nominations/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "nominations/show"
+      },
+      "user_input": "Election.find_by!(:i18n_key => params[:id]).i18n_key",
+      "confidence": "Weak",
+      "note": "Election is seeded and impossible to set by the user. i18n values are not private."
     }
   ],
-  "updated": "2019-11-02 17:59:45 +1300",
+  "updated": "2019-11-20 17:13:36 +1300",
   "brakeman_version": "4.7.0"
 }

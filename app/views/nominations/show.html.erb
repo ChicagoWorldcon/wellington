@@ -40,7 +40,8 @@
   <div class="row">
     <div class="col-12">
       <div class="l-v-spacing l-panel hugo-description">
-        <%= raw markdown.render(t("rights.#{@election.i18n_key}.instructions")) %>
+        <% instructions = t(:instructions, scope: [:rights, @election.i18n_key]) %>
+        <%= raw markdown.render(instructions) %>
       </div>
     </div>
   </div>
