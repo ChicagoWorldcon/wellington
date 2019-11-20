@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - We now use structure.sql instead of schema.rb for database revision tracking
   [!122](https://gitlab.com/worldcon/2020-wellington/merge_requests/122)
+- Securitiy patch nokogiri against input validation vulnerability
+  [CVE-2019-16892](https://nvd.nist.gov/vuln/detail/CVE-2019-13117)
 
 ### Removed
 - Nothing significant in this release
