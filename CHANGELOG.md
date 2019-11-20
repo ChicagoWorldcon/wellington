@@ -40,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!122](https://gitlab.com/worldcon/2020-wellington/merge_requests/122)
 - Securitiy patch nokogiri against input validation vulnerability
   [CVE-2019-16892](https://nvd.nist.gov/vuln/detail/CVE-2019-13117)
+- Securitiy patch brakeman against local privilege escalation vulnerability
+  [CVE-2019-18409](https://nvd.nist.gov/vuln/detail/CVE-2019-18409)
 
 ### Removed
 - Nothing significant in this release
