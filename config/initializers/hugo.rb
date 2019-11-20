@@ -21,7 +21,7 @@
 def time_from(lookup)
   time_string = ENV[lookup]
   return nil unless time_string.present?
-  Time.parse(time_string)
+  DateTime.parse(time_string)
 rescue
   puts
   puts "Cannot parse time from #{lookup}=#{time_string}"
@@ -30,6 +30,6 @@ rescue
   exit 1
 end
 
-$nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
+$nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
 $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
 $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now

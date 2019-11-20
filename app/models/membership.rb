@@ -58,7 +58,7 @@ class Membership < ApplicationRecord
       rights << "rights.attend" if can_attend?
       rights << "rights.site_selection" if can_nominate?
 
-      now = Time.now
+      now = DateTime.now
 
       if now < $nomination_opens_at
         if can_nominate?

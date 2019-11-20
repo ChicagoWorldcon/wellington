@@ -32,7 +32,7 @@ RSpec.describe NominationsController, type: :controller do
   # Reset dates after tests run
   # pasta from config/initializers/hugo.rb
   after do
-    $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || Time.now
+    $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
     $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
     $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
   end
