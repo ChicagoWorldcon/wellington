@@ -43,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Viewport is set explicitly on CoNZealand pages based on the
   [Bootstrap guidelines](https://getbootstrap.com/docs/4.3/getting-started/introduction/#responsive-meta-tag)
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- Developers can now Napalm from an interactive rebase
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 
 ### Removed
 - Nothing significant in this release
