@@ -40,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 - To reduce CSS bugs, colour rotation when you have test keys for dev/staging only affect the logo
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- Viewport is set explicitly on CoNZealand pages based on the
+  [Bootstrap guidelines](https://getbootstrap.com/docs/4.3/getting-started/introduction/#responsive-meta-tag)
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 
 ### Removed
 - Nothing significant in this release
