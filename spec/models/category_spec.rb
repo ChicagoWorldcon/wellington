@@ -60,4 +60,24 @@ RSpec.describe Category, type: :model do
       expect(create(:category, factory_type)).to be_valid
     end
   end
+
+  describe "#fields" do
+    it "has all 3 keys if present" do
+      category = Category.new(
+        field_1: "hey",
+        field_2: "you",
+        field_3: "get off of my cloud",
+      )
+      expect(category.fields.length).to eq(3)
+      expect(category.fields).to include("field_3")
+    end
+
+    it "shows only 1 field if present" do
+      category = Category.new(
+        field_1: "hey",
+      )
+      expect(category.fields.length).to eq(1)
+      expect(category.fields.first).to eq("field_1")
+    end
+  end
 end
