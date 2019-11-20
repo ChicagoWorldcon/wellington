@@ -97,6 +97,8 @@ $(document).ready(() => {
     return;
   }
 
+  // If present on the page, present privacy warning in a modal
+  // This was designed for people who have > 1 membership
   $('#privacy-warning').modal();
 
   // Get people to type in their name to aknowledge they've read the rights.hugo.instructions
@@ -110,6 +112,7 @@ $(document).ready(() => {
     });
   });
 
+  // On ujs xhr failure, tell the user and refresh the page
   // https://github.com/rails/jquery-ujs/wiki/ajax
   $('form').on('ajax:error', () => {
     // eslint-disable-next-line no-alert
@@ -117,6 +120,7 @@ $(document).ready(() => {
     window.location.reload();
   });
 
+  // On ujs xhr success, update heading and colours to reflect how complete their form is
   // https://github.com/rails/jquery-ujs/wiki/ajax
   $('form').on('ajax:success', (event) => {
     const jsonResponse = event.detail[0];
@@ -128,6 +132,8 @@ $(document).ready(() => {
     $heading.text(jsonResponse.updated_heading);
   });
 
+  // Save the entire page at once in a POST request
+  // This should render the page again
   $('.save-all').on('click', () => {
     const $inputs = $('#accordion input.form-control[type=text]').clone();
     const $form = $('form.edit_category').first().clone();
@@ -137,6 +143,7 @@ $(document).ready(() => {
     $form.submit();
   });
 
+  // Expand all accordions to reveal entire hugo form
   $('.open-all').on('click', () => {
     $('#accordion .collapse').addClass('show');
     $('#accordion .card-header').prop('aria-expanded', true);
