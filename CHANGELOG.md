@@ -5,16 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.0.0...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.1.0...master)
 
 ### Added
 - Nothing significant in this release
 
 ### Changed
-- Allow people to append/prepend whitespace to their email addess
-  [!116](https://gitlab.com/worldcon/2020-wellington/merge_requests/116)
-- Reduced the size of our install by moving docker base from debian to alpine
-  [!102](https://gitlab.com/worldcon/2020-wellington/merge_requests/102)
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 2.1.0 - 2019-11-22](https://gitlab.com/worldcon/2020-wellington/compare/2.0.0...2.1.0)
+
+### Added
 - Added easy methods for checking licences in depenedencies
   [!117](https://gitlab.com/worldcon/2020-wellington/merge_requests/117)
   ```bash
@@ -29,13 +34,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   make reset start
   # faster than `make clean`
   ```
-- Update project dependencies
-  [!123](https://gitlab.com/worldcon/2020-wellington/merge_requests/123)
 - Script running updates and pushing up the lock files
   [!123](https://gitlab.com/worldcon/2020-wellington/merge_requests/123)
   ```bash
   rake dev:update
   ```
+
+### Changed
+- Allow people to append/prepend whitespace to their email addess
+  [!116](https://gitlab.com/worldcon/2020-wellington/merge_requests/116)
+- Reduced the size of our install by moving docker base from debian to alpine
+  [!102](https://gitlab.com/worldcon/2020-wellington/merge_requests/102)
+- Update project dependencies
+  [!123](https://gitlab.com/worldcon/2020-wellington/merge_requests/123)
 - We now use structure.sql instead of schema.rb for database revision tracking
   [!122](https://gitlab.com/worldcon/2020-wellington/merge_requests/122)
 - Securitiy patch nokogiri against input validation vulnerability
