@@ -81,14 +81,6 @@ module ApplicationHelper
     @kiosk.present?
   end
 
-  def nomination_accordian_state(category)
-    if @category == category
-      "collapse show"
-    else
-      "collapse"
-    end
-  end
-
   def markdown
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
   end
