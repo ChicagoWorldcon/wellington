@@ -14,12 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# An Election represents a set of categories, nominations and balots
-# If you make 2 elections, they are treated as separate types of nomination and voting in our system
-# An example of this would be Hugo Awards and Retro Hugo awards
-class Election < ApplicationRecord
-  has_many :categories
-
-  validates :name, presence: true
-  validates :i18n_key, presence: true, uniqueness: true
+class IndexElectionI18nKey < ActiveRecord::Migration[6.0]
+  def change
+    add_index(:elections, :i18n_key, unique: true)
+  end
 end

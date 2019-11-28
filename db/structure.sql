@@ -744,6 +744,13 @@ CREATE INDEX index_details_on_claim_id ON public.details USING btree (claim_id);
 
 
 --
+-- Name: index_elections_on_i18n_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_elections_on_i18n_key ON public.elections USING btree (i18n_key);
+
+
+--
 -- Name: index_nominations_on_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -960,6 +967,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191020043744'),
 ('20191020174055'),
 ('20191024180734'),
-('20191031051223');
+('20191031051223'),
+('20191128184513');
 
 
