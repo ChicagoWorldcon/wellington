@@ -83,7 +83,7 @@ class MemberNominationsByCategory
       existing_nominations.destroy_all
 
       submitted_nominations = nominations_by_category.slice(*@submitted_categories).values.flatten
-      submitted_nominations.each(&:save) # n.b. Invalid nominations don't save here
+      submitted_nominations.each(&:save) # n.b. blank nominations don't save here
     end
 
     true
