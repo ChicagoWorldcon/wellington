@@ -24,6 +24,9 @@ class MemberNominationsByCategory
   attr_accessor :reservation # Required to instantiate this model
   attr_accessor :categories
 
+  validates :reservation, presence: true
+  validates :categories, presence: true
+
   validate :can_nominate
 
   attr_reader :nominations_by_category
@@ -93,7 +96,7 @@ class MemberNominationsByCategory
 
   def reset_nominations
     @nominations_by_category = {}.tap do |nominations_by|
-      (categories || Category.all.to_a).each do |category|
+      categories.each do |category|
         nominations_by[category] = []
       end
     end
@@ -106,17 +109,13 @@ class MemberNominationsByCategory
   end
 
   def user_nominations
-    if categories.present?
-      reservation.nominations.where(category: categories)
-    else
-      reservation.nominations
-    end
+    reservation.nominations.where(category: categories)
   end
 
   def record_submitted_nominations(params)
     @submitted_categories = []
 
-    (categories || Category.all.to_a).each do |category|
+    categories.each do |category|
       # Find submitted nominations
       nominations = params.dig("category", category.id.to_s, "nomination")
       next unless nominations

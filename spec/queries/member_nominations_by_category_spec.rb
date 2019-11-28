@@ -58,7 +58,7 @@ RSpec.describe MemberNominationsByCategory do
     )
   end
 
-  subject(:service) { described_class.new(reservation: reservation) }
+  subject(:service) { described_class.new(reservation: reservation, categories: hugo.categories) }
   it { is_expected.to_not be_nil }
 
   context "with specified categories" do
@@ -145,7 +145,6 @@ RSpec.describe MemberNominationsByCategory do
 
         it "gets keyed by Category" do
           expect(subject.keys.last).to be_kind_of(Category)
-          expect(subject.keys.count).to eq(Category.count)
         end
 
         it "lists 5 empty nominations per category" do
