@@ -65,8 +65,8 @@ RSpec.describe Membership, type: :model do
     it { is_expected.to eq "Kid in tow" }
   end
 
-  describe "#rights" do
-    subject(:rights) { model.rights }
+  describe "#all_rights" do
+    subject(:all_rights) { model.all_rights }
 
     it { is_expected.to include("rights.attend") }
     it { is_expected.to include("rights.hugo.vote") }

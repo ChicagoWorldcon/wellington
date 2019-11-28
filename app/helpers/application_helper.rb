@@ -28,7 +28,7 @@ module ApplicationHelper
   end
 
   # These match i18n values set in config/locales
-  # see Membership#rights
+  # see Membership#all_rights
   def membership_right_description(membership_right, reservation)
     description = I18n.t(:description, scope: membership_right)
     tooltip = I18n.t(:layman, scope: membership_right)

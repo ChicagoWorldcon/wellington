@@ -52,6 +52,6 @@ class MembershipOffer
   end
 
   def membership_rights
-    membership.rights
+    membership.all_rights
   end
 end

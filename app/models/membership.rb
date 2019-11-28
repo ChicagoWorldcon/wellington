@@ -34,7 +34,7 @@ class Membership < ApplicationRecord
   end
 
   # These match i18n values set in config/locales
-  def rights
+  def all_rights
     [].tap do |rights|
       rights << "rights.attend" if can_attend?
       rights << "rights.site_selection" if can_nominate?

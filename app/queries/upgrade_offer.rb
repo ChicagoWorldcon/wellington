@@ -58,7 +58,7 @@ class UpgradeOffer
   end
 
   def membership_rights
-    to_membership.rights
+    to_membership.all_rights
   end
 
   def link_description
