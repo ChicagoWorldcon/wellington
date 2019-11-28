@@ -110,8 +110,7 @@
                   category,
                   remote: true, # xhr save your forms
                   index: category.id,
-                  # url: reservation_nominations_path,
-                  url: [request.path, "#heading-", category.id].join,
+                  url: request.path,
                 ) do |category_form|
               %>
                 <div
