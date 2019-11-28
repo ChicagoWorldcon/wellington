@@ -18,7 +18,7 @@ class NominationsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
   before_action :lookup_election!
-  before_action :lookup_legal_name
+  before_action :lookup_legal_name_or_redirect
 
   def show
     builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
@@ -69,8 +69,15 @@ class NominationsController < ApplicationController
     end
   end
 
-  def lookup_legal_name
-    @legal_name = @reservation.active_claim.detail.legal_name
+  def lookup_legal_name_or_redirect
+    detail = @reservation.active_claim.detail
+    if !detail.present?
+      flash[:notice] = "Please enter your details to nominate for hugo"
+      redirect_to @reservation
+      return
+    end
+
+    @legal_name = detail.legal_name
   end
 
   def nomination_params

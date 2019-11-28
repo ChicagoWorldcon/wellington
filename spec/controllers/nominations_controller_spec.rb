@@ -38,7 +38,6 @@ RSpec.describe NominationsController, type: :controller do
   end
 
   describe "#show" do
-
     subject(:get_show) do
       get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
     end
@@ -75,6 +74,12 @@ RSpec.describe NominationsController, type: :controller do
         $voting_opens_at = 1.second.ago
         $hugo_closed_at = 1.day.from_now
         expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "redirects when you've not set your name" do
+        reservation.active_claim.detail.destroy!
+        expect(get_show).to have_http_status(:found)
+        expect(flash[:notice]).to match(/enter your details/i)
       end
     end
   end
