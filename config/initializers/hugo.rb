@@ -20,14 +20,30 @@
 
 def time_from(lookup)
   time_string = ENV[lookup]
-  return nil unless time_string.present?
-  DateTime.parse(time_string)
-rescue
-  puts
-  puts "Cannot parse time from #{lookup}=#{time_string}"
-  puts "Please check your .env"
-  puts
-  exit 1
+
+  if time_string.nil?
+    if Rails.env.development? || Rails.env.test?
+      return nil
+    else
+      puts
+      puts "Missing requried environment variable #{lookup}"
+      puts "Please check your .env"
+      puts
+      exit 1
+    end
+  end
+
+  begin
+    time = DateTime.parse(time_string)
+  rescue
+    puts
+    puts "Cannot parse time from #{lookup}=#{time_string}"
+    puts "Please check your .env"
+    puts
+    exit 1
+  end
+
+  time
 end
 
 $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
