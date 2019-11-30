@@ -25,29 +25,27 @@ class SetHugoGlobals
 
   def time_from(lookup)
     time_string = ENV[lookup]
+    assert_pressent_on_production!(time_string, lookup)
+    parse!(time_string)
+  end
 
-    if time_string.nil?
-      if Rails.env.development? || Rails.env.test?
-        return nil
-      else
-        puts
-        puts "Missing requried environment variable #{lookup}"
-        puts "Please check your .env"
-        puts
-        exit 1
-      end
-    end
-
-    begin
-      time = DateTime.parse(time_string)
-    rescue
+  def assert_pressent_on_production!(time_string, lookup)
+    if Rails.env.production? && time_string.nil?
       puts
-      puts "Cannot parse time from #{lookup}=#{time_string}"
+      puts "Missing requried environment variable #{lookup}"
       puts "Please check your .env"
       puts
       exit 1
     end
+  end
 
-    time
+  def parse!(time_string)
+    time = DateTime.parse(time_string)
+  rescue
+    puts
+    puts "Cannot parse time from #{lookup}=#{time_string}"
+    puts "Please check your .env"
+    puts
+    exit 1
   end
 end
