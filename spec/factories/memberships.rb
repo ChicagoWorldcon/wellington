@@ -19,6 +19,7 @@ FactoryBot.define do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
     can_vote { false }
+    can_nominate { false }
     can_attend { false }
     price_currency { $currency }
 
@@ -26,6 +27,7 @@ FactoryBot.define do
       name { :adult }
       price_cents { 370_00 }
       can_vote { true }
+      can_nominate { true }
       can_attend { true }
     end
 
@@ -34,6 +36,7 @@ FactoryBot.define do
       price_cents { 225_00 }
       description { "born in or after 2000" }
       can_vote { true }
+      can_nominate { true }
       can_attend { true }
     end
 
@@ -42,6 +45,7 @@ FactoryBot.define do
       price_cents { 225_00 }
       description { "NZ residents only" }
       can_vote { true }
+      can_nominate { true }
       can_attend { true }
     end
 
@@ -63,6 +67,7 @@ FactoryBot.define do
       name { :supporting }
       price_cents { 75_00 }
       can_vote { true }
+      can_nominate { true }
     end
 
     # Supporting membership with $50 credit
@@ -70,6 +75,7 @@ FactoryBot.define do
       name { "supporting+" }
       price_cents { 75_00 + 50_00 }
       can_vote { true }
+      can_nominate { true }
       active_to { 1.day.ago }
     end
 
@@ -126,6 +132,16 @@ FactoryBot.define do
       price_cents { 0 }
       active_to { 1.day.ago }
       description { "Presupport membership" }
+    end
+
+    trait :dublin_supporter do
+      name { :dublin_supporter }
+      price_cents { 0 }
+      active_from { 1.day.ago }
+      active_to { 1.day.ago }
+      can_vote { false }
+      can_nominate { true }
+      description { "Attended Dublin in 2019, can Nominate in 2020" }
     end
 
     trait :chicago_donor do

@@ -27,6 +27,38 @@ module ApplicationHelper
     end.join(" ")
   end
 
+  # These match i18n values set in config/locales
+  # see Membership#all_rights
+  def membership_right_description(membership_right, reservation)
+    description = I18n.t(:description, scope: membership_right)
+    tooltip = I18n.t(:layman, scope: membership_right)
+    %{
+      #{link_if_open(description, membership_right, reservation)}
+      #{information_bubble(tooltip)}
+    }
+  end
+
+  # Create a <a> tag around the passed in description if appropriate
+  def link_if_open(description, membership_right, reservation)
+    if match = membership_right.match(/rights\.(.*)\.nominate\z/)
+      election_i18n_key = match[1]
+      link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
+    else
+      description
+    end
+  end
+
+  def information_bubble(tooltip_text)
+    octicon("info",
+      "height" => "15px",
+      "aria-label" => "More information",
+      "data-toggle" => "tooltip",
+      "data-html" => "true",
+      "data-placement" => "right",
+      "title" => tooltip_text,
+    )
+  end
+
   def fuzzy_time(as_at)
     content_tag(
       :span,
@@ -47,5 +79,9 @@ module ApplicationHelper
 
   def kiosk?
     @kiosk.present?
+  end
+
+  def markdown
+    @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
   end
 end

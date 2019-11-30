@@ -106,7 +106,9 @@ body {
 
     // For that test environment feeling
     &.api-test-keys {
-      filter: hue-rotate(90deg);
+      .logo img {
+        filter: hue-rotate(90deg);
+      }
     }
 
     color: $white;
@@ -152,6 +154,15 @@ h6, .h6-like {
 // =========================================================================
 // COMPONENTS
 // =========================================================================
+
+.hugo-description {
+  ul, ol {
+    margin: 15px;
+  }
+  li {
+    padding: 5px 10px;
+  }
+}
 
 // -------------------------------
 // BUTTONS

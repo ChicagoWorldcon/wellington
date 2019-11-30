@@ -30,16 +30,8 @@
         <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
             <%= t(:description, scope: membership_right) %>
-            <%=
-              octicon("info",
-                "height" => "15px",
-                "aria-label" => "More information",
-                "data-toggle" => "tooltip",
-                "data-html" => "true",
-                "data-placement" => "right",
-                "title" => t(:layman, scope: membership_right),
-              )
-            %>
+            <% help_text = t(:layman, scope: membership_right) %>
+            <%= information_bubble(help_text) %>
           </li>
         <% end %>
       </ul>

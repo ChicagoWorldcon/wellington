@@ -1,0 +1,168 @@
+<%#
+  Copyright 2019 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<% if @privacy_warning.present? %>
+  <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centred" role="document">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= render "multiple_accounts_disclaimer" %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<h1>Nominate for the <%= @election.name %> Awards</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="l-v-spacing l-panel hugo-description">
+        <% instructions = t(:instructions, scope: [:rights, @election.i18n_key]) %>
+        <%= raw markdown.render(instructions) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-8" <%= "hidden" if request.post? %>>
+      <div class="l-v-spacing l-panel">
+        <p>
+          Please type
+          <strong><%= @legal_name %></strong>
+          to show you understand the terms stated above.
+          This is based on your legal name as stated on your membership.
+        </p>
+        <p>
+        <input
+          id="hugo-show-form"
+          data-name="<%= @legal_name %>"
+          type="text"
+          class="form-control"
+        ></input>
+        </p>
+
+        <p class="hugo-show-form-thanks" hidden>
+          Thanks. Here's your form!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row hugo-show-form-thanks"  <%= "hidden" unless request.post? %>>
+    <div class="col-12">
+      <div class="accordion" id="accordion">
+        <% if @nominations_by_category.none? %>
+          <div class="l-panel">
+            Sory, no Hugo categories are loaded in yet.
+          </div>
+        <% else %>
+          <button class="open-all btn btn-m-full-width">
+            Open all categories
+          </button>
+
+          <% @nominations_by_category.each do |category, nominations| %>
+            <div class="card z-depth-0 bordered">
+              <% decorated_category = CategoryFormDecorator.new(category, nominations) %>
+              <a class="mb-0" href="#<%= decorated_category.heading_id %>">
+                <div
+                  class="<%= decorated_category.accordion_classes %>"
+                  id="<%= decorated_category.heading_id %>"
+                  aria-expanded="true"
+                  aria-controls="collapse-<%= category.id %>"
+                  data-target="#collapse-<%= category.id %>"
+                  data-toggle="collapse"
+                >
+                  <%= decorated_category.heading %>
+                </div>
+              </a>
+
+              <%=
+                form_for(
+                  category,
+                  remote: true, # xhr save your forms
+                  index: category.id,
+                  url: request.path,
+                ) do |category_form|
+              %>
+                <div
+                  id="collapse-<%= category.id %>"
+                  class="collapse"
+                  aria-labelledby="heading-<%= category.id %>"
+                  data-parent="#accordion"
+                >
+                  <%= hidden_field_tag(:category_id, category.id) %>
+                  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+                  <div class="card-body">
+                    <div class="form-note-m-group hugo-description">
+                      <%= raw markdown.render(category.description) %>
+                    </div>
+
+                    <hr>
+
+                    <% nominations.each.with_index(1) do |nomination, counter| %>
+                      <%= category_form.fields_for(nomination, index: counter) do |nomination_form| %>
+                        <% decorated_nomination = NominationFormDecorator.new(nomination, category) %>
+
+                        <fieldset class="l-v-spacing">
+                          <div class="row">
+                            <% category.fields.each do |field| %>
+                              <div class="<%= decorated_nomination.column_classes %>">
+                                <% id = "cat-#{category.id}-n#{counter}-#{field}" %>
+                                <label for="<%= id %>"><%= category[field] %></label>
+                                <%= nomination_form.text_field(field, id: id, class: "form-control text-dark") %>
+                              </div>
+                            <% end %>
+                          </div>
+                        </fieldset>
+                      <% end %>
+                    <% end %>
+
+                    <div class="l-v-spacing">
+                      <button type="submit" class="btn btn-m-full-width">
+                        Save '<%= category.name %>'
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <button class="save-all btn btn-m-full-width">
+            Save nominations for all categories
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

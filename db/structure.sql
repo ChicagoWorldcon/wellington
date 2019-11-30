@@ -40,6 +40,42 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.categories (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    description character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    field_1 character varying DEFAULT 'Nomination'::character varying NOT NULL,
+    field_2 character varying,
+    field_3 character varying,
+    election_id bigint NOT NULL
+);
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
+
+
+--
 -- Name: charges; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -168,6 +204,36 @@ ALTER SEQUENCE public.details_id_seq OWNED BY public.details.id;
 
 
 --
+-- Name: elections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.elections (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    i18n_key character varying DEFAULT 'hugo'::character varying NOT NULL
+);
+
+
+--
+-- Name: elections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.elections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: elections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.elections_id_seq OWNED BY public.elections.id;
+
+
+--
 -- Name: memberships; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -182,7 +248,8 @@ CREATE TABLE public.memberships (
     can_vote boolean DEFAULT false NOT NULL,
     can_attend boolean DEFAULT false NOT NULL,
     price_cents integer DEFAULT 0 NOT NULL,
-    price_currency character varying DEFAULT 'NZD'::character varying NOT NULL
+    price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
+    can_nominate boolean DEFAULT false NOT NULL
 );
 
 
@@ -203,6 +270,41 @@ CREATE SEQUENCE public.memberships_id_seq
 --
 
 ALTER SEQUENCE public.memberships_id_seq OWNED BY public.memberships.id;
+
+
+--
+-- Name: nominations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.nominations (
+    id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    reservation_id bigint NOT NULL,
+    field_1 character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    field_2 character varying,
+    field_3 character varying
+);
+
+
+--
+-- Name: nominations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.nominations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: nominations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.nominations_id_seq OWNED BY public.nominations.id;
 
 
 --
@@ -397,6 +499,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
+
+
+--
 -- Name: charges id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -418,10 +527,24 @@ ALTER TABLE ONLY public.details ALTER COLUMN id SET DEFAULT nextval('public.deta
 
 
 --
+-- Name: elections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.elections ALTER COLUMN id SET DEFAULT nextval('public.elections_id_seq'::regclass);
+
+
+--
 -- Name: memberships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.memberships ALTER COLUMN id SET DEFAULT nextval('public.memberships_id_seq'::regclass);
+
+
+--
+-- Name: nominations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nominations ALTER COLUMN id SET DEFAULT nextval('public.nominations_id_seq'::regclass);
 
 
 --
@@ -468,6 +591,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: charges charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -492,11 +623,27 @@ ALTER TABLE ONLY public.details
 
 
 --
+-- Name: elections elections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.elections
+    ADD CONSTRAINT elections_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nominations nominations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nominations
+    ADD CONSTRAINT nominations_pkey PRIMARY KEY (id);
 
 
 --
@@ -548,6 +695,20 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: index_categories_on_election_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_categories_on_election_id ON public.categories USING btree (election_id);
+
+
+--
+-- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
+
+
+--
 -- Name: index_charges_on_reservation_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -580,6 +741,27 @@ CREATE INDEX index_claims_on_user_id ON public.claims USING btree (user_id);
 --
 
 CREATE INDEX index_details_on_claim_id ON public.details USING btree (claim_id);
+
+
+--
+-- Name: index_elections_on_i18n_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_elections_on_i18n_key ON public.elections USING btree (i18n_key);
+
+
+--
+-- Name: index_nominations_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_nominations_on_category_id ON public.nominations USING btree (category_id);
+
+
+--
+-- Name: index_nominations_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_nominations_on_reservation_id ON public.nominations USING btree (reservation_id);
 
 
 --
@@ -643,6 +825,30 @@ CREATE UNIQUE INDEX index_supports_on_unlock_token ON public.supports USING btre
 --
 
 CREATE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: nominations fk_rails_1724df02dc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nominations
+    ADD CONSTRAINT fk_rails_1724df02dc FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: nominations fk_rails_31eec2b75d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nominations
+    ADD CONSTRAINT fk_rails_31eec2b75d FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
+
+
+--
+-- Name: categories fk_rails_4520a4c84e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT fk_rails_4520a4c84e FOREIGN KEY (election_id) REFERENCES public.elections(id);
 
 
 --
@@ -754,6 +960,14 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190627055058'),
 ('20190627092208'),
 ('20190707220026'),
-('20190825022040');
+('20190716055122'),
+('20190716055132'),
+('20190825022040'),
+('20191009182159'),
+('20191020043744'),
+('20191020174055'),
+('20191024180734'),
+('20191031051223'),
+('20191128184513');
 
 

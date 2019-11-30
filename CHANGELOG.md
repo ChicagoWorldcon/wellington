@@ -8,10 +8,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.1.0...master)
 
 ### Added
-- Nothing significant in this release
+- Added Hugos state configuration [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Please set these values in your .env on all environments:
+  ```
+  # Times when parts of the members area will become active
+  HUGO_NOMINATIONS_OPEN_AT="2019-12-31T23:59:00-08:00"
+  HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"
+  HUGO_CLOSED_AT="2020-08-02T12:00:00+13:00"
+  ```
+- Links to Hugo and Retro Hugo are now present on the membership cards
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+- Dublin Supporters now present in seeds file.
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Add this membership type with:
+  ```ruby
+  dublin_import = "2019-12-01".to_time
+  Membership.create!(
+    "name": "dublin_supporter",
+    "description": "Attended Dublin in 2019",
+    "active_from": dublin_import,
+    "active_to": dublin_import, # not available to the general public
+    "can_vote": false,
+    "can_nominate": true,
+    "can_attend": false, # can nominate, but can't vote
+    "price": Money.new(0),
+  )
+  ```
 
 ### Changed
-- Nothing significant in this release
+- We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- To reduce CSS bugs, colour rotation when you have test keys for dev/staging only affect the logo
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- Viewport is set explicitly on CoNZealand pages based on the
+  [Bootstrap guidelines](https://getbootstrap.com/docs/4.3/getting-started/introduction/#responsive-meta-tag)
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- Developers can now Napalm from an interactive rebase
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- CoNZealand development DB seeds are now based on Prod to reduce duplication of effort
+  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 
 ### Removed
 - Nothing significant in this release

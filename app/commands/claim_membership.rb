@@ -56,9 +56,8 @@ class ClaimMembership
   private
 
   def next_membership_number
-    last_reservation = Reservation.order(:membership_number).last
-    if last_reservation.present?
-      last_reservation.membership_number + 1
+    if last_number = Reservation.maximum(:membership_number)
+      last_number + 1
     else
       FIRST_MEMBERSHIP_NUMER
     end
