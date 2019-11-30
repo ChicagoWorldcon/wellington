@@ -14,7 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Sets global hugo variables that turn on and off parts of the site. In production this may raise errors for missing or
+# format issues to enforce integrity
 class SetHugoGlobals
+  RUNNING_IN_CI = ENV["GITLAB_CI_RUNNING"].present?
+
   def call
     $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
     $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
@@ -26,26 +30,26 @@ class SetHugoGlobals
   def time_from(lookup)
     time_string = ENV[lookup]
     assert_pressent_on_production!(time_string, lookup)
-    parse!(time_string)
+    parse!(time_string, lookup)
   end
 
   def assert_pressent_on_production!(time_string, lookup)
-    if Rails.env.production? && time_string.nil?
+    if time_string.nil?
       puts
       puts "Missing requried environment variable #{lookup}"
       puts "Please check your .env"
       puts
-      exit 1
+      exit 1 if !RUNNING_IN_CI && Rails.env.production?
     end
   end
 
-  def parse!(time_string)
-    time = DateTime.parse(time_string)
+  def parse!(time_string, lookup)
+    DateTime.parse(time_string)
   rescue
     puts
     puts "Cannot parse time from #{lookup}=#{time_string}"
     puts "Please check your .env"
     puts
-    exit 1
+    exit 1 if !RUNNING_IN_CI && Rails.env.production?
   end
 end
