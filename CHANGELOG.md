@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 - CoNZealand development DB seeds are now based on Prod to reduce duplication of effort
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
+- Securitiy patch puma against a Denial of Service vunerability
+  [CVE-2019-16770](https://nvd.nist.gov/vuln/detail/CVE-2019-16770)
 
 ### Removed
 - Nothing significant in this release
