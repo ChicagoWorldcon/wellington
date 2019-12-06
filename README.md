@@ -194,35 +194,194 @@ We're taking advantage of Gitlab's CI pipeline to build docker images. You can b
 images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
 that have gone through CI and code review.
 
-Make sure you set RAILS_ENV to produciton so you take advantager of production specific speedups. If you're managing
-your secrets in a .env like your developer environment, just add this:
-
-```
-# Used for URL generation and using compiled assets
-RAILS_ENV=production
-```
-
-You may end up writing your own `docker-compose.yml` for this, or just wiring it up some other way. Here's how you'd do
-it with just raw docker commands:
-
-```sh
-# Create database
-docker run -d --name="test-database" --hostname "postgres" postgres:latest
-
-# Build tables
-docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:latest bundle exec rake db:create db:structure:load
-
-# Run rails server, TODO bind ports
-docker run --env-file=.env --network "container:test-database" registry.gitlab.com/worldcon/2020-wellington:stable bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0
-```
-
 To see all versions available, check out our [container registry](https://gitlab.com/worldcon/2020-wellington/container_registry).
 Git tags move `:stable`, merged work that's passed review moves `:latest`.
 
-For more information or options, check out Docker's [extensive documentation](https://docs.docker.com/).
+Below is an example setup which should get you most of the way towards a running instance.
 
-You'll have to manage HTTPS outside of this using something like [elastic load
-balancer](https://aws.amazon.com/elasticloadbalancing/) or [caddy server](https://caddyserver.com/).
+CoNZealand has a few URLs, one for stable and one for master. Because staging traffic is minimal, the rails servers are
+loaded onto the same AWS EC2 t2.micro instance using Ubuntu with
+[docker-compose](https://docs.docker.com/compose/install/). Our database concerns are served by an AWS RDS db.t2.micro
+which handles patching, backups and maintenence.
+
+For an easy setup with SSL, conzealand uses [Caddy](https://caddyserver.com/) because it handles SSL with
+[Lets Encrypt](https://letsencrypt.org/) and is fairly quick.
+
+Here's the CoNZealand compose file:
+
+`~/docker-compose`
+```yaml
+# Copyright 2019 James Polley
+# Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: '3.6'
+
+services:
+  ingress:
+    image: "abiosoft/caddy"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile:ro
+      - ssl-certs:/root/.caddy:rw
+    environment:
+      # https://github.com/abiosoft/caddy-docker#lets-encrypt-subscriber-agreement
+      ACME_AGREE: "true"
+    restart: always
+
+  members_production:
+    env_file:
+      production.env
+    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
+  members_staging:
+    env_file:
+      staging.env
+    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
+volumes:
+  ssl-certs:
+```
+
+Here's the Cadyfile which handles SSL termination, transparent forwarding to our rails servers and http basic auth for
+our staging setup:
+
+`~/Cadyfile`
+```
+members.conzealand.nz {
+  log stdout
+  errors stdout
+  proxy / members_production:3000 {
+    transparent
+  }
+}
+
+members-staging.conzealand.nz {
+  log stdout
+  errors stdout
+  basicauth / preview "yolo super secret password"
+  proxy / members_staging:3000 {
+    transparent
+  }
+}
+```
+
+For Cadfyile options, see [Cadyfile reference](https://caddyserver.com/v1/tutorial/caddyfile).
+
+If you're interested in the docker image configuration options, see [abiosoft/caddy](https://hub.docker.com/r/abiosoft/caddy)
+
+Here's a version of our production config with production specific environment variables and obscured secrets:
+
+`production.env`
+```
+# Used for URL generation and using compiled assets
+RAILS_ENV=production
+
+HOSTNAME=members.conzealand.nz
+RAILS_ENV=production
+
+# DB_NAME will be used in rake tasks to stand up your database, so use whatever you prefer here
+# Settings taken from https://console.aws.amazon.com/rds/home
+DB_HOST=mydatabasepasta.lecopypastah.ap-southeast-2.rds.amazonaws.com
+DB_NAME=worldcon_production
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=shuquairae2CcopypastaohmiFe1shie7eoxee2
+
+# The rest is identical to the example .env in this README.
+# Please copy from there.
+```
+
+There's also a `staging.env` next to this which is a variation on these settings and an excersise for the reader.
+
+On your first run you're going to have to load in the database schema load and some seeds. You can do this from the
+image itself by running up an interactive shell and using the rake commands available to that environemnt. Our database
+seeds are stored in `db/seeds` and corrospond to runnable rake commands.
+
+Here's the basic recipe to load up a minimal conzealand produciton:
+
+```
+# Run an interactive shell
+docker run --env-file=production.env registry.gitlab.com/worldcon/2020-wellington:latest /bin/sh
+
+# Create the database and load the schema
+bundle exec rake db:create db:structure:load
+
+# Seed your database
+bundle exec rake db:seed:conzealand:production
+```
+
+# Production Maintenance and Upgrades
+
+If you're using the docker images, the Docker entry point uses `script/docker_entry.sh` which runs unapplied patches
+with `rake db:migrate`. The schema will naturally change over time, for more information about migrations please see
+the [Rails Migration](https://guides.rubyonrails.org/active_record_migrations.html) docs.
+
+The docker registry pumps out new images all the time. Here's a make file we're using to run updates on production:
+
+`Makefile`
+```make
+default: update restart clean logs
+
+ISO_DATE := $(shell date --iso-8601)
+
+update:
+	docker-compose pull
+
+restart: stop
+	docker-compose rm -f
+	docker-compose up -d
+
+logs:
+	docker-compose logs -f
+
+stop:
+	docker-compose stop
+
+clean:
+	docker system prune -a -f
+
+dump:
+	# Requires a ~/.pgpass with 0600 based on https://www.postgresql.org/docs/9.1/libpq-pgpass.html to run
+	# Settings taken from https://console.aws.amazon.com/rds/home
+	pg_dump -U postgres -h mydatabasepasta.lecopypastah.ap-southeast-2.rds.amazonaws.com worldcon_production > production-$(ISO_DATE).sql
+```
+
+Note, the configuration above prefixes with. If you use spaces, it'll spray your terminal with errors.
+
+Here's how you'd run your maintenance tasks
+
+```bash
+# Pull down the latest images, kick over the services and remove unused containers
+make update restart clean
+
+# Dump production SQL for offsite backup
+make dump
+
+# Watch production logs
+make logs
+```
 
 # Configuring pricing
 
@@ -238,6 +397,26 @@ price_change = (announcement + 6.months).midday
 venue_confirmation = Date.parse("2020-04-01").midday
 Membership.create!(name: :adult, active_from: announcement, active_to: price_change price: 400_00)
 Membership.create!(name: :adult, active_from: price_change, active_to: venue_confirmation price: 450_00)
+```
+
+Of course this is a bunch of effort, the real magic is doing this with seed files. To try this out on your local box,
+you can always do this by chaining rake commands together. Development is a rif on production but with dummy data we'd
+expect to see from our users such as filled out membership forms, or cast votes for Hugo.
+
+Here's a few examples of you might reset your local database for a minimal setup:
+
+```bash
+# Chicago production, see db/seeds/chicago/production.seeds.rb
+bundle exec rake db:drop db:create db:schema:load db:seed:chicago:production
+
+# Chicago development, see db/seeds/chicago/development.seeds.rb
+bundle exec rake db:drop db:create db:schema:load db:seed:chicago:development
+
+# CoNZealand production, see db/seeds/conzealand/production.seeds.rb
+bundle exec rake db:drop db:create db:schema:load db:seed:conzealand:production
+
+# CoNZealand development, see db/seeds/conzealand/development.seeds.rb
+bundle exec rake db:drop db:create db:schema:load db:seed:conzealand:development
 ```
 
 # License
