@@ -246,6 +246,61 @@ ALTER SEQUENCE public.conzealand_contacts_id_seq OWNED BY public.conzealand_cont
 
 
 --
+-- Name: dc_contacts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dc_contacts (
+    id bigint NOT NULL,
+    claim_id bigint NOT NULL,
+    import_key character varying,
+    title character varying,
+    first_name character varying,
+    last_name character varying,
+    preferred_first_name character varying,
+    preferred_last_name character varying,
+    badge_subtitle character varying,
+    badge_title character varying,
+    address_line_1 character varying,
+    address_line_2 character varying,
+    city character varying,
+    country character varying,
+    postal character varying,
+    province character varying,
+    publication_format character varying,
+    interest_accessibility_services boolean,
+    interest_being_on_program boolean,
+    interest_dealers boolean,
+    interest_exhibiting boolean,
+    interest_performing boolean,
+    interest_selling_at_art_show boolean,
+    interest_volunteering boolean,
+    share_with_future_worldcons boolean DEFAULT true,
+    show_in_listings boolean DEFAULT true,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: dc_contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.dc_contacts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: dc_contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.dc_contacts_id_seq OWNED BY public.dc_contacts.id;
+
+
+--
 -- Name: elections; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -579,6 +634,13 @@ ALTER TABLE ONLY public.conzealand_contacts ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
+-- Name: dc_contacts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dc_contacts ALTER COLUMN id SET DEFAULT nextval('public.dc_contacts_id_seq'::regclass);
+
+
+--
 -- Name: elections id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -680,6 +742,14 @@ ALTER TABLE ONLY public.claims
 
 ALTER TABLE ONLY public.conzealand_contacts
     ADD CONSTRAINT conzealand_contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dc_contacts dc_contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dc_contacts
+    ADD CONSTRAINT dc_contacts_pkey PRIMARY KEY (id);
 
 
 --
@@ -808,6 +878,13 @@ CREATE INDEX index_claims_on_user_id ON public.claims USING btree (user_id);
 --
 
 CREATE INDEX index_conzealand_contacts_on_claim_id ON public.conzealand_contacts USING btree (claim_id);
+
+
+--
+-- Name: index_dc_contacts_on_claim_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_dc_contacts_on_claim_id ON public.dc_contacts USING btree (claim_id);
 
 
 --
@@ -1038,6 +1115,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191128184513'),
 ('20191201185444'),
 ('20191208185952'),
+('20191209052126'),
 ('20191221233951'),
 ('20191229203558'),
 ('20191231004921'),

@@ -42,5 +42,11 @@ FactoryBot.define do
         new_claim.chicago_contact = create(:chicago_contact, claim: new_claim)
       end
     end
+
+    trait :with_dc_contact do
+      after(:build) do |new_claim, _evaluator|
+        new_claim.chicago_contact = create(:dc_contact, claim: new_claim)
+      end
+    end
   end
 end
