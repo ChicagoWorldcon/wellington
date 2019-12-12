@@ -32,9 +32,19 @@ RSpec.describe UserTokensController, type: :controller do
 
   describe "#create" do
     it "sets error when email is invalid" do
-      post :create, params: { email: "please like and subscribe" }
+      expect {
+        post :create, params: { email: "please like and subscribe" }
+      }.to_not change { controller.current_user }.from(nil)
       expect(flash[:error]).to be_present
       expect(flash[:notice]).to_not be_present
+    end
+
+    it "sets notification when pointing at existing user" do
+      expect {
+        post :create, params: { email: user.email }
+      }.to_not change { controller.current_user }.from(nil)
+      expect(flash[:error]).to_not be_present
+      expect(flash[:notice]).to be_present
     end
   end
 
