@@ -46,6 +46,16 @@ RSpec.describe UserTokensController, type: :controller do
       expect(flash[:error]).to_not be_present
       expect(flash[:notice]).to be_present
     end
+
+    it "signs new users in imemdiately" do
+      marys_email = "mary_poppins@supercalifragilisticexpialidocious.net"
+      expect {
+        post :create, params: { email: marys_email }
+      }.to change { User.count }.by(1)
+      expect(flash[:notice]).to be_present
+      expect(controller.current_user).to be_present
+      expect(controller.current_user.email).to eq(marys_email)
+    end
   end
 
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb

@@ -37,6 +37,20 @@ class UserTokensController < ApplicationController
   end
 
   def create
+    if !User.where(email: params[:email]).exists?
+      new_user = User.new(email: params[:email])
+      if new_user.save
+        sign_in(new_user)
+        flash[:notice] = %{
+          Welcome #{params[:email]}!
+          Because this is the first time we've seen you, you're automatically signed in.
+          In the future, you'll have to check your email.
+        }
+        redirect_to referrer_path
+        return
+      end
+    end
+
     send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: referrer_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
