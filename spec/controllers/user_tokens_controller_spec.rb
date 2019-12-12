@@ -30,6 +30,14 @@ RSpec.describe UserTokensController, type: :controller do
     ENV["JWT_SECRET"] = @real_jwt_secret
   end
 
+  describe "#create" do
+    it "sets error when email is invalid" do
+      post :create, params: { email: "please like and subscribe" }
+      expect(flash[:error]).to be_present
+      expect(flash[:notice]).to_not be_present
+    end
+  end
+
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
   describe "#show" do
     let(:user) { create(:user) }
