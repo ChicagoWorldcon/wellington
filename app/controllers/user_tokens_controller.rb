@@ -37,9 +37,9 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    new_user = User.new(email: params[:email])
+    new_user = User.find_or_initialize_by(email: params[:email])
 
-    if new_user.valid? && !User.where(email: params[:email]).exists?
+    if new_user.valid? && !new_user.persisted?
       new_user.save!
       sign_in(new_user)
       flash[:notice] = %{
