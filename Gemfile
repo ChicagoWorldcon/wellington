@@ -30,11 +30,11 @@ gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "octicons_helper"      # icon pack from github in a handy helper
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
-gem "rails", "6.0.0"       # framework for building websites <3
+gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
-gem "webpacker", "~> 4"    # a JavaScript module bundler, takes modules with dependencies and generates static assets
+gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
