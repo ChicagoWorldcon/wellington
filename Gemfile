@@ -21,6 +21,7 @@
 source "https://rubygems.org"
 
 gem "bootsnap"             # boot large ruby/rails apps faster
+gem "bundler-audit"        # checks for insecure gems
 gem "devise"               # authentication solution for Rails with Warden
 gem "gem-licenses"         # print libraries depended on by this project, grouped by licence
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -37,7 +38,6 @@ gem "webpacker", "~> 4"    # a JavaScript module bundler, takes modules with dep
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
-  gem "bundler-audit"                                 # checks for insecure gems
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
