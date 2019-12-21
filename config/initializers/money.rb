@@ -88,8 +88,10 @@ MoneyRails.configure do |config|
   # BigDecimal::ROUND_FLOOR
   #
   # set to BigDecimal::ROUND_HALF_EVEN by default
-  #
-  # config.rounding_mode = BigDecimal::ROUND_HALF_UP
+
+  # This is set to match Stripe's rounding defaults.
+  # see https://stripe.com/docs/billing/subscriptions/decimal-amounts#rounding
+  config.rounding_mode = BigDecimal::ROUND_HALF_UP
 
   # Set default money format globally.
   # Default value is nil meaning "ignore this option".
