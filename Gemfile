@@ -21,6 +21,7 @@
 source "https://rubygems.org"
 
 gem "bootsnap"             # boot large ruby/rails apps faster
+gem "bundler-audit"        # checks for insecure gems
 gem "devise"               # authentication solution for Rails with Warden
 gem "gem-licenses"         # print libraries depended on by this project, grouped by licence
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -29,15 +30,14 @@ gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "octicons_helper"      # icon pack from github in a handy helper
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
-gem "rails", "6.0.0"       # framework for building websites <3
+gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
-gem "webpacker", "~> 4"    # a JavaScript module bundler, takes modules with dependencies and generates static assets
+gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
-  gem "bundler-audit"                                 # checks for insecure gems
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
