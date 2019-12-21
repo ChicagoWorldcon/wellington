@@ -52,12 +52,23 @@ RSpec.describe NominationsController, type: :controller do
     context "when signed in" do
       before { sign_in(user) }
 
-      it "renders during nomination" do
-        $nomination_opens_at = 1.second.ago
-        $voting_opens_at = 1.day.from_now
-        $hugo_closed_at = 2.days.from_now
-        expect(get_show).to have_http_status(:ok)
-        expect(response.body).to_not include(retro_best_novel.name)
+      context "when nominations are open" do
+        before do
+          $nomination_opens_at = 1.second.ago
+          $voting_opens_at = 1.day.from_now
+          $hugo_closed_at = 2.days.from_now
+        end
+
+        it "renders during nomination" do
+          expect(get_show).to have_http_status(:ok)
+          expect(response.body).to_not include(retro_best_novel.name)
+        end
+
+        it "redirects when you've not set your name" do
+          reservation.active_claim.detail.destroy!
+          expect(get_show).to have_http_status(:found)
+          expect(flash[:notice]).to match(/enter your details/i)
+        end
       end
 
       it "doesn't render before nomination" do
@@ -72,12 +83,6 @@ RSpec.describe NominationsController, type: :controller do
         $voting_opens_at = 1.second.ago
         $hugo_closed_at = 1.day.from_now
         expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "redirects when you've not set your name" do
-        reservation.active_claim.detail.destroy!
-        expect(get_show).to have_http_status(:found)
-        expect(flash[:notice]).to match(/enter your details/i)
       end
     end
   end
