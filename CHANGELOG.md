@@ -49,11 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 - Securitiy patch puma against a Denial of Service vunerability
   [CVE-2019-16770](https://nvd.nist.gov/vuln/detail/CVE-2019-16770)
-- Moved yarn's OS dependent integrity check from application bootstrap to CI
-  [!133](https://gitlab.com/worldcon/2020-wellington/merge_requests/133)
+- Reconfigure Money rounding to round up on 0.5 cents to
+  match [stripe's decimal rounding](https://stripe.com/docs/billing/subscriptions/decimal-amounts#rounding)
+  [!134](https://gitlab.com/worldcon/2020-wellington/merge_requests/134)
 
 ### Removed
-- Nothing significant in this release
+- Moved yarn's OS dependent integrity check from application bootstrap to CI
+  [!133](https://gitlab.com/worldcon/2020-wellington/merge_requests/133)
 
 
 ## [Tag 2.1.0 - 2019-11-22](https://gitlab.com/worldcon/2020-wellington/compare/2.0.0...2.1.0)
