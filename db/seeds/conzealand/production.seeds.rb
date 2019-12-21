@@ -168,7 +168,7 @@ Membership.create!(
   "price": Money.new(7500),
 )
 Membership.create!(
-  "name": "dublin_supporter",
+  "name": "dublin_2019",
   "description": "Attended Dublin in 2019",
   "active_from": dublin_import,
   "active_to": dublin_import, # not available to the general public

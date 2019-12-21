@@ -115,7 +115,7 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not include("rights.hugo.vote") }
 
       describe "for dublin supporters" do
-        let(:model) { create(:membership, :dublin_supporter, :with_order_for_reservation) }
+        let(:model) { create(:membership, :dublin_2019, :with_order_for_reservation) }
         it { is_expected.to_not include("rights.hugo.nominate") }
         it { is_expected.to include("rights.hugo.nominate_only") }
       end
@@ -133,7 +133,7 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to include("rights.hugo.vote") }
 
       describe "for dublin supporters" do
-        let(:model) { create(:membership, :dublin_supporter, :with_order_for_reservation) }
+        let(:model) { create(:membership, :dublin_2019, :with_order_for_reservation) }
         it { is_expected.to_not include("rights.hugo.vote") }
       end
     end
