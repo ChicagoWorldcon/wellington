@@ -50,8 +50,8 @@ class MemberNominationsByCategory
       errors.add(:reservation, "reservation is disabled")
     end
 
-    if !reservation.membership.can_vote?
-      errors.add(:reservation, "reservation doesn't have voting rights")
+    if !reservation.membership.can_nominate?
+      errors.add(:reservation, "reservation doesn't have nomination rights")
     end
   end
 

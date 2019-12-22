@@ -118,6 +118,13 @@ RSpec.describe MemberNominationsByCategory do
     it { is_expected.to_not be_valid }
   end
 
+  context "for dublin memberships" do
+    let(:dublin) { create(:membership, :dublin_2019) }
+    let(:reservation) { create(:reservation, membership: dublin) }
+
+    it { is_expected.to be_valid }
+  end
+
   describe "#from_reservation" do
     it "is chainable" do
       expect(service.from_reservation).to eq service
