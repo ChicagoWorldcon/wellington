@@ -35,7 +35,7 @@ class Import::DublinMembers
   attr_reader :errors, :csv
 
   def initialize(io_reader, description)
-    @csv = CSV.new(io_reader)
+    @csv = CSV.parse(io_reader)
     @errors = []
   end
 
@@ -47,6 +47,12 @@ class Import::DublinMembers
     if headings != HEADINGS
       errors << "Headings don't match. Got #{headings}, want #{HEADINGS}"
       return false
+    end
+
+    rows.each.with_index do |cells|
+      row = Hash[HEADINGS.zip(cells)]
+      import_email = row["EMAIL"].downcase.strip
+      import_user = User.find_or_create_by!(email: import_email)
     end
 
     true

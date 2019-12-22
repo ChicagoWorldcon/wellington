@@ -42,5 +42,40 @@ RSpec.describe Import::DublinMembers do
 
       it { is_expected.to be_falsey }
     end
+
+    context "when there's dublin data to import" do
+      let(:import_email) { "enjoy@coke.net" }
+
+      let(:data) do
+        CSV.generate do |csv|
+          csv << Import::DublinMembers::HEADINGS
+          csv << [
+            "dublin",
+            "1234",
+            "",
+            "Adult",
+            "Firstname goes here",
+            "Lastname goes here",
+            "Firstlastnamegoeshere",
+            import_email,
+            "Helsinki",
+            "",
+            "Finland",
+            "notes o glorious notes",
+          ]
+        end
+      end
+
+      it { is_expected.to be_truthy }
+
+      it "can create users" do
+        expect { call }.to change { User.count }.by(1)
+      end
+
+      it "doesn't create users if they're already there" do
+        create(:user, email: import_email)
+        expect { call }.to_not change { User.count }
+      end
+    end
   end
 end
