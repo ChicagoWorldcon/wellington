@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```ruby
   dublin_import = "2019-12-01".to_time
   Membership.create!(
-    "name": "dublin_supporter",
+    "name": "dublin_2019",
     "description": "Attended Dublin in 2019",
     "active_from": dublin_import,
     "active_to": dublin_import, # not available to the general public

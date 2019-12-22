@@ -249,7 +249,8 @@ CREATE TABLE public.memberships (
     can_attend boolean DEFAULT false NOT NULL,
     price_cents integer DEFAULT 0 NOT NULL,
     price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
-    can_nominate boolean DEFAULT false NOT NULL
+    can_nominate boolean DEFAULT false NOT NULL,
+    can_site_select boolean DEFAULT false NOT NULL
 );
 
 
@@ -968,6 +969,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191020174055'),
 ('20191024180734'),
 ('20191031051223'),
-('20191128184513');
+('20191128184513'),
+('20191221233951');
 
 

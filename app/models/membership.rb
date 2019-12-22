@@ -37,7 +37,7 @@ class Membership < ApplicationRecord
   def all_rights
     [].tap do |rights|
       rights << "rights.attend" if can_attend?
-      rights << "rights.site_selection" if can_nominate?
+      rights << "rights.site_selection" if can_site_select?
 
       if can_vote?
         rights << "rights.hugo.vote"
@@ -56,7 +56,7 @@ class Membership < ApplicationRecord
   def active_rights
     [].tap do |rights|
       rights << "rights.attend" if can_attend?
-      rights << "rights.site_selection" if can_nominate?
+      rights << "rights.site_selection" if can_site_select?
 
       now = DateTime.now
 

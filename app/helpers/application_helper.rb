@@ -43,6 +43,9 @@ module ApplicationHelper
     if match = membership_right.match(/rights\.(.*)\.nominate\z/)
       election_i18n_key = match[1]
       link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
+    elsif match = membership_right.match(/rights\.(.*)\.nominate_only\z/)
+      election_i18n_key = match[1]
+      link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
     else
       description
     end
