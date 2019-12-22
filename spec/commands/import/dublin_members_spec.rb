@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require "rails_helper"
+require "csv"
 
 RSpec.describe Import::DublinMembers do
   let(:data) { "" }
@@ -30,6 +31,16 @@ RSpec.describe Import::DublinMembers do
     it "imports nothing when the file is empty" do
       expect { call }.to_not change { Membership.count }
       expect(command.errors).to be_empty
+    end
+
+    context "when the headings are wrong" do
+      let(:data) do
+        CSV.generate do |csv|
+          csv << %w(it's the wrong trowsers gromit!)
+        end
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 end

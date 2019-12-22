@@ -14,15 +14,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "csv"
+
 class Import::DublinMembers
+  HEADINGS = [
+    "eligibility",
+    "DUB#",
+    "NZ#",
+    "Class Type",
+    "FNAME",
+    "LNAME",
+    "combined",
+    "EMAIL",
+    "CITY",
+    "STATE",
+    "COUNTRY",
+    "notes"
+  ]
+
+  attr_reader :errors, :csv
+
   def initialize(io_reader, description)
+    @csv = CSV.new(io_reader)
+    @errors = []
   end
 
   def call
+    if !headings.present?
+      return true
+    end
+
+    if headings != HEADINGS
+      errors << "Headings don't match. Got #{headings}, want #{HEADINGS}"
+      return false
+    end
+
     true
   end
 
-  def errors
-    @errors = []
+  private
+
+  def headings
+    @headings ||= csv.first
+  end
+
+  def rows
+    @rows ||= csv[1..-1]
   end
 end
