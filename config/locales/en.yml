@@ -152,7 +152,7 @@ en:
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
-        description: Nominate for Retro Hugos
+        description: Nominate in Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2020, and for the
