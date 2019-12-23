@@ -53,6 +53,7 @@ class Import::DublinMembers
       row = Hash[HEADINGS.zip(cells)]
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
+      ClaimMembership.new(dublin_membership, customer: import_user).call
     end
 
     true
@@ -66,5 +67,9 @@ class Import::DublinMembers
 
   def rows
     @rows ||= csv[1..-1]
+  end
+
+  def dublin_membership
+    @dublin_membership ||= Membership.find_by!(name: :dublin_2019)
   end
 end

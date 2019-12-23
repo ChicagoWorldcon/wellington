@@ -21,6 +21,9 @@ RSpec.describe Import::DublinMembers do
   let(:data) { "" }
   let(:read_stream) { StringIO.new(data) }
   let(:description) { "test stream" }
+
+  let!(:dublin_membership) { create(:membership, :dublin_2019) }
+
   subject(:command) { described_class.new(read_stream, description) }
 
   describe "#call" do
@@ -75,6 +78,11 @@ RSpec.describe Import::DublinMembers do
       it "doesn't create users if they're already there" do
         create(:user, email: import_email)
         expect { call }.to_not change { User.count }
+      end
+
+      it "creates new Dublin memberships" do
+        expect { call }.to change { dublin_membership.reload.orders.count }.by(1)
+        expect(Reservation.last).to be_paid
       end
     end
   end
