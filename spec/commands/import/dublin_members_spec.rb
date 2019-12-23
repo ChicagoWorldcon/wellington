@@ -47,25 +47,27 @@ RSpec.describe Import::DublinMembers do
     end
 
     context "when there's dublin data to import" do
-      let(:import_email) { "enjoy@coke.net" }
+      let(:sample_row) do
+        {
+          eligibility: "dublin",
+          dub: "1234",
+          nz: "",
+          type: "Adult",
+          fname: "Firstname goes here",
+          lname: "Lastname goes here",
+          combined: "Firstlastnamegoeshere",
+          email: "enjoy@coke.net",
+          city: "Helsinki",
+          state: "",
+          country: "Finland",
+          notes: "notes o glorious notes",
+        }
+      end
 
       let(:data) do
         CSV.generate do |csv|
           csv << Import::DublinMembers::HEADINGS
-          csv << [
-            "dublin",
-            "1234",
-            "",
-            "Adult",
-            "Firstname goes here",
-            "Lastname goes here",
-            "Firstlastnamegoeshere",
-            import_email,
-            "Helsinki",
-            "",
-            "Finland",
-            "notes o glorious notes",
-          ]
+          csv << sample_row.values
         end
       end
 
@@ -76,13 +78,19 @@ RSpec.describe Import::DublinMembers do
       end
 
       it "doesn't create users if they're already there" do
-        create(:user, email: import_email)
+        create(:user, email: sample_row[:email])
         expect { call }.to_not change { User.count }
       end
 
       it "creates new Dublin memberships" do
         expect { call }.to change { dublin_membership.reload.orders.count }.by(1)
         expect(Reservation.last).to be_paid
+      end
+
+      it "creates details based on passed in data" do
+        expect { call }.to change { Detail.count }.by(1)
+        expect(Detail.last.country).to eq(sample_row[:country])
+        expect(Detail.last.first_name).to eq(sample_row[:fname])
       end
     end
   end

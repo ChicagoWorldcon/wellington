@@ -49,11 +49,23 @@ class Import::DublinMembers
       return false
     end
 
-    rows.each.with_index do |cells|
+    rows.each.with_index do |cells, n|
       row = Hash[HEADINGS.zip(cells)]
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
-      ClaimMembership.new(dublin_membership, customer: import_user).call
+      reservation = ClaimMembership.new(dublin_membership, customer: import_user).call
+      Detail.create!(
+        claim: reservation.active_claim,
+        first_name: row["FNAME"],
+        last_name: row["LNAME"],
+        address_line_1: row["CITY"],
+        city: row["CITY"],
+        province: row["STATE"],
+        country: row["COUNTRY"],
+        show_in_listings: false,
+        share_with_future_worldcons: false,
+        publication_format: Detail::PAPERPUBS_ELECTRONIC,
+      )
     end
 
     true
