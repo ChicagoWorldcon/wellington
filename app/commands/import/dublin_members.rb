@@ -54,11 +54,10 @@ class Import::DublinMembers
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
       reservation = ClaimMembership.new(dublin_membership, customer: import_user).call
-      Detail.create!(
+      detail = Detail.new(
         claim: reservation.active_claim,
         first_name: row["FNAME"],
         last_name: row["LNAME"],
-        address_line_1: row["CITY"],
         city: row["CITY"],
         province: row["STATE"],
         country: row["COUNTRY"],
@@ -66,6 +65,7 @@ class Import::DublinMembers
         share_with_future_worldcons: false,
         publication_format: Detail::PAPERPUBS_ELECTRONIC,
       )
+      detail.as_import.save!
     end
 
     true
