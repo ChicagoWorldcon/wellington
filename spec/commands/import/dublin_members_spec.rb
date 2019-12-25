@@ -92,6 +92,12 @@ RSpec.describe Import::DublinMembers do
         expect(Detail.last.country).to eq(sample_row[:country])
         expect(Detail.last.first_name).to eq(sample_row[:fname])
       end
+
+      it "creates notes with line numbers" do
+        expect { call }.to change { Note.count }.by(1)
+        expect(Note.last.content).to match(/row 2/i) # note, headings are row 1
+        expect(Note.last.content).to include(description)
+      end
     end
   end
 end

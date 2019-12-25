@@ -32,11 +32,12 @@ class Import::DublinMembers
     "notes"
   ]
 
-  attr_reader :errors, :csv
+  attr_reader :errors, :csv, :description
 
   def initialize(io_reader, description)
     @csv = CSV.parse(io_reader)
     @errors = []
+    @description = description
   end
 
   def call
@@ -49,7 +50,9 @@ class Import::DublinMembers
       return false
     end
 
-    rows.each.with_index do |cells, n|
+    # We've wipped off headings already
+    # with_index(2) because first data entries start from row 2
+    rows.each.with_index(2) do |cells, n|
       row = Hash[HEADINGS.zip(cells)]
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
@@ -66,6 +69,7 @@ class Import::DublinMembers
         publication_format: Detail::PAPERPUBS_ELECTRONIC,
       )
       detail.as_import.save!
+      import_user.notes.create!(content: "#{description} row #{n}")
     end
 
     true
