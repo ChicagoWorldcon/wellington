@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     "can_vote": false,
     "can_nominate": true,
     "can_attend": false, # can nominate, but can't vote
+    "can_site_select": false,
     "price": Money.new(0),
   )
   ```
