@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+- Memberships now have a flag to say if they can site select
+  [!136](https://gitlab.com/worldcon/2020-wellington/merge_requests/136)
 - Dublin Supporters now present in seeds file.
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
   Add this membership type with:
