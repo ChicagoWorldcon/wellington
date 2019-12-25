@@ -37,6 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     "price": Money.new(0),
   )
   ```
+- Dublin memberships importer built from Tammy's unduplicated memberships list
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  ```bash
+  make bash
+  DUBLIN_SRC="unduplicated members-Table 1.csv" bin/rake import:dublin
+  ```
 - People who have paid an instalment which covers a Supporting membership can nominate in Hugo
   [!138](https://gitlab.com/worldcon/2020-wellington/merge_requests/138)
 - You can now adjust instalment minimum payment and payment step amounts by setting them in your environment
@@ -45,7 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   INSTALMENT_MIN_PAYMENT_CENTS=7500
   INSTALMENT_PAYMENT_STEP_CENTS=5000
   ```
-
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
