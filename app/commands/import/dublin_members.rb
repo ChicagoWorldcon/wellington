@@ -54,6 +54,11 @@ class Import::DublinMembers
     # with_index(2) because first data entries start from row 2
     rows.each.with_index(2) do |cells, n|
       row = Hash[HEADINGS.zip(cells)]
+
+      # The unduplicated list includes information about other members so hugohelp@ has context
+      # Only import dublin members, skip everyone else
+      next if row["eligibility"] != "dublin"
+
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
       reservation = ClaimMembership.new(dublin_membership, customer: import_user).call

@@ -46,7 +46,8 @@ RSpec.describe Import::DublinMembers do
       it { is_expected.to be_falsey }
     end
 
-    context "when there's dublin data to import" do
+
+    context "when there's data to import" do
       let(:sample_row) do
         {
           eligibility: "dublin",
@@ -97,6 +98,35 @@ RSpec.describe Import::DublinMembers do
         expect { call }.to change { Note.count }.by(1)
         expect(Note.last.content).to match(/row 2/i) # note, headings are row 1
         expect(Note.last.content).to include(description)
+      end
+
+      context "when that data is labelled 'conzealand'" do
+        let(:sample_row) do
+          {
+            eligibility: "conzealand",
+            dub: "1234",
+            nz: "",
+            type: "Adult",
+            fname: "Firstname goes here",
+            lname: "Lastname goes here",
+            combined: "Firstlastnamegoeshere",
+            email: "enjoy@coke.net",
+            city: "Helsinki",
+            state: "",
+            country: "Finland",
+            notes: "notes o glorious notes",
+          }
+        end
+
+        it { is_expected.to be_truthy }
+
+        it "doesn't create users" do
+          expect { call }.to_not change { User.count }
+        end
+
+        it "doesn't create reservations" do
+          expect { call }.to_not change { Reservation.count }
+        end
       end
     end
   end
