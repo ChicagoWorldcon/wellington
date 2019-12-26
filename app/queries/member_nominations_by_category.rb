@@ -33,25 +33,25 @@ class MemberNominationsByCategory
 
   def can_nominate
     if !reservation.present?
-      errors.add(:reservation, "reservation is a required field")
+      errors.add(:reservation, "is a required field")
       return
     end
 
     if !reservation.valid? || !reservation.membership.present?
-      errors.add(:reservation, "reservation invalid")
+      errors.add(:reservation, "invalid")
       return
     end
 
     if reservation.instalment?
-      errors.add(:reservation, "reservation isn't paid for yet")
+      errors.add(:reservation, "isn't paid for yet")
     end
 
     if reservation.disabled?
-      errors.add(:reservation, "reservation is disabled")
+      errors.add(:reservation, "is disabled")
     end
 
     if !reservation.membership.can_nominate?
-      errors.add(:reservation, "reservation doesn't have nomination rights")
+      errors.add(:reservation, "doesn't have nomination rights")
     end
   end
 
