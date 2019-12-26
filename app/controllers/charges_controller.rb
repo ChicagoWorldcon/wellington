@@ -41,7 +41,7 @@ class ChargesController < ApplicationController
     outstanding_before_charge = AmountOwedForReservation.new(@reservation).amount_owed
 
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
-    if !allowed_charge_amounts.include?(charge_amount)
+    if !charge_amount.in?(allowed_charge_amounts)
       flash[:error] = "Amount must be one of the provided payment amounts"
       redirect_to create_failure_redirect_path
       return

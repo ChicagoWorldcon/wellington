@@ -24,9 +24,17 @@ RSpec.describe Money::ChargeCustomer do
 
   let(:membership) { reservation.membership }
   let(:user) { create(:user) }
-  let(:reservation) { create(:reservation, :with_order_against_membership, user: user) }
   let(:amount_owed) { membership.price }
   let(:token) { stripe_helper.generate_card_token }
+
+  let(:reservation) do
+    create(:reservation,
+      :with_order_against_membership,
+      :instalment,
+      instalment_paid: 0,
+      user: user
+    )
+  end
 
   describe "#comment" do
     let(:amount_1) { Money.new(1_00) }
