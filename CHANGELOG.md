@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     "price": Money.new(0),
   )
   ```
+- People who have paid an instalment which covers a Supporting membership can nominate in Hugo
+  [!138](https://gitlab.com/worldcon/2020-wellington/merge_requests/138)
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
