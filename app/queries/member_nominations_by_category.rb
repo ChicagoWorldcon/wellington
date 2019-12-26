@@ -42,7 +42,7 @@ class MemberNominationsByCategory
       return
     end
 
-    if reservation.instalment?
+    if !reservation.has_paid_supporting?
       errors.add(:reservation, "isn't paid for yet")
     end
 

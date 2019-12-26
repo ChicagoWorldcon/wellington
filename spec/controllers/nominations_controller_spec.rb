@@ -86,13 +86,25 @@ RSpec.describe NominationsController, type: :controller do
       end
 
       context "when reservation is in instalment" do
-        let!(:reservation) { create(:reservation, :instalment, :with_order_against_membership, :with_claim_from_user) }
+        let!(:reservation) do
+          create(:reservation,
+            :instalment,
+            :with_order_against_membership,
+            :with_claim_from_user,
+            instalment_paid: 0,
+          )
+        end
 
         it "redirects when there's no payments on a membership" do
-          reservation.charges.destroy_all
           expect(reservation.reload.has_paid_supporting?).to be_falsey
           expect(get_show).to have_http_status(:found)
           expect(flash[:error]).to be_present
+        end
+
+        it "dispays when a user has paid for a supporting membership" do
+          reservation.charges << create(:charge, user: reservation.user)
+          expect(reservation.reload.has_paid_supporting?).to be_truthy
+          expect(get_show).to have_http_status(:ok)
         end
       end
     end
