@@ -16,27 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"
   HUGO_CLOSED_AT="2020-08-02T12:00:00+13:00"
   ```
+- Created seeds for Dublin memberships and Hugo awards to automatically show up with
+  new Development or Production seeds
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  and [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Migrate existing instances with
+  ```bash
+  make bash
+  bin/rake db:seed:conzealand:production_dublin
+  bin/rake db:seed:conzealand:production_hugo
+  ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
 - Memberships now have a flag to say if they can site select
   [!136](https://gitlab.com/worldcon/2020-wellington/merge_requests/136)
-- Dublin Supporters now present in seeds file.
-  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
-  Add this membership type with:
-  ```ruby
-  dublin_import = "2019-12-01".to_time
-  Membership.create!(
-    "name": "dublin_2019",
-    "description": "Attended Dublin in 2019",
-    "active_from": dublin_import,
-    "active_to": dublin_import, # not available to the general public
-    "can_vote": false,
-    "can_nominate": true,
-    "can_attend": false, # can nominate, but can't vote
-    "can_site_select": false,
-    "price": Money.new(0),
-  )
-  ```
 - Dublin memberships importer built from Tammy's unduplicated memberships list
   [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
   ```bash
