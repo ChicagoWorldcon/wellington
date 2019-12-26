@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bin/rake db:seed:conzealand:production_dublin
   bin/rake db:seed:conzealand:production_hugo
   ```
+- Seeds are setup to disable nominations for memberships sold in 2020
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  ```bash
+  make bash
+  bin/rake db:seed:conzealand:production_disable_nomination
+  ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
 - Memberships now have a flag to say if they can site select
