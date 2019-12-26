@@ -24,6 +24,12 @@ class NominationsController < ApplicationController
     builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
     builder.from_reservation
     @nominations_by_category = builder.nominations_by_category
+    if !@nominations_by_category.present?
+      flash[:error] = builder.error_message
+      redirect_to reservations_path
+      return
+    end
+
     @privacy_warning = current_user.reservations.count > 1
   end
 

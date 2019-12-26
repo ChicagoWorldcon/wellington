@@ -424,3 +424,7 @@ footer {
 .card {
   color: $black;
 }
+
+.card.bg-dark svg.octicon {
+  fill: #fff;
+}

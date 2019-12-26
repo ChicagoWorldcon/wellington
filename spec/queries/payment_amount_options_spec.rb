@@ -27,15 +27,12 @@ RSpec.describe PaymentAmountOptions, type: :model do
   end
 
   context "when the amount owed is greater than the minimum payment" do
-    let(:amount_owed) { Money.new(193_00) }
+    let(:amount_owed) { Money.new(1930_00) }
 
     it("offers a series of payment amounts") do
-      is_expected.to eq [
-        Money.new(75_00),
-        Money.new(125_00),
-        Money.new(175_00),
-        amount_owed
-      ]
+      is_expected.to include(PaymentAmountOptions::MIN_PAYMENT)
+      is_expected.to include(PaymentAmountOptions::MIN_PAYMENT + PaymentAmountOptions::PAYMENT_STEP)
+      is_expected.to include(amount_owed)
     end
   end
 end

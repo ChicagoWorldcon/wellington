@@ -19,7 +19,15 @@ require "rails_helper"
 RSpec.describe Kiosk::ChargesController, type: :controller do
   render_views
 
-  let!(:reservation) { create(:reservation, :instalment, :with_order_against_membership, user: member_services_user) }
+  let!(:reservation) do
+    create(:reservation,
+      :instalment,
+      :with_order_against_membership,
+      user: member_services_user,
+      instalment_paid: 0,
+    )
+  end
+
   let!(:member_services_user) { create(:user, email: $member_services_email) }
 
   before { session[:kiosk] = 1.minute.from_now }

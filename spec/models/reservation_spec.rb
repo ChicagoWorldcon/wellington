@@ -67,4 +67,28 @@ RSpec.describe Reservation, type: :model do
       end
     end
   end
+
+  describe "#has_paid_supporting?" do
+    subject(:model) { create(:reservation, :with_claim_from_user) }
+
+    it "isn't true without transactions" do
+      expect(model).to_not have_paid_supporting
+    end
+
+    it "isn't true with failed transactions" do
+      expect { model.charges << create(:charge, :failed, user: model.user) }
+        .to change { model.reload.charges }
+        .to be_present
+
+      expect(model).to_not have_paid_supporting
+    end
+
+    it "is true when successful transaction is present" do
+      expect { model.charges << create(:charge, user: model.user) }
+        .to change { model.reload.charges }
+        .to be_present
+
+      expect(model).to have_paid_supporting
+    end
+  end
 end

@@ -41,6 +41,13 @@ class Reservation < ApplicationRecord
     state == PAID
   end
 
+  # Because we don't refund below a supporting membership
+  # And because PaymentAmountOptions::MIN_PAYMENT_AMOUNT is equal to a supporting membership
+  # We can assume a single successful charge means this membership covers a supporting membership
+  def has_paid_supporting?
+    charges.successful.any?
+  end
+
   def transferable?
     state != DISABLED
   end
