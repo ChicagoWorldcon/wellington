@@ -51,6 +51,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   INSTALMENT_MIN_PAYMENT_CENTS=7500
   INSTALMENT_PAYMENT_STEP_CENTS=5000
   ```
+- Dublin and CoNZealand nomination memberships now have mailers to tell them when
+  Nominations are open.
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  You can run these from Rails Console with:
+  ```ruby
+  dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
+  dublin_users.distinct.find_each do |user|
+    MembershipMailer.nominations_notice_dublin(user: user).deliver_now
+  end;
+
+  conzealand_users = User.joins(reservations: :membership).merge(Membership.can_nominate).where.not(id: dublin_users);
+  conzealand_users.distinct.find_each do |user|
+    MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
+  end;
+  ```
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
