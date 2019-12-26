@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 - Securitiy patch puma against a Denial of Service vunerability
   [CVE-2019-16770](https://nvd.nist.gov/vuln/detail/CVE-2019-16770)
+  [!129](https://gitlab.com/worldcon/2020-wellington/merge_requests/129)
 - Reconfigure Money rounding to round up on 0.5 cents to
   match [stripe's decimal rounding](https://stripe.com/docs/billing/subscriptions/decimal-amounts#rounding)
   [!134](https://gitlab.com/worldcon/2020-wellington/merge_requests/134)
