@@ -16,8 +16,8 @@
 # limitations under the License.
 
 class PaymentAmountOptions
-  MIN_PAYMENT_AMOUNT = Money.new(75_00)
-  PAYMENT_STEP = Money.new(50_00)
+  MIN_PAYMENT = Money.new(ENV["INSTALMENT_MIN_PAYMENT_CENTS"] || 75_00)
+  PAYMENT_STEP = Money.new(ENV["INSTALMENT_PAYMENT_STEP_CENTS"] || 50_00)
 
   attr_reader :amount_owed
 
@@ -44,6 +44,6 @@ class PaymentAmountOptions
   end
 
   def minimum_payment
-    amount_owed < MIN_PAYMENT_AMOUNT ? amount_owed : MIN_PAYMENT_AMOUNT
+    amount_owed < MIN_PAYMENT ? amount_owed : MIN_PAYMENT
   end
 end
