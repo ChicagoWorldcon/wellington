@@ -84,6 +84,17 @@ RSpec.describe NominationsController, type: :controller do
         $hugo_closed_at = 1.day.from_now
         expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
       end
+
+      context "when reservation is in instalment" do
+        let!(:reservation) { create(:reservation, :instalment, :with_order_against_membership, :with_claim_from_user) }
+
+        it "redirects when there's no payments on a membership" do
+          reservation.charges.destroy_all
+          expect(reservation.reload.has_paid_supporting?).to be_falsey
+          expect(get_show).to have_http_status(:found)
+          expect(flash[:error]).to be_present
+        end
+      end
     end
   end
 

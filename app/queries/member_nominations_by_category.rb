@@ -92,6 +92,10 @@ class MemberNominationsByCategory
     true
   end
 
+  def error_message
+    errors.full_messages.to_sentence
+  end
+
   private
 
   def reset_nominations
