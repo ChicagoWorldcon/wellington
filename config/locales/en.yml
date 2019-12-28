@@ -146,13 +146,6 @@ en:
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
           vote for the Hugo winners of 2020.
 
-      vote:
-        description: Vote in Hugo Awards
-        layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
-
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate in Hugo Awards
@@ -160,6 +153,12 @@ en:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2020, and for the
           Retro Hugos for 1945.
+
+      vote:
+        description: Vote in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2020.
 
     # Maps onto text from Election#i18n_key
     retro_hugo:
@@ -240,16 +239,15 @@ en:
           Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
           and vote for the Retro Hugo winners of 2020.
 
-      vote:
-        description: Vote for Retro Hugos
-        layman:
-          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
-          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
-          and vote for the Retro Hugo winners of 2020.
-
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Retro Hugos
         layman:
           The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
           Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020.
+
+      vote:
+        description: Vote for Retro Hugos
+        layman:
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+          Worldcon. You membership allows you to vote for the Retro Hugo winners of 2020.
