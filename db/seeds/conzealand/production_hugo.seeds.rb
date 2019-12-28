@@ -156,7 +156,7 @@ hugo.categories.create!(
   field_3: "Studio/Network",
 )
 hugo.categories.create!(
-  name: "Best Professional Editor, Short Form",
+  name: "Best Editor, Short Form",
   description: %{
     The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
     media) primarily devoted to science fiction and/or fantasy, at least one of which was published in 2019.
@@ -166,7 +166,7 @@ hugo.categories.create!(
   field_3: nil,
 )
 hugo.categories.create!(
-  name: "Best Professional Editor, Long Form",
+  name: "Best Editor, Long Form",
   description: %{
     The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
     published in 2019, which do not qualify under Best Editor, Short Form.
@@ -385,7 +385,7 @@ retro_hugo.categories.create!(
   field_3: "Studio/Network",
 )
 retro_hugo.categories.create!(
-  name: "Retro Best Professional Editor, Short Form",
+  name: "Retro Best Editor, Short Form",
   description: %{
     The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
     media) primarily devoted to science fiction and/or fantasy, at least one of which was published in 1944.
@@ -396,7 +396,7 @@ retro_hugo.categories.create!(
   field_3: nil,
 )
 retro_hugo.categories.create!(
-  name: "Retro Best Professional Editor, Long Form",
+  name: "Retro Best Editor, Long Form",
   description: %{
     The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
      published in 1944, which did not qualify under Best Editor, Short Form.
