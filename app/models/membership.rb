@@ -27,6 +27,11 @@ class Membership < ApplicationRecord
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
 
+  scope :can_nominate, -> { where(can_nominate: true) }
+  scope :can_attend, -> { where(can_attend: true) }
+  scope :can_site_select, -> { where(can_site_select: true) }
+  scope :can_vote, -> { where(can_vote: true) }
+
   scope :order_by_price, -> { order(price_cents: :desc) }
 
   def to_s

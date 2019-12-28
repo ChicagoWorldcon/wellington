@@ -16,23 +16,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"
   HUGO_CLOSED_AT="2020-08-02T12:00:00+13:00"
   ```
+- Created seeds for Dublin memberships and Hugo awards to automatically show up with
+  new Development or Production seeds
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  and [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
+  Migrate existing instances with
+  ```bash
+  make bash
+  bin/rake db:seed:conzealand:production_dublin
+  bin/rake db:seed:conzealand:production_hugo
+  ```
+- Seeds are setup to disable nominations for memberships sold in 2020
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  ```bash
+  make bash
+  bin/rake db:seed:conzealand:production_disable_nomination
+  ```
 - Links to Hugo and Retro Hugo are now present on the membership cards
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
-- Dublin Supporters now present in seeds file.
-  [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
-  Add this membership type with:
-  ```ruby
-  dublin_import = "2019-12-01".to_time
-  Membership.create!(
-    "name": "dublin_2019",
-    "description": "Attended Dublin in 2019",
-    "active_from": dublin_import,
-    "active_to": dublin_import, # not available to the general public
-    "can_vote": false,
-    "can_nominate": true,
-    "can_attend": false, # can nominate, but can't vote
-    "price": Money.new(0),
-  )
+- Memberships now have a flag to say if they can site select
+  [!136](https://gitlab.com/worldcon/2020-wellington/merge_requests/136)
+- Dublin memberships importer built from Tammy's unduplicated memberships list
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  ```bash
+  make bash
+  DUBLIN_SRC="unduplicated members-Table 1.csv" bin/rake import:dublin
   ```
 - People who have paid an instalment which covers a Supporting membership can nominate in Hugo
   [!138](https://gitlab.com/worldcon/2020-wellington/merge_requests/138)
@@ -42,7 +50,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   INSTALMENT_MIN_PAYMENT_CENTS=7500
   INSTALMENT_PAYMENT_STEP_CENTS=5000
   ```
+- Dublin and CoNZealand nomination memberships now have mailers to tell them when
+  Nominations are open.
+  [!137](https://gitlab.com/worldcon/2020-wellington/merge_requests/137)
+  You can run these from Rails Console with:
+  ```ruby
+  dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
+  dublin_users.distinct.find_each do |user|
+    MembershipMailer.nominations_notice_dublin(user: user).deliver_now
+  end;
 
+  conzealand_users = User.joins(reservations: :membership).merge(Membership.can_nominate).where.not(id: dublin_users);
+  conzealand_users.distinct.find_each do |user|
+    MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
+  end;
+  ```
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
@@ -58,6 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89)
 - Securitiy patch puma against a Denial of Service vunerability
   [CVE-2019-16770](https://nvd.nist.gov/vuln/detail/CVE-2019-16770)
+  [!129](https://gitlab.com/worldcon/2020-wellington/merge_requests/129)
 - Reconfigure Money rounding to round up on 0.5 cents to
   match [stripe's decimal rounding](https://stripe.com/docs/billing/subscriptions/decimal-amounts#rounding)
   [!134](https://gitlab.com/worldcon/2020-wellington/merge_requests/134)

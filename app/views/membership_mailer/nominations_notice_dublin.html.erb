@@ -1,0 +1,117 @@
+<%#
+  Copyright 2019 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+<p>
+  Kia Ora
+  <% if @reservations.count == 1 %>
+    <%= @reservations.first.active_claim.detail %>
+  <% end %>
+</p>
+
+<p>
+  We are very glad to be able to tell you that nominations for the 2020 Hugo
+  Awards and 1945 Retro Hugos are now open!
+</p>
+
+<p>
+  As a member of Dublin 2019, you are eligible to nominate in the 17 Hugo ballot
+  categories covering the best of the genre in the last year, for the Lodestar
+  Award for Best Young Adult Book, the Astounding Award for Best New Writer
+  (formerly known as the John W. Campbell Award), and for the 1945 Retro Hugos,
+  celebrating the genre work of 1944.
+</p>
+
+<p>
+  To nominate online, please visit
+  <a href="https://members.conzealand.nz/">https://members.conzealand.nz/</a>,
+  enter the email address you received this email at, and request a login link.
+  We have established a nominations-only account for you within the CoNZealand
+  system. After clicking the link and entering the members area, click on
+  My Memberships to access all nominating accounts linked with that email
+  address. Then click the nominating links on your account. Note that if you
+  would like to upgrade to a supporting or attending membership in CoNZealand,
+  you should do so within this interface so that your nominations stay linked
+  to your membership.
+</p>
+
+
+<% if @reservations.count > 1 %>
+  <p>
+    Please note that because voting is linked to your email address, everyone whose
+    accounts are linked to this email address will be able to access and change
+    nominations for all those accounts. To prevent this, we recommend that you
+    transfer excess accounts to their own email addresses if possible. To do so,
+    please send an email to hugohelp@conzealand.nz with details on which account
+    you want to transfer, and the email address of the person to which it should be
+    transferred. We recognize that this is not always possible. If you have
+    multiple nomination-only accounts and/or CoNZealand memberships under your
+    email address, please remember that Hugo voting and nominating rights are
+    attached to a person NOT a membership, so you should only nominate once, for
+    your own membership/account.
+  </p>
+<% end %>
+
+<p>
+  You can choose up to five nominees in each category. Be sure to hit the save
+  button once you have made your nominations. You can save each category
+  individually, or save them all at once using the button at the bottom of the
+  ballot. You can make as many changes as you like to your nomination ballots
+  until the deadline. Your current ballot will be emailed to you an hour after
+  you stop making changes to it.
+</p>
+
+<p>
+  The deadline for nominations is 13 March 2020 at 11:59pm Pacific Daylight Time
+  (2:59 am Eastern Daylight Time, 06:59 Irish time, and 8:59 pm 14 March 2020 New
+  Zealand time). Although members of Dublin 2019 can nominate, only members of
+  CoNZealand will be eligible to vote on the final ballot and choose the winners
+  of the 2020 Hugo, Lodestar and Astounding Awards and the 1945 Retro Hugo
+  Awards.
+</p>
+
+<p>
+  We expect to announce the final ballot in early April, and the awards will be
+  presented at CoNZealand, which will run from July 29 to August 2, 2020.
+</p>
+
+<p>
+  The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
+  you nominate whatever works and creators you have personally read or seen that
+  were your favorites from 2019.
+</p>
+
+<p>
+  Please contact
+  <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
+  if you have difficulties accessing the online ballot(s), or you have any
+  other questions on the Hugo process.
+</p>
+
+<p>
+  A printable version of the WSFS Constitution and Hugo Nominating ballot has
+  been included in the mailed-out version of Progress Report 2 sent to CoNZealand
+  members. To download a printable ballot, click here. The WSFS Constitution is
+  also available online here.
+</p>
+
+<p>
+  We look forward to your participation in the 2020 Hugo Awards and 1945 Retro
+  Hugos, and hope to see you at CoNZealand!
+</p>
+
+<p>
+  Tammy Coxen, Nicholas Whyte and Ian Moore Hugo<br>
+  Administrator and Deputy Hugo Administrators
+</p>

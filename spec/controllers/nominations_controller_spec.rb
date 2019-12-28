@@ -69,6 +69,16 @@ RSpec.describe NominationsController, type: :controller do
           expect(get_show).to have_http_status(:found)
           expect(flash[:notice]).to match(/enter your details/i)
         end
+
+        context "when you're a Dublin member" do
+          let(:dublin) { create(:membership, :dublin_2019) }
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+
+          it "doesn't redirect if you're a dublin member" do
+            reservation.active_claim.detail.destroy!
+            expect(get_show).to have_http_status(:ok)
+          end
+        end
       end
 
       it "doesn't render before nomination" do

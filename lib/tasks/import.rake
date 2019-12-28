@@ -17,6 +17,7 @@
 namespace :import do
   DEFAULT_KANSA_CSV = "kansa-export.csv"
   DEFAULT_PRESUPPORT_SRC = "CoNZealand master members list - combining PreSupports, Site Selection and at W76 Memberships V02 - Test Setup for Data Import to Membership System.csv"
+  DEFAULT_DUBLIN_SRC = "unduplicated members-Table 1.csv"
 
   desc "Imports from conzealand Kansa spreadsheet export. Override file location by setting KANSA_SRC env var"
   task kansa: :environment do
@@ -39,6 +40,21 @@ namespace :import do
     if !presupport_importer.call
       puts "Presupporters failed to import with these errors..."
       presupport_importer.errors.each { |e| puts e }
+    end
+  end
+
+  desc "Imports from unduplicated Dublin members provided by Tammy"
+  task dublin: :environment do
+    as_at = Time.now.iso8601
+    dublin_csv = File.open(ENV["DUBLIN_SRC"] || DEFAULT_PRESUPPORT_SRC)
+    file_name = dublin_csv.path.split("/").last
+    importer = Import::DublinMembers.new(dublin_csv, "Dublin Import from #{file_name} at #{as_at}")
+    success = importer.call
+    if !success
+      puts "Failed with errros"
+      importer.errors.each do |error|
+        puts " * #{error}"
+      end
     end
   end
 end

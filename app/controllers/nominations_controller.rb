@@ -77,13 +77,18 @@ class NominationsController < ApplicationController
 
   def lookup_legal_name_or_redirect
     detail = @reservation.active_claim.detail
-    if !detail.present?
-      flash[:notice] = "Please enter your details to nominate for hugo"
-      redirect_to @reservation
+    if detail.present?
+      @legal_name = detail.legal_name
       return
     end
 
-    @legal_name = detail.legal_name
+    if @reservation.membership.name == "dublin_2019"
+      @legal_name = "Dublin Friend"
+      return
+    end
+
+    flash[:notice] = "Please enter your details to nominate for hugo"
+    redirect_to @reservation
   end
 
   def nomination_params

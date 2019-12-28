@@ -106,11 +106,11 @@ en:
         different category by the Hugo Awards Administrator if close in length to the category boundary.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="mailto:hugo-help@conzealand.nz">hugo-help@conzealand.nz</a>
+        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
 
         The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
         by CoNZealand in April 2020. Only members of CoNZealand (including those who join after 31 December 2019) will
-        be eligible to vote on the final ballot.  Please contact hugo-help@conzealand.nz if you have questions.
+        be eligible to vote on the final ballot.  Please contact hugohelp@conzealand.nz if you have questions.
 
         Eligibility for Nominations
         ----------------------------------------
@@ -129,6 +129,9 @@ en:
         category boundary (such as in the case of Novel/Novella, Novella/Novelette, Novelette/Short Story, and
         Dramatic Presentation, Long Form/Dramatic Presentation, Short Form).
 
+        For full eligibility rules, please see the
+        [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf).
+
       nominate_soon:
         description: Nominate in Hugo Awards
         layman:
@@ -143,13 +146,6 @@ en:
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
           vote for the Hugo winners of 2020.
 
-      vote:
-        description: Vote in Hugo Awards
-        layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
-
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate in Hugo Awards
@@ -157,6 +153,12 @@ en:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2020, and for the
           Retro Hugos for 1945.
+
+      vote:
+        description: Vote in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2020.
 
     # Maps onto text from Election#i18n_key
     retro_hugo:
@@ -198,12 +200,13 @@ en:
         different category by the Hugo Awards Administrator if close in length to the category boundary.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="mailto:hugo-help@conzealand.nz">hugo-help@conzealand.nz</a>
+        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
 
         The Retro Hugo Ballot containing the nominees in each category that qualified for the final ballot will be
         published by CoNZealand in April 2020. Only members of CoNZealand (including those who join after 31 December
-        2019) will be eligible to vote on the final ballot.  Please contact hugo-help@conzealand.nz if you have
-        questions.
+        2019) will be eligible to vote on the final ballot.  Please contact
+        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
+        if you have questions.
 
         Eligibility for Nominations
         ----------------------------------------
@@ -225,28 +228,26 @@ en:
       nominate_soon:
         description: Nominate for Retro Hugos
         layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
+          and vote for the Retro Hugo winners of 2020.
 
       nominate:
         description: Nominate for Retro Hugos
         layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
-
-      vote:
-        description: Vote for Retro Hugos
-        layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
+          and vote for the Retro Hugo winners of 2020.
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Retro Hugos
         layman:
-          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2020, and for the
-          Retro Hugos for 1945.
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020.
+
+      vote:
+        description: Vote for Retro Hugos
+        layman:
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+          Worldcon. You membership allows you to vote for the Retro Hugo winners of 2020.
