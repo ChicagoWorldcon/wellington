@@ -38,7 +38,8 @@ CREATE TABLE public.categories (
     field_1 character varying DEFAULT 'Nomination'::character varying NOT NULL,
     field_2 character varying,
     field_3 character varying,
-    election_id bigint NOT NULL
+    election_id bigint NOT NULL,
+    "order" integer
 );
 
 
@@ -956,6 +957,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191024180734'),
 ('20191031051223'),
 ('20191128184513'),
-('20191221233951');
+('20191221233951'),
+('20191229203558');
 
 

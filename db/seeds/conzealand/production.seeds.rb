@@ -182,7 +182,8 @@ Membership.create!(
 )
 
 ########################################
-# Other prod seeds
+# Other prod data migrations that happened post deploy
 
 require_relative "production_hugo.seeds.rb"
 require_relative "production_dublin.seeds.rb"
+require_relative "production_hugo_ordering.seeds.rb"

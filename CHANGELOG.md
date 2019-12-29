@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Added explicit order to Hugo Categories, migrate existing data with
+  ```
+  make bash
+  bin/rake db:seed:conzealand:production_hugo_ordering
+  ```
 
 ### Removed
 - Nothing significant in this release
