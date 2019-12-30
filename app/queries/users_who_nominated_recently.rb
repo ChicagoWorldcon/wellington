@@ -24,6 +24,6 @@ class UsersWhoNominatedRecently
       .where(%{
         users.ballot_last_mailed_at IS NULL                     -- User has never been mailed their ballot
         OR nominations.created_at > users.ballot_last_mailed_at -- Or user has made nomination since their last mail
-      })
+      }).distinct
   end
 end

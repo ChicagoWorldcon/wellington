@@ -39,5 +39,12 @@ RSpec.describe UsersWhoNominatedRecently do
       reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
       expect(call).to be_empty
     end
+
+    it "doesn't include users more than once" do
+      3.times do
+        reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+      end
+      expect(call.count).to be(1)
+    end
   end
 end
