@@ -19,24 +19,23 @@ class ReservationsWithRecentNominations
   MINIMUM_WAIT = 10.minutes
 
   def call
-    users = users_who_changed_nominations.distinct.where.not(id: users_still_going_at_it.select(:id))
-    Reservation.joins(:user).where(users: {id: users})
+    reservations_with_updates.distinct.where.not(id: reservations_with_recent_activity.select(:id))
   end
 
   private
 
-  def users_still_going_at_it
-    users_with_nominations.where("nominations.created_at > ?", MINIMUM_WAIT.ago)
+  def reservations_with_recent_activity
+    reservations.where("nominations.created_at > ?", MINIMUM_WAIT.ago)
   end
 
-  def users_who_changed_nominations
-    users_with_nominations.where(%{
+  def reservations_with_updates
+    reservations.where(%{
       users.ballot_last_mailed_at IS NULL                     -- User has never been mailed their ballot
       OR nominations.created_at > users.ballot_last_mailed_at -- Or user has made nomination since their last mail
     })
   end
 
-  def users_with_nominations
-    User.joins(reservations: :nominations)
+  def reservations
+    Reservation.joins(:user, :nominations)
   end
 end
