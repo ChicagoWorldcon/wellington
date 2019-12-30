@@ -16,7 +16,13 @@
 
 # UsersWhoNominatedRecently returns a list of users who need to be sent nominations
 class UsersWhoNominatedRecently
+  MINIMUM_WAIT = 10.minutes
+
   def call
-    User.joins(reservations: :nominations)
+    User.joins(reservations: :nominations).where("nominations.created_at < ?", MINIMUM_WAIT.ago)
   end
+
+  private
+
+
 end

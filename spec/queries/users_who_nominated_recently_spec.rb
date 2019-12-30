@@ -28,5 +28,10 @@ RSpec.describe UsersWhoNominatedRecently do
       reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
       expect(call).to include(user)
     end
+
+    it "ignores users who voted under 10 minutes ago" do
+      reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
+      expect(call).to be_empty
+    end
   end
 end
