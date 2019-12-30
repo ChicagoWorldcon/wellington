@@ -40,11 +40,26 @@ RSpec.describe UsersWhoNominatedRecently do
       expect(call).to be_empty
     end
 
+    it "doesn't mail you if you're still updating the form" do
+      reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
+      reservation.nominations << create(:nomination, created_at: 10.minutes.ago)
+      reservation.nominations << create(:nomination, created_at: 15.minutes.ago)
+      reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+      expect(call).to be_empty
+    end
+
     it "doesn't include users more than once" do
       3.times do
         reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
       end
       expect(call.count).to be(1)
+    end
+
+    it "emails people if we've not run the job in a while" do
+      user.update!(ballot_last_mailed_at: 24.hours.ago)
+      reservation.nominations << create(:nomination, created_at: 23.hours.ago)
+      reservation.nominations << create(:nomination, created_at: 22.hours.ago)
+      expect(call).to include(user)
     end
   end
 end
