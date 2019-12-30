@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe UsersWhoNominatedRecently do
+RSpec.describe ReservationsWithRecentNominations do
   describe "#call" do
     subject(:call) { described_class.new.call }
     let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
@@ -26,7 +26,7 @@ RSpec.describe UsersWhoNominatedRecently do
 
     it "detects when a user nominated" do
       reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-      expect(call).to include(user)
+      expect(call).to include(reservation)
     end
 
     it "doesn't include users who have been mailed about their nomination" do
@@ -59,7 +59,7 @@ RSpec.describe UsersWhoNominatedRecently do
       user.update!(ballot_last_mailed_at: 24.hours.ago)
       reservation.nominations << create(:nomination, created_at: 23.hours.ago)
       reservation.nominations << create(:nomination, created_at: 22.hours.ago)
-      expect(call).to include(user)
+      expect(call).to include(reservation)
     end
   end
 end

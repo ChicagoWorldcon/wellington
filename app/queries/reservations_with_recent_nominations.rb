@@ -14,12 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# UsersWhoNominatedRecently returns a list of users who need to be sent nominations
-class UsersWhoNominatedRecently
+# ReservationsWithRecentNominations returns a list of reservations who need to be sent nomination summaries
+class ReservationsWithRecentNominations
   MINIMUM_WAIT = 10.minutes
 
   def call
-    users_who_changed_nominations.distinct.where.not(id: users_still_going_at_it.select(:id))
+    users = users_who_changed_nominations.distinct.where.not(id: users_still_going_at_it.select(:id))
+    Reservation.joins(:user).where(users: {id: users})
   end
 
   private
