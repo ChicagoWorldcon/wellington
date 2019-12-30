@@ -463,7 +463,8 @@ CREATE TABLE public.users (
     last_sign_in_at timestamp without time zone,
     current_sign_in_ip inet,
     last_sign_in_ip inet,
-    stripe_id character varying
+    stripe_id character varying,
+    ballot_last_mailed_at timestamp without time zone
 );
 
 
@@ -958,6 +959,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191031051223'),
 ('20191128184513'),
 ('20191221233951'),
-('20191229203558');
+('20191229203558'),
+('20191230004015');
 
 

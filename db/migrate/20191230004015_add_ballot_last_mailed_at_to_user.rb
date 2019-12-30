@@ -14,16 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# UsersWhoNominatedRecently returns a list of users who need to be sent nominations
-class UsersWhoNominatedRecently
-  MINIMUM_WAIT = 10.minutes
-
-  def call
-    User.joins(reservations: :nominations)
-      .where("nominations.created_at < ?", MINIMUM_WAIT.ago)
-      .where(%{
-        users.ballot_last_mailed_at IS NULL                     -- User has never been mailed their ballot
-        OR nominations.created_at > users.ballot_last_mailed_at -- Or user has made nomination since their last mail
-      })
+# We need to add a timestamp to users so we can ratchet when they recieve emails
+# Lets not send a user an email every time a mailer needs to be sent about their ballot
+class AddBallotLastMailedAtToUser < ActiveRecord::Migration[6.0]
+  def change
+    add_column :users, :ballot_last_mailed_at, :timestamp
   end
 end
