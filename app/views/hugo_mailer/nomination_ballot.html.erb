@@ -13,27 +13,26 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-<p>
-  Kia ora {{Member name}}
-</p>
+<p>Kia ora <%= @detail %></p>
 
 <p>
-  Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, Astounding Award and the 1945 Retro Hugo Awards.
+  Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, Astounding Award
+  and the 1945 Retro Hugo Awards.
 </p>
 
 <p>
   Below is a summary of your current nominating ballot:
 </p>
 
-<p>
-  Dramatic Long:
-</p>
+<% @nominations_by_category.each do |category, nominations| %>
+  <p><%= category %></p>
 
-<ul>
-  <li>Black Panther; Marvel Studios</li>
-  <li>Spider-Man: Into the Spider-Verse; Columbia Pictures and Sony Pictures Animation</li>
-  <li>First Man</li>
-</ul>
+  <ul>
+    <% nominations.select(&:persisted?).each do |nomination| %>
+      <li><%= nomination %></li>
+    <% end %>
+  </ul>
+<% end %>
 
 <p>
   The deadline for nominations is 13 March 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59

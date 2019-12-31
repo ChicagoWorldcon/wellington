@@ -23,6 +23,14 @@ class Nomination < ApplicationRecord
   # We don't want blank models, it's clutter
   validate :at_least_one_field
 
+  def to_s
+    [
+      field_1,
+      field_2,
+      field_3,
+    ].join("; ")
+  end
+
   private
 
   def at_least_one_field

@@ -32,4 +32,8 @@ class Category < ApplicationRecord
     headings = attributes.slice("field_1", "field_2", "field_3")
     @fields = headings.compact.keys
   end
+
+  def to_s
+    name
+  end
 end

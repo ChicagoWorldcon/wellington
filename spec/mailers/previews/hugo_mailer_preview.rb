@@ -17,6 +17,7 @@
 # Preview all emails at http://localhost:3000/rails/mailers/hugo_mailer
 class HugoMailerPreview < ActionMailer::Preview
   def nomination_ballot
-    HugoMailer.nomination_ballot(Reservation.all.sample)
+    reservation = Reservation.joins(:nominations).sample
+    HugoMailer.nomination_ballot(reservation)
   end
 end

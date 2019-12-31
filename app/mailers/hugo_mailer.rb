@@ -20,6 +20,15 @@ class HugoMailer < ApplicationMailer
 
   def nomination_ballot(reservation)
     @detail = reservation.active_claim.detail
+    nominated_categories = Category.joins(nominations: :reservation).where(reservations: {id: reservation})
+
+    builder = MemberNominationsByCategory.new(
+      reservation: reservation,
+      categories: nominated_categories.order(:order, :id),
+    )
+    builder.from_reservation
+    @nominations_by_category = builder.nominations_by_category
+
     mail(
       subject: "Your 2020 Hugo and 1945 Retro Hugo Nominations Ballot",
       to: reservation.user.email,
