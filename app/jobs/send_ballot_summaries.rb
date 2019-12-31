@@ -18,9 +18,16 @@ class SendBallotSummaries
   include Sidekiq::Worker
 
   def perform
-    reservations = ReservationsWithRecentNominations.new.call
-    reservations.find_each do |reservation|
-      HugoMailer.nomination_ballot(reservation).deliver_now
+    job_started_at = Time.now
+
+    User.transaction do
+      reservations = ReservationsWithRecentNominations.new.call
+      reservations.find_each do |reservation|
+        HugoMailer.nomination_ballot(reservation).deliver_now
+      end
+
+      affected_users = User.joins(:reservations).where(reservations: {id: reservations})
+      affected_users.update_all(ballot_last_mailed_at: job_started_at)
     end
   end
 end

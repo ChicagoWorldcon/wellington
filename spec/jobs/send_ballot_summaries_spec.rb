@@ -21,41 +21,58 @@ RSpec.describe SendBallotSummaries, type: :job do
   let(:user) { reservation.user }
 
   describe "#perform" do
-    after { described_class.new.perform }
+    subject(:perform) { described_class.new.perform }
 
-    it "sends when a user nominated" do
+    it "doesn't send to a user twice" do
       reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+
       expect(HugoMailer)
         .to receive_message_chain(:nomination_ballot, :deliver_now)
         .and_return(true)
-    end
 
-    it "doesn't include users who have already been mailed" do
-      reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-      user.update!(ballot_last_mailed_at: Time.now)
+      expect { described_class.new.perform }.to change { user.reload.ballot_last_mailed_at }
+
       expect(HugoMailer).to_not receive(:nomination_ballot)
+      described_class.new.perform
     end
 
-    it "ignores users who voted under 10 minutes ago" do
-      reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
-      expect(HugoMailer).to_not receive(:nomination_ballot)
-    end
+    context "after run" do
+      after { perform }
 
-    it "doesn't mail you if you're still updating the form" do
-      reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
-      reservation.nominations << create(:nomination, created_at: 10.minutes.ago)
-      reservation.nominations << create(:nomination, created_at: 15.minutes.ago)
-      reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-      expect(HugoMailer).to_not receive(:nomination_ballot)
-    end
+      it "sends when a user nominated" do
+        reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+        expect(HugoMailer)
+          .to receive_message_chain(:nomination_ballot, :deliver_now)
+          .and_return(true)
+      end
 
-    it "emails people if we've not run the job in a while" do
-      user.update!(ballot_last_mailed_at: 24.hours.ago)
-      reservation.nominations << create(:nomination, created_at: 23.hours.ago)
-      reservation.nominations << create(:nomination, created_at: 22.hours.ago)
-      expect(HugoMailer)
-        .to receive_message_chain(:nomination_ballot, :deliver_now)
-        .and_return(true)
+      it "doesn't include users who have already been mailed" do
+        reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+        user.update!(ballot_last_mailed_at: Time.now)
+        expect(HugoMailer).to_not receive(:nomination_ballot)
+      end
+
+      it "ignores users who voted under 10 minutes ago" do
+        reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
+        expect(HugoMailer).to_not receive(:nomination_ballot)
+      end
+
+      it "doesn't mail you if you're still updating the form" do
+        reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
+        reservation.nominations << create(:nomination, created_at: 10.minutes.ago)
+        reservation.nominations << create(:nomination, created_at: 15.minutes.ago)
+        reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+        expect(HugoMailer).to_not receive(:nomination_ballot)
+      end
+
+      it "emails people if we've not run the job in a while" do
+        user.update!(ballot_last_mailed_at: 24.hours.ago)
+        reservation.nominations << create(:nomination, created_at: 23.hours.ago)
+        reservation.nominations << create(:nomination, created_at: 22.hours.ago)
+        expect(HugoMailer)
+          .to receive_message_chain(:nomination_ballot, :deliver_now)
+          .and_return(true)
+      end
     end
   end
 end
