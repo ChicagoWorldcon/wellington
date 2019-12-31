@@ -14,9 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Preview all emails at http://localhost:3000/rails/mailers/hugo_mailer
-class HugoMailerPreview < ActionMailer::Preview
-  def nomination_ballot
-    HugoMailer.nomination_ballot(Reservation.all.sample)
+class SendBallotSummaries
+  include Sidekiq::Worker
+
+  def perform
+    reservations = ReservationsWithRecentNominations.new.call
+    reservations.find_each do |reservation|
+      HugoMailer.nomination_ballot(reservation).deliver_now
+    end
   end
 end

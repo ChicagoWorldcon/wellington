@@ -18,7 +18,12 @@
 class HugoMailer < ApplicationMailer
   default from: $member_services_email
 
-  def nomination_ballot
-    mail
+  def nomination_ballot(reservation)
+    @detail = reservation.active_claim.detail
+    mail(
+      subject: "Your 2020 Hugo and 1945 Retro Hugo Nominations Ballot",
+      to: reservation.user.email,
+      from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
+    )
   end
 end
