@@ -70,3 +70,6 @@ nominators.each.with_index(1) do |reservation, count|
     end
   end
 end
+
+# Avoid sending system emails for generated nominations
+Reservation.update_all(ballot_last_mailed_at: Time.now)
