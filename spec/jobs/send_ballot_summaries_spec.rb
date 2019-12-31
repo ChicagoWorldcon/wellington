@@ -18,7 +18,6 @@ require "rails_helper"
 
 RSpec.describe SendBallotSummaries, type: :job do
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
-  let(:user) { reservation.user }
 
   describe "#perform" do
     subject(:perform) { described_class.new.perform }
@@ -30,7 +29,7 @@ RSpec.describe SendBallotSummaries, type: :job do
         .to receive_message_chain(:nomination_ballot, :deliver_now)
         .and_return(true)
 
-      expect { described_class.new.perform }.to change { user.reload.ballot_last_mailed_at }
+      expect { described_class.new.perform }.to change { reservation.reload.ballot_last_mailed_at }
 
       expect(HugoMailer).to_not receive(:nomination_ballot)
       described_class.new.perform
@@ -48,7 +47,7 @@ RSpec.describe SendBallotSummaries, type: :job do
 
       it "doesn't include users who have already been mailed" do
         reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-        user.update!(ballot_last_mailed_at: Time.now)
+        reservation.update!(ballot_last_mailed_at: Time.now)
         expect(HugoMailer).to_not receive(:nomination_ballot)
       end
 
@@ -66,7 +65,7 @@ RSpec.describe SendBallotSummaries, type: :job do
       end
 
       it "emails people if we've not run the job in a while" do
-        user.update!(ballot_last_mailed_at: 24.hours.ago)
+        reservation.update!(ballot_last_mailed_at: 24.hours.ago)
         reservation.nominations << create(:nomination, created_at: 23.hours.ago)
         reservation.nominations << create(:nomination, created_at: 22.hours.ago)
         expect(HugoMailer)

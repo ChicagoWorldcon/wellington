@@ -18,6 +18,8 @@ class SendBallotSummaries
   include Sidekiq::Worker
 
   def perform
+    # By taking down the time at the start,
+    # we can make sure that any nominations made while this was run will get picked up in the next run
     job_started_at = Time.now
 
     User.transaction do
@@ -26,8 +28,7 @@ class SendBallotSummaries
         HugoMailer.nomination_ballot(reservation).deliver_now
       end
 
-      affected_users = User.joins(:reservations).where(reservations: {id: reservations})
-      affected_users.update_all(ballot_last_mailed_at: job_started_at)
+      reservations.update_all(ballot_last_mailed_at: job_started_at)
     end
   end
 end

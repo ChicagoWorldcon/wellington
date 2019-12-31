@@ -16,8 +16,8 @@
 
 # We need to add a timestamp to users so we can ratchet when they recieve emails
 # Lets not send a user an email every time a mailer needs to be sent about their ballot
-class AddBallotLastMailedAtToUser < ActiveRecord::Migration[6.0]
+class AddBallotLastMailedAtToReservation < ActiveRecord::Migration[6.0]
   def change
-    add_column :users, :ballot_last_mailed_at, :timestamp
+    add_column :reservations, :ballot_last_mailed_at, :timestamp
   end
 end
