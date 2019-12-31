@@ -99,11 +99,6 @@ HUGO_NOMINATIONS_OPEN_AT="2019-12-31T23:59:00-08:00"
 HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"
 HUGO_CLOSED_AT="2020-08-02T12:00:00+13:00"
 
-# Background task admin panel, a protected URL present on /sidekiq
-# Don't include these to disable admin pannel on production
-SIDEKIQ_USER=sidekiq
-SIDEKIQ_PASSWORD=5b197341fc62d9c9bb360e55b325b5db6b29d0copypastabc7a6cbcf07329c9fe52fa55cab98e74ffedfff0819dca5ec978d7c53ec3ceaa11a68d17d9acbd55d
-
 # Instalment amounts for users to choose from
 # If not specified, defaults to $75 and $50
 INSTALMENT_MIN_PAYMENT_CENTS=7500
@@ -113,6 +108,12 @@ INSTALMENT_PAYMENT_STEP_CENTS=5000
 DB_HOST=postgres
 POSTGRES_USER=postgres
 # POSTGRES_PASSWORD="super secret password"
+
+# Sidekiq is a background task manager which you can view on /sidekiq
+# Don't include username/password to disable admin panel
+SIDEKIQ_REDIS_URL="redis://redis:6379/0"
+SIDEKIQ_USER=sidekiq
+SIDEKIQ_PASSWORD=5b197341fc62d9c9bb360e55b325b5db6b29d0copypastabc7a6cbcf07329c9fe52fa55cab98e74ffedfff0819dca5ec978d7c53ec3ceaa11a68d17d9acbd55d
 
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys
@@ -253,6 +254,12 @@ services:
       ACME_AGREE: "true"
     restart: always
 
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis-data:/data
+
   members_production:
     env_file:
       production.env
@@ -273,6 +280,7 @@ services:
 
 volumes:
   ssl-certs:
+  redis-data:
 ```
 
 Here's the Cadyfile which handles SSL termination, transparent forwarding to our rails servers and http basic auth for
@@ -305,7 +313,7 @@ If you're interested in the docker image configuration options, see [abiosoft/ca
 Here's a version of our production config with production specific environment variables and obscured secrets:
 
 `production.env`
-```
+```bash
 # Used for URL generation and using compiled assets
 RAILS_ENV=production
 
@@ -319,11 +327,16 @@ DB_NAME=worldcon_production
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=shuquairae2CcopypastaohmiFe1shie7eoxee2
 
+SIDEKIQ_REDIS_URL="redis://redis:6379/0"
+SIDEKIQ_USER=sidekiq
+SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
 # The rest is identical to the example .env in this README.
 # Please copy from there.
 ```
 
-There's also a `staging.env` next to this which is a variation on these settings and an excersise for the reader.
+There's also a `staging.env` next to this which is a variation on these settings. Make sure you use different variables
+where possible, particularly `DB_NAME` and `REDIS_URL` options so you don't have clobering data stores.
 
 On your first run you're going to have to load in the database schema load and some seeds. You can do this from the
 image itself by running up an interactive shell and using the rake commands available to that environemnt. Our database
