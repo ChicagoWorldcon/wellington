@@ -37,7 +37,7 @@ keen have a look at this list and leave comments on any you'd like to try.
 
 # Getting Started
 
-This project is a super standard Ruby on Rails application that runs on Postgres. There's a really simple
+This project is a super standard Ruby on Rails application that runs on Postgres and Redis. There's a really simple
 [OSX guide](OSX.md) guide for those that use it as their daily driver.
 
 However to try make on-boarding for people who are just starting Ruby or want a simpler setup to manage, we've got
@@ -117,6 +117,7 @@ SIDEKIQ_PASSWORD=5b197341fc62d9c9bb360e55b325b5db6b29d0copypastabc7a6cbcf07329c9
 
 # Suggested you use SendGrid here, use an API key as your password
 # Generate them here https://app.sendgrid.com/settings/api_keys
+# Not needed for development as we capture and serve all mail through mailcatcher
 SMTP_SERVER=smtp.sendgrid.net
 SMTP_PORT=465
 SMTP_USER_NAME=apikey
@@ -201,9 +202,9 @@ from scratch.
 
 # Running in Production
 
-We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
-images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
-that have gone through CI and code review.
+We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our
+[list of images](https://gitlab.com/worldcon/2020-wellington/container_registry)
+or just follow the `:latest` tag to get things that have gone through CI and code review.
 
 To see all versions available, check out our [container registry](https://gitlab.com/worldcon/2020-wellington/container_registry).
 Git tags move `:stable`, merged work that's passed review moves `:latest`.
@@ -260,7 +261,7 @@ services:
     volumes:
       - redis-data:/data
 
-  members_production:
+  production_web:
     env_file:
       production.env
     image: registry.gitlab.com/worldcon/2020-wellington:stable
@@ -269,10 +270,30 @@ services:
       - type: tmpfs
         target: /app/tmp
 
-  members_staging:
+  production_worker:
+    entrypoint: "script/docker_sidekiq_entry.sh"
+    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    env_file:
+      production.env
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
+  staging_web:
     env_file:
       staging.env
     image: registry.gitlab.com/worldcon/2020-wellington:latest
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
+  staging_worker:
+    entrypoint: "script/docker_sidekiq_entry.sh"
+    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    env_file:
+      production.env
     restart: always
     volumes:
       - type: tmpfs
