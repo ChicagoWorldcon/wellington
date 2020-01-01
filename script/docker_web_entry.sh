@@ -27,7 +27,6 @@ done
 if [[ -z $RAILS_ENV ]]; then
   bundle install
   yarn install
-  mailcatcher --ip 0.0.0.0
   bin/rake dev:bootstrap
 fi
 
