@@ -37,11 +37,14 @@ namespace :dev do
   end
 
   namespace :setup do
-    desc "Recreates the database if there isn't one"
+    desc "Recreates the database, exits if we have users"
     task db: :environment do
       retries ||= 0
       ActiveRecord::Base.establish_connection
-      User.count
+      if User.count > 0
+        puts "Cowardly refusing to setup database when we have existing users"
+        exit 1
+      end
     rescue ActiveRecord::NoDatabaseError
       puts "Creating database and tables"
       Rake::Task["db:create"].invoke
