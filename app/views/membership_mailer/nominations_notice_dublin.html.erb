@@ -34,6 +34,15 @@
 </p>
 
 <p>
+  We have established nominations-only accounts for you within the CoNZealand system.
+  <% if @reservations.count == 1 %>
+    Your CoNZealand account number is <%= @account_numbers.first %>
+  <% else %>
+    Your CoNZealand account numbers are <%= @account_numbers.to_sentence %>
+  <% end %>
+</p>
+
+<p>
   To nominate online, please visit <%= link_to($hostname, $hosturl) %>,
   enter the email address you received this email at, and request a login link.
   We have established a nominations-only account for you within the CoNZealand
