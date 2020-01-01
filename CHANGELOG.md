@@ -51,6 +51,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - Text changes around the nomination forms for clarity
   [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+- Docker compose is now based on :latest image built by CI to speed up cycle time in development
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+- Running `make start` now runs docker-compose in the foreground, and Control + C quits
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+
 
 ### Removed
 - Nothing significant in this release
