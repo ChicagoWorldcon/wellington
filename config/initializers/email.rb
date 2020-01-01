@@ -20,9 +20,17 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     # Advice from rails g devise:install
     action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-    # mail catcher
+    # hook into mailcatcher
     action_mailer.delivery_method = :smtp
-    action_mailer.smtp_settings = { address: "0.0.0.0", port: 1025 }
+    inside_docker = File.exist?("/.dockerenv")
+    if inside_docker
+      # mailcatcher running in another container defined in docker-compose.yml
+      action_mailer.smtp_settings = { address: "mail", port: 1025 }
+    else
+      # mailcatcher running in backgrounded process
+      action_mailer.smtp_settings = { address: "0.0.0.0", port: 1025 }
+    end
+
 
     # Mailer previews for rspec
     # see https://stackoverflow.com/a/39204340/81271
