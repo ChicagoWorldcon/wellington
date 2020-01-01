@@ -27,6 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       restart: always
       volumes:
         - redis-data:/data
+
+  production_worker:
+    entrypoint: "script/docker_sidekiq_entry.sh"
+    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    depends_on:
+      - postgres
+    env_file:
+      production.env
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
   ```
 - New scheduled mailer to email nomination ballots between 10 and 30 minutes after last submission
   [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
