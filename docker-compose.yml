@@ -18,6 +18,7 @@ version: '3.7'
 
 volumes:
   pgdata:
+  redisdata:
   node_modules:
 
 services:
@@ -29,10 +30,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: redis:alpine
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - redisdata:/data
+
   members_area:
-    build:
-      context: ./
-      target: development
+    image: registry.gitlab.com/worldcon/2020-wellington:latest
     depends_on:
       - postgres
     env_file:
