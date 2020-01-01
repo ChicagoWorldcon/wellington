@@ -16,7 +16,11 @@
 # limitations under the License.
 
 # starts daemon then tails logs
-start: daemon logs
+start:
+	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
+	echo "Webserver starting on http://localhost:3000"
+	echo "Mailcatcher starting on http://localhost:1080"
+	docker-compose up # Create and start containers
 
 # stops application containers
 stop:
