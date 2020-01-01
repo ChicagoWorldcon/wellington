@@ -111,7 +111,7 @@ POSTGRES_USER=postgres
 
 # Sidekiq is a background task manager which you can view on /sidekiq
 # Don't include username/password to disable admin panel
-SIDEKIQ_REDIS_URL="redis://redis:6379/0"
+SIDEKIQ_REDIS_URL=redis://redis:6379/0
 SIDEKIQ_USER=sidekiq
 SIDEKIQ_PASSWORD=5b197341fc62d9c9bb360e55b325b5db6b29d0copypastabc7a6cbcf07329c9fe52fa55cab98e74ffedfff0819dca5ec978d7c53ec3ceaa11a68d17d9acbd55d
 
@@ -348,7 +348,7 @@ DB_NAME=worldcon_production
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=shuquairae2CcopypastaohmiFe1shie7eoxee2
 
-SIDEKIQ_REDIS_URL="redis://redis:6379/0"
+SIDEKIQ_REDIS_URL=redis://redis:6379/0
 SIDEKIQ_USER=sidekiq
 SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 

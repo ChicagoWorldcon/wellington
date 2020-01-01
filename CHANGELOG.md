@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139).
   You can get it to show up by setting your .env with these examples but a different password
   ```bash
-  SIDEKIQ_REDIS_URL="redis://redis:6379/0"
+  SIDEKIQ_REDIS_URL=redis://redis:6379/0
   SIDEKIQ_USER=sidekiq
   SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
   ```
