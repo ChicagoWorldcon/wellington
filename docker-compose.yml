@@ -36,7 +36,8 @@ services:
     volumes:
       - redis-data:/data
 
-  members_area:
+  web:
+    entrypoint: "script/docker_web_entry.sh"
     image: registry.gitlab.com/worldcon/2020-wellington:latest
     depends_on:
       - postgres

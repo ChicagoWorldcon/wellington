@@ -40,24 +40,24 @@ logs:
 
 # opens up a REPL that lets you run code in the project
 console:
-	docker-compose exec members_area bundle exec rails console
+	docker-compose exec web bundle exec rails console
 
 # lets you cd around and have a look at the project
 shell:
-	docker-compose exec members_area sh
+	docker-compose exec web sh
 
 # Alias for people who have old habbits
 bash: shell
 
 # Tests your setup, similar to CI
 test:
-	docker-compose exec members_area bundle exec rspec
-	docker-compose exec members_area rubocop
-	docker-compose exec members_area bundle exec rake test:branch:copyright
-	docker-compose exec members_area bundle update brakeman --quiet
-	docker-compose exec members_area bundle exec brakeman --run-all-checks --no-pager
-	docker-compose exec members_area bundle audit check --update
-	docker-compose exec members_area bundle exec ruby-audit check
+	docker-compose exec web bundle exec rspec
+	docker-compose exec web rubocop
+	docker-compose exec web bundle exec rake test:branch:copyright
+	docker-compose exec web bundle update brakeman --quiet
+	docker-compose exec web bundle exec brakeman --run-all-checks --no-pager
+	docker-compose exec web bundle audit check --update
+	docker-compose exec web bundle exec ruby-audit check
 
 # builds, configures and starts application in the background
 daemon: stop

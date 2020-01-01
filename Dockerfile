@@ -52,4 +52,4 @@ RUN mv /setup/node_modules ./node_modules \
 FROM base as development
 VOLUME /app
 
-CMD script/docker_entry.sh
+CMD script/docker_web_entry.sh
