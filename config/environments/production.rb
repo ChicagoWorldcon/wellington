@@ -139,4 +139,9 @@ Rails.application.configure do
   # See https://success.docker.com/article/logging-best-practices
   Rails.logger = ActiveSupport::Logger.new(STDOUT)
   config.colorize_logging = false
+
+  # Globals for templates to be able to link to host
+  protocal = config.force_ssl ? "https://" : "http://"
+  $hostname = ENV.fetch("HOSTNAME", "localhost:3000")
+  $hosturl = [protocal, $hostname].join
 end

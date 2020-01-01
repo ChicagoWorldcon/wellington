@@ -26,7 +26,6 @@
 
 <% @nominations_by_category.each do |category, nominations| %>
   <p><%= category %></p>
-
   <ul>
     <% nominations.select(&:persisted?).each do |nomination| %>
       <li><%= nomination %></li>
@@ -43,10 +42,9 @@
 </p>
 
 <p>
-  To change your nominations online, please visit
-  <a href="https://members.conzealand.nz/">https://members.conzealand.nz</a>,
-  click on My Memberships to access all
-  memberships linked with that email address. Then click the nominating links on your membership.
+  To change your nominations online, please visit <%= link_to($hostname, $hosturl) %>,
+  click on My Memberships to access all memberships linked with that email address.
+  Then click the nominating links on your membership.
 </p>
 
 <p>

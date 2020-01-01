@@ -84,4 +84,9 @@ Rails.application.configure do
     # see https://github.com/rails/web-console
     config.web_console.whitelisted_ips = "172.0.0.0/8" # Docker subnet
   end
+
+  # Globals for templates to be able to link to host
+  protocal = config.force_ssl ? "https://" : "http://"
+  $hostname = ENV.fetch("HOSTNAME", "localhost:3000")
+  $hosturl = [protocal, $hostname].join
 end

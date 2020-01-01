@@ -61,4 +61,9 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # Globals for templates to be able to link to host
+  protocal = config.force_ssl ? "https://" : "http://"
+  $hostname = ENV.fetch("HOSTNAME", "localhost:3000")
+  $hosturl = [protocal, $hostname].join
 end
