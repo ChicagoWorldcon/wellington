@@ -110,18 +110,8 @@ POSTGRES_USER=postgres
 # POSTGRES_PASSWORD="super secret password"
 
 # Sidekiq is a background task manager which you can view on /sidekiq
-# Don't include username/password to disable admin panel
+# http basic auth is disabled on development
 SIDEKIQ_REDIS_URL=redis://redis:6379/0
-SIDEKIQ_USER=sidekiq
-SIDEKIQ_PASSWORD=5b197341fc62d9c9bb360e55b325b5db6b29d0copypastabc7a6cbcf07329c9fe52fa55cab98e74ffedfff0819dca5ec978d7c53ec3ceaa11a68d17d9acbd55d
-
-# Suggested you use SendGrid here, use an API key as your password
-# Generate them here https://app.sendgrid.com/settings/api_keys
-# Not needed for development as we capture and serve all mail through mailcatcher
-SMTP_SERVER=smtp.sendgrid.net
-SMTP_PORT=465
-SMTP_USER_NAME=apikey
-SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
@@ -348,9 +338,18 @@ DB_NAME=worldcon_production
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=shuquairae2CcopypastaohmiFe1shie7eoxee2
 
+# Sidekiq settings, protected behind http basic auth
+# If you don't include sidekiq username/password, this will disable sidekiq admin panel
 SIDEKIQ_REDIS_URL=redis://redis:6379/0
 SIDEKIQ_USER=sidekiq
 SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
+# Suggested you use SendGrid here, use an API key as your password
+# Generate them here https://app.sendgrid.com/settings/api_keys
+SMTP_SERVER=smtp.sendgrid.net
+SMTP_PORT=465
+SMTP_USER_NAME=apikey
+SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
 
 # The rest is identical to the example .env in this README.
 # Please copy from there.
