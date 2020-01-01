@@ -469,10 +469,10 @@ This project is open source based on the Apache 2 Licence. You can read the term
 file distributed with this project.
 
 - Copyright 2019 AJ Esler
+- Copyright 2019 Chris Rose
 - Copyright 2019 James Polley
 - Copyright 2019 Jen Zajac (jenofdoom)
-- Copyright 2019 Matthew B. Gray
 - Copyright 2019 Steven C Hartley
-- Copyright 2019 Chris Rose
+- Copyright 2020 Matthew B. Gray
 
 We are so grateful to all our contributors for helping us make this project great.
