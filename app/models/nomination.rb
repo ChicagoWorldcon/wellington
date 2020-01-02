@@ -24,11 +24,8 @@ class Nomination < ApplicationRecord
   validate :at_least_one_field
 
   def to_s
-    [
-      field_1,
-      field_2,
-      field_3,
-    ].join("; ")
+    fields_set = [field_1, field_2, field_3].select(&:present?)
+    fields_set.join("; ")
   end
 
   private

@@ -37,4 +37,27 @@ RSpec.describe Nomination, type: :model do
     invalid_model = build(:nomination, field_1: nil, field_2: nil, field_3: nil)
     expect(invalid_model).to_not be_valid
   end
+
+  describe "#to_s" do
+    it "represents 3 fields when all are presnt" do
+      model = build(:nomination, field_1: "one", field_2: "two", field_3: "three")
+      expect(model.to_s).to eq "one; two; three"
+    end
+
+    context "when blank entries and 1 field present" do
+      [
+        {field_1: "1", field_2: nil, field_3: nil},
+        {field_1: nil, field_2: "2", field_3: nil},
+        {field_1: nil, field_2: nil, field_3: "3"},
+        {field_1: "1", field_2: "", field_3: ""},
+        {field_1: "", field_2: "2", field_3: ""},
+        {field_1: "", field_2: "", field_3: "3"},
+      ].each.with_index(1) do |valid_params, n|
+        it "doesn't include ';' for case #{n}" do
+          model = build(:nomination, **valid_params)
+          expect(model.to_s).to_not include(";")
+        end
+      end
+    end
+  end
 end
