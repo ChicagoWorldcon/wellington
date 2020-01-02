@@ -1,6 +1,6 @@
 # Copyright 2019 James Polley
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,4 +52,4 @@ RUN mv /setup/node_modules ./node_modules \
 FROM base as development
 VOLUME /app
 
-CMD script/docker_entry.sh
+CMD script/docker_web_entry.sh

@@ -1,7 +1,7 @@
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 # limitations under the License.
 
 # starts daemon then tails logs
-start: daemon logs
+start:
+	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
+	echo "Webserver starting on http://localhost:3000"
+	echo "Mailcatcher starting on http://localhost:1080"
+	docker-compose up # Create and start containers
 
 # stops application containers
 stop:
@@ -36,24 +40,24 @@ logs:
 
 # opens up a REPL that lets you run code in the project
 console:
-	docker-compose exec members_area bundle exec rails console
+	docker-compose exec web bundle exec rails console
 
 # lets you cd around and have a look at the project
 shell:
-	docker-compose exec members_area sh
+	docker-compose exec web sh
 
 # Alias for people who have old habbits
 bash: shell
 
 # Tests your setup, similar to CI
 test:
-	docker-compose exec members_area bundle exec rspec
-	docker-compose exec members_area rubocop
-	docker-compose exec members_area bundle exec rake test:branch:copyright
-	docker-compose exec members_area bundle update brakeman --quiet
-	docker-compose exec members_area bundle exec brakeman --run-all-checks --no-pager
-	docker-compose exec members_area bundle audit check --update
-	docker-compose exec members_area bundle exec ruby-audit check
+	docker-compose exec web bundle exec rspec
+	docker-compose exec web rubocop
+	docker-compose exec web bundle exec rake test:branch:copyright
+	docker-compose exec web bundle update brakeman --quiet
+	docker-compose exec web bundle exec brakeman --run-all-checks --no-pager
+	docker-compose exec web bundle audit check --update
+	docker-compose exec web bundle exec ruby-audit check
 
 # builds, configures and starts application in the background
 daemon: stop

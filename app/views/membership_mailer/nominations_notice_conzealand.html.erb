@@ -1,5 +1,5 @@
 <%#
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -34,8 +34,7 @@
 </p>
 
 <p>
-  To nominate online, please visit
-  <a href="https://members.conzealand.nz/">https://members.conzealand.nz/</a>,
+  To nominate online, please visit <%= link_to($hostname, $hosturl) %>,
   enter the email address you received this email at, and request a login link.
   After clicking the link and entering the members area, click on My Memberships
   to access all memberships linked with that email address. Then
@@ -50,7 +49,7 @@
     transfer excess memberships to their own email addresses if possible. To do so,
     please send an email to
 
-    <a href="mailto:registration@conzealand.nz">mailto:registration@conzealand.nz</a>
+    <%= link_to($member_services_email, "mailto:#{$member_services_email}") %>
 
     with details on which membership you want to transfer, and the email
     address of the person to which it should be transferred. We recognize that
@@ -99,9 +98,25 @@
 
 <p>
   A printable version of the WSFS Constitution and Hugo Nominating ballot has
-  been included in the mailed-out version of Progress Report 2. To download a
-  printable ballot, click here. The WSFS Constitution is also available online
-  here.
+  been included in the mailed-out version of Progress Report 2. You may also
+  download To download a
+  <%=
+    link_to(
+      "printable ballot in A4",
+      "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf",
+    )
+  %>,
+
+  or
+  <%=
+    link_to(
+      "US letter sizes",
+      "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf",
+    )
+  %>.
+
+  The WSFS Constitution is also available online
+  <%= link_to("here", "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf") %>.
 </p>
 
 <p>

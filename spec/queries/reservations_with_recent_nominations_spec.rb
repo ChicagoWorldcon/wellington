@@ -14,27 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Nomination < ApplicationRecord
-  VOTES_PER_CATEGORY = 5
+require "rails_helper"
 
-  belongs_to :category
-  belongs_to :reservation
+RSpec.describe ReservationsWithRecentNominations do
+  describe "#call" do
+    subject(:call) { described_class.new.call }
+    let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+    let(:user) { reservation.user }
 
-  # We don't want blank models, it's clutter
-  validate :at_least_one_field
+    it { is_expected.to_not be_present }
 
-  def to_s
-    fields_set = [field_1, field_2, field_3].select(&:present?)
-    fields_set.join("; ")
-  end
-
-  private
-
-  def at_least_one_field
-    if [field_1, field_2, field_3].none?(&:present?)
-      errors.add(:field_1, "must specify at least one field")
-      errors.add(:field_2, "must specify at least one field")
-      errors.add(:field_3, "must specify at least one field")
+    it "doesn't include users more than once" do
+      3.times do
+        reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
+      end
+      expect(call.count).to be(1)
     end
   end
 end

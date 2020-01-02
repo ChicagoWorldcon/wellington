@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Andrew Esler (ajesler)
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +16,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "sidekiq/web"
+require "sidekiq-scheduler/web"
+
 # For more information about routes, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
   root to: "landing#index"
+
+  # Sidekiq is our jobs server and keeps tabs on backround tasks
+  if ENV["SIDEKIQ_USER"].present? && ENV["SIDEKIQ_PASSWORD"].present?
+    # Mounting /sidekiq with basic auth
+    mount Sidekiq::Web, at: "/sidekiq"
+
+    Sidekiq::Web.use Rack::Auth::Basic  do |username, password|
+      user_provided = ::Digest::SHA256.hexdigest(username)
+      user_expected = ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USER"])
+
+      password_provided = ::Digest::SHA256.hexdigest(password)
+      password_expected = ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"])
+
+      ActiveSupport::SecurityUtils.secure_compare(user_provided, user_expected) &&
+        ActiveSupport::SecurityUtils.secure_compare(password_provided, password_expected)
+    end
+  elsif ENV["SIDEKIQ_NO_PASSWORD"].present?
+    # Mounting /sidekiq without password
+    mount Sidekiq::Web, at: "/sidekiq"
+  else
+    # Not mounting /sidekiq
+  end
 
   # Sets routes for account management actions.
   # This order seems to matter for tests.

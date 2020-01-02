@@ -9,20 +9,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -52,7 +38,8 @@ CREATE TABLE public.categories (
     field_1 character varying DEFAULT 'Nomination'::character varying NOT NULL,
     field_2 character varying,
     field_3 character varying,
-    election_id bigint NOT NULL
+    election_id bigint NOT NULL,
+    "order" integer
 );
 
 
@@ -383,7 +370,8 @@ CREATE TABLE public.reservations (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     state character varying NOT NULL,
-    membership_number integer NOT NULL
+    membership_number integer NOT NULL,
+    ballot_last_mailed_at timestamp without time zone
 );
 
 
@@ -970,6 +958,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191024180734'),
 ('20191031051223'),
 ('20191128184513'),
-('20191221233951');
+('20191221233951'),
+('20191229203558'),
+('20191231004921');
 
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ class NominationsController < ApplicationController
   before_action :lookup_legal_name_or_redirect
 
   def show
-    builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
+    builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_reservation
     @nominations_by_category = builder.nominations_by_category
     if !@nominations_by_category.present?
@@ -34,7 +34,7 @@ class NominationsController < ApplicationController
   end
 
   def update
-    builder = MemberNominationsByCategory.new(categories: @election.categories, reservation: @reservation)
+    builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_params(params)
     builder.save
     @category = Category.find(params[:category_id])
@@ -93,5 +93,9 @@ class NominationsController < ApplicationController
 
   def nomination_params
     params.require(:category).require(:nomination)
+  end
+
+  def ordered_categories_for_election
+    @election.categories.order(:order, :id)
   end
 end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Andrew Esler (ajesler)
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -74,4 +74,19 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  # Special cases if running inside a docker container
+  inside_docker = File.exist?("/.dockerenv")
+
+  if inside_docker
+    # Docker subnet needs to be explicitly set here to use web console
+    # default is 127.0.0.0/8
+    # see https://github.com/rails/web-console
+    config.web_console.whitelisted_ips = "172.0.0.0/8" # Docker subnet
+  end
+
+  # Globals for templates to be able to link to host
+  protocal = config.force_ssl ? "https://" : "http://"
+  $hostname = ENV.fetch("HOSTNAME", "localhost:3000")
+  $hosturl = [protocal, $hostname].join
 end

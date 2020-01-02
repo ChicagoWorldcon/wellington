@@ -14,27 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Nomination < ApplicationRecord
-  VOTES_PER_CATEGORY = 5
-
-  belongs_to :category
-  belongs_to :reservation
-
-  # We don't want blank models, it's clutter
-  validate :at_least_one_field
-
-  def to_s
-    fields_set = [field_1, field_2, field_3].select(&:present?)
-    fields_set.join("; ")
-  end
-
-  private
-
-  def at_least_one_field
-    if [field_1, field_2, field_3].none?(&:present?)
-      errors.add(:field_1, "must specify at least one field")
-      errors.add(:field_2, "must specify at least one field")
-      errors.add(:field_3, "must specify at least one field")
-    end
+# Preview all emails at http://localhost:3000/rails/mailers/hugo_mailer
+class HugoMailerPreview < ActionMailer::Preview
+  def nomination_ballot
+    reservation = Reservation.joins(:nominations).sample
+    HugoMailer.nomination_ballot(reservation)
   end
 end

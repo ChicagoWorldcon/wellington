@@ -8,10 +8,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.2.0...master)
 
 ### Added
-- Nothing significant in this release
+- Sidekiq to monitor and schedule background jobs mounted on /sidekiq
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139).
+  You can get it to show up by setting your .env with these examples but a different password
+  ```bash
+  SIDEKIQ_REDIS_URL=redis://redis:6379/0
+  SIDEKIQ_USER=sidekiq
+  SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+  ```
+  You'll need to have a redis server available, or add it to your docker-compose.yml
+  ```yaml
+  volumes:
+    redis-data:
+
+  services:
+    redis:
+      image: redis:alpine
+      restart: always
+      volumes:
+        - redis-data:/data
+
+    production_worker:
+      entrypoint: "script/docker_sidekiq_entry.sh"
+      image: registry.gitlab.com/worldcon/2020-wellington:stable
+      env_file:
+        production.env
+      restart: always
+      volumes:
+        - type: tmpfs
+          target: /app/tmp
+  ```
+- Disable sidekiq basicauth for development by setting `SIDEKIQ_NO_PASSWORD` in your .env
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+  ```bash
+  SIDEKIQ_NO_PASSWORD=true
+  ```
+- New scheduled mailer to email nomination ballots between 10 and 30 minutes after last submission
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
 
 ### Changed
-- Nothing significant in this release
+- Added explicit order to Hugo Categories, migrate existing data with
+  ```
+  make bash
+  bin/rake db:seed:conzealand:production_hugo_ordering
+  ```
+- Text changes around the nomination forms for clarity
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+- Docker compose is now based on :latest image built by CI to speed up cycle time in development
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+- Running `make start` now runs docker-compose in the foreground, and Control + C quits
+  [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+
 
 ### Removed
 - Nothing significant in this release
@@ -24,7 +71,7 @@ This release brings with it the basics to let our users nominate for the Hugo aw
 ### Added
 - Added Hugos state configuration [!89](https://gitlab.com/worldcon/2020-wellington/merge_requests/89).
   Please set these values in your .env on all environments:
-  ```
+  ```bash
   # Times when parts of the members area will become active
   HUGO_NOMINATIONS_OPEN_AT="2019-12-31T23:59:00-08:00"
   HUGO_VOTING_OPEN_AT="2020-03-13T11:59:00-08:00"

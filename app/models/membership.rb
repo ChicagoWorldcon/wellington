@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,6 +33,9 @@ class Membership < ApplicationRecord
   scope :can_vote, -> { where(can_vote: true) }
 
   scope :order_by_price, -> { order(price_cents: :desc) }
+  scope :with_attend_rights, -> { where(can_attend: true) }
+  scope :with_nomination_rights, -> { where(can_nominate: true) }
+  scope :with_voting_rights, -> { where(can_vote: true) }
 
   def to_s
     name.humanize

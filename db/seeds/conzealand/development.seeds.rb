@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Chris Rose
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,3 +57,19 @@ Support.create(
   password: 111111,
   confirmed_at: Time.now,
 )
+
+all_categories = Category.all.to_a
+nominators = Reservation.paid.joins(:membership).merge(Membership.with_nomination_rights).to_a
+
+nominators.each.with_index(1) do |reservation, count|
+  puts "Generated nominations for #{count}/#{nominators.count} members" if count % 5 == 0
+  sampled_categories = all_categories.sample(rand(0..all_categories.count))
+  sampled_categories.each do |sample_category|
+    rand(1..5).times do
+      FactoryBot.create(:nomination, reservation: reservation, category: sample_category)
+    end
+  end
+end
+
+# Avoid sending system emails for generated nominations
+Reservation.update_all(ballot_last_mailed_at: Time.now)

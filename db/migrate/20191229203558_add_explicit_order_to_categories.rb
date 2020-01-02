@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+# frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,21 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Wait for postgres opens it's ports to start services
-if [[ -z $DB_HOST ]]; then
-  DB_HOST="postgres"
-fi
-until nc -z $DB_HOST 5432; do
-  echo "waiting for postgres..."
-  sleep 1
-done
-
-# Development setup runs when RAILS_ENV is not set
-if [[ -z $RAILS_ENV ]]; then
-  mailcatcher --ip 0.0.0.0
-  bin/rake dev:bootstrap
-fi
-
-# Run migrations and start the server, anything that comes in on 3000 is accepted
-bin/rake db:migrate
-bin/rails server -b 0.0.0.0
+class AddExplicitOrderToCategories < ActiveRecord::Migration[6.0]
+  def change
+    add_column :categories, :order, :integer
+  end
+end

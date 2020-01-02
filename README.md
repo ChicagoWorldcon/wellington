@@ -37,7 +37,7 @@ keen have a look at this list and leave comments on any you'd like to try.
 
 # Getting Started
 
-This project is a super standard Ruby on Rails application that runs on Postgres. There's a really simple
+This project is a super standard Ruby on Rails application that runs on Postgres and Redis. There's a really simple
 [OSX guide](OSX.md) guide for those that use it as their daily driver.
 
 However to try make on-boarding for people who are just starting Ruby or want a simpler setup to manage, we've got
@@ -109,12 +109,12 @@ DB_HOST=postgres
 POSTGRES_USER=postgres
 # POSTGRES_PASSWORD="super secret password"
 
-# Suggested you use SendGrid here, use an API key as your password
-# Generate them here https://app.sendgrid.com/settings/api_keys
-SMTP_SERVER=smtp.sendgrid.net
-SMTP_PORT=465
-SMTP_USER_NAME=apikey
-SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
+# Sidekiq is a background task manager which you can view on /sidekiq
+# Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
+SIDEKIQ_REDIS_URL=redis://redis:6379/0
+SIDEKIQ_NO_PASSWORD=true
+# SIDEKIQ_USER=sidekiq
+# SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
@@ -195,9 +195,9 @@ from scratch.
 
 # Running in Production
 
-We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our [list of
-images](https://gitlab.com/worldcon/2020-wellington/container_registry) or just follow the `:latest` tag to get things
-that have gone through CI and code review.
+We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our
+[list of images](https://gitlab.com/worldcon/2020-wellington/container_registry)
+or just follow the `:latest` tag to get things that have gone through CI and code review.
 
 To see all versions available, check out our [container registry](https://gitlab.com/worldcon/2020-wellington/container_registry).
 Git tags move `:stable`, merged work that's passed review moves `:latest`.
@@ -248,7 +248,13 @@ services:
       ACME_AGREE: "true"
     restart: always
 
-  members_production:
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis-data:/data
+
+  production_web:
     env_file:
       production.env
     image: registry.gitlab.com/worldcon/2020-wellington:stable
@@ -257,7 +263,17 @@ services:
       - type: tmpfs
         target: /app/tmp
 
-  members_staging:
+  production_worker:
+    entrypoint: "script/docker_sidekiq_entry.sh"
+    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    env_file:
+      production.env
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
+  staging_web:
     env_file:
       staging.env
     image: registry.gitlab.com/worldcon/2020-wellington:latest
@@ -266,8 +282,19 @@ services:
       - type: tmpfs
         target: /app/tmp
 
+  staging_worker:
+    entrypoint: "script/docker_sidekiq_entry.sh"
+    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    env_file:
+      production.env
+    restart: always
+    volumes:
+      - type: tmpfs
+        target: /app/tmp
+
 volumes:
   ssl-certs:
+  redis-data:
 ```
 
 Here's the Cadyfile which handles SSL termination, transparent forwarding to our rails servers and http basic auth for
@@ -278,7 +305,7 @@ our staging setup:
 members.conzealand.nz {
   log stdout
   errors stdout
-  proxy / members_production:3000 {
+  proxy / production_web:3000 {
     transparent
   }
 }
@@ -287,7 +314,7 @@ members-staging.conzealand.nz {
   log stdout
   errors stdout
   basicauth / preview "yolo super secret password"
-  proxy / members_staging:3000 {
+  proxy / staging_web:3000 {
     transparent
   }
 }
@@ -300,7 +327,7 @@ If you're interested in the docker image configuration options, see [abiosoft/ca
 Here's a version of our production config with production specific environment variables and obscured secrets:
 
 `production.env`
-```
+```bash
 # Used for URL generation and using compiled assets
 RAILS_ENV=production
 
@@ -314,11 +341,25 @@ DB_NAME=worldcon_production
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=shuquairae2CcopypastaohmiFe1shie7eoxee2
 
+# Sidekiq settings, protected behind http basic auth
+# If you don't include sidekiq username/password, this will disable sidekiq admin panel
+SIDEKIQ_REDIS_URL=redis://redis:6379/0
+SIDEKIQ_USER=sidekiq
+SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
+# Suggested you use SendGrid here, use an API key as your password
+# Generate them here https://app.sendgrid.com/settings/api_keys
+SMTP_SERVER=smtp.sendgrid.net
+SMTP_PORT=465
+SMTP_USER_NAME=apikey
+SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
+
 # The rest is identical to the example .env in this README.
 # Please copy from there.
 ```
 
-There's also a `staging.env` next to this which is a variation on these settings and an excersise for the reader.
+There's also a `staging.env` next to this which is a variation on these settings. Make sure you use different variables
+where possible, particularly `DB_NAME` and `REDIS_URL` options so you don't have clobering data stores.
 
 On your first run you're going to have to load in the database schema load and some seeds. You can do this from the
 image itself by running up an interactive shell and using the rake commands available to that environemnt. Our database
@@ -430,10 +471,10 @@ This project is open source based on the Apache 2 Licence. You can read the term
 file distributed with this project.
 
 - Copyright 2019 AJ Esler
+- Copyright 2019 Chris Rose
 - Copyright 2019 James Polley
 - Copyright 2019 Jen Zajac (jenofdoom)
-- Copyright 2019 Matthew B. Gray
 - Copyright 2019 Steven C Hartley
-- Copyright 2019 Chris Rose
+- Copyright 2020 Matthew B. Gray
 
 We are so grateful to all our contributors for helping us make this project great.

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -182,7 +182,8 @@ Membership.create!(
 )
 
 ########################################
-# Other prod seeds
+# Other prod data migrations that happened post deploy
 
 require_relative "production_hugo.seeds.rb"
 require_relative "production_dublin.seeds.rb"
+require_relative "production_hugo_ordering.seeds.rb"

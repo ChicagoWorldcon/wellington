@@ -1,10 +1,10 @@
 # frozen-string_literal: true
 
 # Copyright 2019 AJ Esler
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 Chris Rose
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@ gem "puma"                 # http server for rack
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
+gem "sidekiq"              # Background jobs processor
+gem "sidekiq-scheduler"    # Background jobs processor scheduler
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 

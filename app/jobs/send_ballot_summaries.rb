@@ -14,27 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Nomination < ApplicationRecord
-  VOTES_PER_CATEGORY = 5
+class SendBallotSummaries
+  include Sidekiq::Worker
 
-  belongs_to :category
-  belongs_to :reservation
+  def perform
+    # By taking down the time at the start,
+    # we can make sure that any nominations made while this was run will get picked up in the next run
+    job_started_at = Time.now
 
-  # We don't want blank models, it's clutter
-  validate :at_least_one_field
+    User.transaction do
+      reservations = ReservationsWithRecentNominations.new.call
+      reservations.find_each do |reservation|
+        HugoMailer.nomination_ballot(reservation).deliver_now
+      end
 
-  def to_s
-    fields_set = [field_1, field_2, field_3].select(&:present?)
-    fields_set.join("; ")
-  end
-
-  private
-
-  def at_least_one_field
-    if [field_1, field_2, field_3].none?(&:present?)
-      errors.add(:field_1, "must specify at least one field")
-      errors.add(:field_2, "must specify at least one field")
-      errors.add(:field_3, "must specify at least one field")
+      reservations.update_all(ballot_last_mailed_at: job_started_at)
     end
   end
 end
