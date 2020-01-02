@@ -37,6 +37,11 @@ class Reservation < ApplicationRecord
   scope :instalment, -> { where(state: INSTALMENT) }
   scope :paid, -> { where(state: PAID) }
 
+  def active_rights
+    all_held_memberships = Membership.where(id: orders.select(:membership_id))
+    all_held_memberships.flat_map(&:active_rights).uniq
+  end
+
   def paid?
     state == PAID
   end
