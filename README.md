@@ -110,8 +110,11 @@ POSTGRES_USER=postgres
 # POSTGRES_PASSWORD="super secret password"
 
 # Sidekiq is a background task manager which you can view on /sidekiq
-# http basic auth is disabled on development
+# Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
 SIDEKIQ_REDIS_URL=redis://redis:6379/0
+SIDEKIQ_NO_PASSWORD=true
+# SIDEKIQ_USER=sidekiq
+# SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta

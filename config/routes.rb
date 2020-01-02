@@ -24,11 +24,8 @@ Rails.application.routes.draw do
   root to: "landing#index"
 
   # Sidekiq is our jobs server and keeps tabs on backround tasks
-  if Rails.env.development?
-    # On development, mount without username/password
-    mount Sidekiq::Web, at: "/sidekiq"
-  elsif ENV["SIDEKIQ_USER"].present? && ENV["SIDEKIQ_PASSWORD"].present?
-    # On production, only mount sidekiq if it's password protected
+  if ENV["SIDEKIQ_USER"].present? && ENV["SIDEKIQ_PASSWORD"].present?
+    # Mounting /sidekiq with basic auth
     mount Sidekiq::Web, at: "/sidekiq"
 
     Sidekiq::Web.use Rack::Auth::Basic  do |username, password|
@@ -41,6 +38,11 @@ Rails.application.routes.draw do
       ActiveSupport::SecurityUtils.secure_compare(user_provided, user_expected) &&
         ActiveSupport::SecurityUtils.secure_compare(password_provided, password_expected)
     end
+  elsif ENV["SIDEKIQ_NO_PASSWORD"].present?
+    # Mounting /sidekiq without password
+    mount Sidekiq::Web, at: "/sidekiq"
+  else
+    # Not mounting /sidekiq
   end
 
   # Sets routes for account management actions.
