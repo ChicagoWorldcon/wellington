@@ -136,7 +136,7 @@ RSpec.describe Reservation, type: :model do
         end
 
         it { is_expected.to be_present }
-        it { is_expected.to include("rights.hugo.nominate_only") }
+        it { is_expected.to include("rights.hugo.nominate") }
       end
     end
   end

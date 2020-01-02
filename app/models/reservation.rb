@@ -38,8 +38,48 @@ class Reservation < ApplicationRecord
   scope :paid, -> { where(state: PAID) }
 
   def active_rights
-    all_held_memberships = Membership.where(id: orders.select(:membership_id))
-    all_held_memberships.flat_map(&:active_rights).uniq
+    [].tap do |rights|
+      rights << "rights.attend" if can_attend?
+      rights << "rights.site_selection" if can_site_select?
+
+      now = DateTime.now
+
+      if now < $nomination_opens_at
+        if can_nominate?
+          rights << "rights.hugo.nominate_soon"
+          rights << "rights.retro_hugo.nominate_soon"
+        end
+      elsif now.between?($nomination_opens_at, $voting_opens_at)
+        if can_nominate? && !can_vote?
+          rights << "rights.hugo.nominate_only"
+          rights << "rights.retro_hugo.nominate_only"
+        elsif can_nominate?
+          rights << "rights.hugo.nominate"
+          rights << "rights.retro_hugo.nominate"
+        end
+      elsif now.between?($voting_opens_at, $hugo_closed_at)
+        if can_vote?
+          rights << "rights.hugo.vote"
+          rights << "rights.retro_hugo.vote"
+        end
+      end
+    end
+  end
+
+  def can_attend?
+    Membership.can_vote.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def can_site_select?
+    Membership.can_site_select.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def can_nominate?
+    Membership.can_nominate.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def can_vote?
+    Membership.can_vote.where(id: orders.select(:membership_id)).exists?
   end
 
   def paid?
