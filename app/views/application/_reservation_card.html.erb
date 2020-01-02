@@ -36,7 +36,7 @@
 
     <% if reservation.paid? || reservation.has_paid_supporting? %>
       <p><%= t("rights.description") %></p>
-      <% reservation.membership.active_rights.each do |membership_right| %>
+      <% reservation.active_rights.each do |membership_right| %>
         <p><%= raw membership_right_description(membership_right, reservation) %></p>
       <% end %>
     <% end %>
