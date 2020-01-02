@@ -302,7 +302,7 @@ our staging setup:
 members.conzealand.nz {
   log stdout
   errors stdout
-  proxy / members_production:3000 {
+  proxy / production_web:3000 {
     transparent
   }
 }
@@ -311,7 +311,7 @@ members-staging.conzealand.nz {
   log stdout
   errors stdout
   basicauth / preview "yolo super secret password"
-  proxy / members_staging:3000 {
+  proxy / staging_web:3000 {
     transparent
   }
 }
