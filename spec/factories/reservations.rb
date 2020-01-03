@@ -43,8 +43,10 @@ FactoryBot.define do
     end
 
     after(:create) do |new_reservation, evaluator|
+      next unless evaluator.instalment_paid > 0
       next unless new_reservation.membership.present?
       next unless new_reservation.user.present?
+      next unless new_reservation.membership.price > 0
 
       if new_reservation.paid?
         create(:charge, :generate_description,
@@ -52,7 +54,7 @@ FactoryBot.define do
           reservation: new_reservation,
           amount: new_reservation.membership.price
         )
-      elsif new_reservation.instalment? && evaluator.instalment_paid > 0
+      elsif new_reservation.instalment?
         create(:charge, :generate_description,
           user: new_reservation.user,
           reservation: new_reservation,
