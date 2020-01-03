@@ -20,17 +20,23 @@
   and the 1945 Retro Hugo Awards.
 </p>
 
-<p>
-  Below is a summary of your current nominating ballot:
-</p>
+<% if !@nominations_by_category.present? %>
+  <p>
+    Your ballot is currently empty.
+  </p>
+<% else %>
+  <p>
+    Below is a summary of your current nominating ballot:
+  </p>
 
-<% @nominations_by_category.each do |category, nominations| %>
-  <p><%= category %></p>
-  <ul>
-    <% nominations.select(&:persisted?).each do |nomination| %>
-      <li><%= nomination %></li>
-    <% end %>
-  </ul>
+  <% @nominations_by_category.each do |category, nominations| %>
+    <p><%= category %></p>
+    <ul>
+      <% nominations.select(&:persisted?).each do |nomination| %>
+        <li><%= nomination %></li>
+      <% end %>
+    </ul>
+  <% end %>
 <% end %>
 
 <p>
