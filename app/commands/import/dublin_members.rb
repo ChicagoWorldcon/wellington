@@ -73,6 +73,7 @@ class Import::DublinMembers
         publication_format: Detail::PAPERPUBS_ELECTRONIC,
       )
       detail.as_import.save!
+      import_user.notes.create!(content: "Dublin membership #{row["DUB#"]}")
       import_user.notes.create!(content: "#{description} row #{n}")
     end
 
