@@ -70,7 +70,7 @@ class NominationsController < ApplicationController
       raise ActiveRecord::RecordNotFound
     end
 
-    if !@reservation.membership.can_nominate?
+    if !@reservation.can_nominate?
       raise ActiveRecord::RecordNotFound
     end
   end

@@ -19,15 +19,14 @@ require "rails_helper"
 RSpec.describe NominationsController, type: :controller do
   render_views
 
-  let!(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
-  let!(:user) { reservation.user }
-
   let!(:hugo) { create(:election) }
   let!(:best_novel) { create(:category, :best_novel, election: hugo) }
   let!(:best_series) { create(:category, :best_series, election: hugo) }
-
   let!(:retro_hugo) { create(:election, :retro) }
   let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
+
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:user) { reservation.user }
 
   # Reset dates after tests run
   # pasta from config/initializers/hugo.rb
@@ -77,6 +76,27 @@ RSpec.describe NominationsController, type: :controller do
           it "doesn't redirect if you're a dublin member" do
             reservation.active_claim.detail.destroy!
             expect(get_show).to have_http_status(:ok)
+          end
+
+          context "and you upgrade to Supporting after nominations close" do
+            let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+            let(:supporting_without_nomination) { create(:membership, :supporting, can_nominate: false) }
+
+            before do
+              upgrader = UpgradeMembership.new(reservation, to: supporting_without_nomination)
+              successful = upgrader.call
+              raise "couldn't upgrade membership" if !successful
+            end
+
+            it "forces the user to enter their details" do
+              reservation.active_claim.detail.destroy!
+              expect(get_show).to_not have_http_status(:ok)
+              expect(flash[:notice]).to match(/enter your details/)
+            end
+
+            it "renders the form when you have details entered" do
+              expect(get_show).to have_http_status(:ok)
+            end
           end
         end
       end

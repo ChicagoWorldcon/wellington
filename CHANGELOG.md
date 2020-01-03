@@ -58,6 +58,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
 - Running `make start` now runs docker-compose in the foreground, and Control + C quits
   [!139](https://gitlab.com/worldcon/2020-wellington/merge_requests/139)
+- Upgrading memberships accumulates membership rights. Now Dublin upgrading to Supporting gets Nomination and Voting
+  rights, and Supporting upgrading to Adult gets Nomination, Voting and Attending rights
+  [!140](https://gitlab.com/worldcon/2020-wellington/merge_requests/140)
 
 
 ### Removed
