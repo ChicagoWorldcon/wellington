@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrading memberships accumulates membership rights. Now Dublin upgrading to Supporting gets Nomination and Voting
   rights, and Supporting upgrading to Adult gets Nomination, Voting and Attending rights
   [!140](https://gitlab.com/worldcon/2020-wellington/merge_requests/140)
+- Dublin imports record dublin membership number against account
+- [!143](https://gitlab.com/worldcon/2020-wellington/merge_requests/143)
 
 
 ### Removed
