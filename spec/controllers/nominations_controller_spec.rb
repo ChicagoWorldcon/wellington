@@ -19,15 +19,14 @@ require "rails_helper"
 RSpec.describe NominationsController, type: :controller do
   render_views
 
-  let!(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
-  let!(:user) { reservation.user }
-
   let!(:hugo) { create(:election) }
   let!(:best_novel) { create(:category, :best_novel, election: hugo) }
   let!(:best_series) { create(:category, :best_series, election: hugo) }
-
   let!(:retro_hugo) { create(:election, :retro) }
   let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
+
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:user) { reservation.user }
 
   # Reset dates after tests run
   # pasta from config/initializers/hugo.rb
