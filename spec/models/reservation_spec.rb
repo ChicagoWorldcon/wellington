@@ -93,55 +93,6 @@ RSpec.describe Reservation, type: :model do
   end
 
   describe "#active_rights" do
-    context "when nominations are open" do
-      before do
-        # Nominations open
-        $nomination_opens_at = 1.day.ago
-        $voting_opens_at = 2.days.from_now
-        $hugo_closed_at = 3.days.from_now
-      end
-
-      after do
-        # reset to config/initializers/hugo.rb
-        SetHugoGlobals.new.call
-      end
-
-      let(:dublin_membership) { create(:membership, :dublin_2019) }
-      let(:reservation) { create(:reservation, membership: dublin_membership) }
-
-      subject(:active_rights) { reservation.active_rights }
-      it { is_expected.to be_present }
-      it { is_expected.to include("rights.hugo.nominate_only") }
-
-      context "when dublin member upgrades to supporting membership after nomination closes" do
-        let(:reservation) { create(:reservation) }
-        let(:supporting_membership_without_nomination) { create(:membership, :supporting, can_nominate: false) }
-
-        before do
-          # Dublin membership held for about a week
-          reservation.orders.create!(
-            membership: dublin_membership,
-            active_from: 5.days.ago,
-            active_to: 1.second.ago,
-          )
-
-          # Then upgraded to supporting membership
-          reservation.orders.create!(
-            membership: supporting_membership_without_nomination,
-            active_from: 1.second.ago
-          )
-
-          # invalidate cached AR relationships
-          reservation.reload
-        end
-
-        it { is_expected.to be_present }
-        it { is_expected.to include("rights.hugo.nominate") }
-      end
-    end
-  end
-
-  describe "#active_rights" do
     let(:adult_membership) { create(:membership, :adult) }
     let(:dublin_membership) { create(:membership, :dublin_2019) }
     let(:model) { create(:reservation, membership: adult_membership) }
@@ -181,7 +132,34 @@ RSpec.describe Reservation, type: :model do
         let(:model) { create(:reservation, membership: dublin_membership) }
         it { is_expected.to_not include("rights.hugo.nominate") }
         it { is_expected.to include("rights.hugo.nominate_only") }
+
+        context "when they upgrade to supporting membership after nomination closes" do
+          let(:model) { create(:reservation) }
+          let(:supporting_membership_without_nomination) { create(:membership, :supporting, can_nominate: false) }
+
+          before do
+            # Dublin membership held for about a week
+            model.orders.create!(
+              membership: dublin_membership,
+              active_from: 5.days.ago,
+              active_to: 1.second.ago,
+            )
+
+            # Then upgraded to supporting membership
+            model.orders.create!(
+              membership: supporting_membership_without_nomination,
+              active_from: 1.second.ago
+            )
+
+            # invalidate cached AR relationships
+            model.reload
+          end
+
+          it { is_expected.to be_present }
+          it { is_expected.to include("rights.hugo.nominate") }
+        end
       end
+
     end
 
     context "when voting opens" do
