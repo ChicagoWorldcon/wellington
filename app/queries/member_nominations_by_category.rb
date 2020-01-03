@@ -47,7 +47,7 @@ class MemberNominationsByCategory
     end
 
     if reservation.disabled?
-      errors.add(:reservation, "is disabled")
+      errors.add(:reservation, "does not have nomination rights, contact hugohelp@conzealand.nz if assistance is needed")
     end
 
     if !reservation.can_nominate?
