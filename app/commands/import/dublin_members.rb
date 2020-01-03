@@ -29,7 +29,6 @@ class Import::DublinMembers
     "CITY",
     "STATE",
     "COUNTRY",
-    "notes"
   ]
 
   attr_reader :errors, :csv, :description

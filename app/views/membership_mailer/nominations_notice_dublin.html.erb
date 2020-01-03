@@ -28,7 +28,7 @@
 <p>
   As a member of Dublin 2019, you are eligible to nominate in the 17 Hugo ballot
   categories covering the best of the genre in the last year, for the Lodestar
-  Award for Best Young Adult Book, the Astounding Award for Best New Writer
+  Award for Best Young Adult Book, the <em>Astounding</em> Award for Best New Writer
   (formerly known as the John W. Campbell Award), and for the 1945 Retro Hugos,
   celebrating the genre work of 1944.
 </p>
@@ -45,15 +45,13 @@
 <p>
   To nominate online, please visit <%= link_to($hostname, $hosturl) %>,
   enter the email address you received this email at, and request a login link.
-  We have established a nominations-only account for you within the CoNZealand
-  system. After clicking the link and entering the members area, click on
-  My Memberships to access all nominating accounts linked with that email
-  address. Then click the nominating links on your account. Note that if you
-  would like to upgrade to a supporting or attending membership in CoNZealand,
-  you should do so within this interface so that your nominations stay linked
-  to your membership.
+  After clicking the link and entering the members area, click on My
+  Memberships to access all nominating accounts linked with that email address.
+  Then click the nominating links on your account. Note that if you would like
+  to upgrade to a supporting or attending membership in CoNZealand, you should
+  do so within this interface so that your nominations stay linked to your
+  membership.
 </p>
-
 
 <% if @reservations.count > 1 %>
   <p>
@@ -72,7 +70,7 @@
 <% end %>
 
 <p>
-  You can choose up to five nominees in each category. Be sure to hit the save
+  You can make up to five nominations in each category. Be sure to hit the save
   button once you have made your nominations. You can save each category
   individually, or save them all at once using the button at the bottom of the
   ballot. You can make as many changes as you like to your nomination ballots
@@ -85,7 +83,7 @@
   (2:59 am Eastern Daylight Time, 06:59 Irish time, and 8:59 pm 14 March 2020 New
   Zealand time). Although members of Dublin 2019 can nominate, only members of
   CoNZealand will be eligible to vote on the final ballot and choose the winners
-  of the 2020 Hugo, Lodestar and Astounding Awards and the 1945 Retro Hugo
+  of the 2020 Hugo, Lodestar and <em>Astounding</em> Awards and the 1945 Retro Hugo
   Awards.
 </p>
 
@@ -97,7 +95,7 @@
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from 2019.
+  were your favorites from 2019 and 1944.
 </p>
 
 <p>
@@ -110,10 +108,11 @@
 <p>
   A printable version of the WSFS Constitution and Hugo Nominating ballot has
   been included in the mailed-out version of Progress Report 2. You may also
-  download To download a
+  download a printable ballot in
+
   <%=
     link_to(
-      "printable ballot in A4",
+      "A4",
       "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf",
     )
   %>,
@@ -121,10 +120,10 @@
   or
   <%=
     link_to(
-      "US letter sizes",
+      "US letter",
       "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf",
     )
-  %>.
+  %> sizes.
 
   The WSFS Constitution is also available online
   <%= link_to("here", "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf") %>.

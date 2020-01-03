@@ -16,21 +16,27 @@
 <p>Kia ora <%= @detail %></p>
 
 <p>
-  Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, Astounding Award
+Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em> Award
   and the 1945 Retro Hugo Awards.
 </p>
 
-<p>
-  Below is a summary of your current nominating ballot:
-</p>
+<% if !@nominations_by_category.present? %>
+  <p>
+    Your ballot is currently empty.
+  </p>
+<% else %>
+  <p>
+    Below is a summary of your current nominating ballot:
+  </p>
 
-<% @nominations_by_category.each do |category, nominations| %>
-  <p><%= category %></p>
-  <ul>
-    <% nominations.select(&:persisted?).each do |nomination| %>
-      <li><%= nomination %></li>
-    <% end %>
-  </ul>
+  <% @nominations_by_category.each do |category, nominations| %>
+    <p><%= category %></p>
+    <ul>
+      <% nominations.select(&:persisted?).each do |nomination| %>
+        <li><%= nomination %></li>
+      <% end %>
+    </ul>
+  <% end %>
 <% end %>
 
 <p>
@@ -38,7 +44,7 @@
   Irish time, and 8:59 pm 14 March 2020 New Zealand time).
 
   Although members of Dublin 2019 can nominate, only members of CoNZealand will be eligible to vote on the final ballot
-  and choose the winners of the 2020 Hugo, Lodestar and Astounding Awards and the 1945 Retro Hugo Awards.
+  and choose the winners of the 2020 Hugo, Lodestar and <em>Astounding</em> Awards and the 1945 Retro Hugo Awards.
 </p>
 
 <p>
