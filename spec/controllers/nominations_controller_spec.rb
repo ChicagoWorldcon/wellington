@@ -77,6 +77,27 @@ RSpec.describe NominationsController, type: :controller do
             reservation.active_claim.detail.destroy!
             expect(get_show).to have_http_status(:ok)
           end
+
+          context "and you upgrade to Supporting after nominations close" do
+            let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+            let(:supporting_without_nomination) { create(:membership, :supporting, can_nominate: false) }
+
+            before do
+              upgrader = UpgradeMembership.new(reservation, to: supporting_without_nomination)
+              successful = upgrader.call
+              raise "couldn't upgrade membership" if !successful
+            end
+
+            it "forces the user to enter their details" do
+              reservation.active_claim.detail.destroy!
+              expect(get_show).to_not have_http_status(:ok)
+              expect(flash[:notice]).to match(/enter your details/)
+            end
+
+            it "renders the form when you have details entered" do
+              expect(get_show).to have_http_status(:ok)
+            end
+          end
         end
       end
 
