@@ -134,25 +134,12 @@ RSpec.describe Reservation, type: :model do
         it { is_expected.to include("rights.hugo.nominate_only") }
 
         context "when they upgrade to supporting membership after nomination closes" do
-          let(:model) { create(:reservation) }
-          let(:supporting_membership_without_nomination) { create(:membership, :supporting, can_nominate: false) }
+          let(:supporting_without_nomination) { create(:membership, :supporting, can_nominate: false) }
 
           before do
-            # Dublin membership held for about a week
-            model.orders.create!(
-              membership: dublin_membership,
-              active_from: 5.days.ago,
-              active_to: 1.second.ago,
-            )
-
-            # Then upgraded to supporting membership
-            model.orders.create!(
-              membership: supporting_membership_without_nomination,
-              active_from: 1.second.ago
-            )
-
-            # invalidate cached AR relationships
-            model.reload
+            upgrader = UpgradeMembership.new(model, to: supporting_without_nomination)
+            successful = upgrader.call
+            raise "couldn't upgrade membership" if !successful
           end
 
           it { is_expected.to be_present }
