@@ -39,47 +39,36 @@ class Reservation < ApplicationRecord
 
   def active_rights
     [].tap do |rights|
-      rights << "rights.attend" if can_attend?
-      rights << "rights.site_selection" if can_site_select?
+      # Hold these memberships in memory to avoid hitting the database a lot
+      memberships_held = Membership.where(id: orders.select(:membership_id))
 
+      rights << "rights.attend" if memberships_held.any?(&:can_attend?)
+      rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?)
+
+      # Hugo admins want us to only show rights you can use right now.
+      # In the store front, you want to see everything you can do with a membership,
+      # but here we want to show things only when appropriate
       now = DateTime.now
-
       if now < $nomination_opens_at
-        if can_nominate?
+        if memberships_held.any?(&:can_nominate?)
           rights << "rights.hugo.nominate_soon"
           rights << "rights.retro_hugo.nominate_soon"
         end
       elsif now.between?($nomination_opens_at, $voting_opens_at)
-        if can_nominate? && !can_vote?
+        if memberships_held.any?(&:can_nominate?) && memberships_held.none?(&:can_vote?)
           rights << "rights.hugo.nominate_only"
           rights << "rights.retro_hugo.nominate_only"
-        elsif can_nominate?
+        elsif memberships_held.any?(&:can_nominate?)
           rights << "rights.hugo.nominate"
           rights << "rights.retro_hugo.nominate"
         end
       elsif now.between?($voting_opens_at, $hugo_closed_at)
-        if can_vote?
+        if memberships_held.any?(&:can_vote?)
           rights << "rights.hugo.vote"
           rights << "rights.retro_hugo.vote"
         end
       end
     end
-  end
-
-  def can_attend?
-    Membership.can_vote.where(id: orders.select(:membership_id)).exists?
-  end
-
-  def can_site_select?
-    Membership.can_site_select.where(id: orders.select(:membership_id)).exists?
-  end
-
-  def can_nominate?
-    Membership.can_nominate.where(id: orders.select(:membership_id)).exists?
-  end
-
-  def can_vote?
-    Membership.can_vote.where(id: orders.select(:membership_id)).exists?
   end
 
   def paid?
