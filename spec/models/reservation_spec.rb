@@ -140,4 +140,77 @@ RSpec.describe Reservation, type: :model do
       end
     end
   end
+
+  describe "#active_rights" do
+    let(:adult_membership) { create(:membership, :adult) }
+    let(:dublin_membership) { create(:membership, :dublin_2019) }
+    let(:model) { create(:reservation, membership: adult_membership) }
+    subject(:active_rights) { model.active_rights }
+
+    it { is_expected.to include("rights.attend") }
+
+    # from config/initializers/hugo.rb
+    after do
+      SetHugoGlobals.new.call
+    end
+
+    context "before nomination opens" do
+      before do
+        $nomination_opens_at = 1.day.from_now
+        $voting_opens_at = 2.days.from_now
+        $hugo_closed_at = 3.days.from_now
+      end
+
+      it { is_expected.to include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+
+    context "after nomination opens" do
+      before do
+        $nomination_opens_at = 1.second.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+
+      describe "for dublin supporters" do
+        let(:model) { create(:reservation, membership: dublin_membership) }
+        it { is_expected.to_not include("rights.hugo.nominate") }
+        it { is_expected.to include("rights.hugo.nominate_only") }
+      end
+    end
+
+    context "when voting opens" do
+      before do
+        $nomination_opens_at = 1.day.ago
+        $voting_opens_at = 1.second.ago
+        $hugo_closed_at = 1.day.from_now
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to include("rights.hugo.vote") }
+
+      describe "for dublin supporters" do
+        let(:model) { create(:reservation, membership: dublin_membership) }
+        it { is_expected.to_not include("rights.hugo.vote") }
+      end
+    end
+
+    context "when voting closes" do
+      before do
+        $nomination_opens_at = 2.days.ago
+        $voting_opens_at = 1.day.ago
+        $hugo_closed_at = 1.second.ago
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
+    end
+  end
 end

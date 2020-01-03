@@ -37,6 +37,8 @@ class Reservation < ApplicationRecord
   scope :instalment, -> { where(state: INSTALMENT) }
   scope :paid, -> { where(state: PAID) }
 
+  # These are rights that may become visible over time, with the possibility of distinguishing between a right that's
+  # currently able to be used or one that's coming soon. These also match i18n values in config/locales
   def active_rights
     [].tap do |rights|
       # Hold these memberships in memory to avoid hitting the database a lot
@@ -45,9 +47,6 @@ class Reservation < ApplicationRecord
       rights << "rights.attend" if memberships_held.any?(&:can_attend?)
       rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?)
 
-      # Hugo admins want us to only show rights you can use right now.
-      # In the store front, you want to see everything you can do with a membership,
-      # but here we want to show things only when appropriate
       now = DateTime.now
       if now < $nomination_opens_at
         if memberships_held.any?(&:can_nominate?)
