@@ -134,12 +134,16 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   You can run these from Rails Console with:
   ```ruby
   dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
-  dublin_users.distinct.find_each do |user|
+  total = dublin_users.count
+  dublin_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Dublin #{n} of #{total}" if n % 10 == 0
     MembershipMailer.nominations_notice_dublin(user: user).deliver_now
   end;
 
-  conzealand_users = User.joins(reservations: :membership).merge(Membership.can_nominate).where.not(id: dublin_users);
-  conzealand_users.distinct.find_each do |user|
+  conzealand_users = User.joins(reservations: :membership).where.not(reservations: {state: Reservation::DISABLED}).merge(Membership.can_nominate).where.not(id: dublin_users);
+  total = conzealand_users.count
+  conzealand_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Conzealand #{n} of #{total}" if n % 10 == 0
     MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
   end;
   ```
