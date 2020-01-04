@@ -5,13 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.0...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.1...master)
 
 ### Added
 - Nothing significant in this release
 
 ### Changed
 - Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 2.3.1 - 2020-01-05](https://gitlab.com/worldcon/2020-wellington/compare/2.3.0...2.3.1)
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Bugfix: Dublin members can now vote
+  [!144](https://gitlab.com/worldcon/2020-wellington/merge_requests/144)
 
 ### Removed
 - Nothing significant in this release
@@ -134,12 +147,16 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   You can run these from Rails Console with:
   ```ruby
   dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
-  dublin_users.distinct.find_each do |user|
+  total = dublin_users.count
+  dublin_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Dublin #{n} of #{total}" if n % 10 == 0
     MembershipMailer.nominations_notice_dublin(user: user).deliver_now
   end;
 
-  conzealand_users = User.joins(reservations: :membership).merge(Membership.can_nominate).where.not(id: dublin_users);
-  conzealand_users.distinct.find_each do |user|
+  conzealand_users = User.joins(reservations: :membership).where.not(reservations: {state: Reservation::DISABLED}).merge(Membership.can_nominate).where.not(id: dublin_users);
+  total = conzealand_users.count
+  conzealand_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Conzealand #{n} of #{total}" if n % 10 == 0
     MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
   end;
   ```
