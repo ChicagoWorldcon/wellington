@@ -5,13 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.1...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...master)
 
 ### Added
 - Nothing significant in this release
 
 ### Changed
 - Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.1...2.3.2)
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Hugo Nominations deadline now reads PDT rather than PST
+  [!145](https://gitlab.com/worldcon/2020-wellington/merge_requests/145)
 
 ### Removed
 - Nothing significant in this release
