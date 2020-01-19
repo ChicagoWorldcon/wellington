@@ -72,9 +72,9 @@ hugo.categories.create!(
 
     **Note regarding 2020 Best Series eligibility**
 
-    Previous winners of the Hugo for Best Series under §3.3.5 of the WSFS Constitution are **not** eligible in the
-    Best Series category. They are:
+    Previous winners of the Hugo for Best Series are not eligible in the Best Series category. They are:
 
+    * The Vorkosigan Saga, by Lois McMaster Bujold
     * The World of the Five Gods, by Lois McMaster Bujold
     * Wayfarers, by Becky Chambers
 
