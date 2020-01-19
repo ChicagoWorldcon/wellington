@@ -99,6 +99,17 @@ RSpec.describe NominationsController, type: :controller do
             end
           end
         end
+
+        context "when signed in as support" do
+          let(:support) { create(:support) }
+
+          before { sign_in support }
+
+          it "redirects, doesn't let you look at the nomination" do
+            expect(get_show).to have_http_status(:found)
+            expect(flash[:notice]).to match(/signed in as support/i)
+          end
+        end
       end
 
       it "doesn't render before nomination" do
