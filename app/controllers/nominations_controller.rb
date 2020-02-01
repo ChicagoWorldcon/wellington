@@ -83,7 +83,7 @@ class NominationsController < ApplicationController
   def lookup_legal_name_or_redirect
     detail = @reservation.active_claim.detail
     if detail.present?
-      @legal_name = detail.legal_name
+      @legal_name = detail.hugo_name
       return
     end
 
