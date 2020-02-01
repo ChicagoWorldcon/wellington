@@ -173,6 +173,9 @@ This release brings with it the basics to let our users nominate for the Hugo aw
     MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
   end;
   ```
+- Automatic sign-in for first time users, second time users require email confirmation
+  [!132](https://gitlab.com/worldcon/2020-wellington/merge_requests/132)
+  -- this may possibly replace Kiosk mode
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion

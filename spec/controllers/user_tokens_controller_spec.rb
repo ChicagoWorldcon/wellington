@@ -30,6 +30,34 @@ RSpec.describe UserTokensController, type: :controller do
     ENV["JWT_SECRET"] = @real_jwt_secret
   end
 
+  describe "#create" do
+    it "sets error when email is invalid" do
+      expect {
+        post :create, params: { email: "please like and subscribe" }
+      }.to_not change { controller.current_user }.from(nil)
+      expect(flash[:error]).to be_present
+      expect(flash[:notice]).to_not be_present
+    end
+
+    it "sets notification when pointing at existing user" do
+      expect {
+        post :create, params: { email: user.email }
+      }.to_not change { controller.current_user }.from(nil)
+      expect(flash[:error]).to_not be_present
+      expect(flash[:notice]).to be_present
+    end
+
+    it "signs new users in imemdiately" do
+      marys_email = "mary_poppins@supercalifragilisticexpialidocious.net"
+      expect {
+        post :create, params: { email: marys_email }
+      }.to change { User.count }.by(1)
+      expect(flash[:notice]).to be_present
+      expect(controller.current_user).to be_present
+      expect(controller.current_user.email).to eq(marys_email)
+    end
+  end
+
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb
   describe "#show" do
     let(:user) { create(:user) }

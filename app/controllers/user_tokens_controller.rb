@@ -37,9 +37,24 @@ class UserTokensController < ApplicationController
   end
 
   def create
-    send_link_command = Token::SendLink.new(email: params[:email], secret: secret, path: referrer_path)
+    target_email = params[:email]&.strip
+    new_user = User.find_or_initialize_by(email: target_email)
+
+    if new_user.valid? && !new_user.persisted?
+      new_user.save!
+      sign_in(new_user)
+      flash[:notice] = %{
+        Welcome #{target_email}!
+        Because this is the first time we've seen you, you're automatically signed in.
+        In the future, you'll have to check your email.
+      }
+      redirect_to referrer_path
+      return
+    end
+
+    send_link_command = Token::SendLink.new(email: target_email, secret: secret, path: referrer_path)
     if send_link_command.call
-      flash[:notice] = "Email sent, please check #{params[:email]} for your login link"
+      flash[:notice] = "Email sent, please check #{target_email} for your login link"
       flash[:notice] += " (http://localhost:1080)" if Rails.env.development?
     else
       flash[:error] = send_link_command.errors.to_sentence
@@ -69,11 +84,15 @@ class UserTokensController < ApplicationController
   end
 
   def referrer_path
+    if !request.referrer.present?
+      return "/"
+    end
+
     uri = URI(request.referrer)
     if uri.query.present?
       "#{uri.path}?#{uri.query}"
-    else
-      uri.path
     end
+
+    uri.path
   end
 end
