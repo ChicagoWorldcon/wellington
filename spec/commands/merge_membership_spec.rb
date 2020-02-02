@@ -47,6 +47,16 @@ RSpec.describe MergeMembership do
         .by(-1)
     end
 
+    it "fails when less or more than 2 memberships " do
+      command = described_class.new([reservation_1])
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/2 memberships/i)
+
+      command = described_class.new([reservation_1, reservation_1, reservation_1])
+      expect(command.call).to be_falsey
+      expect(command.errors).to include(/2 memberships/i)
+    end
+
     context "when owned by differnet people" do
       let(:reservation_1) { create(:reservation, user: us) }
       let(:reservation_2) { create(:reservation, user: them) }

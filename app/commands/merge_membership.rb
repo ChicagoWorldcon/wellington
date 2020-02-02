@@ -25,6 +25,7 @@ class MergeMembership
 
   def call
     assert_ownership
+    assert_only_2_memberships
 
     if errors.none?
       to_keep.transaction do
@@ -54,6 +55,13 @@ class MergeMembership
   def assert_ownership
     if reservations.map(&:user).uniq.count > 1
       errors << "memberships need to be owned by the same user"
+    end
+  end
+
+  def assert_only_2_memberships
+    count = reservations.count
+    if count != 2
+      errors << "you can only merge 2 memberships, got #{count}"
     end
   end
 end
