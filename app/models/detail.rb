@@ -80,6 +80,10 @@ class Detail < ApplicationRecord
     end.strip
   end
 
+  def hugo_name
+    "#{first_name} #{last_name}".strip
+  end
+
   def legal_name
     "#{title} #{first_name} #{last_name}".strip
   end

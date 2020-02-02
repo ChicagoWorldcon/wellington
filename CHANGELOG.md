@@ -8,16 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...master)
 
 ### Added
-- Nothing significant in this release
+- Automatic sign-in for first time users, second time users require email confirmation
+  [!132](https://gitlab.com/worldcon/2020-wellington/merge_requests/132)
+  -- this may possibly replace Kiosk mode
 
 ### Changed
-- Nothing significant in this release
+* Hugo tweaks post launch
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+  These include:
+    * Remove the title field from what you type to see the hugo form
+    * Don't let more than 5 entries be submitted for nominations
+    * Create test mailer for testing SMTP settings
+    * Update Hugo text in several areas including account text and in the form
+    * Stop support users from viewing nominations
+* Update node dependencies
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+* Upgrade gem dependencies
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
 
 ### Removed
 - Nothing significant in this release
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.1...2.3.2)
+## [Tag 2.3.2 - 2020-01-07](https://gitlab.com/worldcon/2020-wellington/compare/2.3.1...2.3.2)
 
 ### Added
 - Nothing significant in this release
@@ -173,9 +186,6 @@ This release brings with it the basics to let our users nominate for the Hugo aw
     MembershipMailer.nominations_notice_conzealand(user: user).deliver_now
   end;
   ```
-- Automatic sign-in for first time users, second time users require email confirmation
-  [!132](https://gitlab.com/worldcon/2020-wellington/merge_requests/132)
-  -- this may possibly replace Kiosk mode
 
 ### Changed
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion

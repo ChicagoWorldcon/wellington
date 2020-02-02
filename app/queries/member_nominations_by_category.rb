@@ -85,8 +85,10 @@ class MemberNominationsByCategory
       existing_nominations = reservation.nominations.where(category: @submitted_categories)
       existing_nominations.destroy_all
 
-      submitted_nominations = nominations_by_category.slice(*@submitted_categories).values.flatten
-      submitted_nominations.each(&:save) # n.b. blank nominations don't save here
+      nominations_by_category.slice(*@submitted_categories).each do |category, nominations|
+        # n.b. blank nominations don't save as they're not valid
+        nominations.last(Nomination::VOTES_PER_CATEGORY).each(&:save)
+      end
     end
 
     true

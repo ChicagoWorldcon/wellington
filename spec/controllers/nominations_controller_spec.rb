@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -97,6 +97,17 @@ RSpec.describe NominationsController, type: :controller do
             it "renders the form when you have details entered" do
               expect(get_show).to have_http_status(:ok)
             end
+          end
+        end
+
+        context "when signed in as support" do
+          let(:support) { create(:support) }
+
+          before { sign_in support }
+
+          it "redirects, doesn't let you look at the nomination" do
+            expect(get_show).to have_http_status(:found)
+            expect(flash[:notice]).to match(/signed in as support/i)
           end
         end
       end

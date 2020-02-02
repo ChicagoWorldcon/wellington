@@ -73,12 +73,17 @@ class NominationsController < ApplicationController
     if !@reservation.can_nominate?
       raise ActiveRecord::RecordNotFound
     end
+
+    if support_signed_in?
+      flash[:notice] = "Can't view nominations when signed in as support"
+      redirect_to @reservation
+    end
   end
 
   def lookup_legal_name_or_redirect
     detail = @reservation.active_claim.detail
     if detail.present?
-      @legal_name = detail.legal_name
+      @legal_name = detail.hugo_name
       return
     end
 

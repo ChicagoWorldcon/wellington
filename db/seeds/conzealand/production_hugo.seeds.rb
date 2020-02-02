@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,18 +63,14 @@ hugo.categories.create!(
     two (2) additional installments consisting in total of at least 240,000 words after they qualified for their
     last appearance on the final ballot and by the close of 2019.
 
-    Previous losing finalists in the Best Series category shall be eligible only upon the publication of at least
-    two (2) additional installments consisting in total of at least 240,000 words after they qualified for their
-    last appearance on the final ballot and by the close of 2019.
-
     If any series and a subset series thereof both receive sufficient nominations to appear on the final ballot,
     only the version which received more nominations shall appear.
 
     **Note regarding 2020 Best Series eligibility**
 
-    Previous winners of the Hugo for Best Series under §3.3.5 of the WSFS Constitution are **not** eligible in the
-    Best Series category. They are:
+    Previous winners of the Hugo for Best Series are **not** eligible in the Best Series category. They are:
 
+    * The Vorkosigan Saga, by Lois McMaster Bujold
     * The World of the Five Gods, by Lois McMaster Bujold
     * Wayfarers, by Becky Chambers
 
