@@ -27,7 +27,27 @@ RSpec.describe MergeMembership do
   describe "#call" do
     subject(:call) { command.call }
 
-    context "when not owned by the same user" do
+    let(:reservation_1) { create(:reservation, user: us) }
+    let(:reservation_2) { create(:reservation, user: us) }
+
+    before do
+      reservation_1.active_claim.update!(active_from: 1.day.ago)
+      reservation_2.active_claim.update!(active_from: 1.day.ago)
+    end
+
+    it { is_expected.to be_truthy }
+
+    it "doesn't have errors" do
+      expect { call }.to_not change { command.errors.count }.from(0)
+    end
+
+    it "removes one membership from us" do
+      expect { call }
+        .to change { us.reservations.count }
+        .by(-1)
+    end
+
+    context "when owned by differnet people" do
       let(:reservation_1) { create(:reservation, user: us) }
       let(:reservation_2) { create(:reservation, user: them) }
 
@@ -35,28 +55,6 @@ RSpec.describe MergeMembership do
 
       it "mentions context in it's errors" do
         expect { call }.to change { command.errors }.to include(/owned by the same user/i)
-      end
-    end
-
-    context "when owned by the same user" do
-      let!(:reservation_1) { create(:reservation, user: us) }
-      let!(:reservation_2) { create(:reservation, user: us) }
-
-      before do
-        reservation_1.active_claim.update!(active_from: 1.day.ago)
-        reservation_2.active_claim.update!(active_from: 1.day.ago)
-      end
-
-      it { is_expected.to be_truthy }
-
-      it "doesn't have errors" do
-        expect { call }.to_not change { command.errors.count }.from(0)
-      end
-
-      it "removes one membership from us" do
-        expect { call }
-          .to change { us.reservations.count }
-          .by(-1)
       end
     end
   end
