@@ -45,11 +45,15 @@ class MergeMembership
   private
 
   def to_keep
-    @to_keep ||= reservations.last
+    return @to_keep if @to_keep.present?
+
+    membership_reservations = Reservation.where(id: reservations).joins(:membership)
+    highest_price = membership_reservations.maximum("memberships.price_cents")
+    @to_keep = membership_reservations.find_by!(memberships: {price_cents: highest_price})
   end
 
   def to_remove
-    @to_remove ||= reservations.first
+    (reservations - [to_keep]).first
   end
 
   def assert_ownership
