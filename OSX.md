@@ -46,6 +46,13 @@ brew install postgres
 brew services postgres start
 ```
 
+We're using freetds to integrate with Dave's Hugo system, and this relies on
+Microsoft SQL Server. To connect to this, we need freetds
+
+```sh
+brew install freetds
+```
+
 You still need secrets exported in order to boot your application. A great way to do this would ber to use `direnv` and
 put your secrets into a `.envrc` file.
 

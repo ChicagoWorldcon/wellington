@@ -292,6 +292,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.1)
+    tiny_tds (2.1.2)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unicode-display_width (1.5.0)
@@ -352,6 +353,7 @@ DEPENDENCIES
   stripe (~> 4)
   stripe-ruby-mock
   timecop
+  tiny_tds
   tzinfo-data
   web-console (>= 3.3.0)
   webpacker
