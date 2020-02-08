@@ -16,6 +16,8 @@
 
 # NominationsToTds takes nominations made and pushes them up to Dave's nominations SQL Server setup
 class Export::NominationsToTds
+  include TdsClient
+
   def initialize(verbose: false)
     @verbose = verbose
   end
@@ -74,17 +76,6 @@ class Export::NominationsToTds
 
   private
 
-  def execute(sql_template, *args)
-    safe_args = args.flatten.map { |a| a.is_a?(String) ? client.escape(a) : a }
-    sql_query = sprintf(sql_template, *safe_args)
-    puts sql_query if verbose?
-    client.execute(sql_query)
-  end
-
-  def verbose?
-    @verbose.present?
-  end
-
   def nominations_2020
     nominations.where(elections: {i18n_key: "hugo"})
   end
@@ -95,14 +86,5 @@ class Export::NominationsToTds
 
   def nominations
     Nomination.joins(category: :election).eager_load(:category, :reservation)
-  end
-
-  def client
-    @client ||= TinyTds::Client.new(
-      username: ENV.fetch("TDS_USER"),
-      password: ENV.fetch("TDS_PASSWORD"),
-      host: ENV.fetch("TDS_HOST"),
-      database: ENV.fetch("TDS_DATABASE"),
-    )
   end
 end
