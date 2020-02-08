@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
 * Upgrade gem dependencies
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+- Setup scheduled export on Friday @11pm with 3rd party Hugo Nominations database based on SQL Server
+  [!147](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/147).
+  Enable by setting:
+  ```bash
+  TDS_USER=admin
+  TDS_PASSWORD=jah2Eifaepoo5fiekaiF3ahnah6pah3o
+  TDS_HOST=hugo.ji1Jae0cue1.ap-southeast-2.rds.amazonaws.com
+  TDS_DATABASE=Hugo2020
+  ```
 
 ### Removed
 - Nothing significant in this release

@@ -46,15 +46,23 @@ brew install postgres
 brew services postgres start
 ```
 
-We're using freetds to integrate with Dave's Hugo system, and this relies on
-Microsoft SQL Server. To connect to this, we need freetds
+We use redis for our scheduled jobs. Here's how you can get a copy of redis running and starting up on boot:
+
+```sh
+brew install redis
+brew services redis start
+```
+
+We're using freetds to integrate with Dave's Hugo system, and this relies on Microsoft SQL Server. To connect to this
+we need freetds, but only do this if you think you need it for your work, but only do this if you think you need it
+for your work
 
 ```sh
 brew install freetds
 ```
 
 You still need secrets exported in order to boot your application. A great way to do this would ber to use `direnv` and
-put your secrets into a `.envrc` file.
+put your secrets into a `.envrc` file. This is an alternative to using the .env and will make your tools integrate well.
 
 ```sh
 brew install direnv
