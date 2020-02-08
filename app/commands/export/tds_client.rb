@@ -24,10 +24,10 @@ module Export::TdsClient
 
   def client
     @client ||= TinyTds::Client.new(
-      username: ENV.fetch("TDS_USER"),
-      password: ENV.fetch("TDS_PASSWORD"),
-      host: ENV.fetch("TDS_HOST"),
-      database: ENV.fetch("TDS_DATABASE"),
+      username: ENV["TDS_USER"],
+      password: ENV["TDS_PASSWORD"],
+      host: ENV["TDS_HOST"],
+      database: ENV["TDS_DATABASE"],
     )
   end
 
