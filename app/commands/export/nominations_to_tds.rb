@@ -77,14 +77,15 @@ class Export::NominationsToTds
   private
 
   def nominations_2020
-    nominations.where(elections: {i18n_key: "hugo"})
+    active_nominations.where(elections: {i18n_key: "hugo"})
   end
 
   def nominations_1945
-    nominations.where(elections: {i18n_key: "retro_hugo"})
+    active_nominations.where(elections: {i18n_key: "retro_hugo"})
   end
 
-  def nominations
-    Nomination.joins(category: :election).eager_load(:category, :reservation)
+  def active_nominations
+    nominations = Nomination.joins(category: :election, reservation: :user).eager_load(:category, :reservation)
+    nominations.where.not(reservations: {state: Reservation::DISABLED})
   end
 end
