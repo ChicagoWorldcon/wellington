@@ -16,7 +16,7 @@
 
 # NominationsToTds takes nominations made and pushes them up to Dave's nominations SQL Server setup
 class Export::NominationsToTds
-  include TdsClient
+  include ::Export::TdsClient
 
   def initialize(verbose: false)
     @verbose = verbose

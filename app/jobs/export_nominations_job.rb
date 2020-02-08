@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Scheudle format is in cron
-# more information can be found at https://crontab.guru/
-schedule:
-  email_nomination_ballot_summaries:
-    cron: '*/30 * * * *' # Runs every half an hour
-    class: SendBallotSummaries
+class ExportNominationsJob
+  include Sidekiq::Worker
 
-  export_nominations:
-    cron: '0 23 * * 5' # At 23:00 on Friday
-    class: ExportNominationsJob
+  def perform
+    # Bail if integration is not present
+    return unless ENV["TDS_DATABASE"].present?
+
+    Export::CategoriesToTds.new.call
+    Export::NominationsToTds.new.call
+  end
+end

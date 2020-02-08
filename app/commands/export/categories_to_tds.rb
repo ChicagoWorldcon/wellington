@@ -16,10 +16,10 @@
 
 # CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
 class Export::CategoriesToTds
-  MAX_CATEGORY_LENTH = 30
-
-  include TdsClient
+  include ::Export::TdsClient
   include ActionView::Helpers::TextHelper
+
+  MAX_CATEGORY_LENTH = 30
 
   def initialize(verbose: false)
     @verbose = verbose
