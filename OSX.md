@@ -53,9 +53,8 @@ brew install redis
 brew services redis start
 ```
 
-We're using freetds to integrate with Dave's Hugo system, and this relies on Microsoft SQL Server. To connect to this
-we need freetds, but only do this if you think you need it for your work, but only do this if you think you need it
-for your work
+We're using freetds to integrate with Dave's Hugo system which is backed by MsSQL server.
+You only need this if you're using this integration.
 
 ```sh
 brew install freetds
