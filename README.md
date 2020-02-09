@@ -354,6 +354,13 @@ SMTP_PORT=465
 SMTP_USER_NAME=apikey
 SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiuF9h
 
+# Microsoft SQL Nomination Export into Dave's system
+# Only set these to make this integration run, it ties directly into that database
+# TDS_USER=admin
+# TDS_PASSWORD=jah2Eifaepoo5fiekaiF3ahnah6pah3o
+# TDS_HOST=hugo.ji1Jae0cue1.ap-southeast-2.rds.amazonaws.com
+# TDS_DATABASE=Hugo2020
+
 # The rest is identical to the example .env in this README.
 # Please copy from there.
 ```

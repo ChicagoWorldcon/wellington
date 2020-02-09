@@ -134,7 +134,6 @@ FactoryBot.define do
       field_1 { "Series Name" }
       field_2 { "Author" }
       field_3 { "2019 Example from Series" }
-
     end
 
     trait :best_related_work do

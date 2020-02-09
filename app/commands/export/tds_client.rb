@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Scheudle format is in cron
-# more information can be found at https://crontab.guru/
-schedule:
-  email_nomination_ballot_summaries:
-    cron: '*/30 * * * *' # Runs every half an hour
-    class: SendBallotSummaries
+module Export::TdsClient
+  def execute(sql_template, *args)
+    safe_args = args.flatten.map { |a| a.is_a?(String) ? client.escape(a) : a }
+    sql_query = sprintf(sql_template, *safe_args)
+    puts sql_query if verbose?
+    client.execute(sql_query)
+  end
 
-  export_nominations:
-    cron: '0 23 * * 5' # At 23:00 on Friday
-    class: NominationsTdsSync
+  def client
+    @client ||= TinyTds::Client.new(
+      username: ENV["TDS_USER"],
+      password: ENV["TDS_PASSWORD"],
+      host: ENV["TDS_HOST"],
+      database: ENV["TDS_DATABASE"],
+    )
+  end
+
+  def verbose?
+    @verbose.present?
+  end
+end

@@ -18,6 +18,7 @@ FROM ruby:2.6.5-alpine as base
 
 RUN apk add \
       build-base \
+      freetds-dev \
       git \
       netcat-openbsd \
       nodejs \
