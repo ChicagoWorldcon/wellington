@@ -21,4 +21,4 @@ schedule:
 
   export_nominations:
     cron: '0 23 * * 5' # At 23:00 on Friday
-    class: ExportNominationsJob
+    class: NominationsTdsSync

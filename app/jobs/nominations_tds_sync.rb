@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # ExportNominationsJob syncs categories and nominations with Dave's Microsoft SQL database
-class ExportNominationsJob
+class NominationsTdsSync
   include Sidekiq::Worker
 
   def perform
