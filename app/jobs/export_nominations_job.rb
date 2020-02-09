@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ExportNominationsJob syncs categories and nominations with Dave's Microsoft SQL database
 class ExportNominationsJob
   include Sidekiq::Worker
 
   def perform
-    # Bail if integration is not present
+    # Don't peform this job if TDS_DATABASE variable is not present
     return unless ENV["TDS_DATABASE"].present?
 
     Export::CategoriesToTds.new.call
