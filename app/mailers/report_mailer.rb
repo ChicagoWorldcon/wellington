@@ -15,18 +15,25 @@
 # limitations under the License.
 
 class ReportMailer < ApplicationMailer
+  default from: $maintainer_email
+
   def nominations_csv
     command = Export::NominationCsv.new
     csv = command.call
     return if csv.nil?
 
-    attachments["nominations-#{Date.today.iso8601}.csv"] = {
+    date = Date.today.iso8601
+
+    attachments["nominations-#{date}.csv"] = {
       mime_type: "text/csv",
       content: csv
     }
 
     @stats = command.stats
 
-    mail
+    mail(
+      subject: "Nominations export #{date}",
+      to: $nomination_reports_email,
+    )
   end
 end
