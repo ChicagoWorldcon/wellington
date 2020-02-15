@@ -18,6 +18,7 @@ class SendNominationReports
   include Sidekiq::Worker
 
   def perform
+    return if $nomination_reports_email.nil?
     ReportMailer.nominations_csv.deliver_now
   end
 end
