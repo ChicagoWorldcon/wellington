@@ -13,4 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-Nominations Mailer sample text
+<% @stats.each do |election, count| %>
+  <p>
+    <%= election %> - <strong><%= count %> members</strong> have nominated so far
+  </p>
+<% end %>

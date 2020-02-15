@@ -16,13 +16,16 @@
 
 class ReportMailer < ApplicationMailer
   def nominations_csv
-    csv = Export::NominationCsv.new.call
+    command = Export::NominationCsv.new
+    csv = command.call
     return if csv.nil?
 
     attachments["nominations-#{Date.today.iso8601}.csv"] = {
       mime_type: "text/csv",
       content: csv
     }
+
+    @stats = command.stats
 
     mail
   end

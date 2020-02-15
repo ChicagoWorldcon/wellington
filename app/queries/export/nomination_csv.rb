@@ -29,4 +29,8 @@ class Export::NominationCsv
 
     buff.string
   end
+
+  def stats
+    Reservation.distinct.joins(:user, nominations: {category: :election}).group("elections.name").merge(Claim.active).count
+  end
 end
