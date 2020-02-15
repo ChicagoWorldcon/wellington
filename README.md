@@ -93,6 +93,7 @@ MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
 
 # Reporting, if you don't set these they don't send
 NOMINATION_REPORTS_EMAIL=hugo-help@conzealand.nz
+MEMBERSHIP_REPORTS_EMAIL=registrations@conzealand.nz
 
 # Auth secrets, make sure they're super hard to guess!
 JWT_SECRET=838734faa9b935c1f8b68846e37aed9096cc9fb746copypastaf856594409a11b1086535e468edb2e5bbc18482b386b6264ada38703dcdefd94a291ab5a95eb5

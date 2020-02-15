@@ -67,11 +67,6 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     "registrations@conzealand.nz",
   ).downcase
 
-  $nomination_reports_email = ENV.fetch(
-    "NOMINATION_REPORTS_EMAIL",
-    "registrations@conzealand.nz",
-  ).downcase
-
   if Rails.env.production? && ENV["MEMBER_SERVICES_EMAIL"].nil?
     puts "Please set MEMBER_SERVICES_EMAIL to show where user facing system emails come from"
     exit 1
@@ -81,4 +76,8 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     puts "Please set MAINTAINER_EMAIL to allow for reply address on report emails"
     exit 1
   end
+
+  # If these are not set, they're basically disabled
+  $nomination_reports_email = ENV["NOMINATION_REPORTS_EMAIL"]&.downcase
+  $membership_reports_email = ENV["MEMBERSHIP_REPORTS_EMAIL"]&.downcase
 end

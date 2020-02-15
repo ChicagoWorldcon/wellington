@@ -58,6 +58,7 @@ class ReportMailer < ApplicationMailer
 
     mail(
       subject: "Memberships export #{date}",
+      to: $membership_reports_email,
     )
   end
 end
