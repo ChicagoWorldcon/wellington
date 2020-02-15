@@ -22,9 +22,28 @@ RSpec.describe Export::MembershipCsv do
 
   describe "#call" do
     subject(:call) { query.call }
+    let(:csv) { CSV.parse(call) }
 
     it "is null without memberships" do
       expect(call).to be_nil
+    end
+
+    context "with memberships" do
+      let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
+
+      describe "the headings" do
+        subject(:headings) { csv.first }
+
+        it { is_expected.to include(/first_name/i) }
+        it { is_expected.to include(/country/i) }
+      end
+
+      describe "the rows" do
+        subject(:rows) { csv[1..].join(",") }
+
+        it { is_expected.to include(reservation.active_claim.detail.first_name) }
+        it { is_expected.to include(reservation.membership_number.to_s) }
+      end
     end
   end
 end
