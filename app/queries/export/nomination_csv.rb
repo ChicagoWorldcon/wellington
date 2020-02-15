@@ -14,7 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class NominationsExport
+require "csv"
+
+class Export::NominationCsv
   def call
+    return nil if Nomination.none?
+
+    buff = StringIO.new
+    csv = CSV.new(buff)
+    csv << Export::NominationRow::HEADINGS
+    Nomination.joins(Export::NominationRow::JOINS).eager_load(:category, **Export::NominationRow::JOINS).find_each do |nom|
+      csv << Export::NominationRow.new(nom).values
+    end
+
+    buff.string
   end
 end
