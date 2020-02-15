@@ -25,7 +25,7 @@ class Export::MembershipCsv
 
     csv << Export::MembershipRow::HEADINGS
     details = Detail.joins(Export::MembershipRow::JOINS).eager_load(Export::MembershipRow::JOINS)
-    details.merge(Claim.active).find_each(batch_size: 100) do |detail|
+    details.merge(Claim.active).find_each do |detail|
       csv << Export::MembershipRow.new(detail).values
     end
 
