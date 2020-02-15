@@ -28,5 +28,5 @@ schedule:
     class: SendMembershipReports
 
   nomination_reports:
-    cron: '0 1 * * 6' # At 01:00 on Saturday
+    cron: '10 1 * * 6' # At 01:10 on Saturday
     class: SendNominationReports
