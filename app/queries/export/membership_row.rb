@@ -16,6 +16,7 @@
 
 class Export::MembershipRow
   # JOINS describe fields needed to be preloaded on Detail for speed
+  # These are tied to the Detail model
   JOINS = {
     claim: [
       :user,

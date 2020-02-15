@@ -16,12 +16,11 @@
 
 class Export::NominationRow
   # JOINS describe fields needed to be preloaded on Nomination for speed
-  JOINS = {
-    reservation: [
-      :user,
-      { active_claim: :detail },
-    ]
-  }.freeze
+  # These are tied to the Nominations model
+  JOINS = [
+    reservation: { active_claim: :detail },
+    reservation: :user,
+  ].freeze
 
   HEADINGS = %w(
     users.current_sign_in_ip

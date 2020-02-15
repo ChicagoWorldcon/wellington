@@ -23,7 +23,7 @@ class Export::NominationCsv
     buff = StringIO.new
     csv = CSV.new(buff)
     csv << Export::NominationRow::HEADINGS
-    Nomination.joins(Export::NominationRow::JOINS).eager_load(:category, **Export::NominationRow::JOINS).find_each do |nom|
+    Nomination.joins(Export::NominationRow::JOINS).eager_load(:category, *Export::NominationRow::JOINS).find_each.with_index do |nom, i|
       csv << Export::NominationRow.new(nom).values
     end
 
