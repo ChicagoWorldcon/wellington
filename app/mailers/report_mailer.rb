@@ -36,4 +36,28 @@ class ReportMailer < ApplicationMailer
       to: $nomination_reports_email,
     )
   end
+
+  def memberships_csv
+    command = Export::MembershipCsv.new
+    csv = command.call
+    return if csv.nil?
+
+    date = Date.today.iso8601
+
+    attachments["memberships-#{date}.csv"] = {
+      mime_type: "text/csv",
+      content: csv
+    }
+
+    @stats = Reservation.joins(:membership).group("memberships.name", "reservations.state").count
+
+    instalments_paid = Charge.joins(:reservation).merge(Reservation.instalment).select(&:amount_cents)
+    instalments_total = Membership.joins(:reservations).merge(Reservation.instalment).select(&:price_cents)
+    @instalments_count = Reservation.instalment.count
+    @instalments_oustanding = instalments_total.sum(&:price) - instalments_paid.sum(&:amount)
+
+    mail(
+      subject: "Memberships export #{date}",
+    )
+  end
 end
