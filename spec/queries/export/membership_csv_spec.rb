@@ -36,6 +36,10 @@ RSpec.describe Export::MembershipCsv do
 
         it { is_expected.to include(/first_name/i) }
         it { is_expected.to include(/country/i) }
+
+        it "has a column per heading" do
+          expect(headings.count).to eq(Export::MembershipRow::HEADINGS.count)
+        end
       end
 
       describe "the rows" do
@@ -43,6 +47,10 @@ RSpec.describe Export::MembershipCsv do
 
         it { is_expected.to include(reservation.active_claim.detail.first_name) }
         it { is_expected.to include(reservation.membership_number.to_s) }
+
+        it "has a column per heading" do
+          expect(csv.last.count).to eq(Export::MembershipRow::HEADINGS.count)
+        end
       end
     end
   end

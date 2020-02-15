@@ -41,8 +41,8 @@ class Export::MembershipRow
 
   def values
     reservation = detail.claim.reservation
+    detail_values = detail.slice(DETAIL_KEYS).values.map(&:to_s)
 
-    detail_values = detail.slice(DETAIL_KEYS).values.map(&:to_s),
     [
       reservation.membership_number,
       detail.claim.user.email,
