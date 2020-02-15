@@ -51,9 +51,9 @@ class ReportMailer < ApplicationMailer
 
     @stats = Reservation.joins(:membership).group("memberships.name", "reservations.state").count
 
-    instalments_paid = Charge.joins(:reservation).merge(Reservation.instalment).select(&:amount_cents)
-    instalments_total = Membership.joins(:reservations).merge(Reservation.instalment).select(&:price_cents)
-    @instalments_count = Reservation.instalment.count
+    instalments_paid = Charge.joins(reservation: :user).merge(Reservation.instalment).select(&:amount_cents)
+    instalments_total = Membership.joins(reservations: :user).merge(Reservation.instalment).select(&:price_cents)
+    @instalments_count = Reservation.instalment.joins(:user).count
     @instalments_oustanding = instalments_total.sum(&:price) - instalments_paid.sum(&:amount)
 
     mail(
