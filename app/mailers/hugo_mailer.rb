@@ -39,7 +39,7 @@ class HugoMailer < ApplicationMailer
     @user = user
     @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
 
-    @account_numbers = @reservations.pluck(:membership_number).map { |n| "##{n}" }
+    @account_numbers = account_numbers_from(@reservations)
     if @account_numbers.count == 1
       subject = "CoNZealand: Hugo Nominations are now open for account #{@account_numbers.first}"
     else
@@ -53,11 +53,11 @@ class HugoMailer < ApplicationMailer
     @user = user
     @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    numbers = @reservations.pluck(:membership_number).map { |n| "##{n}" }
-    if numbers.count == 1
-      subject = "CoNZealand: Hugo Nominations are now open for member #{numbers.first}"
+    account_numbers = account_numbers_from(@reservations)
+    if account_numbers.count == 1
+      subject = "CoNZealand: Hugo Nominations are now open for member #{account_numbers.first}"
     else
-      subject = "CoNZealand: Hugo Nominations are now open for members #{numbers.to_sentence}"
+      subject = "CoNZealand: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
     end
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
@@ -73,5 +73,12 @@ class HugoMailer < ApplicationMailer
       from: "hugohelp@conzealand.nz",
       subject: "2 weeks to go! Hugo Award Nominating Reminder for member #____"
     )
+  end
+
+  private
+
+  # Given reservations, gets membership numbers and puts a pound in front of each
+  def account_numbers_from(reservations)
+    reservations.pluck(:membership_number).map { |n| "##{n}" }
   end
 end
