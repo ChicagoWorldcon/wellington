@@ -64,9 +64,13 @@ class HugoMailer < ApplicationMailer
   end
 
   def nominations_reminder_2_weeks_left_conzealand(user:)
-    return if user.reservations.none?
+    reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    account_numbers = account_numbers_from(user.reservations)
+    if reservations_that_can_nominate.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(reservations_that_can_nominate)
     if account_numbers.count == 1
       subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
     else
@@ -79,9 +83,13 @@ class HugoMailer < ApplicationMailer
   end
 
   def nominations_reminder_2_weeks_left_dublin(user:)
-    return if user.reservations.none?
+    reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    account_numbers = account_numbers_from(user.reservations)
+    if reservations_that_can_nominate.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(reservations_that_can_nominate)
     if account_numbers.count == 1
       subject = "2 weeks to go! Hugo Award Nominating Reminder for account #{account_numbers.first}"
     else
