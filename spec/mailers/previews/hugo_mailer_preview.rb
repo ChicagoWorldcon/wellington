@@ -45,4 +45,10 @@ class HugoMailerPreview < ActionMailer::Preview
     conzealand_users = users.where.not(memberships: {name: :dublin_2019})
     HugoMailer.nominations_notice_conzealand(user: conzealand_users.sample)
   end
+
+  def nominations_reminder_2_weeks_left
+    HugoMailer.nominations_reminder_2_weeks_left(
+      user: FactoryBot.create(:user, :with_reservation)
+    )
+  end
 end

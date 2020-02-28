@@ -62,4 +62,14 @@ class HugoMailer < ApplicationMailer
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
+
+  def nominations_reminder_2_weeks_left(user:)
+    return if user.reservations.none?
+
+    mail(
+      to: user.email,
+      from: "hugohelp@conzealand.nz",
+      subject: "2 weeks to go! Hugo Award Nominating Reminder for member #____"
+    )
+  end
 end
