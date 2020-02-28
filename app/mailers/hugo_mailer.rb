@@ -63,7 +63,7 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
-  def nominations_reminder_2_weeks_left(user:)
+  def nominations_reminder_2_weeks_left_conzealand(user:)
     return if user.reservations.none?
 
     account_numbers = account_numbers_from(user.reservations)
