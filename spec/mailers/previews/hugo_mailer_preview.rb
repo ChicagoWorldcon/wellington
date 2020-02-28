@@ -47,8 +47,6 @@ class HugoMailerPreview < ActionMailer::Preview
   end
 
   def nominations_reminder_2_weeks_left
-    HugoMailer.nominations_reminder_2_weeks_left(
-      user: FactoryBot.create(:user, :with_reservation)
-    )
+    HugoMailer.nominations_reminder_2_weeks_left(user: User.all.sample)
   end
 end

@@ -66,6 +66,8 @@ class HugoMailer < ApplicationMailer
   def nominations_reminder_2_weeks_left(user:)
     return if user.reservations.none?
 
+    @details = Detail.where(claim_id: user.active_claims)
+
     mail(
       to: user.email,
       from: "hugohelp@conzealand.nz",
