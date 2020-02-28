@@ -56,7 +56,17 @@ class HugoMailerPreview < ActionMailer::Preview
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(user: user)
   end
 
-  def nominations_reminder_2_weeks_left_conzealand_multi
+  def nominations_reminder_2_weeks_left_dublin
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.sample
+    end
+
+    HugoMailer.nominations_reminder_2_weeks_left_dublin(user: user)
+  end
+
+  def nominations_reminder_2_weeks_left_conzealand_multi_membership
     multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(user: multi_user)
   end
