@@ -38,32 +38,4 @@ class MembershipMailer < ApplicationMailer
       subject: "CoNZealand: Transferred ##{membership_number} from #{from} to #{to}"
     )
   end
-
-  def nominations_notice_dublin(user:)
-    @user = user
-    @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
-
-    @account_numbers = @reservations.pluck(:membership_number).map { |n| "##{n}" }
-    if @account_numbers.count == 1
-      subject = "CoNZealand: Hugo Nominations are now open for account #{@account_numbers.first}"
-    else
-      subject = "CoNZealand: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
-    end
-
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
-  end
-
-  def nominations_notice_conzealand(user:)
-    @user = user
-    @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
-
-    numbers = @reservations.pluck(:membership_number).map { |n| "##{n}" }
-    if numbers.count == 1
-      subject = "CoNZealand: Hugo Nominations are now open for member #{numbers.first}"
-    else
-      subject = "CoNZealand: Hugo Nominations are now open for members #{numbers.to_sentence}"
-    end
-
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
-  end
 end
