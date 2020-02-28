@@ -101,10 +101,37 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
+  def nominations_reminder_3_days_left(user:)
+    if user.reservations.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(user.reservations)
+    conzealand = conzealand_memberships.where(reservations: {id: user.reservations}).any?
+
+    if account_numbers.count == 1 && conzealand
+      subject = "Hugo Nominations Close in 3 Days! for member #{account_numbers.first}"
+    elsif conzealand
+      subject = "Hugo Nominations Close in 3 Days! for members #{account_numbers.to_sentence}"
+    elsif account_numbers.count == 1
+      subject = "Hugo Nominations Close in 3 Days! for account #{account_numbers.first}"
+    else
+      subject = "Hugo Nominations Close in 3 Days! for accounts #{account_numbers.to_sentence}"
+    end
+
+    @details = Detail.where(claim_id: user.active_claims)
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
   private
 
   # Given reservations, gets membership numbers and puts a pound in front of each
   def account_numbers_from(reservations)
     reservations.pluck(:membership_number).map { |n| "##{n}" }
+  end
+
+  def conzealand_memberships
+    Membership.can_nominate.where.not(name: :dublin).joins(:reservations)
   end
 end

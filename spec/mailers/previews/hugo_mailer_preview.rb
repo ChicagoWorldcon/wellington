@@ -70,4 +70,14 @@ class HugoMailerPreview < ActionMailer::Preview
     multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(user: multi_user)
   end
+
+  def nominations_reminder_3_days_left
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.joins(:reservations).sample
+    end
+
+    HugoMailer.nominations_reminder_3_days_left(user: user)
+  end
 end
