@@ -66,13 +66,16 @@ class HugoMailer < ApplicationMailer
   def nominations_reminder_2_weeks_left(user:)
     return if user.reservations.none?
 
+    account_numbers = account_numbers_from(user.reservations)
+    if account_numbers.count == 1
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
+    else
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
+    end
+
     @details = Detail.where(claim_id: user.active_claims)
 
-    mail(
-      to: user.email,
-      from: "hugohelp@conzealand.nz",
-      subject: "2 weeks to go! Hugo Award Nominating Reminder for member #____"
-    )
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
   private
