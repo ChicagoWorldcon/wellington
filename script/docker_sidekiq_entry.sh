@@ -29,5 +29,5 @@ if [[ -z $RAILS_ENV ]]; then
   yarn install
 fi
 
-# Start sidekiq
-bundle exec sidekiq
+# Start sidekiq following default and mailer queues
+bundle exec sidekiq -q default -q mailers

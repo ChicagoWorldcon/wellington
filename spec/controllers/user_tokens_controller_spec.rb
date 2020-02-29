@@ -40,6 +40,9 @@ RSpec.describe UserTokensController, type: :controller do
     end
 
     it "sets notification when pointing at existing user" do
+      expect(MembershipMailer)
+        .to receive_message_chain(:login_link, :deliver_later)
+        .and_return(true)
       expect {
         post :create, params: { email: user.email }
       }.to_not change { controller.current_user }.from(nil)

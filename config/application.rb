@@ -39,5 +39,9 @@ module Conzealand
 
     # Don't bother dumping a schema.rb file to avoid confusing extra files
     config.active_record.dump_schema_after_migration = false
+
+    # Use sidekiq for jobs with #perform_later
+    # see https://github.com/mperham/sidekiq/wiki/Active-Job
+    config.active_job.queue_adapter = :sidekiq unless Rails.env.test?
   end
 end
