@@ -63,7 +63,8 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
-  def nominations_reminder_2_weeks_left_conzealand(user:)
+  def nominations_reminder_2_weeks_left_conzealand(email:)
+    user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
     if reservations_that_can_nominate.none?
@@ -82,7 +83,8 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
-  def nominations_reminder_2_weeks_left_dublin(user:)
+  def nominations_reminder_2_weeks_left_dublin(email:)
+    user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
     if reservations_that_can_nominate.none?
@@ -101,7 +103,9 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
-  def nominations_reminder_3_days_left(user:)
+  def nominations_reminder_3_days_left(email:)
+    user = User.find_by!(email: email)
+
     if user.reservations.none?
       return
     end

@@ -53,7 +53,7 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.sample
     end
 
-    HugoMailer.nominations_reminder_2_weeks_left_conzealand(user: user)
+    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email)
   end
 
   def nominations_reminder_2_weeks_left_dublin
@@ -63,12 +63,12 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.sample
     end
 
-    HugoMailer.nominations_reminder_2_weeks_left_dublin(user: user)
+    HugoMailer.nominations_reminder_2_weeks_left_dublin(email: user.email)
   end
 
   def nominations_reminder_2_weeks_left_conzealand_multi_membership
     multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
-    HugoMailer.nominations_reminder_2_weeks_left_conzealand(user: multi_user)
+    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: multi_user.email)
   end
 
   def nominations_reminder_3_days_left
@@ -78,6 +78,6 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.joins(:reservations).sample
     end
 
-    HugoMailer.nominations_reminder_3_days_left(user: user)
+    HugoMailer.nominations_reminder_3_days_left(email: user.email)
   end
 end
