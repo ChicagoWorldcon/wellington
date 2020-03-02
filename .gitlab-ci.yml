@@ -39,7 +39,6 @@ before_script:
 docker_build:
   stage: build
   script:
-    - docker pull registry.gitlab.com/worldcon/2020-wellington:latest
     - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
