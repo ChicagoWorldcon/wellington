@@ -34,6 +34,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   TDS_HOST=hugo.ji1Jae0cue1.ap-southeast-2.rds.amazonaws.com
   TDS_DATABASE=Hugo2020
   ```
+- Multiple workarounds for CI to run
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Security patch Puma against CVE-2020-5247
+  [CVE-2020-5247](https://nvd.nist.gov/vuln/detail/CVE-2020-5247)
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Security patch Nokogiri against CVE-2020-7595
+  [CVE-2020-7595](https://nvd.nist.gov/vuln/detail/CVE-2020-7595)
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
 
 ### Removed
 - Nothing significant in this release

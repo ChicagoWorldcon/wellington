@@ -1,7 +1,7 @@
 # Copyright 2019 James Polley
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ docker_build:
 rspec_tests:
   stage: test
   script:
-    - docker run -d --name="test-database" --hostname "postgres" postgres:latest
-    - docker run --network "container:test-database" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:structure:load spec
+    - docker run -d --name="test-database" --hostname "postgres" -e "POSTGRES_PASSWORD=test" postgres:latest
+    - docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:structure:load spec
 
 code_style:
   stage: test
