@@ -1,7 +1,7 @@
 # Copyright 2019 James Polley
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ before_script:
 docker_build:
   stage: build
   script:
+    - docker pull registry.gitlab.com/worldcon/2020-wellington:stable
     - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
