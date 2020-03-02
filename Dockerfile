@@ -33,7 +33,6 @@ RUN apk add \
 
 # n.b, MailCatcher is incompatible with other gems in bundle
 
-RUN mkdir /setup
 WORKDIR /setup
 
 ADD Gemfile /setup/Gemfile
