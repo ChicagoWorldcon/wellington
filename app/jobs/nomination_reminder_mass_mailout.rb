@@ -41,9 +41,14 @@ class NominationReminderMassMailout
 
   # 3 days from now, but lets keep it close the 72 hours to go mark
   def within_send_window?
-    three_days_to_go = $voting_opens_at - 3.days
+    three_days_to_go = utc($voting_opens_at - 3.days)
+    now = utc(DateTime.now)
     upper_bound = three_days_to_go + 59.minutes
     lower_bound = three_days_to_go - 59.minutes
-    DateTime.now.in?(lower_bound...upper_bound)
+    now.in?(lower_bound...upper_bound)
+  end
+
+  def utc(datetime)
+    datetime.in_time_zone("UTC")
   end
 end
