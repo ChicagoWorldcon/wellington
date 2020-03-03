@@ -42,14 +42,14 @@ RSpec.describe Export::MembershipCsv do
         end
       end
 
-      describe "the rows" do
-        subject(:rows) { csv[1..].join(",") }
+      describe "the first row" do
+        subject(:first_row) { csv.second }
 
         it { is_expected.to include(reservation.active_claim.detail.first_name) }
         it { is_expected.to include(reservation.membership_number.to_s) }
 
         it "has a column per heading" do
-          expect(csv.last.count).to eq(Export::MembershipRow::HEADINGS.count)
+          expect(first_row.count).to eq(Export::MembershipRow::HEADINGS.count)
         end
       end
     end

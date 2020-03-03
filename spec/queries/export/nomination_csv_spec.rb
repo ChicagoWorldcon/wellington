@@ -45,8 +45,8 @@ RSpec.describe Export::NominationCsv do
         it { is_expected.to include(/field_3/i) }
       end
 
-      describe "the rows" do
-        subject(:rows) { csv[1..].join(",") }
+      describe "the second row" do
+        subject(:second_row) { csv.second }
 
         it { is_expected.to include(nomination.field_1) }
         it { is_expected.to include(nomination.field_3) }
