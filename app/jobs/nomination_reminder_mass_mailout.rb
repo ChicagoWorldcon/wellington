@@ -16,7 +16,11 @@
 
 # NominationsReminder sends reminders to users who can nominate to tell them "not long to go!"
 class NominationReminderMassMailout
+  include Sidekiq::Worker
+
   def perform
+    return unless within_send_window?
+
     last_time = Time.now
     users_to_remind = User.eager_load(reservations: :membership).merge(Membership.can_nominate)
 
@@ -31,5 +35,15 @@ class NominationReminderMassMailout
         last_time = Time.now
       end
     end
+  end
+
+  private
+
+  # 3 days from now, but lets keep it close the 72 hours to go mark
+  def within_send_window?
+    three_days_to_go = $voting_opens_at - 3.days
+    upper_bound = three_days_to_go + 59.minutes
+    lower_bound = three_days_to_go - 59.minutes
+    DateTime.now.in?(lower_bound...upper_bound)
   end
 end
