@@ -18,16 +18,22 @@
 <p>Stats:</p>
 <table>
   <thead style="background: #eee">
-    <td style="border: 1px solid #333; padding: 5px 10px;">membership_name</td>
-    <td style="border: 1px solid #333; padding: 5px 10px;">state</td>
-    <td style="border: 1px solid #333; padding: 5px 10px;">count</td>
+    <td style="<%= border_styles %>">membership_name</td>
+    <td style="<%= border_styles %>">state</td>
+    <td style="<%= border_styles %>">count</td>
   </thead>
   <tbody>
     <% @stats.sort.each do |(membership_name, reservation_state), count| %>
       <tr>
-        <td style="border: 1px solid #333; padding: 5px 10px;"><%= membership_name %></td>
-        <td style="border: 1px solid #333; padding: 5px 10px;"><%= reservation_state %></td>
-        <td style="border: 1px solid #333; padding: 5px 10px;"><%= count %></td>
+        <td style="<%= border_styles %>">
+          <%= membership_name %>
+        </td>
+        <td style="<%= border_styles %>">
+          <%= reservation_state %>
+        </td>
+        <td style="<%= border_styles %>">
+          <%= count %>
+        </td>
       </tr>
     <% end %>
   </tbody>

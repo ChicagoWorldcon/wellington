@@ -17,6 +17,8 @@
 class ReportMailer < ApplicationMailer
   default from: $maintainer_email
 
+  helper_method :border_styles
+
   def nominations_csv
     command = Export::NominationCsv.new
     csv = command.call
@@ -56,4 +58,14 @@ class ReportMailer < ApplicationMailer
       to: $membership_reports_email,
     )
   end
+
+  private
+
+  def border_styles
+    %{
+      border: 1px solid #333;
+      padding: 5px 10px;
+    }
+  end
+
 end
