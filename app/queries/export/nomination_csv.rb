@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Scheudle format is in cron
-# more information can be found at https://crontab.guru/
-schedule:
-  email_nomination_ballot_summaries:
-    cron: '*/30 * * * *' # Runs every half an hour
-    class: SendBallotSummaries
+require "csv"
 
-  export_nominations:
-    cron: '0 23 * * *' # At 23:00 every day
-    class: NominationsTdsSync
+class Export::NominationCsv
+  def call
+    return nil if Nomination.none?
 
-  membership_reports:
-    cron: '0 1 * * 6' # At 01:00 on Saturday
-    class: SendMembershipReports
+    buff = StringIO.new
+    csv = CSV.new(buff)
+    csv << Export::NominationRow::HEADINGS
+    Nomination.joins(Export::NominationRow::JOINS).eager_load(:category, *Export::NominationRow::JOINS).find_each.with_index do |nom, i|
+      csv << Export::NominationRow.new(nom).values
+    end
 
-  nomination_reports:
-    cron: '10 1 * * *' # At 01:10 every day
-    class: SendNominationReports
+    buff.string
+  end
+
+  def stats
+    Reservation.distinct.joins(:user, nominations: {category: :election}).group("elections.name").merge(Claim.active).count
+  end
+end
