@@ -26,12 +26,6 @@ RSpec.describe SendMembershipReports, type: :job do
       $membership_reports_email = original_value
     end
 
-    it "doesn't call to mailer without $membership_reports_email" do
-      $membership_reports_email = nil
-      expect(ReportMailer).to_not receive(:memberships_csv)
-      perform
-    end
-
     it "calls to mailer when $membership_reports_email set" do
       $membership_reports_email = "harry@potter.universe"
       expect(ReportMailer).to receive_message_chain(:memberships_csv, :deliver_now).and_return(true)

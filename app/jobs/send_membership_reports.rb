@@ -18,8 +18,6 @@ class SendMembershipReports
   include Sidekiq::Worker
 
   def perform
-    return if $membership_reports_email.nil?
-
     ReportMailer.memberships_csv.deliver_now
   end
 end

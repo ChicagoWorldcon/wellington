@@ -20,6 +20,8 @@ class ReportMailer < ApplicationMailer
   helper_method :border_styles
 
   def nominations_csv
+    return if $nomination_reports_email.nil?
+
     command = Export::NominationCsv.new
     csv = command.call
     return if csv.nil?
@@ -40,6 +42,8 @@ class ReportMailer < ApplicationMailer
   end
 
   def memberships_csv
+    return if $membership_reports_email.nil?
+
     command = Export::MembershipCsv.new
     csv = command.call
     return if csv.nil?
