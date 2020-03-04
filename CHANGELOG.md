@@ -62,6 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security patch Nokogiri against CVE-2020-7595
   [CVE-2020-7595](https://nvd.nist.gov/vuln/detail/CVE-2020-7595)
   [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Login links now last 30 minutes
+  [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153)
 
 ### Removed
 - Nothing significant in this release
