@@ -22,6 +22,24 @@ class RightsController < ApplicationController
   # it's not part of the user flows. If you want to inline this, maybe consider detection of user intent through various
   # strong param lookups
   def create
+    if !@reservation.disabled?
+      @reservation.update!(state: Reservation::DISABLED)
+    elsif instalment?
+      @reservation.update!(state: Reservation::INSTALMENT)
+    else
+      @reservation.update!(state: Reservation::PAID)
+    end
+
     redirect_to reservation_path(@reservation)
+  end
+
+  private
+
+  def instalment?
+    shortfall > 0
+  end
+
+  def shortfall
+    AmountOwedForReservation.new(@reservation).amount_owed
   end
 end

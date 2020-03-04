@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe RightsController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation, :with_user) }
+  let(:reservation) { create(:reservation, :with_user, :with_order_against_membership) }
   let(:support) { create(:support) }
 
   describe "#create" do
@@ -32,5 +32,30 @@ RSpec.describe RightsController, type: :controller do
     before { sign_in support }
 
     it { is_expected.to redirect_to(reservation_path(reservation)) }
+
+    it "disables rights when run" do
+      expect { post_create }.to change { reservation.reload.disabled? }.to(true)
+    end
+
+    context "when membership rights are disabled" do
+      before { reservation.update!(state: Reservation::DISABLED) }
+
+      let(:membership_price) { reservation.membership.price }
+      let(:almost_paid) { membership_price - Money.new(1) }
+
+      it "enables rights when disabled" do
+        expect { post_create }.to change { reservation.reload.disabled? }.to(false)
+      end
+
+      it "sets to instalment membership is not paid off" do
+        reservation.charges.destroy_all
+        create(:charge, user: reservation.user, reservation: reservation, amount: almost_paid)
+        expect { post_create }.to change { reservation.reload.instalment? }.to(true)
+      end
+
+      it "sets to paid when membership is paid off" do
+        expect { post_create }.to change { reservation.reload.paid? }.to(true)
+      end
+    end
   end
 end
