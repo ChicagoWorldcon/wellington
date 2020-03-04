@@ -35,7 +35,7 @@ class HugoMailer < ApplicationMailer
     )
   end
 
-  def nominations_notice_dublin(user:)
+  def nominations_open_dublin(user:)
     @user = user
     @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
 
@@ -49,7 +49,7 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
-  def nominations_notice_conzealand(user:)
+  def nominations_open_conzealand(user:)
     @user = user
     @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
 

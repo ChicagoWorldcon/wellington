@@ -21,21 +21,21 @@ class HugoMailerPreview < ActionMailer::Preview
     HugoMailer.nomination_ballot(reservation)
   end
 
-  def nominations_notice_dublin
+  def nominations_open_dublin
     if params[:user]
-      mailer = HugoMailer.nominations_notice_dublin(
+      mailer = HugoMailer.nominations_open_dublin(
         user: User.find_by!(email: params[:user]),
       )
       return mailer
     end
 
     dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019}).distinct
-    HugoMailer.nominations_notice_dublin(user: dublin_users.sample)
+    HugoMailer.nominations_open_dublin(user: dublin_users.sample)
   end
 
-  def nominations_notice_conzealand
+  def nominations_open_conzealand
     if params[:user]
-      mailer = HugoMailer.nominations_notice_conzealand(
+      mailer = HugoMailer.nominations_open_conzealand(
         user: User.find_by!(email: params[:user]),
       )
       return mailer
@@ -43,7 +43,7 @@ class HugoMailerPreview < ActionMailer::Preview
 
     users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
     conzealand_users = users.where.not(memberships: {name: :dublin_2019})
-    HugoMailer.nominations_notice_conzealand(user: conzealand_users.sample)
+    HugoMailer.nominations_open_conzealand(user: conzealand_users.sample)
   end
 
   def nominations_reminder_2_weeks_left_conzealand
