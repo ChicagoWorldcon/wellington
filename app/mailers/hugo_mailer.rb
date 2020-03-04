@@ -34,4 +34,109 @@ class HugoMailer < ApplicationMailer
       from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
     )
   end
+
+  def nominations_open_dublin(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
+
+    @account_numbers = account_numbers_from(@reservations)
+    if @account_numbers.count == 1
+      subject = "CoNZealand: Hugo Nominations are now open for account #{@account_numbers.first}"
+    else
+      subject = "CoNZealand: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
+    end
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  def nominations_open_conzealand(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
+
+    account_numbers = account_numbers_from(@reservations)
+    if account_numbers.count == 1
+      subject = "CoNZealand: Hugo Nominations are now open for member #{account_numbers.first}"
+    else
+      subject = "CoNZealand: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
+    end
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  def nominations_reminder_2_weeks_left_conzealand(email:)
+    user = User.find_by!(email: email)
+    reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
+
+    if reservations_that_can_nominate.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(reservations_that_can_nominate)
+    if account_numbers.count == 1
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
+    else
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
+    end
+
+    @details = Detail.where(claim_id: user.active_claims)
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  def nominations_reminder_2_weeks_left_dublin(email:)
+    user = User.find_by!(email: email)
+    reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
+
+    if reservations_that_can_nominate.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(reservations_that_can_nominate)
+    if account_numbers.count == 1
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for account #{account_numbers.first}"
+    else
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for accounts #{account_numbers.to_sentence}"
+    end
+
+    @details = Detail.where(claim_id: user.active_claims)
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  # Unlike the other templates the only difference in this is the subject line, hence a single mailer
+  def nominations_reminder_3_days_left(email:)
+    user = User.find_by!(email: email)
+
+    if user.reservations.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(user.reservations)
+    conzealand = conzealand_memberships.where(reservations: {id: user.reservations}).any?
+
+    if account_numbers.count == 1 && conzealand
+      subject = "Hugo Nominations Close in 3 Days! for member #{account_numbers.first}"
+    elsif conzealand
+      subject = "Hugo Nominations Close in 3 Days! for members #{account_numbers.to_sentence}"
+    elsif account_numbers.count == 1
+      subject = "Hugo Nominations Close in 3 Days! for account #{account_numbers.first}"
+    else
+      subject = "Hugo Nominations Close in 3 Days! for accounts #{account_numbers.to_sentence}"
+    end
+
+    @details = Detail.where(claim_id: user.active_claims)
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  private
+
+  # Given reservations, gets membership numbers and puts a pound in front of each
+  def account_numbers_from(reservations)
+    reservations.pluck(:membership_number).map { |n| "##{n}" }
+  end
+
+  def conzealand_memberships
+    Membership.can_nominate.where.not(name: :dublin).joins(:reservations)
+  end
 end

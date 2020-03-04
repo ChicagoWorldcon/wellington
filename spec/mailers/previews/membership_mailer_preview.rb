@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,30 +32,5 @@ class MembershipMailerPreview < ActionMailer::Preview
       owner_name: reservation.active_claim.detail.to_s,
       membership_number: reservation.membership_number,
     )
-  end
-
-  def nominations_notice_dublin
-    if params[:user]
-      mailer = MembershipMailer.nominations_notice_dublin(
-        user: User.find_by!(email: params[:user]),
-      )
-      return mailer
-    end
-
-    dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019}).distinct
-    MembershipMailer.nominations_notice_dublin(user: dublin_users.sample)
-  end
-
-  def nominations_notice_conzealand
-    if params[:user]
-      mailer = MembershipMailer.nominations_notice_conzealand(
-        user: User.find_by!(email: params[:user]),
-      )
-      return mailer
-    end
-
-    users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
-    conzealand_users = users.where.not(memberships: {name: :dublin_2019})
-    MembershipMailer.nominations_notice_conzealand(user: conzealand_users.sample)
   end
 end

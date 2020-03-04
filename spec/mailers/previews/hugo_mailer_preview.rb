@@ -20,4 +20,64 @@ class HugoMailerPreview < ActionMailer::Preview
     reservation = Reservation.joins(:nominations).sample
     HugoMailer.nomination_ballot(reservation)
   end
+
+  def nominations_open_dublin
+    if params[:user]
+      mailer = HugoMailer.nominations_open_dublin(
+        user: User.find_by!(email: params[:user]),
+      )
+      return mailer
+    end
+
+    dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019}).distinct
+    HugoMailer.nominations_open_dublin(user: dublin_users.sample)
+  end
+
+  def nominations_open_conzealand
+    if params[:user]
+      mailer = HugoMailer.nominations_open_conzealand(
+        user: User.find_by!(email: params[:user]),
+      )
+      return mailer
+    end
+
+    users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
+    conzealand_users = users.where.not(memberships: {name: :dublin_2019})
+    HugoMailer.nominations_open_conzealand(user: conzealand_users.sample)
+  end
+
+  def nominations_reminder_2_weeks_left_conzealand
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.sample
+    end
+
+    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email)
+  end
+
+  def nominations_reminder_2_weeks_left_dublin
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.sample
+    end
+
+    HugoMailer.nominations_reminder_2_weeks_left_dublin(email: user.email)
+  end
+
+  def nominations_reminder_2_weeks_left_conzealand_multi_membership
+    multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
+    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: multi_user.email)
+  end
+
+  def nominations_reminder_3_days_left
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.joins(:reservations).sample
+    end
+
+    HugoMailer.nominations_reminder_3_days_left(email: user.email)
+  end
 end
