@@ -50,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     user3@conzealand.nz
   )).update_all(hugo_admin: true)
   ```
+- Support user can now enable/disable membership rights on reservations
+  [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153).
 
 ### Changed
 * Hugo tweaks post launch
