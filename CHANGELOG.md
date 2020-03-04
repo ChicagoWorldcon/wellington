@@ -40,6 +40,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email).deliver_now
   end;
   ```
+- Setting Hugo Admin flag on Support now allows Admins to change nominations at any time
+  with audit notes [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153).
+  Add it to user accounts with...
+  ```ruby
+  Support.where(email: %w(
+    user1@conzealand.nz
+    user2@conzealand.nz
+    user3@conzealand.nz
+  )).update_all(hugo_admin: true)
+  ```
 
 ### Changed
 * Hugo tweaks post launch
