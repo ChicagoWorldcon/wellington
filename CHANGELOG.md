@@ -193,14 +193,14 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   total = dublin_users.count
   dublin_users.distinct.find_each.with_index do |user, n|
     puts "#{Time.now.iso8601} Dublin #{n} of #{total}" if n % 10 == 0
-    MembershipMailer.nominations_open_dublin(user: user).deliver_now
+    HugoMailer.nominations_open_dublin(user: user).deliver_now
   end;
 
   conzealand_users = User.joins(reservations: :membership).where.not(reservations: {state: Reservation::DISABLED}).merge(Membership.can_nominate).where.not(id: dublin_users);
   total = conzealand_users.count
   conzealand_users.distinct.find_each.with_index do |user, n|
     puts "#{Time.now.iso8601} Conzealand #{n} of #{total}" if n % 10 == 0
-    MembershipMailer.nominations_open_conzealand(user: user).deliver_now
+    HugoMailer.nominations_open_conzealand(user: user).deliver_now
   end;
   ```
 
