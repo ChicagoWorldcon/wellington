@@ -103,6 +103,7 @@ class HugoMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
+  # Unlike the other templates the only difference in this is the subject line, hence a single mailer
   def nominations_reminder_3_days_left(email:)
     user = User.find_by!(email: email)
 
