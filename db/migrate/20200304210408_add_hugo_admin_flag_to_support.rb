@@ -14,15 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :support do
-    email { Faker::Internet.unique.email }
-    password { "secret agent man" }
-    confirmed_at { 1.day.ago }
-    confirmation_sent_at { 1.day.ago }
-
-    trait :hugo_admin do
-      hugo_admin { true }
-    end
+class AddHugoAdminFlagToSupport < ActiveRecord::Migration[6.0]
+  def change
+    add_column :supports, :hugo_admin, :boolean, default: false, null: false
   end
 end
