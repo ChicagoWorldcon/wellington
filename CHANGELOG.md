@@ -42,6 +42,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security patch Nokogiri against CVE-2020-7595
   [CVE-2020-7595](https://nvd.nist.gov/vuln/detail/CVE-2020-7595)
   [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Setup automatic send of "3 days to go" mailer when nominations are 72 hours from close
+  [!152](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/152)
+- Created basic mailers for 2 week to go reminder emails
+  [!152](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/152)
+  Run these with...
+  ```ruby
+  dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
+  total = dublin_users.count
+  dublin_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Dublin #{n} of #{total}" if n % 10 == 0
+    HugoMailer.nominations_reminder_2_weeks_left_dublin(email: user.email).deliver_now
+  end;
+
+  conzealand_users = User.joins(reservations: :membership).where.not(reservations: {state: Reservation::DISABLED}).merge(Membership.can_nominate).where.not(id: dublin_users);
+  total = conzealand_users.count
+  conzealand_users.distinct.find_each.with_index do |user, n|
+    puts "#{Time.now.iso8601} Conzealand #{n} of #{total}" if n % 10 == 0
+    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email).deliver_now
+  end;
+  ```
 
 ### Removed
 - Nothing significant in this release
