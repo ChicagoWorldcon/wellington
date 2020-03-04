@@ -57,9 +57,10 @@ RSpec.describe NominationReminderMassMailout, type: :job do
       it "calls within the window across timezones" do
         $voting_opens_at = "2020-03-13T11:59:00-08:00".to_datetime
         three_days_from_welly = "2020-03-11T08:59:00+13:00".to_datetime
-        expect(DateTime).to receive(:now).and_return(three_days_from_welly)
-        expect(HugoMailer).to receive_message_chain(:nominations_reminder_3_days_left, :deliver_later).and_return(true)
-        perform
+        Timecop.freeze(three_days_from_welly) do
+          expect(HugoMailer).to receive_message_chain(:nominations_reminder_3_days_left, :deliver_later).and_return(true)
+          perform
+        end
       end
     end
   end
