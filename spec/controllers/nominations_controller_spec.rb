@@ -161,12 +161,23 @@ RSpec.describe NominationsController, type: :controller do
   end
 
   describe "#update" do
-    before { sign_in user }
-
-    before do
-      $nomination_opens_at = 1.second.ago
-      $voting_opens_at = 1.day.from_now
-      $hugo_closed_at = 2.days.from_now
+    subject(:post_update) do
+      put(:update, params: {
+        id: hugo.i18n_key,
+        reservation_id: reservation.id,
+        category_id: best_novel.id,
+        category: {
+          best_novel.id => {
+            nomination: {
+              1 => filled_entry,
+              2 => partial_entry,
+              3 => empty_entry,
+              4 => empty_entry,
+              5 => empty_entry,
+            }
+          }
+        },
+      })
     end
 
     let(:filled_entry) do
@@ -193,32 +204,23 @@ RSpec.describe NominationsController, type: :controller do
       }
     end
 
-    context "when posting valid params" do
-      subject(:post_update) do
-        put(:update, params: {
-          id: hugo.i18n_key,
-          reservation_id: reservation.id,
-          category_id: best_novel.id,
-          category: {
-            best_novel.id => {
-              nomination: {
-                1 => filled_entry,
-                2 => partial_entry,
-                3 => empty_entry,
-                4 => empty_entry,
-                5 => empty_entry,
-              }
-            }
-          },
-        })
+    context "signed in with nominations open" do
+      before { sign_in user }
+
+      before do
+        $nomination_opens_at = 1.second.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
       end
 
-      it "renders ok" do
-        expect(post_update).to have_http_status(:ok)
-      end
+      context "when posting valid params" do
+        it "renders ok" do
+          expect(post_update).to have_http_status(:ok)
+        end
 
-      it "creates nominations" do
-        expect { post_update }.to change { Nomination.count }.from(0)
+        it "creates nominations" do
+          expect { post_update }.to change { Nomination.count }.from(0)
+        end
       end
     end
   end
