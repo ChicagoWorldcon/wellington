@@ -161,7 +161,7 @@ RSpec.describe NominationsController, type: :controller do
   end
 
   describe "#update" do
-    subject(:post_update) do
+    subject(:put_update) do
       put(:update, params: {
         id: hugo.i18n_key,
         reservation_id: reservation.id,
@@ -210,15 +210,15 @@ RSpec.describe NominationsController, type: :controller do
       before { sign_in hugo_admin }
 
       it "renders ok" do
-        expect(post_update).to have_http_status(:ok)
+        expect(put_update).to have_http_status(:ok)
       end
 
       it "creates nominations" do
-        expect { post_update }.to change { Nomination.count }.from(0)
+        expect { put_update }.to change { Nomination.count }.from(0)
       end
 
       it "has an audit trail" do
-        expect { post_update }.to change { Note.count }.by(1)
+        expect { put_update }.to change { Note.count }.by(1)
         expect(Note.last.content).to include(hugo_admin.email)
         expect(Note.last.content).to match(/hugo admin/i)
       end
@@ -235,11 +235,11 @@ RSpec.describe NominationsController, type: :controller do
 
       context "when posting valid params" do
         it "renders ok" do
-          expect(post_update).to have_http_status(:ok)
+          expect(put_update).to have_http_status(:ok)
         end
 
         it "creates nominations" do
-          expect { post_update }.to change { Nomination.count }.from(0)
+          expect { put_update }.to change { Nomination.count }.from(0)
         end
       end
     end
