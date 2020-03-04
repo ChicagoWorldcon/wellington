@@ -36,14 +36,14 @@ RSpec.describe NominationReminderMassMailout, type: :job do
     context "with users" do
       before { create(:user, :with_reservation) }
 
-      it "doesn't execute an hour before the window" do
-        $voting_opens_at = 3.days.from_now + 1.hour
+      it "doesn't execute 20 minutes before the window" do
+        $voting_opens_at = 3.days.from_now + 20.minutes
         expect(HugoMailer).to_not receive(:nominations_reminder_3_days_left)
         perform
       end
 
-      it "doesn't execute an hour after the window" do
-        $voting_opens_at = 3.days.from_now - 1.hour
+      it "doesn't execute 20 minutes after the window" do
+        $voting_opens_at = 3.days.from_now - 20.minutes
         expect(HugoMailer).to_not receive(:nominations_reminder_3_days_left)
         perform
       end
