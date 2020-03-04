@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       resources :credits
       resources :set_memberships
       resources :transfers, id: /[^\/]+/
+      resources :rights
     end
   end
 
