@@ -109,6 +109,15 @@ RSpec.describe NominationsController, type: :controller do
             expect(get_show).to have_http_status(:found)
             expect(flash[:notice]).to match(/signed in as support/i)
           end
+
+          context "with hugo_admin rights" do
+            let(:support) { create(:support, :hugo_admin) }
+
+            it "renders ok" do
+              expect(get_show).to have_http_status(:ok)
+              expect(flash[:notice]).to be_nil
+            end
+          end
         end
       end
 

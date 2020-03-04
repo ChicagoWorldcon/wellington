@@ -60,6 +60,9 @@ class NominationsController < ApplicationController
   end
 
   def check_access!
+    # You have unrestricted access if you're a hugo admin
+    return true if hugo_admin_signed_in?
+
     now = DateTime.now
 
     if now < $nomination_opens_at
@@ -102,5 +105,9 @@ class NominationsController < ApplicationController
 
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
+  end
+
+  def hugo_admin_signed_in?
+    support_signed_in? && current_support.hugo_admin.present?
   end
 end
