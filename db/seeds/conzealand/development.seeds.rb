@@ -47,16 +47,29 @@ end
 puts "\nFinished creating users, try sign in with"
 puts "#{User.last.email}"
 
-puts "\nCreating a default support user"
-puts "http://localhost:3000/supports/sign_in"
-puts "user: support@worldcon.org"
-puts "pass: 111111"
-
-Support.create(
+support = Support.create(
   email: "support@worldcon.org",
   password: 111111,
   confirmed_at: Time.now,
 )
+puts
+puts "Support user created"
+puts "http://localhost:3000/supports/sign_in"
+puts "user: #{support.email}"
+puts "pass: 111111"
+puts
+
+hugo_admin = Support.create(
+  email: "hugoadmin@worldcon.org",
+  password: 111111,
+  confirmed_at: Time.now,
+  hugo_admin: true,
+)
+puts "Hugo admin created"
+puts "http://localhost:3000/supports/sign_in"
+puts "user: #{hugo_admin.email}"
+puts "pass: 111111"
+puts
 
 all_categories = Category.all.to_a
 nominators = Reservation.paid.joins(:membership).merge(Membership.with_nomination_rights).to_a
