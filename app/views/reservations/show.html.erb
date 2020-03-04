@@ -37,6 +37,19 @@
             <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
+
+          <% Election.find_each do |election| %>
+            <p>
+              Change 
+              <%=
+                link_to(
+                  "Nominations for #{election.i18n_key}",
+                  reservation_nomination_path(reservation_id: @reservation, id: election.i18n_key)
+                )
+                %>
+              <br>(hugo admin only)
+            </p>
+          <% end %>
         </div>
       </div>
 
