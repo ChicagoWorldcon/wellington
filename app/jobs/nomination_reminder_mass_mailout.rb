@@ -18,8 +18,8 @@
 class NominationReminderMassMailout
   include Sidekiq::Worker
 
-  def perform
-    return unless within_send_window?
+  def perform(force: false)
+    return unless force || within_send_window?
 
     last_time = Time.now
     users_to_remind = User.eager_load(reservations: :membership).merge(Membership.can_nominate)

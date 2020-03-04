@@ -62,6 +62,12 @@ RSpec.describe NominationReminderMassMailout, type: :job do
           perform
         end
       end
+
+      it "does execute 20 minutes before the window when force is set" do
+        $voting_opens_at = 10.days.from_now
+        expect(HugoMailer).to receive_message_chain(:nominations_reminder_3_days_left, :deliver_later).and_return(true)
+        job.perform(force: true)
+      end
     end
   end
 end
