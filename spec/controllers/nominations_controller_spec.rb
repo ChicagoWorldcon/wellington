@@ -204,6 +204,26 @@ RSpec.describe NominationsController, type: :controller do
       }
     end
 
+    context "when nominations are closed signed in as hugo admin" do
+      let(:hugo_admin) { create(:support, :hugo_admin) }
+
+      before { sign_in hugo_admin }
+
+      it "renders ok" do
+        expect(post_update).to have_http_status(:ok)
+      end
+
+      it "creates nominations" do
+        expect { post_update }.to change { Nomination.count }.from(0)
+      end
+
+      it "has an audit trail" do
+        expect { post_update }.to change { Note.count }.by(1)
+        expect(Note.last.content).to include(hugo_admin.email)
+        expect(Note.last.content).to match(/hugo admin/i)
+      end
+    end
+
     context "signed in with nominations open" do
       before { sign_in user }
 

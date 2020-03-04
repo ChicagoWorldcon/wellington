@@ -37,6 +37,16 @@ class NominationsController < ApplicationController
     builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_params(params)
     builder.save
+
+    if hugo_admin_signed_in?
+      @reservation.user.notes.create!(
+        content: %{
+          Nomination form updated by hugo admin #{current_support.email}
+          on behalf of member ##{@reservation.membership_number}
+        }
+      )
+    end
+
     @category = Category.find(params[:category_id])
     @nominations_by_category = builder.nominations_by_category
 
