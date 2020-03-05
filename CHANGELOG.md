@@ -54,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153).
 
 ### Changed
-* Hugo tweaks post launch
+- Hugo tweaks post launch
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
   These include:
     * Remove the title field from what you type to see the hugo form
@@ -62,9 +62,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * Create test mailer for testing SMTP settings
     * Update Hugo text in several areas including account text and in the form
     * Stop support users from viewing nominations
-* Update node dependencies
+- Update node dependencies
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
-* Upgrade gem dependencies
+- Upgrade gem dependencies
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
 - Multiple workarounds for CI to run
   [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
