@@ -30,7 +30,7 @@ class NominationsController < ApplicationController
       return
     end
 
-    @privacy_warning = current_user.reservations.count > 1
+    @privacy_warning = !hugo_admin_signed_in? && current_user.reservations.count > 1
   end
 
   def update
