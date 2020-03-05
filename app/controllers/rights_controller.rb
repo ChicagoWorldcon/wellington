@@ -31,6 +31,12 @@ class RightsController < ApplicationController
       @reservation.update!(state: Reservation::PAID)
     end
 
+    if @reservation.disabled?
+      flash[:notice] = "Disabled membership rights for member ##{@reservation.membership_number}"
+    else
+      flash[:notice] = "Enabled membership rights for member ##{@reservation.membership_number}"
+    end
+
     redirect_to reservation_path(@reservation)
   end
 

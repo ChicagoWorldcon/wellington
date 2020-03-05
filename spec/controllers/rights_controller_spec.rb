@@ -47,6 +47,7 @@ RSpec.describe RightsController, type: :controller do
 
       it "disables rights when run" do
         expect { post_create }.to change { reservation.reload.disabled? }.to(true)
+        expect(flash[:notice].to match(/disabled/i)
       end
 
       context "when membership rights are disabled" do
@@ -57,6 +58,7 @@ RSpec.describe RightsController, type: :controller do
 
         it "enables rights when disabled" do
           expect { post_create }.to change { reservation.reload.disabled? }.to(false)
+          expect(flash[:notice].to match(/enabled/i)
         end
 
         it "sets to instalment membership is not paid off" do
