@@ -61,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * Don't let more than 5 entries be submitted for nominations
     * Create test mailer for testing SMTP settings
     * Update Hugo text in several areas including account text and in the form
+    * Added explicit PM to hugo nominations close time
     * Stop support users from viewing nominations
 - Update node dependencies
   [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
