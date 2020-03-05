@@ -43,7 +43,7 @@ RSpec.describe NominationsController, type: :controller do
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "404s when you dnn't have nomination rights" do
+    it "404s when you don't have nomination rights" do
       reservation.membership.update!(can_nominate: false)
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -109,6 +109,15 @@ RSpec.describe NominationsController, type: :controller do
             expect(get_show).to have_http_status(:found)
             expect(flash[:notice]).to match(/signed in as support/i)
           end
+
+          context "with hugo_admin rights" do
+            let(:support) { create(:support, :hugo_admin) }
+
+            it "renders ok" do
+              expect(get_show).to have_http_status(:ok)
+              expect(flash[:notice]).to be_nil
+            end
+          end
         end
       end
 
@@ -152,12 +161,23 @@ RSpec.describe NominationsController, type: :controller do
   end
 
   describe "#update" do
-    before { sign_in user }
-
-    before do
-      $nomination_opens_at = 1.second.ago
-      $voting_opens_at = 1.day.from_now
-      $hugo_closed_at = 2.days.from_now
+    subject(:put_update) do
+      put(:update, params: {
+        id: hugo.i18n_key,
+        reservation_id: reservation.id,
+        category_id: best_novel.id,
+        category: {
+          best_novel.id => {
+            nomination: {
+              1 => filled_entry,
+              2 => partial_entry,
+              3 => empty_entry,
+              4 => empty_entry,
+              5 => empty_entry,
+            }
+          }
+        },
+      })
     end
 
     let(:filled_entry) do
@@ -184,32 +204,43 @@ RSpec.describe NominationsController, type: :controller do
       }
     end
 
-    context "when posting valid params" do
-      subject(:post_update) do
-        put(:update, params: {
-          id: hugo.i18n_key,
-          reservation_id: reservation.id,
-          category_id: best_novel.id,
-          category: {
-            best_novel.id => {
-              nomination: {
-                1 => filled_entry,
-                2 => partial_entry,
-                3 => empty_entry,
-                4 => empty_entry,
-                5 => empty_entry,
-              }
-            }
-          },
-        })
-      end
+    context "when nominations are closed signed in as hugo admin" do
+      let(:hugo_admin) { create(:support, :hugo_admin) }
+
+      before { sign_in hugo_admin }
 
       it "renders ok" do
-        expect(post_update).to have_http_status(:ok)
+        expect(put_update).to have_http_status(:ok)
       end
 
       it "creates nominations" do
-        expect { post_update }.to change { Nomination.count }.from(0)
+        expect { put_update }.to change { Nomination.count }.from(0)
+      end
+
+      it "has an audit trail" do
+        expect { put_update }.to change { Note.count }.by(1)
+        expect(Note.last.content).to include(hugo_admin.email)
+        expect(Note.last.content).to match(/hugo admin/i)
+      end
+    end
+
+    context "signed in with nominations open" do
+      before { sign_in user }
+
+      before do
+        $nomination_opens_at = 1.second.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
+      end
+
+      context "when posting valid params" do
+        it "renders ok" do
+          expect(put_update).to have_http_status(:ok)
+        end
+
+        it "creates nominations" do
+          expect { put_update }.to change { Nomination.count }.from(0)
+        end
       end
     end
   end

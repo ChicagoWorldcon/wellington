@@ -11,7 +11,7 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
@@ -427,7 +427,8 @@ CREATE TABLE public.supports (
     unlock_token character varying,
     locked_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    hugo_admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -960,6 +961,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191128184513'),
 ('20191221233951'),
 ('20191229203558'),
-('20191231004921');
+('20191231004921'),
+('20200304210408');
 
 

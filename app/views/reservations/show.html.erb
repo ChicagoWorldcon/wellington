@@ -37,6 +37,41 @@
             <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
+
+          <p>
+            <% if @reservation.disabled? %>
+              <%=
+                link_to(
+                  "Enable Membership Rights",
+                  reservation_rights_path(reservation_id: @reservation),
+                  method: :post,
+                )
+              %>
+              to resume rights for nomination, voting and attendance
+            <% else %>
+              <%=
+                link_to(
+                  "Disable Membership Rights",
+                  reservation_rights_path(reservation_id: @reservation),
+                  method: :post,
+                )
+              %>
+              to suspend rights for nomination, voting and attendance
+            <% end %>
+          </p>
+
+          <% Election.find_each do |election| %>
+            <p>
+              Change 
+              <%=
+                link_to(
+                  "Nominations for #{election.i18n_key}",
+                  reservation_nomination_path(reservation_id: @reservation, id: election.i18n_key)
+                )
+                %>
+              (hugo admin only)
+            </p>
+          <% end %>
         </div>
       </div>
 

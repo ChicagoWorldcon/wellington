@@ -11,20 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic sign-in for first time users, second time users require email confirmation
   [!132](https://gitlab.com/worldcon/2020-wellington/merge_requests/132)
   -- this may possibly replace Kiosk mode
-
-### Changed
-* Hugo tweaks post launch
-  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
-  These include:
-    * Remove the title field from what you type to see the hugo form
-    * Don't let more than 5 entries be submitted for nominations
-    * Create test mailer for testing SMTP settings
-    * Update Hugo text in several areas including account text and in the form
-    * Stop support users from viewing nominations
-* Update node dependencies
-  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
-* Upgrade gem dependencies
-  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
 - Setup scheduled export on Friday @11pm with 3rd party Hugo Nominations database based on SQL Server
   [!147](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/147).
   Enable by setting:
@@ -34,14 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   TDS_HOST=hugo.ji1Jae0cue1.ap-southeast-2.rds.amazonaws.com
   TDS_DATABASE=Hugo2020
   ```
-- Multiple workarounds for CI to run
-  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
-- Security patch Puma against CVE-2020-5247
-  [CVE-2020-5247](https://nvd.nist.gov/vuln/detail/CVE-2020-5247)
-  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
-- Security patch Nokogiri against CVE-2020-7595
-  [CVE-2020-7595](https://nvd.nist.gov/vuln/detail/CVE-2020-7595)
-  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
 - Setup automatic send of "3 days to go" mailer when nominations are 72 hours from close
   [!152](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/152)
 - Created basic mailers for 2 week to go reminder emails
@@ -62,6 +40,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email).deliver_now
   end;
   ```
+- Setting Hugo Admin flag on Support now allows Admins to change nominations at any time
+  with audit notes [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153).
+  Add it to user accounts with...
+  ```ruby
+  Support.where(email: %w(
+    user1@conzealand.nz
+    user2@conzealand.nz
+    user3@conzealand.nz
+  )).update_all(hugo_admin: true)
+  ```
+- Support user can now enable/disable membership rights on reservations
+  [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153).
+
+### Changed
+- Hugo tweaks post launch
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+  These include:
+    * Remove the title field from what you type to see the hugo form
+    * Don't let more than 5 entries be submitted for nominations
+    * Create test mailer for testing SMTP settings
+    * Update Hugo text in several areas including account text and in the form
+    * Added explicit PM to hugo nominations close time
+    * Stop support users from viewing nominations
+- Update node dependencies
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+- Upgrade gem dependencies
+  [!146](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/146).
+- Multiple workarounds for CI to run
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Security patch Puma against CVE-2020-5247
+  [CVE-2020-5247](https://nvd.nist.gov/vuln/detail/CVE-2020-5247)
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Security patch Nokogiri against CVE-2020-7595
+  [CVE-2020-7595](https://nvd.nist.gov/vuln/detail/CVE-2020-7595)
+  [!151](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/151)
+- Login links now last 30 minutes
+  [!153](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/153)
 
 ### Removed
 - Nothing significant in this release

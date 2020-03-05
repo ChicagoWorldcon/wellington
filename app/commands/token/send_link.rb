@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class Token::SendLink
-  TOKEN_DURATION = 10.minutes
+  TOKEN_DURATION = 30.minutes
 
   attr_reader :email
   attr_reader :secret

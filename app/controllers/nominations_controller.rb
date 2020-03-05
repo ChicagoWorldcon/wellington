@@ -37,6 +37,16 @@ class NominationsController < ApplicationController
     builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_params(params)
     builder.save
+
+    if hugo_admin_signed_in?
+      @reservation.user.notes.create!(
+        content: %{
+          Nomination form updated by hugo admin #{current_support.email}
+          on behalf of member ##{@reservation.membership_number}
+        }.strip_heredoc
+      )
+    end
+
     @category = Category.find(params[:category_id])
     @nominations_by_category = builder.nominations_by_category
 
@@ -60,6 +70,9 @@ class NominationsController < ApplicationController
   end
 
   def check_access!
+    # You have unrestricted access if you're a hugo admin
+    return true if hugo_admin_signed_in?
+
     now = DateTime.now
 
     if now < $nomination_opens_at
@@ -102,5 +115,9 @@ class NominationsController < ApplicationController
 
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
+  end
+
+  def hugo_admin_signed_in?
+    support_signed_in? && current_support.hugo_admin.present?
   end
 end
