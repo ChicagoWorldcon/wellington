@@ -43,7 +43,7 @@ class NominationsController < ApplicationController
         content: %{
           Nomination form updated by hugo admin #{current_support.email}
           on behalf of member ##{@reservation.membership_number}
-        }
+        }.strip_heredoc
       )
     end
 
