@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...master)
 
 ### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 2.4.0 - 2020-03-04](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...2.4.0)
+
+### Added
 - Automatic sign-in for first time users, second time users require email confirmation
   [!132](https://gitlab.com/worldcon/2020-wellington/merge_requests/132)
   -- this may possibly replace Kiosk mode
