@@ -5,19 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...master)
+
+## [Tag 2.4.1 - 2020-03-06](https://gitlab.com/worldcon/2020-wellington/compare/2.4.0...2.4.1)
 
 ### Added
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Fixed a bug where hugo admins were unable to edit nominations
+  [!154](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/154)
 
 ### Removed
 - Nothing significant in this release
 
 
-## [Tag 2.4.0 - 2020-03-04](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...2.4.0)
+## [Tag 2.4.0 - 2020-03-05](https://gitlab.com/worldcon/2020-wellington/compare/2.3.2...2.4.0)
 
 ### Added
 - Automatic sign-in for first time users, second time users require email confirmation

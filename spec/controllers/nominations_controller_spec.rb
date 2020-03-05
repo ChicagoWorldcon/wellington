@@ -48,6 +48,26 @@ RSpec.describe NominationsController, type: :controller do
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    context "when signed in as support" do
+      let(:support) { create(:support) }
+
+      before { sign_in support }
+
+      it "redirects, doesn't let you look at the nomination" do
+        expect(get_show).to have_http_status(:found)
+        expect(flash[:notice]).to match(/signed in as support/i)
+      end
+
+      context "with hugo_admin rights" do
+        let(:support) { create(:support, :hugo_admin) }
+
+        it "renders ok" do
+          expect(get_show).to have_http_status(:ok)
+          expect(flash[:notice]).to be_nil
+        end
+      end
+    end
+
     context "when signed in" do
       before { sign_in(user) }
 
@@ -96,26 +116,6 @@ RSpec.describe NominationsController, type: :controller do
 
             it "renders the form when you have details entered" do
               expect(get_show).to have_http_status(:ok)
-            end
-          end
-        end
-
-        context "when signed in as support" do
-          let(:support) { create(:support) }
-
-          before { sign_in support }
-
-          it "redirects, doesn't let you look at the nomination" do
-            expect(get_show).to have_http_status(:found)
-            expect(flash[:notice]).to match(/signed in as support/i)
-          end
-
-          context "with hugo_admin rights" do
-            let(:support) { create(:support, :hugo_admin) }
-
-            it "renders ok" do
-              expect(get_show).to have_http_status(:ok)
-              expect(flash[:notice]).to be_nil
             end
           end
         end
