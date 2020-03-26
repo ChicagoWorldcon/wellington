@@ -34,7 +34,11 @@ RSpec.describe NominationReminderMassMailout, type: :job do
     end
 
     context "with users" do
-      before { create(:user, :with_reservation) }
+      before do
+        Timecop.freeze("2020-01-01".to_datetime) do
+          create(:user, :with_reservation)
+        end
+      end
 
       it "doesn't execute 20 minutes before the window" do
         $voting_opens_at = 3.days.from_now + 20.minutes
