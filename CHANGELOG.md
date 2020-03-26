@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...master)
 
+### Added
+- Nothing significant in this release
+
+### Changed
+- Patch Rails against [CVE-2020-5267](https://nvd.nist.gov/vuln/detail/CVE-2020-5267)
+  [!156](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/156)
+
+### Removed
+- Nothing significant in this release
+
+
 ## [Tag 2.4.1 - 2020-03-06](https://gitlab.com/worldcon/2020-wellington/compare/2.4.0...2.4.1)
 
 ### Added
