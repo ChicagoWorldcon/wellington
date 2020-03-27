@@ -19,4 +19,8 @@ require "rails_helper"
 RSpec.describe Finalist, type: :model do
   subject(:model) { create(:finalist) }
   it { is_expected.to be_valid }
+
+  it "forces you to specify field_1" do
+    expect(build(:finalist, field_1: nil)).to_not be_valid
+  end
 end

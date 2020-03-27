@@ -17,4 +17,6 @@
 class Finalist < ApplicationRecord
   belongs_to :category
   has_many :ranks
+
+  validates :field_1, presence: true
 end
