@@ -25,18 +25,6 @@ FactoryBot.define do
 
     trait :best_novel # Just for completeness, this is the default case
 
-    trait :best_novel do
-      name { "Best Novel" }
-      description {
-        %{
-          A science fiction or fantasy story of 40,000 words or more, published for the first time in 2019.
-        }.strip_heredoc
-      }
-      field_1 { "Title" }
-      field_2 { "Author" }
-      field_3 { "Publisher" }
-    end
-
     trait :best_novella do
       name { "Best Novella" }
       description {
