@@ -18,5 +18,5 @@ class Rank < ApplicationRecord
   belongs_to :finalist
   belongs_to :reservation
 
-  validates :position, presence: true
+  validates :position, presence: true, uniqueness: true
 end

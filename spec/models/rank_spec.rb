@@ -17,10 +17,19 @@
 require "rails_helper"
 
 RSpec.describe Rank, type: :model do
-  subject(:model) { create(:rank) }
+  let(:tom) { create(:reservation) }
+  let(:jerry) { create(:reservation) }
+  subject(:model) { create(:rank, reservation: tom) }
+
   it { is_expected.to be_valid }
 
   it "is invalid without position" do
     expect(build(:rank, position: nil)).to_not be_valid
+  end
+
+  it "won't let you reuse positions" do
+    expect(model).to be_valid
+    model_2 = build(:rank, position: model.position)
+    expect(model_2).to_not be_valid
   end
 end
