@@ -27,13 +27,12 @@ RSpec.describe Rank, type: :model do
     expect(build(:rank, position: nil)).to_not be_valid
   end
 
-  it "won't let you reuse positions" do
+  it "won't let you reuse positions on same reservation" do
     expect(model).to be_valid
-    model_2 = build(:rank, position: model.position)
-    expect(model_2).to_not be_valid
+    expect(model.dup).to_not be_valid
   end
 
-  xit "lets you reuse positions from different reservations" do
+  it "lets you reuse positions from different reservations" do
     expect(create(:rank, position: 1, reservation: tom)).to be_valid
     expect(build(:rank, position: 1, reservation: jerry)).to be_valid
   end
