@@ -19,6 +19,8 @@ require "rails_helper"
 RSpec.describe Rank, type: :model do
   let(:tom) { create(:reservation) }
   let(:jerry) { create(:reservation) }
+  let(:tolkien) { create(:finalist, field_1: "Tolkien") }
+
   subject(:model) { create(:rank, reservation: tom) }
 
   it { is_expected.to be_valid }
@@ -35,5 +37,19 @@ RSpec.describe Rank, type: :model do
   it "lets you reuse positions from different reservations" do
     expect(create(:rank, position: 1, reservation: tom)).to be_valid
     expect(build(:rank, position: 1, reservation: jerry)).to be_valid
+  end
+
+  it "won't let you rank the same finalist twice" do
+    rank_1 = create(:rank, position: 1, reservation: tom, finalist: tolkien)
+    rank_2 = build(:rank, position: 2, reservation: tom, finalist: tolkien)
+    expect(rank_1).to be_valid
+    expect(rank_2).to_not be_valid
+  end
+
+  it "will let you rank the same finalist over different reservations" do
+    rank_1 = create(:rank, position: 1, reservation: tom, finalist: tolkien)
+    rank_2 = build(:rank, position: 2, reservation: jerry, finalist: tolkien)
+    expect(rank_1).to be_valid
+    expect(rank_2).to be_valid
   end
 end
