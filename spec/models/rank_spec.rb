@@ -32,4 +32,9 @@ RSpec.describe Rank, type: :model do
     model_2 = build(:rank, position: model.position)
     expect(model_2).to_not be_valid
   end
+
+  xit "lets you reuse positions from different reservations" do
+    expect(create(:rank, position: 1, reservation: tom)).to be_valid
+    expect(build(:rank, position: 1, reservation: jerry)).to be_valid
+  end
 end
