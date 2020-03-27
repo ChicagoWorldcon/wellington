@@ -19,4 +19,8 @@ require "rails_helper"
 RSpec.describe Rank, type: :model do
   subject(:model) { create(:rank) }
   it { is_expected.to be_valid }
+
+  it "is invalid without position" do
+    expect(build(:rank, position: nil)).to_not be_valid
+  end
 end
