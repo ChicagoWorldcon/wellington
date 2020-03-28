@@ -18,7 +18,8 @@
       <p>{{ category.name }}</p>
       <ul class="list-group list-group-flush text-dark">
         <li v-for="finalist in category.finalists" class="list-group-item">
-          <input type="text" :value="finalist.rank">{{ finalist.name }}
+          <input type="text" v-model="finalist.rank">
+          {{ finalist.name }}
         </li>
       </ul>
     </div>
@@ -29,7 +30,6 @@
 export default {
   data: function () {
     return {
-      message: "Hello Vue!",
       categories: [
         {
           name: "Best Novel",
@@ -99,14 +99,15 @@ export default {
         }
       ]
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
 input {
   width: 25px;
-  margin-right: 5px;
+  margin: 0 5px 5px 0;
   text-align: center;
+  line-height: 1em;
 }
 </style>
