@@ -66,6 +66,7 @@ Rails.application.routes.draw do
 
   resources :reservations do
     resources :charges
+    resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
