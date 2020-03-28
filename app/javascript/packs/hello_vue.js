@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
     el: '#finalist-form',
     data: {
-      message: "Can you say hello?"
+      message: "Can you say hello?",
     },
     components: { "finalists": App }
   })
