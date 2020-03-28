@@ -44,3 +44,8 @@ import '@fortawesome/fontawesome-free/js/solid';
 import ujs from '@rails/ujs';
 
 ujs.start();
+
+// ActiveStorage can be used for uploading items to S3 and cloud storage
+// see https://edgeguides.rubyonrails.org/active_storage_overview.html
+// import activeStorage from '@rails/activestorage';
+// activeStorage.start();
