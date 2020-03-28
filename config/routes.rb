@@ -35,8 +35,10 @@ Rails.application.routes.draw do
       password_provided = ::Digest::SHA256.hexdigest(password)
       password_expected = ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"])
 
-      ActiveSupport::SecurityUtils.secure_compare(user_provided, user_expected) &&
-        ActiveSupport::SecurityUtils.secure_compare(password_provided, password_expected)
+      user_ok = ActiveSupport::SecurityUtils.secure_compare(user_provided, user_expected)
+      password_ok = ActiveSupport::SecurityUtils.secure_compare(password_provided, password_expected)
+
+      (user_ok && password_ok)
     end
   elsif ENV["SIDEKIQ_NO_PASSWORD"].present?
     # Mounting /sidekiq without password
