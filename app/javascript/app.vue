@@ -17,19 +17,21 @@
     <div v-for="category in categories">
       <p>{{ category.name }}</p>
       <ul class="list-group list-group-flush text-dark">
-        <li v-for="finalist in category.finalists" class="list-group-item">
-          <input type="text" v-model="finalist.rank">
-          {{ finalist.name }}
-        </li>
+        <finalist
+          v-for="finalist in category.finalists"
+          v-bind:finalist="finalist"
+        />
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import Finalist from './finalist.vue'
+
 export default {
-  data: function () {
-    return {
+  data: () => (
+    {
       categories: [
         {
           name: "Best Novel",
@@ -99,7 +101,10 @@ export default {
         }
       ]
     }
+  ),
+  computed: {
   },
+  components: { Finalist }
 }
 </script>
 
