@@ -32,10 +32,12 @@ import Finalist from './finalist.vue';
 export default {
   props: ['category'],
   computed: {
-    ranks: (vm) => {
-      const ranks = vm.category.finalists.map((finalist) => finalist.rank);
-      const setRanks = ranks.filter((r) => !!r);
-      return setRanks;
+    ranks: ({ category }) => {
+      const ranks = category.finalists.map((finalist) => finalist.rank);
+      return ranks
+        .filter((r) => !!r)
+        .map((r) => parseInt(r, 10))
+        .sort();
     },
   },
   components: { Finalist },

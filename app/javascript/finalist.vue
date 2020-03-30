@@ -14,14 +14,20 @@
 
 <template>
   <li class="finalist-component list-group-item">
-    <input
-      type="text"
-      v-model="finalist.rank"
-      :class="{ 'text-danger': invalid }"
-    >
-    <span v-bind:class="{ 'text-danger': invalid }">
-      {{ finalist.name }}
-    </span>
+    <div>
+      <input
+        type="text"
+        v-model.number="finalist.rank"
+        :class="{ 'text-danger': invalid }"
+      >
+      <span v-bind:class="{ 'text-danger': invalid }">
+        {{ finalist.name }}
+      </span>
+    </div>
+
+    <p v-for="error in errors" :key="error">
+      {{ error }}
+    </p>
   </li>
 </template>
 
@@ -30,26 +36,36 @@ export default {
   props: ['finalist', 'ranks'],
   computed: {
     rankSet: (vm) => !!vm.finalist.rank,
-    rankInRange: (vm) => {
-      const rank = parseInt(vm.finalist.rank, 10);
-      return rank >= 1 && rank <= 7;
-    },
-    rankAlreadySet: (vm) => (
-      vm.ranks.filter((rank) => rank === vm.finalist.rank).length > 1
+    rankInRange: ({ finalist }) => (
+      finalist.rank >= 1 && finalist.rank <= 7
     ),
-    ranksSmallToLarge: (vm) => {
-      const rank = parseInt(vm.finalist.rank, 10);
-      const ranks = vm.ranks.map(r => parseInt(r, 10)).sort();
-      return ranks[rank - 1] === rank;
+    rankAlreadySet: ({ finalist, ranks }) => {
+      const matching = ranks.filter((rank) => rank === finalist.rank);
+      return matching.length > 1;
     },
-    invalid: (vm) => (
-      !vm.valid
+    ranksSmallToLarge: ({ finalist, ranks }) => {
+      const expectedOffset = finalist.rank - 1;
+      return ranks[expectedOffset] === finalist.rank;
+    },
+    invalid: ({ errors }) => (
+      errors.length > 0
     ),
-    valid: (vm) => {
+    errors: (vm) => {
       if (!vm.rankSet) {
-        return true;
+        return [];
       }
-      return !vm.rankAlreadySet && vm.rankInRange && vm.ranksSmallToLarge;
+
+      const errors = [];
+      if (vm.rankAlreadySet) {
+        errors.push(`Rank ${vm.finalist.rank} is set on another finalist`);
+      }
+      if (!vm.rankInRange) {
+        errors.push('Out of bounds, needs to be between 1 and 7');
+      }
+      if (errors.length === 0 && !vm.ranksSmallToLarge) {
+        errors.push('No skipping, please enter ranks 1, 2, 3...');
+      }
+      return errors;
     },
   },
 };
