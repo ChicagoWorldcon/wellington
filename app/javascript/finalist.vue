@@ -37,6 +37,11 @@ export default {
     rankAlreadySet: (vm) => (
       vm.ranks.filter((rank) => rank === vm.finalist.rank).length > 1
     ),
+    ranksSmallToLarge: (vm) => {
+      const rank = parseInt(vm.finalist.rank, 10);
+      const ranks = vm.ranks.map(r => parseInt(r, 10)).sort();
+      return ranks[rank - 1] === rank;
+    },
     invalid: (vm) => (
       !vm.valid
     ),
@@ -44,7 +49,7 @@ export default {
       if (!vm.rankSet) {
         return true;
       }
-      return !vm.rankAlreadySet && vm.rankInRange;
+      return !vm.rankAlreadySet && vm.rankInRange && vm.ranksSmallToLarge;
     },
   },
 };
