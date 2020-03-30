@@ -17,7 +17,7 @@
     <input
       type="text"
       v-model="finalist.rank"
-      v-bind:class="{ 'text-danger': invalid }"
+      :class="{ 'text-danger': invalid }"
     >
     <span v-bind:class="{ 'text-danger': invalid }">
       {{ finalist.name }}
@@ -27,29 +27,27 @@
 
 <script>
 export default {
-  props: ["finalist", "ranks"],
+  props: ['finalist', 'ranks'],
   computed: {
-    rankSet: (vm) => {
-      return !!vm.finalist.rank
-    },
+    rankSet: (vm) => !!vm.finalist.rank,
     rankInRange: (vm) => {
       const rank = parseInt(vm.finalist.rank, 10);
-      return 1 <= rank && rank <= 7
+      return rank >= 1 && rank <= 7;
     },
     rankAlreadySet: (vm) => (
-      vm.ranks.filter(rank => rank == vm.finalist.rank).length > 1
+      vm.ranks.filter((rank) => rank === vm.finalist.rank).length > 1
     ),
     invalid: (vm) => (
       !vm.valid
     ),
     valid: (vm) => {
       if (!vm.rankSet) {
-        return true
+        return true;
       }
-      return !vm.rankAlreadySet && vm.rankInRange
+      return !vm.rankAlreadySet && vm.rankInRange;
     },
-  }
-}
+  },
+};
 </script>
 
 <style>

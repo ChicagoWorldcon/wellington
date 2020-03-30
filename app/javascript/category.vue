@@ -18,27 +18,28 @@
     <ul class="list-group list-group-flush text-dark">
       <finalist
         v-for="finalist in category.finalists"
-        v-bind:finalist="finalist"
-        v-bind:ranks="ranks"
+        :key="finalist.id"
+        :finalist="finalist"
+        :ranks="ranks"
       />
     </ul>
   </div>
 </template>
 
 <script>
-import Finalist from './finalist.vue'
+import Finalist from './finalist.vue';
 
 export default {
-  props: ["category"],
+  props: ['category'],
   computed: {
     ranks: (vm) => {
-      const ranks = vm.category.finalists.map(finalist => finalist.rank)
-      const setRanks = ranks.filter(r => !!r)
-      return setRanks
-    }
+      const ranks = vm.category.finalists.map((finalist) => finalist.rank);
+      const setRanks = ranks.filter((r) => !!r);
+      return setRanks;
+    },
   },
   components: { Finalist },
-}
+};
 </script>
 
 <style scoped>
