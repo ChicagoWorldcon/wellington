@@ -14,12 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Vue from 'vue/dist/vue.esm'
-import App from '../app.vue'
+import $ from 'jquery';
+import Vue from 'vue/dist/vue.esm';
+import App from '../app.vue';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const app = new Vue({
+  window.app = new Vue({
     el: '#finalist-form',
-    components: { "finalists": App }
-  })
-})
+    components: {
+      finalists: App,
+    },
+  });
+});
