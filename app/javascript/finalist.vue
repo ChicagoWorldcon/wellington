@@ -13,13 +13,13 @@
 // limitations under the License.
 
 <template>
-  <li class="list-group-item">
+  <li class="finalist-component list-group-item">
     <input
       type="text"
       v-model="finalist.rank"
-      v-bind:class="inputClasses"
+      v-bind:class="{ 'text-danger': invalid }"
     >
-    <span v-bind:class="textClasses">
+    <span v-bind:class="{ 'text-danger': invalid }">
       {{ finalist.name }}
     </span>
   </li>
@@ -29,21 +29,25 @@
 export default {
   props: ["finalist", "ranks"],
   computed: {
-    isValid: () => {
-      return false;
+    rankSet: (vm) => {
+      return !!vm.finalist.rank
     },
-    textClasses: () => (
-      {
-        "text-danger": true
-      }
+    rankInRange: (vm) => {
+      const rank = parseInt(vm.finalist.rank, 10);
+      return 1 <= rank && rank <= 7
+    },
+    rankAlreadySet: (vm) => (
+      vm.ranks.filter(rank => rank == vm.finalist.rank).length > 1
     ),
-    inputClasses: () => (
-      {
-        "is-invalid": true,
-        "form-control": true,
-        "text-danger": true,
-      }
+    invalid: (vm) => (
+      !vm.valid
     ),
+    valid: (vm) => {
+      if (!vm.rankSet) {
+        return true
+      }
+      return !vm.rankAlreadySet && vm.rankInRange
+    },
   }
 }
 </script>
@@ -54,10 +58,5 @@ input {
   margin: 0 5px 5px 0;
   text-align: center;
   line-height: 1em;
-}
-
-.is-invalid {
-  width: 75px;
-  color: #f00;
 }
 </style>

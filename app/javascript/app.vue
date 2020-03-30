@@ -13,23 +13,20 @@
 // limitations under the License.
 
 <template>
-  <div>
-    <div v-for="category in categories">
-      <p>{{ category.name }}</p>
-      <ul class="list-group list-group-flush text-dark">
-        <finalist
-          v-for="finalist in category.finalists"
-          v-bind:finalist="finalist"
-        />
-      </ul>
-    </div>
+  <div class="app-component">
+    <category
+      v-for="category in categories"
+      v-bind:category="category"
+    />
   </div>
 </template>
 
 <script>
 import Finalist from './finalist.vue'
+import Category from './category.vue'
 
 export default {
+  components: { Category },
   data: () => (
     {
       categories: [
@@ -102,9 +99,7 @@ export default {
       ]
     }
   ),
-  computed: {
-  },
-  components: { Finalist }
+  computed: {},
 }
 </script>
 
