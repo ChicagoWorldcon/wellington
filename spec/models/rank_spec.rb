@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe Rank, type: :model do
   let(:tom) { create(:reservation) }
   let(:jerry) { create(:reservation) }
-  let(:tolkien) { create(:finalist, field_1: "Tolkien") }
+  let(:tolkien) { create(:finalist, description: "Tolkien") }
 
   subject(:model) { create(:rank, reservation: tom) }
 

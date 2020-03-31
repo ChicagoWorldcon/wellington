@@ -18,9 +18,7 @@ class CreateFinalists < ActiveRecord::Migration[6.0]
   def change
     create_table :finalists do |t|
       t.references :category, index: true, null: false, foreign_key: true
-      t.string :field_1, null: false
-      t.string :field_2
-      t.string :field_3
+      t.string :description, null: false
       t.timestamps
     end
   end

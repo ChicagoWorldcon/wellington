@@ -227,9 +227,7 @@ ALTER SEQUENCE public.elections_id_seq OWNED BY public.elections.id;
 CREATE TABLE public.finalists (
     id bigint NOT NULL,
     category_id bigint NOT NULL,
-    field_1 character varying NOT NULL,
-    field_2 character varying,
-    field_3 character varying,
+    description character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );

@@ -18,8 +18,6 @@ FactoryBot.define do
   factory :finalist do
     association :category
 
-    field_1 { Faker::Book.title }
-    field_2 { Faker::Book.author }
-    field_3 { Faker::Book.publisher }
+    description { "%s, by %s (%s)" % [Faker::Book.title, Faker::Book.author, Faker::Book.publisher] }
   end
 end
