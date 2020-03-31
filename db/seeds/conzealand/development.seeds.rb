@@ -37,7 +37,7 @@ membership_distribution_averages = [
 
 
 all_memberships = Membership.all.to_a
-50.times do |count|
+10.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
   memberships_held = membership_distribution_averages.sample # <-- biased sample
