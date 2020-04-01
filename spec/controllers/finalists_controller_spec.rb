@@ -23,13 +23,29 @@ RSpec.describe FinalistsController, type: :controller do
   let(:election) { create(:election) }
 
   describe "show" do
-    subject do
-      get :show, params: {
+    let(:params) do
+      {
         reservation_id: reservation.id,
         id: election.i18n_key,
       }
     end
 
+    subject(:get_show) { get :show, params: params }
+
     it { is_expected.to have_http_status(:ok) }
+
+    it "sets content type" do
+      expect(get_show.media_type).to eq "text/html"
+    end
+
+    context "in json" do
+      subject(:get_show) { get :show, params: params, format: :json }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it "sets content type" do
+        expect(get_show.media_type).to eq "application/json"
+      end
+    end
   end
 end

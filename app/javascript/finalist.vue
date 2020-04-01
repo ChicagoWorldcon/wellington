@@ -47,6 +47,8 @@ export default {
       const expectedOffset = finalist.rank - 1;
       return ranks[expectedOffset] === finalist.rank;
     },
+    // TODO check out validation options in vue's model
+    // https://vuejs.org/v2/api/#model
     invalid: ({ errors }) => (
       errors.length > 0
     ),

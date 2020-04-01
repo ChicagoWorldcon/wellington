@@ -19,10 +19,23 @@ import Vue from 'vue/dist/vue.esm';
 import App from '../app.vue';
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.app = new Vue({
-    el: '#finalist-form',
-    components: {
-      finalists: App,
-    },
+  $.getJSON(window.location.path, (json, state) => {
+    if (state !== 'success') {
+      // eslint-disable-next-line no-alert
+      alert("Something wen't wrong in the page. Please try refresh, and contact support if this happens again");
+      window.location.reload();
+    }
+
+    console.log(json.categories);
+
+    window.app = new Vue({
+      el: '#finalist-form',
+      components: {
+        finalists: App,
+      },
+      data: {
+        categories: json.categories,
+      },
+    });
   });
 });
