@@ -179,8 +179,8 @@ FactoryBot.define do
       field_3 { "Studio/Network" }
     end
 
-    trait :best_professional_editor_short_form do
-      name { "Best Professional Editor, Short Form" }
+    trait :best_editor_short_form do
+      name { "Best Editor, Short Form" }
       description {
         %{
           The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
@@ -192,8 +192,8 @@ FactoryBot.define do
       field_3 { nil }
     end
 
-    trait :best_professional_editor_long_form do
-      name { "Best Professional Editor, Long Form" }
+    trait :best_editor_long_form do
+      name { "Best Editor, Long Form" }
       description {
         %{
           The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
@@ -450,8 +450,8 @@ FactoryBot.define do
       field_3 { "Studio/Network" }
     end
 
-    trait :retro_best_professional_editor_short_form do
-      name { "Retro Best Professional Editor, Short Form" }
+    trait :retro_best_editor_short_form do
+      name { "Retro Best Editor, Short Form" }
       description {
         %{
           The editor of at least four (4) anthologies, collections, or magazine issues (or their equivalent in other
@@ -463,8 +463,8 @@ FactoryBot.define do
       field_3 { nil }
     end
 
-    trait :retro_best_professional_editor_long_form do
-      name { "Retro Best Professional Editor, Long Form" }
+    trait :retro_best_editor_long_form do
+      name { "Retro Best Editor, Long Form" }
       description {
         %{
            The editor of at least four (4) novel-length works primarily devoted to science fiction and/or fantasy
