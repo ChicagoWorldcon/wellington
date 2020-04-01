@@ -39,6 +39,17 @@ RSpec.describe Rank, type: :model do
     expect(build(:rank, position: 1, reservation: jerry)).to be_valid
   end
 
+  it "lets you reuse positions across categories" do
+    best_novel = create(:category, :best_novel)
+    best_editor = create(:category, :best_editor_short_form)
+
+    novel_finalist = create(:finalist, category: best_novel)
+    editor_finalist = create(:finalist, category: best_editor)
+
+    expect(create(:rank, reservation: tom, position: 1, finalist: novel_finalist)).to be_valid
+    expect(build(:rank, reservation: tom, position: 1, finalist: editor_finalist)).to be_valid
+  end
+
   it "won't let you rank the same finalist twice" do
     rank_1 = create(:rank, position: 1, reservation: tom, finalist: tolkien)
     rank_2 = build(:rank, position: 2, reservation: tom, finalist: tolkien)

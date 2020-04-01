@@ -18,6 +18,22 @@ class Rank < ApplicationRecord
   belongs_to :finalist
   belongs_to :reservation
 
-  validates :position, presence: true, uniqueness: { scope: :reservation }
+  validate :position_unique_in_category
+
   validates :finalist, uniqueness: { scope: :reservation }
+  validates :position, presence: true
+
+  private
+
+  def position_unique_in_category
+    finalists_in_category = Finalist.where(category_id: finalist.category_id)
+
+    positions_in_category = Rank.where(
+      position: position,
+      reservation_id: reservation_id,
+      finalist_id: finalists_in_category,
+    )
+
+    positions_in_category.where.not(id: id).exists?
+  end
 end
