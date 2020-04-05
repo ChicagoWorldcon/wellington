@@ -112,7 +112,7 @@ INSTALMENT_PAYMENT_STEP_CENTS=5000
 # Postgres default values
 DB_HOST=postgres
 POSTGRES_USER=postgres
-# POSTGRES_PASSWORD="super secret password"
+POSTGRES_PASSWORD=secretcopypasta
 
 # Sidekiq is a background task manager which you can view on /sidekiq
 # Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
