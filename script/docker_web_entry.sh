@@ -24,11 +24,15 @@ until psql -Atx "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST" -c 'se
   sleep 5
 done
 
-# Development setup runs when RAILS_ENV is not set
+# Development environment setup runs when RAILS_ENV is not set
 if [[ -z $RAILS_ENV ]]; then
   bundle install
   yarn install
   bin/rake dev:bootstrap
+
+  # Background webpack watcher for speedy complilation
+  # FIXME Hack, should be it's own process but was done this way so rails doesn't hit webpacker as well
+  bin/webpack-dev-server --host 0.0.0.0 &
 fi
 
 # Run migrations and start the server, anything that comes in on 3000 is accepted

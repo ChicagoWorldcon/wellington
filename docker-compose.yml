@@ -45,7 +45,8 @@ services:
     env_file:
       .env
     ports:
-      - "3000:3000"
+      - "3000:3000" # Rails
+      - "3035:3035" # Webpacker
     restart: always
     volumes:
       - ./:/app                         # Mount current working directory
@@ -76,6 +77,6 @@ services:
       - web
       - worker
     ports:
-      - "1080:1080"
-      - "1025:1025"
+      - "1080:1080" # Browser viewable mailbox
+      - "1025:1025" # Open SMTP reciever port
     restart: always
