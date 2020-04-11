@@ -23,7 +23,7 @@ volumes:
 
 services:
   postgres:
-    image: postgres:9-alpine
+    image: postgres:12-alpine
     restart: always
     env_file:
       - .env
