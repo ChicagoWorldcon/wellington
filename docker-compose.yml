@@ -41,6 +41,7 @@ services:
     image: registry.gitlab.com/worldcon/2020-wellington:latest
     depends_on:
       - postgres
+      - redis
     env_file:
       .env
     ports:
@@ -56,7 +57,9 @@ services:
     entrypoint: "script/docker_sidekiq_entry.sh"
     image: registry.gitlab.com/worldcon/2020-wellington:latest
     depends_on:
+      - web
       - postgres
+      - redis
     env_file:
       .env
     restart: always
@@ -69,6 +72,9 @@ services:
   mail:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"
     image: registry.gitlab.com/worldcon/2020-wellington:latest
+    depends_on:
+      - web
+      - worker
     ports:
       - "1080:1080"
       - "1025:1025"
