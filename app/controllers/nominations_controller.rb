@@ -65,10 +65,6 @@ class NominationsController < ApplicationController
 
   private
 
-  def lookup_election!
-    @election = Election.find_by!(i18n_key: params[:id])
-  end
-
   def check_access!
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
@@ -93,31 +89,11 @@ class NominationsController < ApplicationController
     end
   end
 
-  def lookup_legal_name_or_redirect
-    detail = @reservation.active_claim.detail
-    if detail.present?
-      @legal_name = detail.hugo_name
-      return
-    end
-
-    if @reservation.membership.name == "dublin_2019"
-      @legal_name = "Dublin Friend"
-      return
-    end
-
-    flash[:notice] = "Please enter your details to nominate for hugo"
-    redirect_to @reservation
-  end
-
   def nomination_params
     params.require(:category).require(:nomination)
   end
 
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
-  end
-
-  def hugo_admin_signed_in?
-    support_signed_in? && current_support.hugo_admin.present?
   end
 end

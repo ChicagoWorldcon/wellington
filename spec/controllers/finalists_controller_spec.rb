@@ -19,10 +19,12 @@ require "rails_helper"
 RSpec.describe FinalistsController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation) }
+  let(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
   let(:election) { create(:election) }
 
   describe "show" do
+    subject(:get_show) { get :show, params: params }
+
     let(:params) do
       {
         reservation_id: reservation.id,
@@ -30,21 +32,27 @@ RSpec.describe FinalistsController, type: :controller do
       }
     end
 
-    subject(:get_show) { get :show, params: params }
-
-    it { is_expected.to have_http_status(:ok) }
-
-    it "sets content type" do
-      expect(get_show.media_type).to eq "text/html"
+    it "404s when not signed in" do
+      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context "in json" do
-      subject(:get_show) { get :show, params: params, format: :json }
+    context "when signed in" do
+      before { sign_in reservation.user }
 
       it { is_expected.to have_http_status(:ok) }
 
       it "sets content type" do
-        expect(get_show.media_type).to eq "application/json"
+        expect(get_show.media_type).to eq "text/html"
+      end
+
+      context "in json" do
+        subject(:get_show) { get :show, params: params, format: :json }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it "sets content type" do
+          expect(get_show.media_type).to eq "application/json"
+        end
       end
     end
   end

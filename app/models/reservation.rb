@@ -71,8 +71,16 @@ class Reservation < ApplicationRecord
     end
   end
 
+  # You can nominate if any of your order history had this ability
+  # Gets around upgrades after nomination rights are no longer available
   def can_nominate?
     Membership.can_nominate.where(id: orders.select(:membership_id)).exists?
+  end
+
+  # This isn't strictly needed because we don't intend to turn off voting rights
+  # However it'd be good to be consistent with #can_nominate?
+  def can_vote?
+    Membership.can_vote.where(id: orders.select(:membership_id)).exists?
   end
 
   def paid?

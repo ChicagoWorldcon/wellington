@@ -15,6 +15,11 @@
 # limitations under the License.
 
 class FinalistsController < ApplicationController
+  before_action :lookup_reservation!
+  before_action :check_access!
+  before_action :lookup_election!
+  before_action :lookup_legal_name_or_redirect
+
   def show
     respond_to do |format|
       format.html # show.html
@@ -28,12 +33,9 @@ class FinalistsController < ApplicationController
 
   private
 
-  # TODO Enforce voting is open
-  # TODO Privacy, users can only see this if they hold the reservation
   def sample_ranked_categories
-    sample_reservation = Membership.can_vote.first.reservations.sample
     categories_in_election = Category.joins(:election).where(elections: { i18n_key: params[:id] })
-    position_by_finalist = sample_reservation.ranks.pluck(:finalist_id, :position).to_h
+    position_by_finalist = @reservation.ranks.pluck(:finalist_id, :position).to_h
 
     categories_in_election.includes(:finalists).order("categories.order").map do |c|
       finalists = c.finalists.map { |f| TransformFinalist.new(f, position_by_finalist).call }
@@ -59,6 +61,30 @@ class FinalistsController < ApplicationController
         name: finalist.description,
         rank: position_by_finalist[finalist.id],
       }
+    end
+  end
+
+  def check_access!
+    # You have unrestricted access if you're a hugo admin
+    return true if hugo_admin_signed_in?
+
+    now = DateTime.now
+
+    if now < $voting_opens_at
+      raise ActiveRecord::RecordNotFound
+    end
+
+    if $hugo_closed_at < now
+      raise ActiveRecord::RecordNotFound
+    end
+
+    if !@reservation.can_vote?
+      raise ActiveRecord::RecordNotFound
+    end
+
+    if support_signed_in?
+      flash[:notice] = "Can't view finalists when signed in as support"
+      redirect_to @reservation
     end
   end
 end
