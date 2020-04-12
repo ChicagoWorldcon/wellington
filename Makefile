@@ -51,6 +51,10 @@ sql:
 shell:
 	docker-compose exec web sh
 
+# lets you run sql commands against development database
+psql:
+	docker-compose exec postgres sh -c 'psql -U $$POSTGRES_USER worldcon_development'
+
 # Alias for people who have old habbits
 bash: shell
 
