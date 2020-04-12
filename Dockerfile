@@ -20,6 +20,7 @@ RUN apk add \
       build-base \
       freetds-dev \
       git \
+      less \
       netcat-openbsd \
       nodejs \
       nodejs-npm \
