@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.reload();
     }
 
-    console.log(json.categories);
-
     window.app = new Vue({
       el: '#finalist-form',
       components: {

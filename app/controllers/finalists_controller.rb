@@ -19,102 +19,46 @@ class FinalistsController < ApplicationController
     respond_to do |format|
       format.html # show.html
       format.json {
-        render json: stub_response
+        render json: {
+          categories: sample_ranked_categories
+        }
       }
     end
   end
 
   private
 
-  # TODO Create query to do this based on rank
   # TODO Enforce voting is open
   # TODO Privacy, users can only see this if they hold the reservation
-  def stub_response
-    {
-      categories: [
-        {
-          name: "Best Novel",
-          id: 1,
-          finalists: [
-            {
-              name: "The Calculating Stars, by Mary Robinette Kowal (Tor)",
-              rank: 1,
-              id: 1,
-            },
-            {
-              name: "Record of a Spaceborn Few, by Becky Chambers (Hodder & Stoughton / Harper Voyager)",
-              rank: nil,
-              id: 2,
-            },
-            {
-              name: "Revenant Gun, by Yoon Ha Lee (Solaris)",
-              rank: nil,
-              id: 3,
-            },
-            {
-              name: "Space Opera, by Catherynne M. Valente (Saga)",
-              rank: nil,
-              id: 4,
-            },
-            {
-              name: "Spinning Silver, by Naomi Novik (Del Rey / Macmillan)",
-              rank: nil,
-              id: 5,
-            },
-            {
-              name: "Trail of Lightning, by Rebecca Roanhorse (Saga)",
-              rank: nil,
-              id: 6,
-            },
-            {
-              name: "No Award",
-              rank: nil,
-              id: 7,
-            },
-          ],
-        },
-        {
-          name: "Best Novela",
-          id: 2,
-          finalists: [
-            {
-              name: "Artificial Condition, by Martha Wells (Tor.com Publishing)",
-              rank: nil,
-              id: 8,
-            },
-            {
-              name: "Beneath the Sugar Sky, by Seanan McGuire (Tor.com Publishing)",
-              rank: nil,
-              id: 9,
-            },
-            {
-              name: "Binti: The Night Masquerade, by Nnedi Okorafor (Tor.com Publishing)",
-              rank: nil,
-              id: 10,
-            },
-            {
-              name: "The Black God’s Drums, by P. Djèlí Clark (Tor.com Publishing)",
-              rank: nil,
-              id: 11,
-            },
-            {
-              name: "Gods, Monsters, and the Lucky Peach, by Kelly Robson (Tor.com Publishing)",
-              rank: nil,
-              id: 12,
-            },
-            {
-              name: "The Tea Master and the Detective, by Aliette de Bodard (Subterranean Press / JABberwocky Literary Agency)",
-              rank: nil,
-              id: 13,
-            },
-            {
-              name: "No Award",
-              rank: nil,
-              id: 14,
-            },
-          ],
-        },
-      ],
-    }
+  def sample_ranked_categories
+    sample_reservation = Membership.can_vote.first.reservations.sample
+    categories_in_election = Category.joins(:election).where(elections: { i18n_key: params[:id] })
+    position_by_finalist = sample_reservation.ranks.pluck(:finalist_id, :position).to_h
+
+    categories_in_election.includes(:finalists).order("categories.order").map do |c|
+      finalists = c.finalists.map { |f| TransformFinalist.new(f, position_by_finalist).call }
+      TransformCategory.new(c, finalists).call
+    end
+  end
+
+  TransformCategory = Struct.new(:category, :finalists) do
+    def call
+      {
+        id: category.id,
+        name: category.name,
+        finalists: finalists,
+      }
+
+    end
+  end
+
+  TransformFinalist = Struct.new(:finalist, :position_by_finalist) do
+    def call
+      {
+        id: finalist.id,
+        name: finalist.description,
+        rank: position_by_finalist[finalist.id],
+      }
+    end
   end
 end
