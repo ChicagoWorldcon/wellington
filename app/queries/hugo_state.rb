@@ -17,10 +17,30 @@
 # HugoState abstracts date logic needed for checking if the hugos are open
 class HugoState
   def has_nominations_open?
-    false
+    return false if closed?
+    return false if has_voting_open?
+
+    utc($nomination_opens_at) <= now
   end
 
   def has_voting_open?
-    false
+    return false if closed?
+
+    utc($voting_opens_at) <= now
+  end
+
+  def closed?
+    open_time = utc($nomination_opens_at)..utc($hugo_closed_at)
+    !now.in?(open_time)
+  end
+
+  private
+
+  def now
+    utc(Time.now)
+  end
+
+  def utc(time)
+    time.in_time_zone("UTC")
   end
 end
