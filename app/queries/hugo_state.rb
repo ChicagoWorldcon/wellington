@@ -16,4 +16,11 @@
 
 # HugoState abstracts date logic needed for checking if the hugos are open
 class HugoState
+  def has_nominations_open?
+    false
+  end
+
+  def has_voting_open?
+    false
+  end
 end

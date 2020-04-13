@@ -18,5 +18,23 @@ require "rails_helper"
 
 RSpec.describe HugoState do
   subject(:query) { described_class.new }
-  it { is_expected.to_not be_nil }
+
+  # Reset times
+  around do |test|
+    original_values = $nomination_opens_at, $voting_opens_at, $hugo_closed_at
+    $nomination_opens_at, $voting_opens_at, $hugo_closed_at = nil, nil, nil
+    test.run
+    $nomination_opens_at, $voting_opens_at, $hugo_closed_at = original_values
+  end
+
+  context "before nominations open" do
+    before do
+      $nomination_opens_at = 1.day.from_now
+      $voting_opens_at = 2.days.from_now
+      $hugo_closed_at = 3.days.from_now
+    end
+
+    it { is_expected.to_not have_nominations_open }
+    it { is_expected.to_not have_voting_open }
+  end
 end
