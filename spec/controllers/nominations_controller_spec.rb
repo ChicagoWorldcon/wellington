@@ -48,24 +48,18 @@ RSpec.describe NominationsController, type: :controller do
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context "when signed in as support" do
-      let(:support) { create(:support) }
+    it "doesn't render before nomination" do
+      $nomination_opens_at = 1.day.from_now
+      $voting_opens_at = 2.days.from_now
+      $hugo_closed_at = 3.days.from_now
+      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+    end
 
-      before { sign_in support }
-
-      it "redirects, doesn't let you look at the nomination" do
-        expect(get_show).to have_http_status(:found)
-        expect(flash[:notice]).to match(/signed in as support/i)
-      end
-
-      context "with hugo_admin rights" do
-        let(:support) { create(:support, :hugo_admin) }
-
-        it "renders ok" do
-          expect(get_show).to have_http_status(:ok)
-          expect(flash[:notice]).to be_nil
-        end
-      end
+    it "deosn't renderafter nomination" do
+      $nomination_opens_at = 1.day.ago
+      $voting_opens_at = 1.second.ago
+      $hugo_closed_at = 1.day.from_now
+      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     context "when signed in" do
@@ -119,42 +113,48 @@ RSpec.describe NominationsController, type: :controller do
             end
           end
         end
-      end
 
-      it "doesn't render before nomination" do
-        $nomination_opens_at = 1.day.from_now
-        $voting_opens_at = 2.days.from_now
-        $hugo_closed_at = 3.days.from_now
-        expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+        context "when signed in as support" do
+          let(:support) { create(:support) }
 
-      it "deosn't renderafter nomination" do
-        $nomination_opens_at = 1.day.ago
-        $voting_opens_at = 1.second.ago
-        $hugo_closed_at = 1.day.from_now
-        expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+          before { sign_in support }
 
-      context "when reservation is in instalment" do
-        let!(:reservation) do
-          create(:reservation,
-            :instalment,
-            :with_order_against_membership,
-            :with_claim_from_user,
-            instalment_paid: 0,
-          )
+          it "redirects, doesn't let you look at the nomination" do
+            expect(get_show).to have_http_status(:found)
+            expect(flash[:notice]).to match(/signed in as support/i)
+          end
+
+          context "with hugo_admin rights" do
+            let(:support) { create(:support, :hugo_admin) }
+
+            it "renders ok" do
+              expect(get_show).to have_http_status(:ok)
+              expect(flash[:notice]).to be_nil
+            end
+          end
         end
 
-        it "redirects when there's no payments on a membership" do
-          expect(reservation.reload.has_paid_supporting?).to be_falsey
-          expect(get_show).to have_http_status(:found)
-          expect(flash[:error]).to be_present
-        end
+        context "when reservation is in instalment" do
+          let!(:reservation) do
+            create(:reservation,
+              :instalment,
+              :with_order_against_membership,
+              :with_claim_from_user,
+              instalment_paid: 0,
+            )
+          end
 
-        it "dispays when a user has paid for a supporting membership" do
-          reservation.charges << create(:charge, user: reservation.user)
-          expect(reservation.reload.has_paid_supporting?).to be_truthy
-          expect(get_show).to have_http_status(:ok)
+          it "redirects when there's no payments on a membership" do
+            expect(reservation.reload.has_paid_supporting?).to be_falsey
+            expect(get_show).to have_http_status(:found)
+            expect(flash[:error]).to be_present
+          end
+
+          it "dispays when a user has paid for a supporting membership" do
+            reservation.charges << create(:charge, user: reservation.user)
+            expect(reservation.reload.has_paid_supporting?).to be_truthy
+            expect(get_show).to have_http_status(:ok)
+          end
         end
       end
     end
