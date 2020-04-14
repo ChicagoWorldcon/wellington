@@ -28,53 +28,59 @@ RSpec.describe NominationsController, type: :controller do
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { reservation.user }
 
-  # Reset dates after tests run
-  # pasta from config/initializers/hugo.rb
-  after do
-    SetHugoGlobals.new.call
-  end
-
   describe "#show" do
     subject(:get_show) do
       get :show, params: { id: hugo.i18n_key, reservation_id: reservation.id }
     end
 
     it "404s when signed out" do
+      expect(HugoState).to_not receive(:new)
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "404s when you don't have nomination rights" do
-      reservation.membership.update!(can_nominate: false)
-      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+    context "when signed in with hugo_admin rights" do
+      it "renders ok" do
+        sign_in create(:support, :hugo_admin)
+        expect(HugoState).to_not receive(:new)
+        expect(get_show).to have_http_status(:ok)
+        expect(flash[:notice]).to be_nil
+      end
     end
 
-    it "doesn't render before nomination" do
-      $nomination_opens_at = 1.day.from_now
-      $voting_opens_at = 2.days.from_now
-      $hugo_closed_at = 3.days.from_now
-      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
-    end
+    context "when nominations are closed" do
+      before do
+        expect(HugoState)
+          .to receive_message_chain(:new, :has_nominations_opened?)
+          .and_return(false)
+      end
 
-    it "deosn't renderafter nomination" do
-      $nomination_opens_at = 1.day.ago
-      $voting_opens_at = 1.second.ago
-      $hugo_closed_at = 1.day.from_now
-      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
-    end
+      context "when signed in" do
+        before { sign_in(user) }
 
-    context "when signed in" do
-      before { sign_in(user) }
-
-      context "when nominations are open" do
-        before do
-          $nomination_opens_at = 1.second.ago
-          $voting_opens_at = 1.day.from_now
-          $hugo_closed_at = 2.days.from_now
+        it "doesn't render" do
+          expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
         end
+      end
+    end
 
-        it "renders during nomination" do
+    context "when nominations are open" do
+      before do
+        expect(HugoState)
+          .to receive_message_chain(:new, :has_nominations_opened?)
+          .and_return(true)
+      end
+
+      context "when signed in" do
+        before { sign_in(user) }
+
+        it "renders categories on that page only" do
           expect(get_show).to have_http_status(:ok)
           expect(response.body).to_not include(retro_best_novel.name)
+        end
+
+        it "404s when you don't have nomination rights" do
+          reservation.membership.update!(can_nominate: false)
+          expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it "redirects when you've not set your name" do
@@ -83,7 +89,7 @@ RSpec.describe NominationsController, type: :controller do
           expect(flash[:notice]).to match(/enter your details/i)
         end
 
-        context "when you're a Dublin member" do
+        context "as Dublin member" do
           let(:dublin) { create(:membership, :dublin_2019) }
           let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
 
@@ -123,18 +129,9 @@ RSpec.describe NominationsController, type: :controller do
             expect(get_show).to have_http_status(:found)
             expect(flash[:notice]).to match(/signed in as support/i)
           end
-
-          context "with hugo_admin rights" do
-            let(:support) { create(:support, :hugo_admin) }
-
-            it "renders ok" do
-              expect(get_show).to have_http_status(:ok)
-              expect(flash[:notice]).to be_nil
-            end
-          end
         end
 
-        context "when reservation is in instalment" do
+        context "with reservation in instalment" do
           let!(:reservation) do
             create(:reservation,
                    :instalment,
@@ -203,12 +200,13 @@ RSpec.describe NominationsController, type: :controller do
       }
     end
 
-    context "when nominations are closed signed in as hugo admin" do
+    context "signed in as hugo admin" do
       let(:hugo_admin) { create(:support, :hugo_admin) }
 
       before { sign_in hugo_admin }
 
-      it "renders ok" do
+      it "renders without checking HugoState" do
+        expect(HugoState).to_not receive(:new)
         expect(put_update).to have_http_status(:ok)
       end
 
@@ -223,23 +221,21 @@ RSpec.describe NominationsController, type: :controller do
       end
     end
 
-    context "signed in with nominations open" do
-      before { sign_in user }
-
+    context "with nominations open" do
       before do
-        $nomination_opens_at = 1.second.ago
-        $voting_opens_at = 1.day.from_now
-        $hugo_closed_at = 2.days.from_now
+        expect(HugoState)
+          .to receive_message_chain(:new, :has_nominations_opened?)
+          .and_return(true)
       end
 
-      context "when posting valid params" do
-        it "renders ok" do
-          expect(put_update).to have_http_status(:ok)
-        end
+      before { sign_in(user) }
 
-        it "creates nominations" do
-          expect { put_update }.to change { Nomination.count }.from(0)
-        end
+      it "renders ok" do
+        expect(put_update).to have_http_status(:ok)
+      end
+
+      it "creates nominations" do
+        expect { put_update }.to change { Nomination.count }.from(0)
       end
     end
   end
