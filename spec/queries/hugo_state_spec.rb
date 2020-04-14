@@ -34,8 +34,8 @@ RSpec.describe HugoState do
       $hugo_closed_at = 3.days.from_now
     end
 
-    it { is_expected.to_not have_nominations_open }
-    it { is_expected.to_not have_voting_open }
+    it { is_expected.to_not have_nominations_opened }
+    it { is_expected.to_not have_voting_opened }
   end
 
   context "after nominations open" do
@@ -45,8 +45,8 @@ RSpec.describe HugoState do
       $hugo_closed_at = 2.days.from_now
     end
 
-    it { is_expected.to have_nominations_open }
-    it { is_expected.to_not have_voting_open }
+    it { is_expected.to have_nominations_opened }
+    it { is_expected.to_not have_voting_opened }
   end
 
   context "after voting is open" do
@@ -56,8 +56,8 @@ RSpec.describe HugoState do
       $hugo_closed_at = 1.day.from_now
     end
 
-    it { is_expected.to_not have_nominations_open }
-    it { is_expected.to have_voting_open }
+    it { is_expected.to_not have_nominations_opened }
+    it { is_expected.to have_voting_opened }
   end
 
   context "when voting is closed" do
@@ -67,7 +67,7 @@ RSpec.describe HugoState do
       $hugo_closed_at = Time.now
     end
 
-    it { is_expected.to_not have_nominations_open }
-    it { is_expected.to_not have_voting_open }
+    it { is_expected.to_not have_nominations_opened }
+    it { is_expected.to_not have_voting_opened }
   end
 end
