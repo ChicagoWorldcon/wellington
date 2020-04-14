@@ -69,13 +69,7 @@ class NominationsController < ApplicationController
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
 
-    now = DateTime.now
-
-    if now < $nomination_opens_at
-      raise ActiveRecord::RecordNotFound
-    end
-
-    if $voting_opens_at < now
+    if !HugoState.new.has_nominations_opened?
       raise ActiveRecord::RecordNotFound
     end
 
