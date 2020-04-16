@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [Prototype Pollution](https://www.npmjs.com/advisories/1179)
   and [Regular Expression Denial of Service](https://www.npmjs.com/advisories/1488)
   [!156](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/156)
+- Bump ruby from 2.6.5 to 2.7.1
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157),
+  patches against
+  [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663),
+  and [CVE-2020-10933](https://nvd.nist.gov/vuln/detail/CVE-2020-10933).
 
 ### Removed
 - Nothing significant in this release
