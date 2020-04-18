@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
+- Update wording on Adult membership
+  [!158](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/158)
 - Bump dev postgres from 9 to 12 for ease of use with alpine ruby
   [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
 - Fix pagination in alpine linux for interactive debugging
