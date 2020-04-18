@@ -31,6 +31,7 @@ class SiteSelection < ApplicationRecord
   belongs_to :reservation
 
   validate :token_checksum
+  validates :token, uniqueness: true
 
   private
 
