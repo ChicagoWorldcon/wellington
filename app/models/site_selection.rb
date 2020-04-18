@@ -16,5 +16,30 @@
 
 # SiteSelection represents a membership reservation voting on the site for the next Worldcon
 class SiteSelection < ApplicationRecord
+  VALID_TOKEN = /
+    \A
+      \d\d\d\d - \d\d\d\d - \d\d\d\d
+    \z
+  /x.freeze
+
+  def self.generate_token
+    token = Luhn.generate(12)
+    groupings = token.chars.in_groups_of(4)
+    groupings.map(&:join).join("-")
+  end
+
   belongs_to :reservation
+
+  validate :token_checksum
+
+  private
+
+  def token_checksum
+    if !token.present? || !token.match(VALID_TOKEN)
+      errors[:token] << "should match 0000-0000-0000"
+      return
+    end
+
+    errors[:token] << "checksum failed" unless Luhn.valid?(token)
+  end
 end

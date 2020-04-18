@@ -17,6 +17,6 @@
 FactoryBot.define do
   factory :site_selection do
     association :reservation
-    token { "sweet" }
+    token { SiteSelection.generate_token }
   end
 end

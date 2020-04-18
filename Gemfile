@@ -28,6 +28,7 @@ gem "gem-licenses"         # print libraries depended on by this project, groupe
 gem "httparty"             # high level abstraction for rest integrations
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
+gem "luhn"                 # a simple checksum formula used to validate site selection numbers
 gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
