@@ -19,4 +19,21 @@ require "rails_helper"
 RSpec.describe SiteSelection, type: :model do
   subject(:model) { create(:site_selection) }
   it { is_expected.to be_valid }
+
+  describe "#token" do
+    it "requires token" do
+      expect(build(:site_selection, token: nil)).to_not be_valid
+    end
+
+    it "becomes invalid if one digit is off" do
+      expect(build(:site_selection, token: "4403-5113-0198")).to be_valid
+      expect(build(:site_selection, token: "4403-5113-0199")).to_not be_valid
+    end
+
+    it "forces you to put hyphens in the right place" do
+      expect(build(:site_selection, token: "4403-5113-0198")).to be_valid
+      expect(build(:site_selection, token: "4403-511-30198")).to_not be_valid
+      expect(build(:site_selection, token: "44035-113-0198")).to_not be_valid
+    end
+  end
 end
