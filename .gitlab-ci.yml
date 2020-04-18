@@ -54,6 +54,9 @@ code_style:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE sh -c 'bundle exec rubocop $(git diff --name-only origin/master...)'
     - docker run $CONTAINER_TEST_IMAGE ./node_modules/eslint/bin/eslint.js app/javascript
+  except:
+    - tags
+    - master
 
 licence_check:
   stage: test
