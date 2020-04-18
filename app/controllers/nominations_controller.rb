@@ -69,16 +69,13 @@ class NominationsController < ApplicationController
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
 
-    if !HugoState.new.has_nominations_opened?
-      raise ActiveRecord::RecordNotFound
-    end
+    errors = []
+    errors << "nominations are closed" if !HugoState.new.has_nominations_opened?
+    errors << "this membership doesn't have nomination rights" if !@reservation.can_nominate?
+    errors << "unavailable when signed in as support" if support_signed_in?
 
-    if !@reservation.can_nominate?
-      raise ActiveRecord::RecordNotFound
-    end
-
-    if support_signed_in?
-      flash[:notice] = "Can't view nominations when signed in as support"
+    if errors.any?
+      flash[:notice] = errors.to_sentence
       redirect_to @reservation
     end
   end

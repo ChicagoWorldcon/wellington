@@ -57,8 +57,9 @@ RSpec.describe NominationsController, type: :controller do
       context "when signed in" do
         before { sign_in(user) }
 
-        it "doesn't render" do
-          expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+        it "redirects with notice" do
+          expect(get_show).to redirect_to(reservation_path(reservation))
+          expect(flash[:notice]).to include("nominations are closed")
         end
       end
     end
@@ -78,9 +79,10 @@ RSpec.describe NominationsController, type: :controller do
           expect(response.body).to_not include(retro_best_novel.name)
         end
 
-        it "404s when you don't have nomination rights" do
+        it "redirects with notice when you don't have nomination rights" do
           reservation.membership.update!(can_nominate: false)
-          expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(get_show).to redirect_to(reservation_path(reservation))
+          expect(flash[:notice]).to match(/nomination rights/i)
         end
 
         it "redirects when you've not set your name" do
