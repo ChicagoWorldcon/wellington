@@ -35,5 +35,12 @@ RSpec.describe SiteSelection, type: :model do
       expect(build(:site_selection, token: "4403-511-30198")).to_not be_valid
       expect(build(:site_selection, token: "44035-113-0198")).to_not be_valid
     end
+
+    it "enforces token uniqueness" do
+      expect(subject).to be_valid
+      clone = subject.dup
+      expect(clone).to_not be_valid
+      expect(clone.errors.full_messages).to include("Token has already been taken")
+    end
   end
 end
