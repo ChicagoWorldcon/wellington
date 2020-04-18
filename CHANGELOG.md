@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
+- Bump dev postgres from 9 to 12 for ease of use with alpine ruby
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Fix pagination in alpine linux for interactive debugging
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Use ustream rubocop linting rules and only lint current branch
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Use ustream rubocop linting rules and only lint current branch
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
 - Patch Rails against [CVE-2020-5267](https://nvd.nist.gov/vuln/detail/CVE-2020-5267)
   [!156](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/156)
 - Patch node modules against
