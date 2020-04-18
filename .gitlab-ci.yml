@@ -42,25 +42,33 @@ docker_build:
     - docker build --target=development --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
+# Verify correctness of this program by running rspec tests
 rspec_tests:
   stage: test
   script:
     - docker run -d --name="test-database" --hostname "postgres" -e "POSTGRES_PASSWORD=test" postgres:latest
     - docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_IMAGE bundle exec rake db:create db:structure:load spec
 
+# Code style checks only against new changes
+# This doesn't run for CI on tags or on master
 code_style:
   stage: test
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE sh -c 'bundle exec rubocop $(git diff --name-only origin/master...)'
     - docker run $CONTAINER_TEST_IMAGE ./node_modules/eslint/bin/eslint.js app/javascript
+  except:
+    - tags
+    - master
 
+# Assert that files in this project have an Apache Licence at the top
 licence_check:
   stage: test
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE bundle exec rake test:branch:copyright
 
+# Static analysis against antipatterns in code and published CVEs that affect the project
 security_analysis:
   stage: test
   script:
@@ -72,6 +80,9 @@ security_analysis:
     - docker run $CONTAINER_TEST_IMAGE yarn audit
     - docker run $CONTAINER_TEST_IMAGE yarn check --integrity
 
+# Stable images for production grade use
+# These move :stable when a git tag passes CI, and creates a docker image matching that tag
+# This allows to pin/roll back to a stable point, or go with the latest stable image
 release_image:
   stage: publish
   variables:
@@ -85,6 +96,8 @@ release_image:
   only:
     - tags
 
+# Latest images for testing in a staging environment
+# These move :latest when master passes CI
 latest_image:
   stage: publish
   variables:
