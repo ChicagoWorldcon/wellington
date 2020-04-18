@@ -49,6 +49,10 @@ shell:
 # Alias for people who have old habbits
 bash: shell
 
+# Tests only specs introduced on your current branch
+test_changes:
+	docker-compose exec web sh -c 'git diff origin/master... --name-only | grep '_spec' | ls | bundle exec rspec'
+
 # Tests your setup, similar to CI
 test:
 	docker-compose exec web bundle exec rspec

@@ -52,7 +52,7 @@ code_style:
   stage: test
   script:
     - docker pull $CONTAINER_TEST_IMAGE
-    - docker run $CONTAINER_TEST_IMAGE bundle exec rubocop
+    - docker run $CONTAINER_TEST_IMAGE sh -c 'bundle exec rubocop $(git diff --name-only origin/master...)'
     - docker run $CONTAINER_TEST_IMAGE ./node_modules/eslint/bin/eslint.js app/javascript
 
 licence_check:

@@ -1,4 +1,4 @@
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-inherit_gem:
-  rubocop-github:
-    - config/default.yml
-    - config/rails.yml
-
 AllCops:
   Exclude:
     - bin/*
     - node_modules/**/*
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# This is being done to format strings for mailers and hugo timings
+Style/GlobalVars:
+  Enabled: false
+
+# Tests and Configuration files in use are triggering this hard. Keen to turn it
+# off but need some examples on how these can be broken up
+Metrics/BlockLength:
+  Enabled: false
+
+# 80 chars is very short on a large screen
+Layout/LineLength:
+  Max: 120
+
+# Boosting this for our row importers
+Metrics/MethodLength:
+  Max: 30
+
+# This is a personal preference, happy to be challenged
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
