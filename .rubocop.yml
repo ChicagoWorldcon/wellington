@@ -40,3 +40,8 @@ Metrics/MethodLength:
 # This is a personal preference, happy to be challenged
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+# This comes down to good code review. I'd do this for a fresh project, but not an
+# existing one but happy to be challenged
+Metrics/AbcSize:
+  Enabled: false

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 AJ Esler
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,10 +29,11 @@ class Reservation < ApplicationRecord
   has_many :nominations
   has_many :orders
 
-  has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
-  has_one :active_order, ->() { active }, class_name: "Order" # See Order's validations, one order active at a time
+  has_one :active_claim, -> { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
+  has_one :active_order, -> { active }, class_name: "Order" # See Order's validations, one order active at a time
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
+  has_one :site_selection
 
   # Displayed like "Adult membership #42" is based on #membership_number and Membership#name
   validates :membership_number, presence: true, uniqueness: true
@@ -47,7 +48,7 @@ class Reservation < ApplicationRecord
 
   # These are rights that may become visible over time, with the possibility of distinguishing between a right that's
   # currently able to be used or one that's coming soon. These also match i18n values in config/locales
-  def active_rights
+  def active_rights # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     [].tap do |rights|
       # Hold these memberships in memory to avoid hitting the database a lot
       memberships_held = Membership.where(id: orders.select(:membership_id))
@@ -93,7 +94,7 @@ class Reservation < ApplicationRecord
   # Because we don't refund below a supporting membership
   # And because PaymentAmountOptions::MIN_PAYMENT_AMOUNT is equal to a supporting membership
   # We can assume a single successful charge means this membership covers a supporting membership
-  def has_paid_supporting?
+  def has_paid_supporting? # rubocop:todo Naming/PredicateName
     charges.successful.any?
   end
 

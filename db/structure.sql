@@ -514,6 +514,38 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: site_selections; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.site_selections (
+    id bigint NOT NULL,
+    reservation_id bigint NOT NULL,
+    token character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: site_selections_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.site_selections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: site_selections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.site_selections_id_seq OWNED BY public.site_selections.id;
+
+
+--
 -- Name: supports; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -684,6 +716,13 @@ ALTER TABLE ONLY public.reservations ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: site_selections id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.site_selections ALTER COLUMN id SET DEFAULT nextval('public.site_selections_id_seq'::regclass);
+
+
+--
 -- Name: supports id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -807,6 +846,14 @@ ALTER TABLE ONLY public.reservations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: site_selections site_selections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.site_selections
+    ADD CONSTRAINT site_selections_pkey PRIMARY KEY (id);
 
 
 --
@@ -938,6 +985,13 @@ CREATE UNIQUE INDEX index_reservations_on_membership_number ON public.reservatio
 
 
 --
+-- Name: index_site_selections_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_site_selections_on_reservation_id ON public.site_selections USING btree (reservation_id);
+
+
+--
 -- Name: index_supports_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -970,6 +1024,14 @@ CREATE UNIQUE INDEX index_supports_on_unlock_token ON public.supports USING btre
 --
 
 CREATE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: site_selections fk_rails_1404b5b190; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.site_selections
+    ADD CONSTRAINT fk_rails_1404b5b190 FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
 
 
 --
@@ -1121,6 +1183,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191229203558'),
 ('20191231004921'),
 ('20200304210408'),
+('20200418211152'),
 ('20200525204858');
 
 
