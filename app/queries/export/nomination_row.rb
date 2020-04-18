@@ -56,7 +56,6 @@ class Export::NominationRow
 
   # The cop triggered here thinks there's too many assignments
   # But this is expected for an export
-  # rubocop:disable Metrics/AbcSize
   def values
     [
       user.current_sign_in_ip,
@@ -82,7 +81,6 @@ class Export::NominationRow
       nomination.field_3
     ]
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
 
