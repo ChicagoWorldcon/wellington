@@ -99,7 +99,7 @@ RSpec.describe NominationsController, type: :controller do
             before do
               upgrader = UpgradeMembership.new(reservation, to: supporting_without_nomination)
               successful = upgrader.call
-              raise "couldn't upgrade membership" if !successful
+              raise "couldn't upgrade membership" unless successful
             end
 
             it "forces the user to enter their details" do
@@ -137,11 +137,10 @@ RSpec.describe NominationsController, type: :controller do
         context "when reservation is in instalment" do
           let!(:reservation) do
             create(:reservation,
-              :instalment,
-              :with_order_against_membership,
-              :with_claim_from_user,
-              instalment_paid: 0,
-            )
+                   :instalment,
+                   :with_order_against_membership,
+                   :with_claim_from_user,
+                   instalment_paid: 0)
           end
 
           it "redirects when there's no payments on a membership" do
@@ -163,28 +162,28 @@ RSpec.describe NominationsController, type: :controller do
   describe "#update" do
     subject(:put_update) do
       put(:update, params: {
-        id: hugo.i18n_key,
-        reservation_id: reservation.id,
-        category_id: best_novel.id,
-        category: {
-          best_novel.id => {
-            nomination: {
-              1 => filled_entry,
-              2 => partial_entry,
-              3 => empty_entry,
-              4 => empty_entry,
-              5 => empty_entry,
+            id: hugo.i18n_key,
+            reservation_id: reservation.id,
+            category_id: best_novel.id,
+            category: {
+              best_novel.id => {
+                nomination: {
+                  1 => filled_entry,
+                  2 => partial_entry,
+                  3 => empty_entry,
+                  4 => empty_entry,
+                  5 => empty_entry
+                }
+              }
             }
-          }
-        },
-      })
+          })
     end
 
     let(:filled_entry) do
       {
         field_1: "Leviathan Wakes",
         field_2: "James S. A. Corey",
-        field_3: "Orbit Books",
+        field_3: "Orbit Books"
       }
     end
 
@@ -192,7 +191,7 @@ RSpec.describe NominationsController, type: :controller do
       {
         field_1: "This Side of Paradise",
         field_2: "Ummm...",
-        field_3: "",
+        field_3: ""
       }
     end
 
@@ -200,7 +199,7 @@ RSpec.describe NominationsController, type: :controller do
       {
         field_1: "",
         field_2: "",
-        field_3: "",
+        field_3: ""
       }
     end
 

@@ -41,7 +41,7 @@ gem "webpacker"            # a JavaScript module bundler, takes modules with dep
 
 group :development, :test do
   gem "brakeman"                                      # vulnerability and static analysis
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
+  gem "byebug", platforms: %i[mri mingw x64_mingw]    # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
   gem "faker"                                         # fun common strings fro testing
@@ -49,9 +49,9 @@ group :development, :test do
   gem "pry-nav"                                       # adds 'step' and 'next' to pry
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
-  gem "rubocop-rspec"                                 # linting for idiomatic rspec
-  gem "rubocop-rails"                                 # linting for idiomatic rails
   gem "rubocop-performance"                           # performance static analysis
+  gem "rubocop-rails"                                 # linting for idiomatic rails
+  gem "rubocop-rspec"                                 # linting for idiomatic rspec
   gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage
@@ -68,7 +68,7 @@ group :development do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
 # Suggested gems, investigate later
 # gem "therubyracer", platforms: :ruby # See https://github.com/rails/execjs#readme for more supported runtimes

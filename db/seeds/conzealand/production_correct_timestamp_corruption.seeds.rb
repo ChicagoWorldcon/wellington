@@ -16,11 +16,11 @@
 
 imported_users = User.joins(:notes).where("notes.content LIKE ?", "Import%").distinct
 purchases = Purchase.includes(:charges, :orders).joins(claims: :user)
-imported_purchases = purchases.where(users: {id: imported_users})
+imported_purchases = purchases.where(users: { id: imported_users })
 imported_purchases.find_each.with_index(1) do |purchase, counter|
   # Find the earliest claim, charge and order for the purchase
-  earliest_claim = purchase.claims.min { |c| c.created_at }
-  earliest_order = purchase.orders.min { |o| o.created_at }
+  earliest_claim = purchase.claims.min(&:created_at)
+  earliest_order = purchase.orders.min(&:created_at)
   kansa_charge = purchase.charges.find { |c| c.comment&.match(/kansa payment/i) }
 
   # Find the earliest timestamp between all these models
@@ -28,7 +28,7 @@ imported_purchases.find_each.with_index(1) do |purchase, counter|
     purchase.created_at,
     earliest_claim.created_at,
     earliest_order.created_at,
-    kansa_charge&.created_at, # allow for purchases without charges ($0 purchase)
+    kansa_charge&.created_at # allow for purchases without charges ($0 purchase)
   ].compact.min
 
   puts "#{counter}/#{imported_purchases.count}: Setting Purchase.find(#{purchase.id}) to #{earliest_at}"
@@ -41,6 +41,6 @@ imported_purchases.find_each.with_index(1) do |purchase, counter|
   # Set earliest charge if it was close to the original purchase
   # $0 members are skipped, e,g. child member
   next unless kansa_charge.present?
+
   kansa_charge.update!(created_at: earliest_at + 1.second)
 end
-
