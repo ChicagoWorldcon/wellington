@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 
-## [Tag 2.4.2 - 2020-04-19](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...2.4.2)
+## [Tag 2.4.2 - 2020-04-20](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...2.4.2)
 
 ### Added
 - Nothing significant in this release
