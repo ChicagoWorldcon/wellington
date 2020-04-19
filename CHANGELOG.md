@@ -29,9 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
 - Fix pagination in alpine linux for interactive debugging
   [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
-- Use ustream rubocop linting rules and only lint current branch
+- Use upstream rubocop linting rules and only lint current branch
   [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
-- Use ustream rubocop linting rules and only lint current branch
+- Use upstream rubocop linting rules and only lint current branch
   [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
 - Skip CI enforced linting on master and on tags
   [!159](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/159)
