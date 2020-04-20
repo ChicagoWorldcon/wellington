@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 AJ Esler
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test cards are here: https://stripe.com/docs/testing
+# The ChargesController presents a way for customers to pay money through stripe. On successful or fialed payment,
+# we create Charge objects to track what happened and list them against the Reservation.
+#
+# Note, even if a Reservation is transferred to antoher user, a Charge will always be against the original user that
+# it was made out to.
+#
+# Find test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
   before_action :lookup_reservation!
 
