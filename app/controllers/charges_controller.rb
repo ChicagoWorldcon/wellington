@@ -43,7 +43,7 @@ class ChargesController < ApplicationController
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !charge_amount.in?(allowed_charge_amounts)
       flash[:error] = "Amount must be one of the provided payment amounts"
-      redirect_to create_failure_redirect_path
+      redirect_to new_reservation_charge_path
       return
     end
 
@@ -58,18 +58,16 @@ class ChargesController < ApplicationController
     charge_successful = service.call
     if !charge_successful
       flash[:error] = service.error_message
-      redirect_to create_failure_redirect_path
+      redirect_to new_reservation_charge_path
       return
     end
 
-    if !kiosk?
-      trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
-    end
+    trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
 
     message = "Thank you for your #{charge_amount.format} payment"
     (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
 
-    redirect_to create_success_redirect_path, notice: message
+    redirect_to reservations_path, notice: message
   end
 
   private
@@ -86,22 +84,6 @@ class ChargesController < ApplicationController
         user: current_user,
         charge: charge,
       ).deliver_later
-    end
-  end
-
-  def create_success_redirect_path
-    if kiosk?
-      kiosk_reservation_next_steps_path
-    else
-      reservations_path
-    end
-  end
-
-  def create_failure_redirect_path
-    if kiosk?
-      new_kiosk_reservation_charge_path
-    else
-      new_reservation_charge_path
     end
   end
 end
