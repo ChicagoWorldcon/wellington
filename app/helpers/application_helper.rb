@@ -80,10 +80,6 @@ module ApplicationHelper
     end
   end
 
-  def kiosk?
-    @kiosk.present?
-  end
-
   def markdown
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
   end

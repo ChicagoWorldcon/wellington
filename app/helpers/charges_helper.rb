@@ -16,14 +16,6 @@
 # limitations under the License.
 
 module ChargesHelper
-  def charges_path
-    if kiosk?
-      kiosk_reservation_charges_path
-    else
-      reservation_charges_path
-    end
-  end
-
   def stripe_config(reservation)
     {
       key: Rails.configuration.stripe[:publishable_key],
