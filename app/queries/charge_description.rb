@@ -79,7 +79,7 @@ class ChargeDescription
   def maybe_member_name
     claims = charge.reservation.claims
     active_claim = claims.active_at(charge_active_at).first
-    active_claim.detail
+    active_claim.conzealand_contact
   end
 
   def membership_type

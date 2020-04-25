@@ -136,10 +136,10 @@ ALTER SEQUENCE public.claims_id_seq OWNED BY public.claims.id;
 
 
 --
--- Name: details; Type: TABLE; Schema: public; Owner: -
+-- Name: conzealand_contacts; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.details (
+CREATE TABLE public.conzealand_contacts (
     id bigint NOT NULL,
     claim_id bigint NOT NULL,
     import_key character varying,
@@ -172,10 +172,10 @@ CREATE TABLE public.details (
 
 
 --
--- Name: details_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: conzealand_contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.details_id_seq
+CREATE SEQUENCE public.conzealand_contacts_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -184,10 +184,10 @@ CREATE SEQUENCE public.details_id_seq
 
 
 --
--- Name: details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: conzealand_contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.details_id_seq OWNED BY public.details.id;
+ALTER SEQUENCE public.conzealand_contacts_id_seq OWNED BY public.conzealand_contacts.id;
 
 
 --
@@ -510,10 +510,10 @@ ALTER TABLE ONLY public.claims ALTER COLUMN id SET DEFAULT nextval('public.claim
 
 
 --
--- Name: details id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: conzealand_contacts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.details ALTER COLUMN id SET DEFAULT nextval('public.details_id_seq'::regclass);
+ALTER TABLE ONLY public.conzealand_contacts ALTER COLUMN id SET DEFAULT nextval('public.conzealand_contacts_id_seq'::regclass);
 
 
 --
@@ -605,11 +605,11 @@ ALTER TABLE ONLY public.claims
 
 
 --
--- Name: details details_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: conzealand_contacts conzealand_contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.details
-    ADD CONSTRAINT details_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.conzealand_contacts
+    ADD CONSTRAINT conzealand_contacts_pkey PRIMARY KEY (id);
 
 
 --
@@ -727,10 +727,10 @@ CREATE INDEX index_claims_on_user_id ON public.claims USING btree (user_id);
 
 
 --
--- Name: index_details_on_claim_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_conzealand_contacts_on_claim_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_details_on_claim_id ON public.details USING btree (claim_id);
+CREATE INDEX index_conzealand_contacts_on_claim_id ON public.conzealand_contacts USING btree (claim_id);
 
 
 --
@@ -959,6 +959,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191024180734'),
 ('20191031051223'),
 ('20191128184513'),
+('20191201185444'),
 ('20191221233951'),
 ('20191229203558'),
 ('20191231004921'),

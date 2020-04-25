@@ -19,7 +19,7 @@ class Claim < ApplicationRecord
 
   belongs_to :user
   belongs_to :reservation
-  has_one :detail
+  has_one :conzealand_contact
 
   validates :reservation, uniqueness: {
     conditions: -> { active } # There can't be other active claims against the same reservation

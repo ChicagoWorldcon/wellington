@@ -20,8 +20,8 @@
     <h5 class="card-title">
       #<%= reservation.membership_number %>
 
-      <% if detail = reservation.active_claim.detail %>
-        <%= detail %>
+      <% if contact = reservation.active_claim.conzealand_contact %>
+        <%= contact %>
       <% end %>
     </h5>
 

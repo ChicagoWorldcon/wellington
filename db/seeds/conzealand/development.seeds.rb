@@ -53,7 +53,7 @@ all_memberships = Membership.all.to_a
   end
 
   new_user.active_claims.each do |claim|
-    claim.update!(detail: FactoryBot.create(:detail, claim: claim))
+    claim.update!(conzealand_contact: FactoryBot.create(:conzealand_contact, claim: claim))
   end
 end
 

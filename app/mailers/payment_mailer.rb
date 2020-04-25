@@ -23,7 +23,7 @@ class PaymentMailer < ApplicationMailer
   def paid(user:, charge:)
     @charge = charge
     @reservation = charge.reservation
-    @detail = @reservation.active_claim.detail
+    @contact = @reservation.active_claim.conzealand_contact
 
     mail(
       to: user.email,
@@ -34,7 +34,7 @@ class PaymentMailer < ApplicationMailer
   def instalment(user:, charge:, outstanding_amount:)
     @charge = charge
     @reservation = charge.reservation
-    @detail = @reservation.active_claim.detail
+    @contact = @reservation.active_claim.conzealand_contact
     @outstanding_amount = outstanding_amount
 
     mail(

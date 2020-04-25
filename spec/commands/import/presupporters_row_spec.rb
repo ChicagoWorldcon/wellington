@@ -86,8 +86,8 @@ RSpec.describe Import::PresupportersRow do
       expect(User.count).to be(1)
     end
 
-    it "creates two sets of detail rows" do
-      expect(Detail.count).to be(2)
+    it "creates two sets of contact rows" do
+      expect(ConzealandContact.count).to be(2)
     end
   end
 
@@ -110,9 +110,9 @@ RSpec.describe Import::PresupportersRow do
       expect(imported_user.reservations).to eq(supporter.reservations)
     end
 
-    it "creates detail record from row" do
-      expect { command.call }.to change { Detail.count }.by(1)
-      expect(Detail.last.import_key).to eq import_key
+    it "creates contact record from row" do
+      expect { command.call }.to change { ConzealandContact.count }.by(1)
+      expect(ConzealandContact.last.import_key).to eq import_key
     end
 
     context "with presupport worth $0" do
@@ -173,7 +173,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "links through from the user's claim" do
-        expect(Claim.last.detail.import_key).to eq Detail.last.import_key
+        expect(Claim.last.conzealand_contact.import_key).to eq ConzealandContact.last.import_key
       end
 
       it "stores notes on that record" do
@@ -181,35 +181,35 @@ RSpec.describe Import::PresupportersRow do
       end
 
       describe "#preferred_publication_format" do
-        subject { Detail.last.publication_format }
+        subject { ConzealandContact.last.publication_format }
 
         context "when electronic and mail" do
           let(:paper_pubs) { "TRUE" }
           let(:no_electonic_publications) { "FALSE" }
-          it { is_expected.to eq(Detail::PAPERPUBS_BOTH) }
+          it { is_expected.to eq(ConzealandContact::PAPERPUBS_BOTH) }
         end
 
         context "when mail only" do
           let(:paper_pubs) { "TRUE" }
           let(:no_electonic_publications) { "TRUE" }
-          it { is_expected.to eq(Detail::PAPERPUBS_MAIL) }
+          it { is_expected.to eq(ConzealandContact::PAPERPUBS_MAIL) }
         end
 
         context "when electronic only" do
           let(:paper_pubs) { "FALSE" }
           let(:no_electonic_publications) { "FALSE" }
-          it { is_expected.to eq(Detail::PAPERPUBS_ELECTRONIC) }
+          it { is_expected.to eq(ConzealandContact::PAPERPUBS_ELECTRONIC) }
         end
 
         context "when opting out of paper pubs" do
           let(:paper_pubs) { "FALSE" }
           let(:no_electonic_publications) { "TRUE" }
-          it { is_expected.to eq(Detail::PAPERPUBS_NONE) }
+          it { is_expected.to eq(ConzealandContact::PAPERPUBS_NONE) }
         end
       end
 
       it "set created_at on reservation dates based on spreadsheet" do
-        expect(Detail.last.created_at).to be < 1.week.ago
+        expect(ConzealandContact.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
         expect(Claim.last.created_at).to be < 1.week.ago

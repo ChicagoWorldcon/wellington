@@ -19,12 +19,12 @@
 class ApplyTransfer
   attr_reader :reservation, :sender, :receiver, :errors, :audit_by
 
-  def initialize(reservation, from:, to:, audit_by:, copy_details: false)
+  def initialize(reservation, from:, to:, audit_by:, copy_contact: false)
     @reservation = reservation
     @sender = from
     @receiver = to
     @audit_by = audit_by
-    @copy_details = copy_details
+    @copy_contact = copy_contact
   end
 
   def call
@@ -41,8 +41,8 @@ class ApplyTransfer
       old_claim.update!(active_to: as_at)
       new_claim = receiver.claims.create!(active_from: as_at, reservation: reservation)
 
-      if copy_details?
-        new_claim.update!(detail: old_claim.detail.dup)
+      if copy_contact?
+        new_claim.update!(conzealand_contact: old_claim.conzealand_contact.dup)
       end
 
       new_claim
@@ -53,8 +53,8 @@ class ApplyTransfer
     errors.to_sentence
   end
 
-  def copy_details?
-    @copy_details.present?
+  def copy_contact?
+    @copy_contact.present?
   end
 
   private

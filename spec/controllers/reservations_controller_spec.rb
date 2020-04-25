@@ -29,8 +29,8 @@ RSpec.describe ReservationsController, type: :controller do
   let(:another_user) { create(:user) }
   let(:support) { create(:support) }
 
-  let(:valid_detail_params) do
-    FactoryBot.build(:detail).slice(
+  let(:valid_contact_params) do
+    FactoryBot.build(:conzealand_contact).slice(
       :first_name,
       :last_name,
       :publication_format,
@@ -83,7 +83,7 @@ RSpec.describe ReservationsController, type: :controller do
     describe "#create" do
       before do
         post :create, params: {
-          detail: valid_detail_params,
+          conzealand_contact: valid_contact_params,
           offer: offer.hash,
         }
       end
@@ -160,17 +160,17 @@ RSpec.describe ReservationsController, type: :controller do
 
   describe "#update" do
     let(:updated_address) { "yolo" }
-    let(:target_details) { existing_reservation.active_claim.detail }
+    let(:target_contact) { existing_reservation.active_claim.conzealand_contact }
 
     let(:valid_params) do
       {
         id: existing_reservation.reload.id,
-        detail: {
+        conzealand_contact: {
           first_name: "this",
           last_name: "is",
           address_line_1: updated_address,
           country: "valid",
-          publication_format: Detail::PAPERPUBS_NONE,
+          publication_format: ConzealandContact::PAPERPUBS_NONE,
         }
       }
     end
@@ -186,7 +186,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(Detail.last.address_line_1).to eq updated_address
+        expect(ConzealandContact.last.address_line_1).to eq updated_address
       end
     end
 
@@ -196,25 +196,25 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(Detail.last.address_line_1).to eq updated_address
+        expect(ConzealandContact.last.address_line_1).to eq updated_address
       end
 
-      context "with no details set" do
+      context "with no contact set" do
         before do
-          Detail.where(claim_id: original_user.active_claims).destroy_all
+          ConzealandContact.where(claim_id: original_user.active_claims).destroy_all
         end
 
         it "updates when all values present" do
           post :update, params: valid_params
           expect(flash[:notice]).to match(/updated/i)
-          expect(Detail.last.address_line_1).to eq updated_address
+          expect(ConzealandContact.last.address_line_1).to eq updated_address
         end
       end
 
       it "shows error when values not present" do
         post :update, params: {
           id: existing_reservation.id,
-          detail: {
+          conzealand_contact: {
             first_name: "this",
             last_name: "is",
             address_line_1: "",
@@ -226,10 +226,10 @@ RSpec.describe ReservationsController, type: :controller do
       end
 
       it "lets you update title" do
-        detail_attributes = existing_reservation.active_claim.detail.attributes
-        detail_attributes["title"] = "Positively Smashed"
-        post :update, params: { id: existing_reservation.id, detail: detail_attributes }
-        expect(existing_reservation.reload.active_claim.detail.title).to eq "Positively Smashed"
+        contact_attributes = existing_reservation.active_claim.conzealand_contact.attributes
+        contact_attributes["title"] = "Positively Smashed"
+        post :update, params: { id: existing_reservation.id, conzealand_contact: contact_attributes }
+        expect(existing_reservation.reload.active_claim.conzealand_contact.title).to eq "Positively Smashed"
       end
     end
   end
@@ -240,7 +240,7 @@ RSpec.describe ReservationsController, type: :controller do
     context "when adult offer selected" do
       it "redirects to the charges page" do
         post :create, params: {
-          detail: valid_detail_params,
+          conzealand_contact: valid_contact_params,
           offer: offer.hash,
         }
         expect(flash[:error]).to_not be_present
@@ -249,7 +249,7 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "renders the form again when form submission fails" do
         post :create, params: {
-          detail: valid_detail_params,
+          conzealand_contact: valid_contact_params,
           offer: offer.hash,
         }
       end
@@ -260,7 +260,7 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "redirects to the reservation listing page" do
         post :create, params: {
-          detail: {
+          conzealand_contact: {
             first_name: "Silly",
             last_name: "Billy",
           },

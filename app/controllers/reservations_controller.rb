@@ -25,13 +25,13 @@ class ReservationsController < ApplicationController
     if user_signed_in?
       @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
-      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
+      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :conzealand_contact)
     end
   end
 
   def new
     @reservation = Reservation.new
-    @detail = Detail.new
+    @contact = ConzealandContact.new
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
@@ -41,7 +41,7 @@ class ReservationsController < ApplicationController
   end
 
   def show
-    @detail = @reservation.active_claim.detail || Detail.new
+    @contact = @reservation.active_claim.conzealand_contact || ConzealandContact.new
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
@@ -49,18 +49,18 @@ class ReservationsController < ApplicationController
 
   def create
     current_user.transaction do
-      @detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
-      if !@detail.valid?
+      @contact = ConzealandContact.new(params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS))
+      if !@contact.valid?
         @reservation = Reservation.new
-        flash[:error] = @detail.errors.full_messages.to_sentence
+        flash[:error] = @contact.errors.full_messages.to_sentence
         render "/reservations/new"
         return
       end
 
       service = ClaimMembership.new(@my_offer.membership, customer: current_user)
       new_reservation = service.call
-      @detail.claim = new_reservation.active_claim
-      @detail.save!
+      @contact.claim = new_reservation.active_claim
+      @contact.save!
 
       flash[:notice] = %{
         Congratulations member ##{new_reservation.membership_number}!
@@ -77,17 +77,17 @@ class ReservationsController < ApplicationController
 
   def update
     @reservation.transaction do
-      current_details = @reservation.active_claim.detail
-      current_details ||= Detail.new(claim: @reservation.active_claim)
-      submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
-      if current_details.update(submitted_values)
-        flash[:notice] = "Details for #{current_details} member ##{@reservation.membership_number} have been updated"
+      current_contact = @reservation.active_claim.conzealand_contact
+      current_contact ||= ConzealandContact.new(claim: @reservation.active_claim)
+      submitted_values = params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
+      if current_contact.update(submitted_values)
+        flash[:notice] = "Details for #{current_contact} member ##{@reservation.membership_number} have been updated"
         redirect_to reservations_path
       else
-        @detail = @reservation.active_claim.detail || Detail.new
+        @contact = @reservation.active_claim.conzealand_contact || ConzealandContact.new
         @my_offer = MembershipOffer.new(@reservation.membership)
         @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
-        flash[:error] = current_details.errors.full_messages.to_sentence
+        flash[:error] = current_contact.errors.full_messages.to_sentence
         render "reservations/show"
       end
     end
@@ -107,6 +107,6 @@ class ReservationsController < ApplicationController
   end
 
   def setup_paperpubs
-    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
+    @paperpubs = ConzealandContact::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
   end
 end

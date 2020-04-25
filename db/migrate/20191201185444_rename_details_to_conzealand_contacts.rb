@@ -14,27 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :claim do
-    active_from { 1.week.ago }
-    created_at { 1.week.ago }
-
-    trait :with_reservation do
-      after(:build) do |claim, _evaluator|
-        claim.reservation = create(:reservation, :with_order_against_membership)
-      end
-    end
-
-    trait :with_user do
-      after(:build) do |claim, _evaluator|
-        claim.user = create(:user)
-      end
-    end
-
-    trait :with_contact do
-      after(:build) do |claim, _evaluator|
-        claim.conzealand_contact = create(:conzealand_contact)
-      end
-    end
+class RenameDetailsToConzealandContacts < ActiveRecord::Migration[6.0]
+  def change
+    rename_table :details, :conzealand_contacts
   end
 end

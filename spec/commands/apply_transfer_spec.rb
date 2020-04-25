@@ -27,7 +27,7 @@ RSpec.describe ApplyTransfer do
       user: seller,
       reservation: reservation,
       active_from: reservation.created_at,
-      detail: build(:detail),
+      conzealand_contact: build(:conzealand_contact),
     )
   end
 
@@ -52,24 +52,24 @@ RSpec.describe ApplyTransfer do
     expect(buyer.notes.last.content).to include(support.email)
   end
 
-  it "doesn't copy over detail by default" do
+  it "doesn't copy over contact by default" do
     command.call
-    expect(buyer.reload.active_claims.last.detail).to be_nil
+    expect(buyer.reload.active_claims.last.conzealand_contact).to be_nil
   end
 
-  it "copies detail if requested" do
+  it "copies contact if requested" do
     described_class.new(
       reservation,
       from: seller,
       to: buyer,
       audit_by: support.email,
-      copy_details: true,
+      copy_contact: true,
     ).call
     buyer.reload
     seller.reload
 
-    expect(buyer.active_claims.last.detail).to be_present
-    expect(buyer.claims.last.detail.to_s).to eq seller.claims.last.detail.to_s
+    expect(buyer.active_claims.last.conzealand_contact).to be_present
+    expect(buyer.claims.last.conzealand_contact.to_s).to eq(seller.claims.last.conzealand_contact.to_s)
   end
 
   context "when there's transactions close together" do
