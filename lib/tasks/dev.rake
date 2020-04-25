@@ -41,11 +41,17 @@ namespace :dev do
     task db: :environment do
       retries ||= 0
       ActiveRecord::Base.establish_connection
-      if User.count > 0
+      if ENV["NAPALM"].match(/true/i)
+        puts "Resetting database and tables"
+        Rake::Task["db:drop"].invoke
+        Rake::Task["db:create"].invoke
+        Rake::Task["db:structure:load"].invoke
+      elsif User.count > 0
         puts "Cowardly refusing to setup database when we have existing users"
         exit 1
       end
     rescue ActiveRecord::NoDatabaseError
+      # If database doesn't exist, create it
       puts "Creating database and tables"
       Rake::Task["db:create"].invoke
       Rake::Task["db:structure:load"].invoke
