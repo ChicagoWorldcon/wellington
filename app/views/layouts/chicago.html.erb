@@ -1,0 +1,84 @@
+<!doctype html>
+
+<%#
+  Copyright 2018 Rosanna Gray
+  Copyright 2019 Matthew B. Gray
+  Copyright 2019 Jen Zajac (jenofdoom)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<html lang="en">
+<head>
+  <title>Chicago</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%# TODO move scripts to the bottom of <body> %>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+
+  <%= javascript_pack_tag "chicago-app" %>
+  <%= stylesheet_pack_tag "chicago-styles", media: "all" %>
+
+  <%=
+    tag("link", {
+      rel: "shortcut icon",
+      type: "image/x-icon",
+      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
+    })
+  %>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="CoNZealand is a convention for science fiction enthusiasts.">
+  <meta name="keywords" content="conzealand, science fiction, convention, meet up, sci-fi" />
+</head>
+
+<body class="<%= "api-test-keys" if $stripe_test_keys %>">
+  <%# TODO Style this to flash or something dramatic %>
+  <% if support_signed_in? %>
+    <div class="alert alert-danger show fixed-top" role="alert">
+      NOTICE: You are logged in as support
+      <%= button_to(
+        "Logout of Support (#{current_support.email})",
+        destroy_support_session_path,
+        action: :delete, method: :delete, class: "button"
+      ) %>
+    </div>
+  <% end %>
+
+  <header>
+    <div class="container">
+      <%= render "layouts/alerts" %>
+    </div>
+
+    <%= render "/layouts/menu" %>
+  </header>
+
+  <div class="l-main" role="main">
+    <div class="container l-wrapper">
+      <%= yield %>
+    </div>
+  </div>
+
+  <footer role="contentinfo">
+    <div class="container l-wrapper">
+      <p>
+        Just example content for the Chicago bid 2021 &lt;3
+        Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

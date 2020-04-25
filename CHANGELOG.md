@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Development database reset in docker by setting `NAPALM=true` in your .env
   [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
+- Support for theming by setting WORLDCON_THEME in .env
+  [!103](https://gitlab.com/worldcon/2020-wellington/merge_requests/103)
+  ```sh
+  WORLDCON_THEME=conzealand
+  ```
 
 ### Changed
 - CI now only runs security-audit steps for master, or branches named security-patch
