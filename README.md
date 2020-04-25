@@ -120,6 +120,9 @@ SIDEKIQ_REDIS_URL=redis://redis:6379/0
 SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
+# Uncomment to reset database on start up, good for switching branches with patches
+# NAPALM=true
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
