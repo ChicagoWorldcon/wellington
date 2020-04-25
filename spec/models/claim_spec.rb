@@ -113,8 +113,21 @@ RSpec.describe Claim, type: :model do
   end
 
   describe "factory" do
-    subject(:model) { create(:claim, :with_reservation, :with_user) }
+    subject(:model) do
+      create(:claim,
+        :with_reservation,
+        :with_user,
+        :with_conzealand_contact,
+        :with_chicago_contact,
+      )
+    end
+
     it { is_expected.to be_valid }
+
+    it "references different contacts" do
+      expect(model.conzealand_contact).to be_valid
+      expect(model.chicago_contact).to be_valid
+    end
   end
 
   context "with multiple claims" do

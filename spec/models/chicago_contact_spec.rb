@@ -14,21 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Claim < ApplicationRecord
-  include ActiveScopes
+require "rails_helper"
 
-  belongs_to :user
-  belongs_to :reservation
+RSpec.describe ChicagoContact, type: :model do
+  subject(:model) { create(:chicago_contact) }
 
-  # Most of these will be nil, depending on the configuration
-  has_one :conzealand_contact
-  has_one :chicago_contact
+  it "can construct valid models" do
+    expect(model).to be_valid
+  end
 
-  validates :reservation, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same reservation
-  }, if: :active?
-
-  def transferable?
-    active_to.nil?
+  it "is valid to miss out a few fields" do
+    model = build(:chicago_contact,
+      first_name_for_publications: nil,
+      last_name_for_publications: nil,
+      postal_code: nil,
+    )
+    expect(model).to be_valid
   end
 end
