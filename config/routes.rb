@@ -63,7 +63,10 @@ Rails.application.routes.draw do
   resources :upgrades
 
   resources :reservations do
-    resources :charges
+    resources :charges do
+      get :success
+      get :cancel
+    end
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end

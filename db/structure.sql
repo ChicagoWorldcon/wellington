@@ -20,8 +20,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -896,6 +896,14 @@ ALTER TABLE ONLY public.nominations
 
 
 --
+-- Name: claims fk_rails_35cad80142; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.claims
+    ADD CONSTRAINT fk_rails_35cad80142 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: categories fk_rails_4520a4c84e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -928,14 +936,6 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: orders fk_rails_69d2ccd863; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT fk_rails_69d2ccd863 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
-
-
---
 -- Name: notes fk_rails_7f2323ad43; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -944,11 +944,11 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- Name: claims fk_rails_eea3fccade; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: orders fk_rails_dfb33b2de0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.claims
-    ADD CONSTRAINT fk_rails_eea3fccade FOREIGN KEY (user_id) REFERENCES public.users(id);
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
 
 
 --

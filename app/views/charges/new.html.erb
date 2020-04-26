@@ -24,31 +24,21 @@
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@reservation)) do %>
-          <article>
-            <div id="error_explanation"></div>
+        <script>
+          var stripe = Stripe('<%= ENV["STRIPE_PUBLIC_KEY"] %>');
 
-            <p>
-              You need to pay <%= @outstanding_amount.format(with_currency: true) %> to cover this membership. Please pay
-              the full amount, or choose an instalment from the list.
-            </p>
-
-            <label class="amount">
-              <span>Amount:
-                <%= select_tag(:amount, options_for_select(@price_options, selected: @outstanding_amount)) %>
-              </span>
-            </label>
-          </article>
-
-          <%= hidden_field_tag(:stripeToken) %>
-          <%= hidden_field_tag(:stripeEmail) %>
-          <%= hidden_field_tag(:reservation, @reservation.id) %>
-          <div class="l-v-spacing-both">
-            <div class="form-group">
-              <%= submit_tag("Pay for #{@membership} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
-            </div>
-          </div>
-        <% end %>
+          stripe.redirectToCheckout({
+            // Make the id field from the Checkout Session creation API response
+            // available to this file, so you can provide it as parameter here
+            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+            sessionId: '<%= @session.id %>'
+          }).then(function (result) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer
+            // using `result.error.message`.
+            console.log(result);
+          });
+        </script>
       </div>
     </div>
 

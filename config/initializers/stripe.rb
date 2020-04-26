@@ -14,13 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# See https://stripe.com/docs/checkout/rails
-Rails.configuration.stripe = {
-  publishable_key: ENV["STRIPE_PUBLIC_KEY"],
-  secret_key: ENV["STRIPE_PRIVATE_KEY"],
-}
-
-Stripe.api_key = Rails.configuration.stripe[:secret_key]
+# Config https://github.com/stripe/stripe-ruby/blob/master/README.md
+Stripe.api_key = ENV["STRIPE_PRIVATE_KEY"]
 
 $stripe_test_keys = ENV["STRIPE_PRIVATE_KEY"].present? && !!ENV["STRIPE_PRIVATE_KEY"].match(/^sk_test/)
 $currency = ENV["STRIPE_CURRENCY"]&.upcase || "NZD"

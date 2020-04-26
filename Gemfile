@@ -36,7 +36,7 @@ gem "redcarpet"            # markdown parser for displaying simple markup on tex
 gem "seedbank"             # For customizing seeds for all cons
 gem "sidekiq"              # Background jobs processor
 gem "sidekiq-scheduler"    # Background jobs processor scheduler
-gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
+gem "stripe", "~> 5"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
 gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 

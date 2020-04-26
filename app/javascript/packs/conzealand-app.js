@@ -38,7 +38,5 @@ import '../channels';
 import '../sprinkles';
 
 import ujs from '@rails/ujs';
-import activeStorage from '@rails/activestorage';
 
 ujs.start();
-activeStorage.start();

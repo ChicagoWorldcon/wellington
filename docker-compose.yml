@@ -37,7 +37,8 @@ services:
       - redis-data:/data
 
   web:
-    entrypoint: "script/docker_web_entry.sh"
+    # entrypoint: "script/docker_web_entry.sh"
+    entrypoint: "sleep 86400"
     image: registry.gitlab.com/worldcon/2020-wellington:latest
     depends_on:
       - postgres

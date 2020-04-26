@@ -87,6 +87,11 @@ STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
 # https://stripe.com/docs/currencies
 STRIPE_CURRENCY=NZD
 
+# Separate site selection stripe account
+# If unset, site selection is disabled
+STRIPE_SITE_SELECTION_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
+STRIPE_SITE_SELECTION_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
+
 # Con specific mailer configuration
 MAINTAINER_EMAIL=your.name@conzealand.nz
 MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
