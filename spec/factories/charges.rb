@@ -27,6 +27,10 @@ FactoryBot.define do
     state { Charge::STATE_SUCCESSFUL }
     transfer { Charge::TRANSFER_STRIPE }
 
+    trait(:pending) do
+      state { Charge::STATE_PENDING }
+    end
+
     trait(:failed) do
       state { Charge::STATE_FAILED }
     end
