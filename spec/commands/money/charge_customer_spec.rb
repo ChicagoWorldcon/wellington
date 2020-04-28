@@ -67,11 +67,11 @@ RSpec.describe Money::ChargeCustomer do
       subject(:command) { described_class.new(reservation, user, token, amount_owed) }
       let(:initial_stripe_id) { "super vip customer" }
 
-      let(:user) { create(:user, stripe_id: initial_stripe_id) }
+      let(:user) { create(:user, stripe_customer_id: initial_stripe_id) }
       it "doesn't set stripe ID again" do
         expect(Stripe::Customer).to_not receive(:create)
         expect { command.call }
-          .to_not change { user.reload.stripe_id }
+          .to_not change { user.reload.stripe_customer_id }
           .from(initial_stripe_id)
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe Money::ChargeCustomer do
       subject(:command) { described_class.new(reservation, user, token, amount_owed) }
 
       it "updates user's stripe id" do
-        expect { command.call }.to change { user.reload.stripe_id }.from(nil)
+        expect { command.call }.to change { user.reload.stripe_customer_id }.from(nil)
       end
 
       context "when payment fails" do

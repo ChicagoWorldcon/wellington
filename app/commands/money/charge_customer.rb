@@ -95,9 +95,9 @@ class Money::ChargeCustomer
   def setup_stripe_customer
     if !user.stripe_id.present?
       stripe_customer = Stripe::Customer.create(email: user.email)
-      user.update!(stripe_id: stripe_customer.id)
+      user.update!(stripe_customer_id: stripe_customer.id)
     end
-    card_response = Stripe::Customer.create_source(user.stripe_id, source: token)
+    card_response = Stripe::Customer.create_source(user.stripe_customer_id, source: token)
     @card_id = card_response.id
   rescue Stripe::StripeError => e
     errors << e.message.to_s
@@ -110,7 +110,7 @@ class Money::ChargeCustomer
     @stripe_charge = Stripe::Charge.create(
       description: ChargeDescription.new(@charge).for_accounts,
       currency: $currency,
-      customer: user.stripe_id,
+      customer: user.stripe_customer_id,
       source: @card_id,
       amount: charge_amount.cents,
     )

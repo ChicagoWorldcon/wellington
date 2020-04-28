@@ -26,12 +26,12 @@ class Stripe::SyncCustomers
 
       user = User.find_or_create_by(email: stripe_customer.email.downcase)
 
-      if user.stripe_id && user.stripe_id != stripe_customer.id
-        Rails.logger.warn "#{user.email} has doppleganger in stripe, preferring #{user.stripe_id} for members area"
+      if user.stripe_customer_id && user.stripe_customer_id != stripe_customer.id
+        Rails.logger.warn "#{user.email} has doppleganger in stripe, preferring #{user.stripe_customer_id} for members area"
       end
 
-      next if user.stripe_id.present?
-      user.update!(stripe_id: stripe_customer.id)
+      next if user.stripe_customer_id.present?
+      user.update!(stripe_customer_id: stripe_customer.id)
     end
   end
 end

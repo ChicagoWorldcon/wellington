@@ -37,11 +37,11 @@ class User < ApplicationRecord
 
   validate :email_address_format_valid
 
-  scope :in_stripe, -> { where.not(stripe_id: nil) }
-  scope :not_in_stripe, -> { where(stripe_id: nil) }
+  scope :in_stripe, -> { where.not(stripe_customer_id: nil) }
+  scope :not_in_stripe, -> { where(stripe_customer_id: nil) }
 
   def in_stripe?
-    stripe_id.present?
+    stripe_customer_id.present?
   end
 
   private

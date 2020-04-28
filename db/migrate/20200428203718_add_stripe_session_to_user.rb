@@ -14,20 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
-
-RSpec.describe Charge do
-  subject(:model) { create(:charge) }
-  it { is_expected.to be_valid }
-
-  context "as stripe charge" do
-    it "has optional #stripe_customer_id when pending" do
-      expect(create(:charge, :pending, stripe_customer_id: nil)).to be_valid
-      expect(create(:charge, :pending, stripe_customer_id: "ch_fakestripechargeid")).to be_valid
-    end
-
-    it "requires #stripe_customer_id normally" do
-      expect(build(:charge, stripe_customer_id: nil)).to_not be_valid
-    end
+class AddStripeSessionToUser < ActiveRecord::Migration[6.0]
+  def change
+    rename_column :users, :stripe_id, :stripe_customer_id
+    add_column :users, :stripe_checkout_session_id, :string, null: true
   end
 end

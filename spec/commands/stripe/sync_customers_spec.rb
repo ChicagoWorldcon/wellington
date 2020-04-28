@@ -32,7 +32,7 @@ RSpec.describe Stripe::SyncCustomers do
       it "creates new customers" do
         expect { call }.to change { User.count }.by(1)
         expect(User.last.email).to eq stripe_customer.email
-        expect(User.last.stripe_id).to eq stripe_customer.id
+        expect(User.last.stripe_customer_id).to eq stripe_customer.id
       end
 
       context "with mixed case email" do
@@ -55,9 +55,9 @@ RSpec.describe Stripe::SyncCustomers do
           .and_yield(stripe_customer)
       end
 
-      it "updates the user's stripe_id" do
+      it "updates the user's stripe_customer_id" do
         expect { call }
-          .to change { user.reload.stripe_id }
+          .to change { user.reload.stripe_customer_id }
           .from(nil).to(stripe_customer.id)
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Stripe::SyncCustomers do
         let(:a_while_back) { 1.week.ago }
         let!(:user) do
           create(:user, :with_reservation,
-            stripe_id: stripe_customer.id,
+            stripe_customer_id: stripe_customer.id,
             email: stripe_customer.email,
             updated_at: a_while_back,
             created_at: a_while_back,
@@ -81,7 +81,7 @@ RSpec.describe Stripe::SyncCustomers do
         let(:a_while_back) { 1.week.ago }
         let!(:user) do
           create(:user, :with_reservation,
-            stripe_id: "cus_sillyCustomerz",
+            stripe_customer_id: "cus_sillyCustomerz",
             email: stripe_customer.email,
             updated_at: a_while_back,
             created_at: a_while_back,
