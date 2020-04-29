@@ -17,10 +17,23 @@
 require "rails_helper"
 
 RSpec.describe ShoppingCart do
+  let(:stripe_helper) { StripeMock.create_test_helper }
+  before { StripeMock.start }
+  after { StripeMock.stop }
+
   describe "#for" do
     subject(:command) { described_class.for(user) }
     let(:user) { create(:user) }
 
     it { is_expected.to be_kind_of(ShoppingCart) }
+
+    it "updates User#stripe_customer_id if it's not set" do
+      expect { command }.to change { user.stripe_customer_id }.from(nil)
+    end
+
+    it "doesn't change User#stripe_customer_id after it's set" do
+      user.update!(stripe_customer_id: "existing id")
+      expect { command }.to_not change { user.stripe_customer_id }.from("existing id")
+    end
   end
 end

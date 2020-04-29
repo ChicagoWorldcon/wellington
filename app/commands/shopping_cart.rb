@@ -17,6 +17,11 @@
 # ShoppingCart is a class that represents a link to Stripe, tracking line items that are ready for checkout
 class ShoppingCart
   def self.for(user)
+    if user.stripe_customer_id.nil?
+      stripe_customer = Stripe::Customer.create(email: user.email)
+      user.update!(stripe_customer_id: stripe_customer.id)
+    end
+
     ShoppingCart.new
   end
 end
