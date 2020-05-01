@@ -483,7 +483,7 @@ This project is open source based on the Apache 2 Licence. You can read the term
 file distributed with this project.
 
 - Copyright 2019 AJ Esler
-- Copyright 2019 Chris Rose
+- Copyright 2020 Chris Rose
 - Copyright 2019 James Polley
 - Copyright 2019 Jen Zajac (jenofdoom)
 - Copyright 2019 Steven C Hartley
