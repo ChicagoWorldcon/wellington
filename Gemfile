@@ -45,6 +45,7 @@ group :development, :test do
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
   gem "factory_bot_rails"                             # reusable model construction for tests
   gem "faker"                                         # fun common strings fro testing
+  gem "guard-rspec", require: false                   # tests that re-run on save are nice
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-nav"                                       # adds 'step' and 'next' to pry
   gem "rspec-rails"                                   # testing framework
