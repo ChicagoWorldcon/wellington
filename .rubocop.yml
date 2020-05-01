@@ -30,7 +30,7 @@ Metrics/BlockLength:
   Enabled: false
 
 # 80 chars is very short on a large screen
-Layout/LineLength:
+Metrics/LineLength:
   Max: 120
 
 # Boosting this for our row importers
