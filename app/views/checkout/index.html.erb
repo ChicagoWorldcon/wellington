@@ -1,0 +1,14 @@
+<h1>Pay for your stuff</h1>
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <% if !user_signed_in? %>
+          <%= render "sign_in_notice" %>
+        <% else %>
+          Hello
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

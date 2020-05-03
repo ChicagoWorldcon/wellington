@@ -63,6 +63,8 @@ Rails.application.routes.draw do
   resources :upgrades
   resources :hugo_packet, id: /[^\/]+/
 
+  resources :checkout
+
   resources :reservations do
     resources :charges
     resources :nominations, id: /[^\/]+/
