@@ -27,7 +27,6 @@ gem "gem-licenses"         # print libraries depended on by this project, groupe
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "money-rails"          # dealing with money and currency conversion in Rails
-gem "octicons_helper"      # icon pack from github in a handy helper
 gem "pg"                   # postgres driver
 gem "puma"                 # http server for rack
 gem "rails", "~> 6.0"      # framework for building websites <3

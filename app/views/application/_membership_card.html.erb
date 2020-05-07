@@ -30,8 +30,14 @@
         <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
             <%= t(:description, scope: membership_right) %>
-            <% help_text = t(:layman, scope: membership_right) %>
-            <%= information_bubble(help_text) %>
+            <i class="far fa-question-circle"
+              title="<%= t(:layman, scope: membership_right) %>"
+              data-toggle="tooltip"
+              aria-label="More information"
+              height="15px"
+              data-html="true"
+              data-placement="right"
+            ></i>
           </li>
         <% end %>
       </ul>
