@@ -18,9 +18,11 @@
 # TODO Better tests, most of this is integration tested by Claim
 module ActiveScopes
   def self.included(base)
-    base.after_initialize :set_active_to
+    base.after_initialize do
+      self[:active_from] ||= Time.now
+    end
 
-    base.validate :active_timestamps_ordered
+    base.validate :check_active_timestamps_ordered
     base.validates :active_from, presence: true
 
     # A transfer of ownership may happen at an instant, and from that moment the the new owner becomes the active party
@@ -53,13 +55,7 @@ module ActiveScopes
       true
     end
 
-    private
-
-    def set_active_to
-      self[:active_from] ||= Time.now
-    end
-
-    def active_timestamps_ordered
+    def check_active_timestamps_ordered
       return if self.active_from.nil? || self.active_to.nil?
       return if self.active_from <= active_to
       errors.add(:active_to, "cannot be before active_from")
