@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 Chris Rose
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+if User.count > 0
+  puts "Cowardly refusing to seed a database when we have existing users"
+  exit 1
+end
 
 FactoryBot.create(:membership, :chicago_donor)
 FactoryBot.create(:membership, :chicago_friend)
