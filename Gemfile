@@ -47,7 +47,8 @@ group :development, :test do
   gem "faker"                                         # fun common strings fro testing
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
   gem "pry"                                           # nicer debugger, use 'binding.pry'
-  gem "pry-nav"                                       # adds 'step' and 'next' to pry
+  gem "pry-rails"                                     # sets pry as your rails console
+  gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
   gem "rubocop-performance"                           # performance static analysis
@@ -62,7 +63,6 @@ end
 
 group :development do
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
-  gem "pry-rails"                         # sets pry as your rails console
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
