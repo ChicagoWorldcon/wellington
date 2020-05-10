@@ -17,9 +17,6 @@
 # limitations under the License.
 
 namespace :dev do
-  desc "Recreates database from master and seeds users"
-  task napalm: %w(db:drop dev:bootstrap)
-
   desc "Asserts you've got everything for a running system, doesn't clobber"
   task bootstrap: %w(dev:reset:structure dev:setup:db db:migrate db:seed:conzealand:development)
 
