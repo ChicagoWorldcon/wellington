@@ -121,7 +121,7 @@ SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 
-# Uncomment to reset database on start up, good for switching branches with patches
+# Uncomment to reset database on start up, good for switching branches when patches are present
 # NAPALM=true
 ```
 
