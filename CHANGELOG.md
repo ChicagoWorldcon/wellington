@@ -11,11 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
+- `make sql` in development brings up a psql session in the container
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
 - Ruby linting rules are now a soft requirement, turned them of in CI
   [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
+- Use fontawesome icons instead of octicons for variety
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
+- Booting the rails app now waits for postgres using psql for reliability
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
 
 ### Removed
 - Nothing significant in this release
