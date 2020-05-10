@@ -17,9 +17,6 @@
 %>
 
 <h1>
-  <% if kiosk? %>
-    Kiosk:
-  <% end %>
   Reserve Membership
 </h1>
 
@@ -32,19 +29,14 @@
     </div>
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <% if kiosk? %>
-          <h2><%= kiosk? && "Kiosk:" %> Reserve a New Membership</h2>
-          <%= form_for(@reservation, url: kiosk_reservations_path) do |form| %>
-            <%= render "detail_form", reservation_form: form %>
-          <% end %>
-        <% elsif !user_signed_in? %>
-          <h2>Sign in to Reserve Membership</h2>
-          <%= render "sign_in_notice" %>
-        <% else %>
+        <% if user_signed_in? %>
           <h2>Reserve a New Membership</h2>
           <%= form_for(@reservation) do |form| %>
             <%= render "detail_form", reservation_form: form %>
           <% end %>
+        <% else %>
+          <h2>Sign in to Reserve Membership</h2>
+          <%= render "sign_in_notice" %>
         <% end %>
       </div>
     </div>
