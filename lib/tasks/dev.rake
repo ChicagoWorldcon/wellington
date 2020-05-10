@@ -39,28 +39,15 @@ namespace :dev do
   namespace :setup do
     desc "Recreates the database, exits if we have users"
     task db: :environment do
-      retries ||= 0
-      ActiveRecord::Base.establish_connection
-      if ENV["NAPALM"].match(/true/i)
-        puts "Resetting database and tables"
+      if napalm?
+        puts "Napalm! Dropping database"
         Rake::Task["db:drop"].invoke
+      end
+
+      if !database_created?
+        puts "Creating database and tables"
         Rake::Task["db:create"].invoke
         Rake::Task["db:structure:load"].invoke
-      elsif User.count > 0
-        puts "Cowardly refusing to setup database when we have existing users"
-        exit 1
-      end
-    rescue ActiveRecord::NoDatabaseError
-      # If database doesn't exist, create it
-      puts "Creating database and tables"
-      Rake::Task["db:create"].invoke
-      Rake::Task["db:structure:load"].invoke
-    rescue
-      # If we fail for any other reason, try again in a moment
-      sleep 1
-      if (retries += 1) < 3
-        puts "Trying again..."
-        retry
       end
     end
   end
@@ -86,5 +73,16 @@ namespace :dev do
     puts
     puts "> #{cmd}"
     system(cmd)
+  end
+
+  def napalm?
+    ENV["NAPALM"].match(/true/i)
+  end
+
+  def database_created?
+    ActiveRecord::Base.establish_connection
+    true
+  rescue ActiveRecord::NoDatabaseError
+    false
   end
 end
