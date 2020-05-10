@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.2...master)
 
 ### Added
-- Nothing significant in this release
+- Development database reset in docker by setting `NAPALM=true` in your .env
+  [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
 ### Changed
 - CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
