@@ -36,28 +36,15 @@ namespace :dev do
   namespace :setup do
     desc "Recreates the database, exits if we have users"
     task db: :environment do
-      retries ||= 0
-      ActiveRecord::Base.establish_connection
-      if ENV["NAPALM"].match(/true/i)
-        puts "Resetting database and tables"
+      if napalm?
+        puts "Napalm! Dropping database"
         Rake::Task["db:drop"].invoke
+      end
+
+      if !database_created?
+        puts "Creating database and tables"
         Rake::Task["db:create"].invoke
         Rake::Task["db:structure:load"].invoke
-      elsif User.count > 0
-        puts "Cowardly refusing to setup database when we have existing users"
-        exit 1
-      end
-    rescue ActiveRecord::NoDatabaseError
-      # If database doesn't exist, create it
-      puts "Creating database and tables"
-      Rake::Task["db:create"].invoke
-      Rake::Task["db:structure:load"].invoke
-    rescue
-      # If we fail for any other reason, try again in a moment
-      sleep 1
-      if (retries += 1) < 3
-        puts "Trying again..."
-        retry
       end
     rescue PG::ConnectionBad
       puts "Postgres connection bad, retrying..."
@@ -90,24 +77,13 @@ namespace :dev do
   end
 
   def napalm?
-    case database_state
-    when :missing_tables
-      true # bad state, drop tables
-    when :missing_database
-      false # drop database will fail if not present
-    else
-      ENV["NAPALM"]&.match(/true/i) # otherwise check to see if the user asked, could be true or false
-    end
+    ENV["NAPALM"].match(/true/i)
   end
 
-  def database_state
-    User.count
-    :ready_to_rumble
-  rescue PG::UndefinedTable
-    :missing_tables
-  rescue ActiveRecord::StatementInvalid
-    :missing_database
+  def database_created?
+    ActiveRecord::Base.establish_connection
+    true
   rescue ActiveRecord::NoDatabaseError
-    :missing_database
+    false
   end
 end
