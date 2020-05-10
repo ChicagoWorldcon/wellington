@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `export HUGO_PACKET_PREFIX="hugo_packet"`
   - There is a new gem, so `bundle install`
   - Hugo voting dates have changed! HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
+- Development database reset in docker by setting `NAPALM=true` in your .env
+  [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
 ### Changed
 - CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
