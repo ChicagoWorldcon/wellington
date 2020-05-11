@@ -81,7 +81,7 @@ namespace :dev do
   end
 
   def missing_database?
-    ActiveRecord::Base.establish_connection
+    User.count # if you can use AR models, then you've got a DB
     false
   rescue ActiveRecord::NoDatabaseError
     true
