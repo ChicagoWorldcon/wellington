@@ -92,6 +92,8 @@ namespace :dev do
     :ready_to_rumble
   rescue PG::UndefinedTable
     :missing_tables
+  rescue ActiveRecord::StatementInvalid
+    :missing_database
   rescue ActiveRecord::NoDatabaseError
     :missing_database
   end
