@@ -36,12 +36,12 @@ namespace :dev do
   namespace :setup do
     desc "Recreates the database, exits if we have users"
     task db: :environment do
-      if napalm?
+      if napalm? && !missing_database?
         puts "Napalm! Dropping database"
         Rake::Task["db:drop"].invoke
       end
 
-      if !database_created?
+      if missing_database?
         puts "Creating database and tables"
         Rake::Task["db:create"].invoke
         Rake::Task["db:structure:load"].invoke
@@ -80,10 +80,10 @@ namespace :dev do
     ENV["NAPALM"]&.match(/true/i)
   end
 
-  def database_created?
+  def missing_database?
     ActiveRecord::Base.establish_connection
-    true
-  rescue ActiveRecord::NoDatabaseError
     false
+  rescue ActiveRecord::NoDatabaseError
+    true
   end
 end
