@@ -36,12 +36,12 @@ namespace :dev do
   namespace :setup do
     desc "Recreates the database, exits if we have users"
     task db: :environment do
-      if napalm? && !missing_database?
+      if napalm?
         puts "Napalm! Dropping database"
         Rake::Task["db:drop"].invoke
       end
 
-      if missing_database?
+      if database_state == :missing_database
         puts "Creating database and tables"
         Rake::Task["db:create"].invoke
         Rake::Task["db:structure:load"].invoke
@@ -77,13 +77,22 @@ namespace :dev do
   end
 
   def napalm?
-    ENV["NAPALM"]&.match(/true/i)
+    case database_state
+    when :missing_tables
+      true # bad state, drop tables
+    when :missing_database
+      false # drop database will fail if not present
+    else
+      ENV["NAPALM"]&.match(/true/i)
+    end
   end
 
-  def missing_database?
-    User.count # if you can use AR models, then you've got a DB
-    false
+  def database_state
+    User.count
+    :ready_to_rumble
+  rescue PG::UndefinedTable
+    :missing_tables
   rescue ActiveRecord::NoDatabaseError
-    true
+    :missing_database
   end
 end
