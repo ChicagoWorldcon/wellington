@@ -77,7 +77,7 @@ namespace :dev do
   end
 
   def napalm?
-    ENV["NAPALM"].match(/true/i)
+    ENV["NAPALM"]&.match(/true/i)
   end
 
   def database_created?
