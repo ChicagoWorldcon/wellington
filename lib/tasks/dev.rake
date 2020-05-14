@@ -83,7 +83,7 @@ namespace :dev do
     when :missing_database
       false # drop database will fail if not present
     else
-      ENV["NAPALM"]&.match(/true/i)
+      ENV["NAPALM"]&.match(/true/i) # otherwise check to see if the user asked, could be true or false
     end
   end
 
