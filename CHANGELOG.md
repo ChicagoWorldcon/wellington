@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
+- Security patching against cross site scripting
+  [npm advisory #1518](https://www.npmjs.com/advisories/1518)
+  [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
 - Ruby linting rules are now a soft requirement, turned them of in CI
   [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
 
