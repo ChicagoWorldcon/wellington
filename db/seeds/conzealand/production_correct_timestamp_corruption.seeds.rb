@@ -15,30 +15,30 @@
 # limitations under the License.
 
 imported_users = User.joins(:notes).where("notes.content LIKE ?", "Import%").distinct
-purchases = Purchase.includes(:charges, :orders).joins(claims: :user)
-imported_purchases = purchases.where(users: { id: imported_users })
-imported_purchases.find_each.with_index(1) do |purchase, counter|
-  # Find the earliest claim, charge and order for the purchase
-  earliest_claim = purchase.claims.min(&:created_at)
-  earliest_order = purchase.orders.min(&:created_at)
-  kansa_charge = purchase.charges.find { |c| c.comment&.match(/kansa payment/i) }
+reservations = Reservation.includes(:charges, :orders).joins(claims: :user)
+imported_reservations = reservations.where(users: { id: imported_users })
+imported_reservations.find_each.with_index(1) do |reservation, counter|
+  # Find the earliest claim, charge and order for the reservation
+  earliest_claim = reservation.claims.min(&:created_at)
+  earliest_order = reservation.orders.min(&:created_at)
+  kansa_charge = reservation.charges.find { |c| c.comment&.match(/kansa payment/i) }
 
   # Find the earliest timestamp between all these models
   earliest_at = [
-    purchase.created_at,
+    reservation.created_at,
     earliest_claim.created_at,
     earliest_order.created_at,
-    kansa_charge&.created_at # allow for purchases without charges ($0 purchase)
+    kansa_charge&.created_at # allow for reservations without charges ($0 reservation)
   ].compact.min
 
-  puts "#{counter}/#{imported_purchases.count}: Setting Purchase.find(#{purchase.id}) to #{earliest_at}"
+  puts "#{counter}/#{imported_reservations.count}: Setting Reservation.find(#{reservation.id}) to #{earliest_at}"
 
   # Reset created at and active_from to be from this timestamp
-  purchase.update!(created_at: earliest_at)
+  reservation.update!(created_at: earliest_at)
   earliest_claim.update!(created_at: earliest_at, active_from: earliest_at)
   earliest_order.update!(created_at: earliest_at, active_from: earliest_at)
 
-  # Set earliest charge if it was close to the original purchase
+  # Set earliest charge if it was close to the original reservation
   # $0 members are skipped, e,g. child member
   next unless kansa_charge.present?
 
