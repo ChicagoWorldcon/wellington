@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
 - Ruby linting rules are now a soft requirement, turned them of in CI
   [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
+- When purchasing a new membership as a new user the membership type selected is used
+  [!172](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/172)
 
 ### Removed
 - Kiosk mode is deprecated as your first login dosen't make you check your email
