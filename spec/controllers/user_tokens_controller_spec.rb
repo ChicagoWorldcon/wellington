@@ -59,6 +59,19 @@ RSpec.describe UserTokensController, type: :controller do
       expect(controller.current_user).to be_present
       expect(controller.current_user.email).to eq(marys_email)
     end
+
+    it "redirects to home is the refferer is not recognised" do
+      new_user_email = "newbie@newbie.net"
+      request.env['HTTP_REFERER'] = 'http://example.com'
+      expect(post :create, params: { email: new_user_email }).to redirect_to("/")
+    end
+
+    it "redirects to offer when purchase selected before account created" do
+      new_user_email = "mike@newbie.net"
+      request.env['HTTP_REFERER'] = "http://#{ENV['HOSTNAME']}/reservations/new?offer=Adult+%24400.00+NZD"
+      expect(post :create, params: { email: new_user_email }).to_not redirect_to("/")
+      expect(response.body).to include("Adult")
+    end
   end
 
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb

@@ -48,7 +48,12 @@ class UserTokensController < ApplicationController
         Because this is the first time we've seen you, you're automatically signed in.
         In the future, you'll have to check your email.
       }
-      redirect_to referrer_path
+      referrer_header = request.headers['HTTP_REFERER']
+      if referrer_header && referrer_header.start_with?("http://#{ENV['HOSTNAME']}/")
+        redirect_to referrer_header
+      else
+        redirect_to "/"
+      end
       return
     end
 
