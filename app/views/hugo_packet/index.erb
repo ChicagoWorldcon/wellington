@@ -2,11 +2,9 @@
 <div>some text here about being a good citizen</div>
 <ol>
 <% @blobs.contents.each do |blob|%>
-<li>
-    <a href="<%= Aws::S3::Object.new(key: blob.key, bucket_name: 'django-spending', client: @s3_client).presigned_url(:get, expires_in: 60 * 60) %>">
-        <%= blob.key %></a><%= number_to_human_size(blob.size, options = {}) %>
-</li>
-<%#  %>
-
+    <li>
+    <a href="<%= Aws::S3::Object.new(key: blob.key, bucket_name: 'django-spending', client: @s3_client).presigned_url(:get, expires_in: 30 * 60) %>">
+        <%= blob.key.sub(@blobs.prefix + '/', '') %></a> <%= number_to_human_size(blob.size, options = {}) %>
+    </li>
 <% end %>
 </ol>

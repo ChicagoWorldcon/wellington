@@ -69,10 +69,6 @@ Rails.application.routes.draw do
     resources :upgrades
   end
 
-  Rails.application.routes.draw do
-    get '/', to: 'home#index'
-  end
-
   # /operator are maintenance routes for support people
   scope :operator do
     resources :reservations do
