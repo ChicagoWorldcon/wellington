@@ -61,11 +61,16 @@ Rails.application.routes.draw do
   resources :memberships
   resources :themes
   resources :upgrades
+  resources :hugo_packet
 
   resources :reservations do
     resources :charges
     resources :nominations, id: /[^\/]+/
     resources :upgrades
+  end
+
+  Rails.application.routes.draw do
+    get '/', to: 'home#index'
   end
 
   # /operator are maintenance routes for support people
