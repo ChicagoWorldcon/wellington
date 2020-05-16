@@ -86,11 +86,7 @@ export POSTGRES_USER=$USER
 
 Continue to skim through [README.md](README.md), you can use that docker stuff for your production deploys if you like.
 
-Reset or create a new database instance with the napalm script:
-
-```sh
-bin/rake dev:napalm
-```
+Reset or create a new database instance by setting NAPALM=true in your .env and restarting your database
 
 Now run your rails server with your standard commands:
 
