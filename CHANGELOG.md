@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Hugo voting dates have changed! HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
 
 ### Changed
+- CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
+  [!173](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/173)
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
