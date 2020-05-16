@@ -50,6 +50,19 @@ RSpec.describe UserTokensController, type: :controller do
       expect(flash[:notice]).to be_present
     end
 
+    it "redirects users to the location stored in the session" do
+      new_email = Faker::Internet.email
+      return_path = "/return-to?query=arg"
+      post :create, params: { email: new_email }, session: { return_path: return_path }
+      expect(response).to redirect_to(return_path)
+    end
+
+    it "redirects users to the root if the session is missing" do
+      new_email = Faker::Internet.email
+      post :create, params: { email: new_email }
+      expect(response).to redirect_to(root_path)
+    end
+
     it "signs new users in imemdiately" do
       marys_email = "mary_poppins@supercalifragilisticexpialidocious.net"
       expect {
