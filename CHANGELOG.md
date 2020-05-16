@@ -11,15 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hugo Packet Download
   [!101](https://gitlab.com/worldcon/2020-wellington/-/issues/101)
   Lots of configuration for this one
-  - The materials to download need to be put in the S3 Bucket by hand!
+  - The materials to download have been put in the S3 Bucket by hand!
   - You'll need to have access to AWS "auto-magically".  This can be accomplished by:
     - having the [aws cli installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
     - and then [setting your aws keys](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
     - In production the EC2 which runs the application will need an AWS IAM role with access to the S3 bucket.  No keys in production
   - In your `.envrc` and/or `.env` you'll need to add where the downloads are:
-    - `export HUGO_PACKET_BUCKET=`
-    - `export HUGO_PACKET_PREFIX=`
-  - And there is a new gem, so `bundle install`
+    - `export HUGO_PACKET_BUCKET="worldconquest"`
+    - `export HUGO_PACKET_PREFIX="hugo_packet"`
+  - There is a new gem, so `bundle install`
+  - Hugo voting dates have changed! HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
 
 ### Changed
 - Security patching webpacker against prototype pollution
