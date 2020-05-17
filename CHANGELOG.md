@@ -26,7 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Kiosk mode is deprecated as your first login dosen't make you check your email
   [!161](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/161)
-
+- Set Rails 6 application defaults
+  [!174](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/174)
 
 ## [Tag 2.4.2 - 2020-04-20](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...2.4.2)
 
