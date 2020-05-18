@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class TransfersController < ApplicationController
 
   def new
     @reservation = Reservation.find(params[:reservation_id])
-    @contact = @reservation.active_claim.conzealand_contact
+    @contact = @reservation.active_claim.contact
   end
 
   def show

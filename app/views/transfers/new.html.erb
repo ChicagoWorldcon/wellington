@@ -1,5 +1,5 @@
 <%#
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@
             <th>Membership Details</th>
           </thead>
           <tbody>
-            <%= User.eager_load(active_claims: :conzealand_contact).find_each do |user| %>
+            <%= User.eager_load(active_claims: :contact).find_each do |user| %>
               <tr>
                 <td><%= link_to user.email, reservation_transfer_path(user.email, reservation_id: @reservation)  %></td>
-                <td><%= user.active_claims.map(&:conzealand_contact).map(&:to_s).to_sentence %></td>
+                <td><%= user.active_claims.map(&:contact).map(&:to_s).to_sentence %></td>
               </p>
             <% end %>
           </tbody>

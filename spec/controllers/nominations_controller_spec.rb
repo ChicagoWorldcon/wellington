@@ -78,7 +78,7 @@ RSpec.describe NominationsController, type: :controller do
         end
 
         it "redirects when you've not set your name" do
-          reservation.active_claim.conzealand_contact.destroy!
+          reservation.active_claim.contact.destroy!
           expect(get_show).to have_http_status(:found)
           expect(flash[:notice]).to match(/enter your details/i)
         end
@@ -88,7 +88,7 @@ RSpec.describe NominationsController, type: :controller do
           let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
 
           it "doesn't redirect if you're a dublin member" do
-            reservation.active_claim.conzealand_contact.destroy!
+            reservation.active_claim.contact.destroy!
             expect(get_show).to have_http_status(:ok)
           end
 

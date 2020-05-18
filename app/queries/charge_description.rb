@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ class ChargeDescription
   def maybe_member_name
     claims = charge.reservation.claims
     active_claim = claims.active_at(charge_active_at).first
-    active_claim.conzealand_contact
+    active_claim.contact
   end
 
   def membership_type

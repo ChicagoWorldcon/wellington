@@ -18,10 +18,7 @@
 class Export::NominationRow
   # JOINS describe fields needed to be preloaded on Nomination for speed
   # These are tied to the Nominations model
-  JOINS = [
-    # reservation: { active_claim: :conzealand_contact },
-    reservation: :user
-  ].freeze
+  JOINS = [ reservation: :user ].freeze
 
   HEADINGS = %w[
     users.current_sign_in_ip
@@ -91,7 +88,7 @@ class Export::NominationRow
   end
 
   def contact
-    reservation.active_claim.conzealand_contact
+    reservation.active_claim.contact
   end
 
   def user

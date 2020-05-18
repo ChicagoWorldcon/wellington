@@ -1,6 +1,6 @@
 <%#
   Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
   Copyright 2019 AJ Esler
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,7 +62,7 @@
 
           <% Election.find_each do |election| %>
             <p>
-              Change 
+              Change
               <%=
                 link_to(
                   "Nominations for #{election.i18n_key}",
@@ -168,7 +168,8 @@
       <div class="l-panel">
         <h2>Review your details</h2>
         <%= form_for(@reservation) do |form| %>
-          <%= render "contact_form" %>
+          <%# Configured through WORLDCON_CONTACT in env %>
+          <%= render worldcon_contact_form %>
         <% end %>
       </div>
     </div>

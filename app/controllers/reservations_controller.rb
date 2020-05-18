@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,13 +25,13 @@ class ReservationsController < ApplicationController
     if user_signed_in?
       @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
-      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :conzealand_contact)
+      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :contact)
     end
   end
 
   def new
     @reservation = Reservation.new
-    @contact = ConzealandContact.new
+    @contact = contact_model.new
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
@@ -41,7 +41,7 @@ class ReservationsController < ApplicationController
   end
 
   def show
-    @contact = @reservation.active_claim.conzealand_contact || ConzealandContact.new
+    @contact = @reservation.active_claim.contact || contact_model.new
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
@@ -49,7 +49,7 @@ class ReservationsController < ApplicationController
 
   def create
     current_user.transaction do
-      @contact = ConzealandContact.new(params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS))
+      @contact = contact_model.new(contact_params)
       if !@contact.valid?
         @reservation = Reservation.new
         flash[:error] = @contact.errors.full_messages.to_sentence
@@ -77,14 +77,14 @@ class ReservationsController < ApplicationController
 
   def update
     @reservation.transaction do
-      current_contact = @reservation.active_claim.conzealand_contact
-      current_contact ||= ConzealandContact.new(claim: @reservation.active_claim)
-      submitted_values = params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
+      current_contact = @reservation.active_claim.contact
+      current_contact ||= contact_model.new(claim: @reservation.active_claim)
+      submitted_values = contact_params
       if current_contact.update(submitted_values)
         flash[:notice] = "Details for #{current_contact} member ##{@reservation.membership_number} have been updated"
         redirect_to reservations_path
       else
-        @contact = @reservation.active_claim.conzealand_contact || ConzealandContact.new
+        @contact = @reservation.active_claim.contact || contact_model.new
         @my_offer = MembershipOffer.new(@reservation.membership)
         @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
         flash[:error] = current_contact.errors.full_messages.to_sentence
@@ -107,6 +107,25 @@ class ReservationsController < ApplicationController
   end
 
   def setup_paperpubs
-    @paperpubs = ConzealandContact::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
+    @paperpubs = contact_model::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
+  end
+
+  def contact_params
+    if ENV["WORLDCON_CONTACT"].nil?
+      return params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
+    end
+
+    case ENV["WORLDCON_CONTACT"].downcase
+    when "chicago"
+      params.require(:chicago_contact).permit(ChicagoContact::PERMITTED_PARAMS)
+    when "conzealand"
+      params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
+    when "dc"
+      params.require(:dc_contact).permit(DcContact::PERMITTED_PARAMS)
+    end
+  end
+
+  def contact_model
+    Claim.worldcon_contact_model.constantize
   end
 end

@@ -94,7 +94,7 @@ class NominationsController < ApplicationController
   end
 
   def lookup_legal_name_or_redirect
-    detail = @reservation.active_claim.conzealand_contact
+    detail = @reservation.active_claim.contact
     if detail.present?
       @legal_name = detail.hugo_name
       return

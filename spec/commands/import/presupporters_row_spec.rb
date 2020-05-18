@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -173,7 +173,7 @@ RSpec.describe Import::PresupportersRow do
       end
 
       it "links through from the user's claim" do
-        expect(Claim.last.conzealand_contact.import_key).to eq ConzealandContact.last.import_key
+        expect(Claim.last.contact.import_key).to eq ConzealandContact.last.import_key
       end
 
       it "stores notes on that record" do

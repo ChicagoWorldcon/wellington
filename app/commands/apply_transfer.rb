@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,8 @@ class ApplyTransfer
       new_claim = receiver.claims.create!(active_from: as_at, reservation: reservation)
 
       if copy_contact?
-        new_claim.update!(conzealand_contact: old_claim.conzealand_contact.dup)
+        coppied_contact = old_claim.contact.dup
+        coppied_contact.update!(claim: new_claim)
       end
 
       new_claim
