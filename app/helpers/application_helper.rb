@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -82,5 +82,21 @@ module ApplicationHelper
 
   def markdown
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+  end
+
+  # Set in your .env with WORLDCON_CONTACT=
+  def worldcon_contact_form
+    return "conzealand_contact_form" if ENV["WORLDCON_CONTACT"].nil?
+
+    case ENV["WORLDCON_CONTACT"].downcase
+    when "chicago"
+      "chicago_contact_form"
+    when "dc"
+      "dc_contact_form"
+    when "conzealand"
+      "conzealand_contact_form"
+    else
+      raise "Typo in WORLDCON_CONTACT env variable"
+    end
   end
 end

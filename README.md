@@ -93,6 +93,7 @@ MAINTAINER_EMAIL=your.name@conzealand.nz
 # Con specific configuration
 MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
 WORLDCON_THEME=conzealand
+WORLDCON_CONTACT=conzealand
 
 # Reporting, if you don't set these they don't send
 NOMINATION_REPORTS_EMAIL=hugo-help@conzealand.nz
