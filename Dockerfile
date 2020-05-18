@@ -14,12 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ruby:2.6.5-alpine as base
+FROM ruby:2.7.1-alpine as base
 
 RUN apk add \
       build-base \
       freetds-dev \
       git \
+      less \
       netcat-openbsd \
       nodejs \
       nodejs-npm \

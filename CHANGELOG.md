@@ -5,18 +5,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.2...master)
+
+### Added
+- Development database reset in docker by setting `NAPALM=true` in your .env
+  [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
+
+### Changed
+- CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
+  [!173](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/173)
+- Security patching webpacker against prototype pollution
+  [npm advisory #1500](https://www.npmjs.com/advisories/1500)
+  [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
+- Security patching against cross site scripting
+  [npm advisory #1518](https://www.npmjs.com/advisories/1518)
+  [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
+- Ruby linting rules are now a soft requirement, turned them of in CI
+  [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
+
+### Removed
+- Kiosk mode is deprecated as your first login dosen't make you check your email
+  [!161](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/161)
+- Set Rails 6 application defaults
+  [!174](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/174)
+
+## [Tag 2.4.2 - 2020-04-20](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...2.4.2)
 
 ### Added
 - Nothing significant in this release
 
 ### Changed
+- Update wording on Adult membership
+  [!158](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/158)
+- Bump dev postgres from 9 to 12 for ease of use with alpine ruby
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Fix pagination in alpine linux for interactive debugging
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Use upstream rubocop linting rules and only lint current branch
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Use upstream rubocop linting rules and only lint current branch
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157)
+- Skip CI enforced linting on master and on tags
+  [!159](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/159)
 - Patch Rails against [CVE-2020-5267](https://nvd.nist.gov/vuln/detail/CVE-2020-5267)
   [!156](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/156)
 - Patch node modules against
   [Prototype Pollution](https://www.npmjs.com/advisories/1179)
   and [Regular Expression Denial of Service](https://www.npmjs.com/advisories/1488)
   [!156](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/156)
+- Bump ruby from 2.6.5 to 2.7.1
+  [!157](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/157),
+  patches against
+  [CVE-2020-10663](https://nvd.nist.gov/vuln/detail/CVE-2020-10663),
+  and [CVE-2020-10933](https://nvd.nist.gov/vuln/detail/CVE-2020-10933).
 
 ### Removed
 - Nothing significant in this release

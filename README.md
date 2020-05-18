@@ -120,6 +120,9 @@ SIDEKIQ_REDIS_URL=redis://redis:6379/0
 SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
+# Uncomment to reset database on start up, good for switching branches when patches are present
+# NAPALM=true
 ```
 
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
@@ -183,13 +186,16 @@ docker-compose exec members_area bundle install
 docker-compose exec members_area bundle exec rake db:migrate
 ```
 
-If you want to quickly reset your javascript dependencies and database, you can do this with:
+If you want to quickly reset your javascript dependencies and database, you can do this by setting
+`NAPALM=true` in your .env and restarting your database.
+
+You can go a step further and drop the disks backing those containers:
 
 ```sh
 make reset
 ```
 
-If you want to clean up everything from this project you can do this with:
+Or you can go all the way and remove the docker containers, disks and networks:
 
 ```sh
 make clean
@@ -483,7 +489,7 @@ This project is open source based on the Apache 2 Licence. You can read the term
 file distributed with this project.
 
 - Copyright 2019 AJ Esler
-- Copyright 2019 Chris Rose
+- Copyright 2020 Chris Rose
 - Copyright 2019 James Polley
 - Copyright 2019 Jen Zajac (jenofdoom)
 - Copyright 2019 Steven C Hartley

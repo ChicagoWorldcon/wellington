@@ -14,15 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Export::NominationRow gathers information for export based on requests from Hugo Admins
 class Export::NominationRow
   # JOINS describe fields needed to be preloaded on Nomination for speed
   # These are tied to the Nominations model
   JOINS = [
-    reservation: { active_claim: :detail },
-    reservation: :user,
+    # reservation: { active_claim: :detail },
+    reservation: :user
   ].freeze
 
-  HEADINGS = %w(
+  HEADINGS = %w[
     users.current_sign_in_ip
     users.last_sign_in_ip
 
@@ -45,7 +46,7 @@ class Export::NominationRow
     nominations.field_1
     nominations.field_2
     nominations.field_3
-  ).freeze
+  ].freeze
 
   attr_reader :nomination
 
@@ -53,6 +54,9 @@ class Export::NominationRow
     @nomination = nomination
   end
 
+  # The cop triggered here thinks there's too many assignments
+  # But this is expected for an export
+  # rubocop:disable Metrics/AbcSize
   def values
     [
       user.current_sign_in_ip,
@@ -75,9 +79,10 @@ class Export::NominationRow
       nomination.category.name,
       nomination.field_1,
       nomination.field_2,
-      nomination.field_3,
+      nomination.field_3
     ]
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 

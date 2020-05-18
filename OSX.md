@@ -11,7 +11,7 @@ To manage rubies we can use `rbenv` to manage which ones are running:
 
 ```sh
 brew install rbenv
-rbenv install 2.6.5
+rbenv install 2.7.1
 ```
 
 For rbenv to hook into your `.ruby-version` file, you need to modify your shell configuration. Add this to your
@@ -27,7 +27,7 @@ fi
 To setup a default for your user, create a `.ruby-version` in your home directory:
 
 ```sh
-echo 2.6.5 > ~/.ruby-version
+echo 2.7.1 > ~/.ruby-version
 ```
 
 This will let you run this version of ruby everywhere, not just the project.
@@ -86,11 +86,7 @@ export POSTGRES_USER=$USER
 
 Continue to skim through [README.md](README.md), you can use that docker stuff for your production deploys if you like.
 
-Reset or create a new database instance with the napalm script:
-
-```sh
-bin/rake dev:napalm
-```
+Reset or create a new database instance by setting NAPALM=true in your .env and restarting your database
 
 Now run your rails server with your standard commands:
 

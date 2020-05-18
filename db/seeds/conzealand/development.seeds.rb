@@ -20,6 +20,11 @@
 
 # Setup memberships
 
+if User.count > 0
+  puts "Cowardly refusing to seed a database when we have existing users"
+  exit 1
+end
+
 puts "Running production seeds"
 require_relative "production.seeds.rb"
 

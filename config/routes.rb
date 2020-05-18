@@ -77,14 +77,4 @@ Rails.application.routes.draw do
       resources :rights
     end
   end
-
-  namespace :kiosk do
-    root to: "memberships#index"
-
-    resources :memberships, only: :index
-    resources :reservations, only: [:new, :create] do
-      resources :next_steps, only: :index
-      resources :charges, only: [:new, :create]
-    end
-  end
 end
