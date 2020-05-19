@@ -23,10 +23,10 @@ RSpec.describe ApplyTransfer do
   let(:reservation) { create(:reservation) }
 
   around do |test|
-    worldcon_contact = ENV["WORLDCON_CONTACT"] = "conzealand"
+    put_back_soon = ENV["WORLDCON_CONTACT"] = "conzealand"
     ENV["WORLDCON_CONTACT"] = "conzealand"
     test.run
-    ENV["WORLDCON_CONTACT"] = conzealand_contact
+    ENV["WORLDCON_CONTACT"] = put_back_soon
   end
 
   before do

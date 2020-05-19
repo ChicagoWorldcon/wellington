@@ -19,12 +19,14 @@ FactoryBot.define do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
 
+    # TODO make this the default, this is a required field
     trait :with_reservation do
       after(:build) do |claim, _evaluator|
         claim.reservation = create(:reservation, :with_order_against_membership)
       end
     end
 
+    # TODO make this the default, this is a required field
     trait :with_user do
       after(:build) do |claim, _evaluator|
         claim.user = create(:user)

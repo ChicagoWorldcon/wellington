@@ -16,24 +16,31 @@
 
 FactoryBot.define do
   factory :dc_contact do
+    address_line_1 { Faker::Address.street_address }
+    country { Faker::Address.city }
+    title { Faker::Superhero.prefix }
     first_name { Faker::Superhero.name }
-    middle_name { Faker::Superhero.descriptor }
-    last_name { Faker::Superhero.power }
-    suffix { Faker::Superhero.suffix }
+    last_name { Faker::Superhero.suffix }
+    publication_format { ConzealandContact::PAPERPUBS_ELECTRONIC }
 
-    preferred_pronoun { Faker::Superhero.prefix }
-    phone_number { Faker::PhoneNumber.phone_number_with_country_code }
+    claim { build(:claim, :with_user, :with_reservation) }
 
-    address { Faker::Address.street_address }
-    city_or_town { Faker::Address.city }
-    state_province_or_region { Faker::Address.state }
-    postal_code { Faker::Address.zip_code }
-    country { Faker::Address.country }
-
-    after(:build) do |new_contact, _evaluator|
-      if new_contact.claim.nil?
-        new_contact.claim = build(:claim, :with_reservation, :with_user)
+    trait :with_claim do
+      after(:build) do |new_contact, _evaluator|
+        new_contact.claim = create(:claim, :with_user, :with_reservation)
       end
+    end
+
+    trait :paperpubs_mail do
+      publication_format { ConzealandContact::PAPERPUBS_MAIL }
+    end
+
+    trait :paperpubs_all do
+      publication_format { ConzealandContact::PAPERPUBS_BOTH }
+    end
+
+    trait :paperpubs_none do
+      publication_format { ConzealandContact::PAPERPUBS_NONE }
     end
   end
 end

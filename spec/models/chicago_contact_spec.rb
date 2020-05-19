@@ -24,11 +24,7 @@ RSpec.describe ChicagoContact, type: :model do
   end
 
   it "is valid to miss out a few fields" do
-    model = build(:chicago_contact,
-      first_name_for_publications: nil,
-      last_name_for_publications: nil,
-      postal_code: nil,
-    )
+    model = build(:chicago_contact, title: nil)
     expect(model).to be_valid
   end
 end
