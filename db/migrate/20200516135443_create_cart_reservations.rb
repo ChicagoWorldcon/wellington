@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,23 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The user model for Wellington
-class User < ApplicationRecord
-  devise :trackable
-
-  has_many :active_claims, -> { active }, class_name: "Claim"
-  has_many :charges
-  has_many :claims
-  has_many :notes
-  has_many :reservations, through: :active_claims
-  has_one :cart
-
-  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
-
-  scope :in_stripe, -> { where.not(stripe_id: nil) }
-  scope :not_in_stripe, -> { where(stripe_id: nil) }
-
-  def in_stripe?
-    stripe_id.present?
+# Create the table linking cards with reservations
+class CreateCartReservations < ActiveRecord::Migration[6.0]
+  def change
+    create_table :cart_reservations do |t|
+      t.belongs_to :cart
+      t.belongs_to :reservation
+      t.timestamps
+    end
   end
 end
