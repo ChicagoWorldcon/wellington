@@ -23,6 +23,11 @@ until nc -z $DB_HOST 5432; do
   sleep 1
 done
 
+# Monkeypatch, don't display deprecation warnings for a while
+# This means Rails 6 has some time to patch for 2.7 and our logs don't get too full of warnings
+# See https://github.com/rails/rails/issues/39227
+[[ $(date -I) -lt "2020-07-01" ]] && export RUBYOPT="-W:no-deprecated"
+
 # Development setup runs when RAILS_ENV is not set
 if [[ -z $RAILS_ENV ]]; then
   bundle install
