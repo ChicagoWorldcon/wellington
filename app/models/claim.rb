@@ -35,7 +35,7 @@ class Claim < ApplicationRecord
 
   # Configure default model based on WORLDCON_CONTACT env var
   def self.worldcon_contact_model
-    return "ConzealandContact" if ENV["WORLDCON_CONTACT"].nil?
+    return ConzealandContact if ENV["WORLDCON_CONTACT"].nil?
 
     case ENV["WORLDCON_CONTACT"].downcase
     when "chicago"
