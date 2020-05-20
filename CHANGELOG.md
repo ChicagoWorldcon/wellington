@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - In your `.envrc` and/or `.env` you'll need to add where the downloads are:
     - `export HUGO_PACKET_BUCKET="worldconquest"`
     - `export HUGO_PACKET_PREFIX="hugo_packet"`
+    - `export AWS_REGION=ap-southeast-2`
   - There is a new gem, so `bundle install`
   - Hugo voting dates have changed! HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
 - Development database reset in docker by setting `NAPALM=true` in your .env
