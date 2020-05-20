@@ -1,4 +1,5 @@
 class HugoPacketController < ApplicationController
+
     def index
         require 'aws-sdk'
         @s3_client = Aws::S3::Client.new
