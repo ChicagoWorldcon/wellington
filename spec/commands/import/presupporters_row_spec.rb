@@ -172,10 +172,6 @@ RSpec.describe Import::PresupportersRow do
         expect(Charge.last.comment).to match(my_comment)
       end
 
-      it "links through from the user's claim" do
-        expect(Claim.last.contact.import_key).to eq ConzealandContact.last.import_key
-      end
-
       it "stores notes on that record" do
         expect(Note.last.content).to eq spreadsheet_notes
       end

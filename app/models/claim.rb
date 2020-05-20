@@ -39,13 +39,13 @@ class Claim < ApplicationRecord
 
     case ENV["WORLDCON_CONTACT"].downcase
     when "chicago"
-      "ChicagoContact"
+      ChicagoContact
     when "conzealand"
-      "ConzealandContact"
+      ConzealandContact
     when "dc"
-      "DcContact"
+      DcContact
     end
   end
 
-  has_one :contact, class_name: worldcon_contact_model
+  has_one :contact, class_name: worldcon_contact_model.to_s
 end

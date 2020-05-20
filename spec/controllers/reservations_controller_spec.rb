@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ require "rails_helper"
 
 RSpec.describe ReservationsController, type: :controller do
   render_views
+
+  # e.g. conzealand_contact, chicago_contact
+  let(:contact_model_key) { Claim.worldcon_contact_model.to_s.underscore.to_sym }
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
@@ -38,7 +41,6 @@ RSpec.describe ReservationsController, type: :controller do
       :country,
     )
   end
-
 
   describe "#new" do
     it "renders" do
@@ -83,8 +85,8 @@ RSpec.describe ReservationsController, type: :controller do
     describe "#create" do
       before do
         post :create, params: {
-          conzealand_contact: valid_contact_params,
-          offer: offer.hash,
+          contact_model_key => valid_contact_params,
+          :offer => offer.hash,
         }
       end
 
@@ -160,17 +162,17 @@ RSpec.describe ReservationsController, type: :controller do
 
   describe "#update" do
     let(:updated_address) { "yolo" }
-    let(:target_contact) { existing_reservation.active_claim.conzealand_contact }
+    let(:target_contact) { existing_reservation.active_claim.contact }
 
     let(:valid_params) do
       {
         id: existing_reservation.reload.id,
-        conzealand_contact: {
-          first_name: "this",
-          last_name: "is",
-          address_line_1: updated_address,
-          country: "valid",
-          publication_format: ConzealandContact::PAPERPUBS_NONE,
+        contact_model_key => {
+          :first_name => "this",
+          :last_name => "is",
+          :address_line_1 => updated_address,
+          :country => "valid",
+          :publication_format => ConzealandContact::PAPERPUBS_NONE,
         }
       }
     end
@@ -186,7 +188,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(ConzealandContact.last.address_line_1).to eq updated_address
+        expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
       end
     end
 
@@ -196,7 +198,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(ConzealandContact.last.address_line_1).to eq updated_address
+        expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
       end
 
       context "with no contact set" do
@@ -207,18 +209,18 @@ RSpec.describe ReservationsController, type: :controller do
         it "updates when all values present" do
           post :update, params: valid_params
           expect(flash[:notice]).to match(/updated/i)
-          expect(ConzealandContact.last.address_line_1).to eq updated_address
+          expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
         end
       end
 
       it "shows error when values not present" do
         post :update, params: {
-          id: existing_reservation.id,
-          conzealand_contact: {
-            first_name: "this",
-            last_name: "is",
-            address_line_1: "",
-            country: "valid",
+          :id => existing_reservation.id,
+          contact_model_key => {
+            :first_name => "this",
+            :last_name => "is",
+            :address_line_1 => "",
+            :country => "valid",
           }
         }
         expect(flash[:error]).to match(/address/i)
@@ -226,10 +228,13 @@ RSpec.describe ReservationsController, type: :controller do
       end
 
       it "lets you update title" do
-        contact_attributes = existing_reservation.active_claim.conzealand_contact.attributes
+        contact_attributes = existing_reservation.active_claim.contact.attributes
         contact_attributes["title"] = "Positively Smashed"
-        post :update, params: { id: existing_reservation.id, conzealand_contact: contact_attributes }
-        expect(existing_reservation.reload.active_claim.conzealand_contact.title).to eq "Positively Smashed"
+        post :update, params: {
+          :id => existing_reservation.id,
+          contact_model_key => contact_attributes
+        }
+        expect(existing_reservation.reload.active_claim.contact.title).to eq "Positively Smashed"
       end
     end
   end
@@ -239,9 +244,9 @@ RSpec.describe ReservationsController, type: :controller do
 
     context "when adult offer selected" do
       it "redirects to the charges page" do
-        post :create, params: {
-          conzealand_contact: valid_contact_params,
-          offer: offer.hash,
+        post :create, :params => {
+          contact_model_key => valid_contact_params,
+          :offer => offer.hash,
         }
         expect(flash[:error]).to_not be_present
         expect(response.headers["Location"]).to match(/charges/)
@@ -249,8 +254,8 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "renders the form again when form submission fails" do
         post :create, params: {
-          conzealand_contact: valid_contact_params,
-          offer: offer.hash,
+          contact_model_key => valid_contact_params,
+          :offer => offer.hash,
         }
       end
     end
@@ -260,11 +265,11 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "redirects to the reservation listing page" do
         post :create, params: {
-          conzealand_contact: {
-            first_name: "Silly",
-            last_name: "Billy",
+          contact_model_key => {
+            :first_name => "Silly",
+            :last_name => "Billy",
           },
-          offer: offer.hash,
+          :offer => offer.hash,
         }
         expect(response).to have_http_status(:ok)
         expect(flash[:error]).to be_present

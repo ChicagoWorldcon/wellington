@@ -22,19 +22,11 @@ RSpec.describe ApplyTransfer do
   let(:support) { create(:support) }
   let(:reservation) { create(:reservation) }
 
-  around do |test|
-    put_back_soon = ENV["WORLDCON_CONTACT"] = "conzealand"
-    ENV["WORLDCON_CONTACT"] = "conzealand"
-    test.run
-    ENV["WORLDCON_CONTACT"] = put_back_soon
-  end
-
   before do
-    Claim.create!(
+    create(:claim, :with_contact,
       user: seller,
       reservation: reservation,
       active_from: reservation.created_at,
-      conzealand_contact: build(:conzealand_contact),
     )
   end
 
@@ -75,8 +67,8 @@ RSpec.describe ApplyTransfer do
     buyer.reload
     seller.reload
 
-    expect(buyer.active_claims.last.conzealand_contact).to be_present
-    expect(buyer.claims.last.conzealand_contact.to_s).to eq(seller.claims.last.conzealand_contact.to_s)
+    expect(buyer.active_claims.last.contact).to be_present
+    expect(buyer.claims.last.contact.to_s).to eq(seller.claims.last.contact.to_s)
   end
 
   context "when there's transactions close together" do

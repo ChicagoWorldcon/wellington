@@ -126,6 +126,6 @@ class ReservationsController < ApplicationController
   end
 
   def contact_model
-    Claim.worldcon_contact_model.constantize
+    Claim.worldcon_contact_model
   end
 end

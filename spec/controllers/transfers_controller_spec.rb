@@ -105,7 +105,7 @@ RSpec.describe TransfersController, type: :controller do
 
         it "does copy contact over" do
           expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.conzealand_contact }
-          expect(new_user.reload.claims.last.conzealand_contact).to be_present
+          expect(new_user.reload.claims.last.contact).to be_present
         end
       end
     end

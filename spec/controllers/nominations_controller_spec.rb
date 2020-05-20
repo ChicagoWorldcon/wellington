@@ -103,7 +103,7 @@ RSpec.describe NominationsController, type: :controller do
             end
 
             it "forces the user to enter their details" do
-              reservation.active_claim.conzealand_contact.destroy!
+              reservation.active_claim.contact.destroy!
               expect(get_show).to_not have_http_status(:ok)
               expect(flash[:notice]).to match(/enter your details/)
             end

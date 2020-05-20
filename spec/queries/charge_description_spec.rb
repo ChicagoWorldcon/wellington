@@ -45,7 +45,7 @@ RSpec.describe ChargeDescription do
     end
 
     context "with contact" do
-      let!(:user_contact) { unicorn_reservation.active_claim.conzealand_contact }
+      let!(:user_contact) { unicorn_reservation.active_claim.contact }
       it { is_expected.to include "3.00" }
       it { is_expected.to include "Instalment for" }
       it { is_expected.to include user_contact.to_s }
