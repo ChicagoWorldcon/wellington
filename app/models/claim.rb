@@ -34,7 +34,7 @@ class Claim < ApplicationRecord
   end
 
   # Configure default model based on WORLDCON_CONTACT env var
-  def self.worldcon_contact_model
+  def self.contact_strategy
     return ConzealandContact if ENV["WORLDCON_CONTACT"].nil?
 
     case ENV["WORLDCON_CONTACT"].downcase
@@ -47,5 +47,5 @@ class Claim < ApplicationRecord
     end
   end
 
-  has_one :contact, class_name: worldcon_contact_model.to_s
+  has_one :contact, class_name: contact_strategy.to_s
 end

@@ -21,7 +21,7 @@ RSpec.describe ReservationsController, type: :controller do
   render_views
 
   # e.g. conzealand_contact, chicago_contact
-  let(:contact_model_key) { Claim.worldcon_contact_model.to_s.underscore.to_sym }
+  let(:contact_model_key) { Claim.contact_strategy.to_s.underscore.to_sym }
 
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
@@ -188,7 +188,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
+        expect(Claim.contact_strategy.last.address_line_1).to eq updated_address
       end
     end
 
@@ -198,7 +198,7 @@ RSpec.describe ReservationsController, type: :controller do
       it "updates when all values present" do
         post :update, params: valid_params
         expect(flash[:notice]).to match(/updated/i)
-        expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
+        expect(Claim.contact_strategy.last.address_line_1).to eq updated_address
       end
 
       context "with no contact set" do
@@ -209,7 +209,7 @@ RSpec.describe ReservationsController, type: :controller do
         it "updates when all values present" do
           post :update, params: valid_params
           expect(flash[:notice]).to match(/updated/i)
-          expect(Claim.worldcon_contact_model.last.address_line_1).to eq updated_address
+          expect(Claim.contact_strategy.last.address_line_1).to eq updated_address
         end
       end
 
