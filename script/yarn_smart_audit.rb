@@ -27,7 +27,7 @@ require "json"
 PATCH_DEADLINE = 180 # days to respond, double what project 0 gives
 
 Classifier = Struct.new(:report) do
-  def severe?
+  def should_action?
     patch_available? || upstream_not_responding?
   end
 
@@ -55,16 +55,18 @@ audit_json = `yarn audit --json`.lines.map { |line| JSON.parse(line) }
 reports = audit_json[0..-2]
 _summary = audit_json.last # We don't use this, labelling it anyway
 
-severe_reports = reports.map { |r| Classifier.new(r) }.select(&:severe?)
+reports_to_action = reports.map { |r| Classifier.new(r) }.select(&:should_action?)
 
 if reports.any?
   puts `yarn audit` # human friendly printout
 end
 
-if severe_reports.any?
-  puts "FAIL - #{severe_reports.count}/#{reports.count} severe reports found"
-  exit 1 # fail
+summary = "#{reports_to_action.count}/#{reports.count} reports found that need actioning"
+
+if reports_to_action.any?
+  puts "FAIL - #{summary}"
+  exit 1
 else
-  puts "PASS - #{severe_reports.count}/#{reports.count} reports were severe"
-  exit 0 # pass
+  puts "PASS - #{summary}"
+  exit 0
 end

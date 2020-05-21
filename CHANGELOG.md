@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
+- Security patching against denail of service in webpacker
+  [npm advisory #1486](https://www.npmjs.com/advisories/1486)
+  [!177](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/177)
+- Securtiy patching rails against
+  [CVE-2020-8166](https://nvd.nist.gov/vuln/detail/CVE-2020-8166),
+  [CVE-2020-8167](https://nvd.nist.gov/vuln/detail/CVE-2020-8167),
+  [CVE-2020-8162](https://nvd.nist.gov/vuln/detail/CVE-2020-8162)
+  and [CVE-2020-8165](https://nvd.nist.gov/vuln/detail/CVE-2020-8165)
+  [!177](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/177)
 - Security patching against cross site scripting
   [npm advisory #1518](https://www.npmjs.com/advisories/1518)
   [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
