@@ -18,9 +18,10 @@
 if [[ -z $DB_HOST ]]; then
   DB_HOST="postgres"
 fi
-until nc -z $DB_HOST 5432; do
+
+until psql -Atx "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST" -c 'select current_date'; do
   echo "waiting for postgres..."
-  sleep 1
+  sleep 5
 done
 
 # Development setup runs when RAILS_ENV is not set
