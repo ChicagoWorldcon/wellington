@@ -84,6 +84,10 @@ class UserTokensController < ApplicationController
   end
 
   def referrer_path
+    if session[:return_path].present?
+      return session[:return_path]
+    end
+
     if !request.referrer.present?
       return "/"
     end
