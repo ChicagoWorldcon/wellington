@@ -20,14 +20,27 @@
 
 # Setup memberships
 
+if User.count > 0
+  puts "Cowardly refusing to seed a database when we have existing users"
+  exit 1
+end
+
 puts "Running production seeds"
 require_relative "production.seeds.rb"
+
+membership_distribution_averages = [
+  1,1,1,1,1,1,1,1,1,1, # 10/20 will be Individuals,
+  2,2,2,2,2,           # 5/20 will be Couples,
+  3,3,3,               # 3/20 will be Small families,
+  5,5,                 # 2/20 will be Families
+]
+
 
 all_memberships = Membership.all.to_a
 50.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
-  memberships_held = rand(2..10)
+  memberships_held = membership_distribution_averages.sample # <-- biased sample
 
   all_memberships.sample(memberships_held).each do |rando_membership|
     if rando_membership.price == 0

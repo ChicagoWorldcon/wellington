@@ -8,19 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.2...master)
 
 ### Added
-- Nothing significant in this release
+- Development database reset in docker by setting `NAPALM=true` in your .env
+  [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
 ### Changed
+- CI now only runs security-audit steps for master, or branches named security-patch
+  [!178](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/178)
+- CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
+  [!173](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/173)
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
+- Security patching against denail of service in webpacker
+  [npm advisory #1486](https://www.npmjs.com/advisories/1486)
+  [!177](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/177)
+- Securtiy patching rails against
+  [CVE-2020-8166](https://nvd.nist.gov/vuln/detail/CVE-2020-8166),
+  [CVE-2020-8167](https://nvd.nist.gov/vuln/detail/CVE-2020-8167),
+  [CVE-2020-8162](https://nvd.nist.gov/vuln/detail/CVE-2020-8162)
+  and [CVE-2020-8165](https://nvd.nist.gov/vuln/detail/CVE-2020-8165)
+  [!177](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/177)
+- Security patching puma against http smuggling attack
+  [CVE-2020-11076](https://nvd.nist.gov/vuln/detail/CVE-2020-8166),
+  [!178](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/178)
+- Security patching against cross site scripting
+  [npm advisory #1518](https://www.npmjs.com/advisories/1518)
+  [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
 - Ruby linting rules are now a soft requirement, turned them of in CI
   [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
 
 ### Removed
 - Kiosk mode is deprecated as your first login dosen't make you check your email
   [!161](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/161)
-
+- Set Rails 6 application defaults
+  [!174](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/174)
 
 ## [Tag 2.4.2 - 2020-04-20](https://gitlab.com/worldcon/2020-wellington/compare/2.4.1...2.4.2)
 

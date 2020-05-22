@@ -78,8 +78,14 @@ security_analysis:
     - docker run $CONTAINER_TEST_IMAGE bundle exec brakeman --run-all-checks --no-pager
     - docker run $CONTAINER_TEST_IMAGE bundle exec bundler-audit check --update
     - docker run $CONTAINER_TEST_IMAGE bundle exec ruby-audit check
-    - docker run $CONTAINER_TEST_IMAGE yarn audit
+    # - docker run $CONTAINER_TEST_IMAGE yarn audit
+    - docker run $CONTAINER_TEST_IMAGE script/yarn_smart_audit.rb
     - docker run $CONTAINER_TEST_IMAGE yarn check --integrity
+  only:
+    - master
+    - security-patch    # Branches that are named this run will trigger this step too
+    - security-patching
+    - security-patches
 
 # Stable images for production grade use
 # These move :stable when a git tag passes CI, and creates a docker image matching that tag
