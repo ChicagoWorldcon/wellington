@@ -2,7 +2,7 @@
 
 <%#
   Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,15 @@
 
 <html lang="en">
 <head>
-  <title>Chicago</title>
+  <title>DC</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
   <%# TODO move scripts to the bottom of <body> %>
   <script src="https://checkout.stripe.com/checkout.js"></script>
 
-  <%= javascript_pack_tag "chicago-app" %>
-  <%= stylesheet_pack_tag "chicago-styles", media: "all" %>
+  <%= javascript_pack_tag "dc-app" %>
+  <%= stylesheet_pack_tag "dc-styles", media: "all" %>
 
   <%=
     tag("link", {
@@ -75,7 +75,7 @@
   <footer role="contentinfo">
     <div class="container l-wrapper">
       <p>
-        Just example content for the Chicago 2022 &lt;3
+        Just example content for DC 2021 &lt;3
         Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>
       </p>
     </div>
