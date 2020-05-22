@@ -83,6 +83,9 @@ security_analysis:
     - docker run $CONTAINER_TEST_IMAGE yarn check --integrity
   only:
     - master
+    - security-patch    # Branches that are named this run will trigger this step too
+    - security-patching
+    - security-patches
 
 # Stable images for production grade use
 # These move :stable when a git tag passes CI, and creates a docker image matching that tag
