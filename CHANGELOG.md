@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
 ### Changed
+- CI now only runs security-audit steps for master, or branches named security-patch
+  [!178](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/178)
 - CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
   [!173](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/173)
 - Security patching webpacker against prototype pollution
@@ -26,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [CVE-2020-8162](https://nvd.nist.gov/vuln/detail/CVE-2020-8162)
   and [CVE-2020-8165](https://nvd.nist.gov/vuln/detail/CVE-2020-8165)
   [!177](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/177)
+- Security patching puma against http smuggling attack
+  [CVE-2020-11076](https://nvd.nist.gov/vuln/detail/CVE-2020-8166),
+  [!178](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/178)
 - Security patching against cross site scripting
   [npm advisory #1518](https://www.npmjs.com/advisories/1518)
   [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
