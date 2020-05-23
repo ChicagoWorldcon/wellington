@@ -121,6 +121,13 @@ SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 
+# Hugo Packet download
+HUGO_PACKET_BUCKET=worldconquest
+HUGO_PACKET_PREFIX=hugo_packet
+AWS_REGION=ap-southeast-2
+AWS_ACCESS_KEY_ID=Maev0sae8oCOPYPASTApahx5aQu
+AWS_SECRET_ACCESS_KEY=eikai7AeNgej2chae9EoCOPYPASTAieJee2piquee0Chu2ahy
+
 # Uncomment to reset database on start up, good for switching branches when patches are present
 # NAPALM=true
 ```
@@ -494,5 +501,6 @@ file distributed with this project.
 - Copyright 2019 Jen Zajac (jenofdoom)
 - Copyright 2019 Steven C Hartley
 - Copyright 2020 Matthew B. Gray
+- Copyright 2020 Steven Ensslen
 
 We are so grateful to all our contributors for helping us make this project great.
