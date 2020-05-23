@@ -13,6 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
+
 <h1>Transferring Membership:</h1>
 <section class="l-section">
   <div class="row">
@@ -40,9 +41,8 @@
           <h4>
             Enter recipient's email OR select a previously-registered user:
           </h4>
-          <%= form_with(url: reservation_transfers_path(reservation_id:  @reservation), method: :post) do |f| %>
-              <label for="email">Email address</label>
-               <%= f.text_field :email %>
+          <%= form_with(url: reservation_transfers_path(reservation_id:  @reservation), method: :post, local: true) do |f| %>
+              <%= f.text_field :email %>
               <%= submit_tag("Submit", class: "btn") %>
           <% end %>
           <h4>
