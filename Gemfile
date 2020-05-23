@@ -48,7 +48,6 @@ group :development, :test do
   gem "faker"                                         # fun common strings fro testing
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
   gem "pry"                                           # nicer debugger, use 'binding.pry'
-  gem "pry-rails"                                     # sets pry as your rails console
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
