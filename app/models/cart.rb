@@ -16,6 +16,6 @@
 
 # Define a shopping cart for reservations in the process of being purchased.
 class Cart < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :reservations, through: :cart_reservations
 end

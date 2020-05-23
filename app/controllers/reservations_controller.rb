@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
   before_action :lookup_reservation!, only: [:show, :update]
   before_action :lookup_offer, only: [:new, :create]
   before_action :setup_paperpubs, except: :index
+  before_action :lookup_cart, only: [:index, :create, :new]
 
   # TODO(issue #24) list all members for people not logged in
   def index
@@ -105,6 +106,23 @@ class ReservationsController < ApplicationController
     if !@my_offer.present?
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
       redirect_to memberships_path
+    end
+  end
+
+  def has_cart?
+    @cart.present?
+  end
+
+  def lookup_cart
+    if user_signed_in?
+      if not current_user.cart.present?
+        current_user.transaction do
+          current_user.cart = Cart.new
+        end
+      end
+      @cart = current_user.cart
+    else
+      @cart = nil
     end
   end
 

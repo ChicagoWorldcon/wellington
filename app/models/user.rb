@@ -23,6 +23,7 @@ class User < ApplicationRecord
   has_many :claims
   has_many :notes
   has_many :reservations, through: :active_claims
+  has_many :pending_reservations, through: :cart, class_name: "Reservation"
   has_one :cart
 
   validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
