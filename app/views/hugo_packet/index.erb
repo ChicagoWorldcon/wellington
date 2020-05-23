@@ -20,82 +20,78 @@
 <div class="row">
   <div class="col-12 col-md-12">
     <div class="l-panel">
-      <% if user_signed_in? %>
-        <p>
-          Welcome to the Hugo Voter’s Packet for 2020! While we know that you’re
-          excited to dive right into the materials, please take a moment to read
-          this brief introduction to the packet.
-        </p>
+      <p>
+        Welcome to the Hugo Voter’s Packet for 2020! While we know that you’re
+        excited to dive right into the materials, please take a moment to read
+        this brief introduction to the packet.
+      </p>
 
-        <p>
-          This download of materials from Hugo Award finalists is supplied free of
-          charge as a courtesy by the creators and publishers of works that are
-          nominated for the awards. The purpose is to allow those who are voting on
-          the Hugo Awards to be able to make an informed choice among the nominated
-          works. We are deeply appreciative of the publishers, authors, artists,
-          editors, and other creators who have generously provided their works to
-          this year’s Hugo Voter Packet. We also ask that you honour publishers’
-          and creators’ request that you reserve these copies for your personal use
-          only, and that you do not share these works with non-members of
-          CoNZealand.
-        </p>
+      <p>
+        This download of materials from Hugo Award finalists is supplied free of
+        charge as a courtesy by the creators and publishers of works that are
+        nominated for the awards. The purpose is to allow those who are voting on
+        the Hugo Awards to be able to make an informed choice among the nominated
+        works. We are deeply appreciative of the publishers, authors, artists,
+        editors, and other creators who have generously provided their works to
+        this year’s Hugo Voter Packet. We also ask that you honour publishers’
+        and creators’ request that you reserve these copies for your personal use
+        only, and that you do not share these works with non-members of
+        CoNZealand.
+      </p>
 
-        <p>
-          We have divided the packet into categories for ease of downloading. Within
-          each category, each Finalist has their own folder that contains all of the
-          materials submitted. Sometimes, an individual finalist’s folder has further
-          sub-folders, but for the most part, we have tried to keep the nesting
-          folders to a minimum.
-        </p>
+      <p>
+        We have divided the packet into categories for ease of downloading. Within
+        each category, each Finalist has their own folder that contains all of the
+        materials submitted. Sometimes, an individual finalist’s folder has further
+        sub-folders, but for the most part, we have tried to keep the nesting
+        folders to a minimum.
+      </p>
 
-        <p>
-          Some parts of the packet are quite large! Time your bandwidth usage
-          accordingly. Specifically, the Best Dramatic Presentation Short Form, Best
-          Related Work, Best Fancast, and Best Series folders are on the larger side.
-          Note that when you click on the link, the download will start
-          automatically.
-        </p>
+      <p>
+        Some parts of the packet are quite large! Time your bandwidth usage
+        accordingly. Specifically, the Best Dramatic Presentation Short Form, Best
+        Related Work, Best Fancast, and Best Series folders are on the larger side.
+        Note that when you click on the link, the download will start
+        automatically.
+      </p>
 
-        <p>
-          The use of Net Galley widgets (a widget looks like a link) in our written
-          categories has increased this year. In each Table of Contents for the
-          categories, we have indicated when a work has a Net Galley widget. Net
-          Galley is a free service that allows you to download different copies of
-          a work. You must first register for an account and then come back to the
-          link in the packet and click on it to access the work. These links will
-          expire when voting closes. In one case (the Best Series submission for
-          Katherine Arden's Winternight trilogy) a further step is needed - the
-          publisher will make the material available only after you request it, via
-          the NetGalley widget provided.
-        </p>
+      <p>
+        The use of Net Galley widgets (a widget looks like a link) in our written
+        categories has increased this year. In each Table of Contents for the
+        categories, we have indicated when a work has a Net Galley widget. Net
+        Galley is a free service that allows you to download different copies of
+        a work. You must first register for an account and then come back to the
+        link in the packet and click on it to access the work. These links will
+        expire when voting closes. In one case (the Best Series submission for
+        Katherine Arden's Winternight trilogy) a further step is needed - the
+        publisher will make the material available only after you request it, via
+        the NetGalley widget provided.
+      </p>
 
-        <p>
-          Finally, we do have some materials in our Best Dramatic Presentation: Short
-          Form this year. Since we do not usually have materials submitted in this
-          category, we wanted to make sure that you check them out!
-        </p>
+      <p>
+        Finally, we do have some materials in our Best Dramatic Presentation: Short
+        Form this year. Since we do not usually have materials submitted in this
+        category, we wanted to make sure that you check them out!
+      </p>
 
-        <p>
-          Happy reading everyone and remember to finalize your ballot choices by
-          July 15th. (Also, download your packet by then too! When voting closes,
-          the packet disappears into the ether.) If you have any problems with the
-          packet, please contact hugohelp@conzealand.nz.
-        </p>
+      <p>
+        Happy reading everyone and remember to finalize your ballot choices by
+        July 15th. (Also, download your packet by then too! When voting closes,
+        the packet disappears into the ether.) If you have any problems with the
+        packet, please contact hugohelp@conzealand.nz.
+      </p>
 
-        <ol>
-          <% @blobs.contents.each do |blob|%>
-            <% if 0 < blob.size %>
-              <li>
-                <a href="<%= Aws::S3::Object.new(key: blob.key, bucket_name: ENV['HUGO_PACKET_BUCKET'], client: @s3_client).presigned_url(:get, expires_in: 30 * 60) %>">
-                  <%= blob.key.sub(@blobs.prefix + '/', '') %></a> <%= number_to_human_size(blob.size, options = {}) %>
-                </a>
-              </li>
-            <% end %>
+      <ol>
+        <% @blobs.contents.each do |blob|%>
+          <% if 0 < blob.size %>
+            <li>
+              <a href="<%= Aws::S3::Object.new(key: blob.key, bucket_name: ENV['HUGO_PACKET_BUCKET'], client: @s3_client).presigned_url(:get, expires_in: 30 * 60) %>">
+                <%= blob.key.sub(@blobs.prefix + '/', '') %></a> <%= number_to_human_size(blob.size, options = {}) %>
+              </a>
+            </li>
           <% end %>
-        </ol>
-      <% else %>
-        <p>login to download the hugo packet</p>
-      <% end %>
+        <% end %>
+      </ol>
       </div>
     </div>
   </div>
