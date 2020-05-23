@@ -65,13 +65,19 @@ class HugoPacketController < ApplicationController
 
   def check_access!
     if !user_signed_in?
-      flash["notice"] = "Please log in to download the hugo packet"
+      flash["notice"] = "Please log in to download the Hugo Packet"
       redirect_to root_path
       return
     end
 
+    if current_user.reservations.none?
+      flash["notice"] = "To download the Hugo Packet, please purchase a membership with voting rights"
+      redirect_to memberships_path
+      return
+    end
+
     if current_user.reservations.none?(&:can_vote?)
-      flash["notice"] = "Please upgrade one of your memberships to download the hugo packet"
+      flash["notice"] = "To download the Hugo Packet, please upgrade one of your memberships to have voting rights"
       redirect_to reservations_path
       return
     end

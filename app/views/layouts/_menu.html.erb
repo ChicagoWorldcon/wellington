@@ -56,10 +56,9 @@
       <ul class="list-unstyled l-v-spacing">
         <li><%= link_to "Purchase Membership", memberships_path %></li>
         <li><%= link_to "My Memberships", reservations_path %></li>
-        <% if ENV["HUGO_PACKET_BUCKET"] && ENV["HUGO_PACKET_PREFIX"] %>
+        <% if ENV["HUGO_PACKET_BUCKET"] %>
           <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
         <% end %>
-
         <li>Suggest for our Programme (coming soon)</li>
         <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
         <li>Plan my trip(coming soon)</li>
