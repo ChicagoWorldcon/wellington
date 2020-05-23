@@ -37,7 +37,17 @@
     <% if reservation.paid? || reservation.has_paid_supporting? %>
       <p><%= t("rights.description") %></p>
       <% reservation.active_rights.each do |membership_right| %>
-        <p><%= raw membership_right_description(membership_right, reservation) %></p>
+        <p>
+          <%= raw membership_right_description(membership_right, reservation) %>
+          <i class="far fa-question-circle"
+            title="<%= t(:layman, scope: membership_right) %>"
+            data-toggle="tooltip"
+            aria-label="More information"
+            height="15px"
+            data-html="true"
+            data-placement="right"
+          ></i>
+        </p>
       <% end %>
     <% end %>
 

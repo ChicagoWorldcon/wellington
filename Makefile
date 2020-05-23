@@ -42,6 +42,11 @@ logs:
 console:
 	docker-compose exec web bundle exec rails console
 
+# open a databaes console so you can run SQL queries
+# e.g. SELECT * FROM users;
+sql:
+	docker-compose exec postgres psql -U postgres worldcon_development
+
 # lets you cd around and have a look at the project
 shell:
 	docker-compose exec web sh

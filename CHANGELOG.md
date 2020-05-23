@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!178](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/178)
 - CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
   [!173](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/173)
+- `make sql` in development brings up a psql session in the container
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
 - Security patching webpacker against prototype pollution
   [npm advisory #1500](https://www.npmjs.com/advisories/1500)
   [!164](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/164)
@@ -41,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!169](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/169)
 - Ruby linting rules are now a soft requirement, turned them of in CI
   [!165](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/165)
+- Use fontawesome icons instead of octicons for variety
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
+- Booting the rails app now waits for postgres using psql for reliability
+  [!166](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/166)
 
 ### Removed
 - Kiosk mode is deprecated as your first login dosen't make you check your email
