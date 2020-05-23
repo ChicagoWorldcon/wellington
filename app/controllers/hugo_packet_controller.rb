@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 # Copyright 2020 Steven Ensslen
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +18,7 @@
 require "aws-sdk"
 
 class HugoPacketController < ApplicationController
-  Packet = Struct.new(:client, :prefix, :blob) do
+  Packet = Struct.new(:s3_client, :prefix, :blob) do
     include ActionView::Helpers::NumberHelper
 
     delegate :size, :key, to: :blob
@@ -28,7 +31,7 @@ class HugoPacketController < ApplicationController
       object = Aws::S3::Object.new(
         key: key,
         bucket_name: ENV['HUGO_PACKET_BUCKET'],
-        client: client,
+        client: s3_client,
       )
       object.presigned_url(:get, expires_in: 1.hour.to_i)
     end
@@ -42,17 +45,35 @@ class HugoPacketController < ApplicationController
     end
   end
 
+  before_action :check_access!
+
   def index
-    @s3_client = Aws::S3::Client.new
-    list_objects = @s3_client.list_objects_v2(
-      bucket: ENV['HUGO_PACKET_BUCKET'],
-      prefix: ENV['HUGO_PACKET_PREFIX'],
+    s3_client = Aws::S3::Client.new
+    list_objects = s3_client.list_objects_v2(
+      bucket: ENV["HUGO_PACKET_BUCKET"],
+      prefix: ENV["HUGO_PACKET_PREFIX"],
     )
 
     @packets = list_objects.contents.map do |blob|
-      Packet.new(@s3_client, list_objects.prefix, blob)
+      Packet.new(s3_client, list_objects.prefix, blob)
     end
 
     @blobs = list_objects
+  end
+
+  private
+
+  def check_access!
+    if !user_signed_in?
+      flash["notice"] = "Please log in to download the hugo packet"
+      redirect_to root_path
+      return
+    end
+
+    if current_user.reservations.none?(&:can_vote?)
+      flash["notice"] = "Please upgrade one of your memberships to download the hugo packet"
+      redirect_to reservations_path
+      return
+    end
   end
 end
