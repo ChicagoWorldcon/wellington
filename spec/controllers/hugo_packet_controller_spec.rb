@@ -15,6 +15,7 @@
 require 'rails_helper'
 
 RSpec.describe HugoPacketController, type: :controller do
+  let(:s3) { Aws::S3::Client.new }
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { reservation.user }
 
