@@ -81,18 +81,14 @@
           packet, please contact hugohelp@conzealand.nz.
         </p>
 
-        <ol>
-          <% @blobs.contents.each do |blob|%>
-            <% if 0 < blob.size %>
-              <li>
-                <a href="<%= Aws::S3::Object.new(key: blob.key, bucket_name: ENV['HUGO_PACKET_BUCKET'], client: @s3_client).presigned_url(:get, expires_in: 30 * 60) %>">
-                  <%= blob.key.sub(@blobs.prefix + '/', '') %>
-                </a>
-                <%= number_to_human_size(blob.size, options = {}) %>
-              </li>
-            <% end %>
+        <ul class="list-group text-dark">
+          <% @packets.select(&:downloadable?).each do |packet| %>
+            <li class="list-group-item">
+              <%= link_to(packet.file_name, packet.signed_url) %>
+              (<%= packet.download_size %>)
+            </li>
           <% end %>
-        </ol>
+        </ul>
       </div>
     </div>
   </div>

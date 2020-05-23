@@ -15,8 +15,44 @@
 require "aws-sdk"
 
 class HugoPacketController < ApplicationController
+  Packet = Struct.new(:client, :prefix, :blob) do
+    include ActionView::Helpers::NumberHelper
+
+    delegate :size, :key, to: :blob
+
+    def downloadable?
+      size > 0
+    end
+
+    def signed_url
+      object = Aws::S3::Object.new(
+        key: key,
+        bucket_name: ENV['HUGO_PACKET_BUCKET'],
+        client: client,
+      )
+      object.presigned_url(:get, expires_in: 1.hour.to_i)
+    end
+
+    def file_name
+      key.sub(prefix + '/', '')
+    end
+
+    def download_size
+      number_to_human_size(size)
+    end
+  end
+
   def index
     @s3_client = Aws::S3::Client.new
-    @blobs = @s3_client.list_objects_v2({bucket: ENV['HUGO_PACKET_BUCKET'], prefix: ENV['HUGO_PACKET_PREFIX']})
+    list_objects = @s3_client.list_objects_v2(
+      bucket: ENV['HUGO_PACKET_BUCKET'],
+      prefix: ENV['HUGO_PACKET_PREFIX'],
+    )
+
+    @packets = list_objects.contents.map do |blob|
+      Packet.new(@s3_client, list_objects.prefix, blob)
+    end
+
+    @blobs = list_objects
   end
 end
