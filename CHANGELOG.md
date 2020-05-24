@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   4. Generate AWS keys for that user
   5. Configure on production / staging / local with the following:
      ```bash
-     HUGO_PACKET_BUCKET=worldconquest
-     HUGO_PACKET_PREFIX=hugo_packet
+     HUGO_PACKET_BUCKET=FROM_STEP_2
+     HUGO_PACKET_PREFIX=FROM_STEP_2
      AWS_REGION=ap-southeast-2
      AWS_ACCESS_KEY_ID=FROM_STEP_4
      AWS_SECRET_ACCESS_KEY=FROM_STEP_4
