@@ -121,6 +121,18 @@ SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 
+# Only shows in menu if HUGO_PACKET_BUCKET present. To make available, you must
+# 1. Get the materials from the Hugo admins
+# 2. Put them in an S3 bucket that you control
+# 3. Create a user with programatic access that has read only access to this bucket
+# 4. Generate AWS keys for that user
+# 5. Configure on production / staging / local with the following:
+# HUGO_PACKET_BUCKET=FROM_STEP_2
+# HUGO_PACKET_PREFIX=FROM_STEP_2
+# AWS_REGION=ap-southeast-2
+# AWS_ACCESS_KEY_ID=FROM_STEP_4
+# AWS_SECRET_ACCESS_KEY=FROM_STEP_4
+
 # Uncomment to reset database on start up, good for switching branches when patches are present
 # NAPALM=true
 ```
@@ -494,5 +506,6 @@ file distributed with this project.
 - Copyright 2019 Jen Zajac (jenofdoom)
 - Copyright 2019 Steven C Hartley
 - Copyright 2020 Matthew B. Gray
+- Copyright 2020 Steven Ensslen
 
 We are so grateful to all our contributors for helping us make this project great.

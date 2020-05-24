@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.4.2...master)
 
 ### Added
+- Hugo Packet Download
+  [!101](https://gitlab.com/worldcon/2020-wellington/-/issues/101)
+  Lots of configuration for this one.
+  1. Get the materials from the Hugo admins
+  2. Put them in an S3 bucket that you control
+  3. Create a user with programatic access that has read only access to this bucket
+  4. Generate AWS keys for that user
+  5. Configure on production / staging / local with the following:
+     ```bash
+     HUGO_PACKET_BUCKET=FROM_STEP_2
+     HUGO_PACKET_PREFIX=FROM_STEP_2
+     AWS_REGION=ap-southeast-2
+     AWS_ACCESS_KEY_ID=FROM_STEP_4
+     AWS_SECRET_ACCESS_KEY=FROM_STEP_4
+     ```
+    [!176](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/176)
+- Hugo voting dates have changed!
+  ```bash
+  HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
+  ```
 - Development database reset in docker by setting `NAPALM=true` in your .env
   [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
