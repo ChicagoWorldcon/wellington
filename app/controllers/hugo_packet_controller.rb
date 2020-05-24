@@ -76,8 +76,10 @@ class HugoPacketController < ApplicationController
       return
     end
 
-    if current_user.reservations.none?(&:can_vote?)
-      flash["notice"] = "To download the Hugo Packet, please upgrade one of your memberships to have voting rights"
+    # Just need minimum instalment to count
+    paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
+    if paid_reservations.none?(&:can_vote?)
+      flash["notice"] = "To download the Hugo Packet, please ensure one of your memberships has at least the minimum instalment and voting rights"
       redirect_to reservations_path
       return
     end

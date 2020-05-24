@@ -37,7 +37,17 @@ RSpec.describe HugoPacketController, type: :controller do
 
       it "redirects with error" do
         expect(get :index).to redirect_to(reservations_path)
-        expect(flash[:notice]).to match(/please upgrade/i)
+        expect(flash[:notice]).to match(/voting rights/i)
+      end
+    end
+
+    context "when logged with voting rights but not paid" do
+      let(:reservation) { create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult) }
+      before { sign_in(reservation.user) }
+
+      it "redirects with error" do
+        expect(get :index).to redirect_to(reservations_path)
+        expect(flash[:notice]).to match(/voting rights/i)
       end
     end
 
