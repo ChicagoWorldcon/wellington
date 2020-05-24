@@ -400,6 +400,60 @@ bundle exec rake db:create db:structure:load
 bundle exec rake db:seed:conzealand:production
 ```
 
+# Tailoring to your Con
+
+Our objective is to create a theme for Atlantis 2100, and set the theme and contact by modifying our .env with
+
+```bash
+WORLDCON_CONTACT=atlantis
+WORLDCON_THEME=atlantis
+```
+
+To create a theme for your con, you'll need to:
+
+1. Copy over layout, styles and app files from another con to get you started
+   ```bash
+   cp app/views/layouts/{conzealand,atlantis}.html.erb
+   cp app/javascript/packs/{conzealand,atlantis}-app.js
+   cp app/javascript/packs/{conzealand,atlantis}-styles.scss
+   ```
+2. Copy your favicon into app/javascript/packs/atlantis-favicon.ico
+3. Modify app/views/layouts/atlantis.html.erb, change:
+   * stylesheet_pack_tag to point at atlantis-app
+   * javascript_pack_tag to point at atlantis-styles
+   * favicon's resolve_path_to_image should point at media/packs/atlantis-favicon.ico
+4. Open `app/lib/theme_concern.rb` and change `#theme_contact_form` to include a case for atlantis
+5. Set `WORLDCON_CONTACT=atlantis` in your .env
+6. Commit your work
+7. Taylor styles.scss and layout.html.erb to suit your con
+
+To create a model for your member contact form, you'll need to:
+
+1. Create a database migration for your tables
+   ```bash
+   make bash
+   bundle exec rails generate model AtlantisContact
+   ```
+2. Modify the `db/migrate/*_create_atlantis_contacts.rb` file, adding fields you need for your members.
+   If you get stuck, use the `db/migrate/20191209052126_create_dc_contact.rb` migration and look up
+   the guide on [Active Record Migrations](https://guides.rubyonrails.org/active_record_migrations.html)
+   from guides.rubyonrails.org.
+3. Update
+   * `app/models/atlantis_contact.rb` with constraints-- look at other \_contact models for reference
+   * `spec/factories/atlantis_contacts.rb` with defaults-- look at other factories in this directory for examples
+   * `spec/models/atlantis_contact_spec.rb` with tests if you've got logic in your model
+4. Open `./app/lib/theme_concern.rb` and modify `#theme_contact_param` with `:atlantis_contact`
+5. Copy over another con's form to get you started
+   ```bash
+   make bash
+   cp app/views/reservations/_{conzealand,atlantis}_contact_form.html.erb
+   ```
+6. Modify fields in `app/views/reservations/_atlantis_contact_form.html.erb` to match your contact model.
+   For reference, you can use the [Form Helpers guide](https://guides.rubyonrails.org/form_helpers.html)
+   from guides.rubyonrails.org.
+7. Set `WORLDCON_CONTACT=atlantis` in your .env
+8. Run migrations with `bundle exec db:migrate` and commit all your work.
+
 # Production Maintenance and Upgrades
 
 If you're using the docker images, the Docker entry point uses `script/docker_entry.sh` which runs unapplied patches
