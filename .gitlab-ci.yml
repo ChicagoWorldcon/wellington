@@ -33,6 +33,9 @@ variables:
   CONTAINER_TEST_IMAGE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-test
   GITLAB_CI_RUNNING: "true"
 
+  WORLDCON_THEME: conzealand
+  WORLDCON_CONTACT: conzealand
+
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
