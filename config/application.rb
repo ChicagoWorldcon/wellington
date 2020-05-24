@@ -48,9 +48,9 @@ module Conzealand
     end
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
-    config.contact_model = ENV["WORLDCON_CONTACT"].downcase
+    config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
 
     # Configure the site theme based on WORLDCON_THEME env var
-    config.site_theme = ENV["WORLDCON_THEME"].downcase
+    config.site_theme = (ENV["WORLDCON_THEME"] || "conzealand").downcase
   end
 end
