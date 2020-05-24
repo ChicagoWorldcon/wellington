@@ -78,7 +78,6 @@ class Reservation < ApplicationRecord
     Membership.can_vote.where(id: orders.select(:membership_id)).exists?
   end
 
-
   def paid?
     state == PAID
   end
