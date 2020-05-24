@@ -16,6 +16,8 @@
 # limitations under the License.
 
 module ApplicationHelper
+  include ThemeConcern
+
   DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
 
   # The root page has an expanded menu
@@ -64,19 +66,7 @@ module ApplicationHelper
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
   end
 
-  # Set in your .env with WORLDCON_CONTACT=
   def worldcon_contact_form
-    return "conzealand_contact_form" if ENV["WORLDCON_CONTACT"].nil?
-
-    case ENV["WORLDCON_CONTACT"].downcase
-    when "chicago"
-      "chicago_contact_form"
-    when "dc"
-      "dc_contact_form"
-    when "conzealand"
-      "conzealand_contact_form"
-    else
-      raise "Typo in WORLDCON_CONTACT env variable"
-    end
+    ApplicationHelper.theme_contact_form
   end
 end

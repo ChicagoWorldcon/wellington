@@ -35,7 +35,6 @@
         <% else %>
           <h2>Reserve a New Membership</h2>
           <%= form_for(@reservation) do |form| %>
-            <%# Render different form based on WORLDCON_CONTACT env var %>
             <%= render worldcon_contact_form, reservation_form: form %>
           <% end %>
         <% end %>

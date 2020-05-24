@@ -16,6 +16,7 @@
 
 class Claim < ApplicationRecord
   include ActiveScopes
+  include ThemeConcern
 
   belongs_to :user
   belongs_to :reservation
@@ -33,18 +34,9 @@ class Claim < ApplicationRecord
     active_to.nil?
   end
 
-  # Configure default model based on WORLDCON_CONTACT env var
+  # Configure the model strategy depending on configuration.
   def self.contact_strategy
-    return ConzealandContact if ENV["WORLDCON_CONTACT"].nil?
-
-    case ENV["WORLDCON_CONTACT"].downcase
-    when "chicago"
-      ChicagoContact
-    when "conzealand"
-      ConzealandContact
-    when "dc"
-      DcContact
-    end
+    theme_contact_class
   end
 
   has_one :contact, class_name: contact_strategy.to_s

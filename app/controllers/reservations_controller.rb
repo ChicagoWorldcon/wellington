@@ -16,6 +16,8 @@
 # limitations under the License.
 
 class ReservationsController < ApplicationController
+  include ThemeConcern
+
   before_action :lookup_reservation!, only: [:show, :update]
   before_action :lookup_offer, only: [:new, :create]
   before_action :setup_paperpubs, except: :index
@@ -111,18 +113,7 @@ class ReservationsController < ApplicationController
   end
 
   def contact_params
-    if ENV["WORLDCON_CONTACT"].nil?
-      return params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
-    end
-
-    case ENV["WORLDCON_CONTACT"].downcase
-    when "chicago"
-      params.require(:chicago_contact).permit(ChicagoContact::PERMITTED_PARAMS)
-    when "conzealand"
-      params.require(:conzealand_contact).permit(ConzealandContact::PERMITTED_PARAMS)
-    when "dc"
-      params.require(:dc_contact).permit(DcContact::PERMITTED_PARAMS)
-    end
+    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
   end
 
   def contact_model

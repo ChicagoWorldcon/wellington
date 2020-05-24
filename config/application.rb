@@ -46,5 +46,11 @@ module Conzealand
     if !Rails.env.test?
       config.active_job.queue_adapter = :sidekiq
     end
+
+    # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
+    config.contact_model = ENV["WORLDCON_CONTACT"].downcase
+
+    # Configure the site theme based on WORLDCON_THEME env var
+    config.site_theme = ENV["WORLDCON_THEME"].downcase
   end
 end
