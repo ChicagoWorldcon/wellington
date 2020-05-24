@@ -56,6 +56,8 @@ RSpec.describe HugoPacketController, type: :controller do
       before { sign_in(reservation.user) }
 
       before do
+        ENV["HUGO_PACKET_BUCKET"] = "stub"
+        ENV["HUGO_PACKET_PREFIX"] = "stub"
         Aws.config.update(stub_responses: true)
         Aws::S3::Client.new.stub_data(:list_objects_v2,
           prefix: "/",
