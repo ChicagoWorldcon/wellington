@@ -10,18 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Hugo Packet Download
   [!101](https://gitlab.com/worldcon/2020-wellington/-/issues/101)
-  Lots of configuration for this one
-  - The materials to download have been put in the S3 Bucket by hand!
-  - You'll need to have access to AWS "auto-magically".  This can be accomplished by:
-    - having the [aws cli installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
-    - and then [setting your aws keys](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
-    - In production the EC2 which runs the application will need an AWS IAM role with access to the S3 bucket.  No keys in production
-  - In your `.envrc` and/or `.env` you'll need to add where the downloads are:
-    - `export HUGO_PACKET_BUCKET="worldconquest"`
-    - `export HUGO_PACKET_PREFIX="hugo_packet"`
-    - `export AWS_REGION=ap-southeast-2`
-  - There is a new gem, so `bundle install`
-  - Hugo voting dates have changed! HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
+  Lots of configuration for this one.
+  1. Get the materials from the Hugo admins
+  2. Put them in an S3 bucket that you control
+  3. Create a user with programatic access that has read only access to this bucket
+  4. Generate AWS keys for that user
+  5. Configure on production / staging / local with the following:
+     ```bash
+     HUGO_PACKET_BUCKET=worldconquest
+     HUGO_PACKET_PREFIX=hugo_packet
+     AWS_REGION=ap-southeast-2
+     AWS_ACCESS_KEY_ID=FROM_STEP_4
+     AWS_SECRET_ACCESS_KEY=FROM_STEP_4
+     ```
+    [!176](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/176)
+- Hugo voting dates have changed!
+  ```bash
+  HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
+  ```
 - Development database reset in docker by setting `NAPALM=true` in your .env
   [!162](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/162)
 
