@@ -42,14 +42,15 @@ all_memberships = Membership.all.to_a
   new_user = FactoryBot.create(:user)
   memberships_held = membership_distribution_averages.sample # <-- biased random number
 
-  all_memberships.sample(memberships_held).each do |rando_membership|
-    if rando_membership.price == 0
+  all_memberships.sample(memberships_held).each do |random_purchase|
+    if random_purchase.price == 0
       state = Reservation::PAID
     else
       state = [Reservation::PAID, Reservation::INSTALMENT].sample
     end
 
-    FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
+    new_claim = FactoryBot.create(:claim, :with_contact, user: new_user)
+    FactoryBot.create(:reservation, claim: new_claim, membership: random_purchase, state: state)
   end
 
   new_user.active_claims.each do |claim|

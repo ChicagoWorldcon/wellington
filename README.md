@@ -454,6 +454,7 @@ To create a model for your member contact form, you'll need to:
    * `app/models/atlantis_contact.rb` with constraints-- look at other \_contact models for reference
    * `spec/factories/atlantis_contacts.rb` with defaults-- look at other factories in this directory for examples
    * `spec/models/atlantis_contact_spec.rb` with tests if you've got logic in your model
+   * `spec/factories/claims.rb` against the :with_contact trait to create your atlantis_contact when you seed your DB
 4. Open `./app/lib/theme_concern.rb` and modify `#theme_contact_param` with `:atlantis_contact`
 5. Copy over another con's form to get you started
    ```bash
