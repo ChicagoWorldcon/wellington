@@ -20,6 +20,9 @@ start-support-daemons: stop
 	echo "Mailcatcher starting on http://localhost:1080"
 	docker-compose up -d # Create and start containers
 
+start: start-support-daemons
+	rails server
+
 # stops application containers
 stop:
 	docker-compose stop
@@ -31,6 +34,8 @@ clean: stop
 # stops and removes assets built for the application, leaves base images intact
 reset: stop
 	docker-compose down --volumes --rmi local
+	docker-compose up -d
+	rake dev:bootstrap
 
 # tails logs of running application
 logs:
