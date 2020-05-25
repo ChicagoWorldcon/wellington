@@ -20,6 +20,7 @@
 
 source "https://rubygems.org"
 
+gem "aws-sdk"              # Hugo packet is big, let s3 handle the downloads
 gem "bootsnap"             # boot large ruby/rails apps faster
 gem "bundler-audit"        # checks for insecure gems
 gem "devise"               # authentication solution for Rails with Warden
@@ -28,6 +29,7 @@ gem "jbuilder"             # Build JSON APIs with ease. Read more: https://githu
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "pg"                   # postgres driver
+gem "pry-rails"            # sets pry as your rails console
 gem "puma"                 # http server for rack
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
@@ -46,7 +48,6 @@ group :development, :test do
   gem "faker"                                         # fun common strings fro testing
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
   gem "pry"                                           # nicer debugger, use 'binding.pry'
-  gem "pry-rails"                                     # sets pry as your rails console
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
