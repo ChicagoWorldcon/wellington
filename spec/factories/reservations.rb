@@ -16,8 +16,6 @@
 # limitations under the License.
 
 FactoryBot.define do
-  sequence(:next_membership_number)
-
   factory :reservation do
     state { Reservation::PAID }
     created_at { 1.week.ago }

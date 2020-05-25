@@ -117,8 +117,7 @@ RSpec.describe Claim, type: :model do
       create(:claim,
         :with_reservation,
         :with_user,
-        :with_conzealand_contact,
-        :with_chicago_contact,
+        :with_contact,
       )
     end
 

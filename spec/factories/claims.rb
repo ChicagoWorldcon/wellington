@@ -33,24 +33,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_conzealand_contact do
-      after(:build) do |new_claim, _evaluator|
-        new_claim.conzealand_contact = create(:conzealand_contact, claim: new_claim)
-      end
-    end
-
-    trait :with_chicago_contact do
-      after(:build) do |new_claim, _evaluator|
-        new_claim.chicago_contact = create(:chicago_contact, claim: new_claim)
-      end
-    end
-
-    trait :with_dc_contact do
-      after(:build) do |new_claim, _evaluator|
-        new_claim.chicago_contact = create(:dc_contact, claim: new_claim)
-      end
-    end
-
     trait :with_contact do
       after(:build) do |new_claim, _evaluator|
         new_claim.conzealand_contact = create(:conzealand_contact, claim: new_claim)
