@@ -19,7 +19,6 @@ version: '3.7'
 volumes:
   pgdata:
   redis-data:
-  node_modules:
 
 services:
   postgres:
@@ -29,52 +28,20 @@ services:
       - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "35432:5432"
 
   redis:
     image: redis:alpine
     restart: always
     volumes:
       - redis-data:/data
-
-  web:
-    entrypoint: "script/docker_web_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
-    depends_on:
-      - postgres
-      - redis
-    env_file:
-      .env
     ports:
-      - "3000:3000"
-    restart: always
-    volumes:
-      - ./:/app                         # Mount current working directory
-      - node_modules:/app/node_modules  # Except node_modules folder which is exclusive to the container
-      - type: tmpfs
-        target: /app/tmp
-
-  worker:
-    entrypoint: "script/docker_sidekiq_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
-    depends_on:
-      - web
-      - postgres
-      - redis
-    env_file:
-      .env
-    restart: always
-    volumes:
-      - ./:/app                         # Mount current working directory
-      - node_modules:/app/node_modules  # Except node_modules folder which is exclusive to the container
-      - type: tmpfs
-        target: /app/tmp
+      - "36379:6379"
 
   mail:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"
     image: registry.gitlab.com/worldcon/2020-wellington:latest
-    depends_on:
-      - web
-      - worker
     ports:
       - "1080:1080"
       - "1025:1025"

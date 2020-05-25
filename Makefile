@@ -16,27 +16,25 @@
 # limitations under the License.
 
 # starts daemon then tails logs
-start:
-	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
-	echo "Webserver starting on http://localhost:3000"
+start-support-daemons: stop
 	echo "Mailcatcher starting on http://localhost:1080"
-	docker-compose up # Create and start containers
+	docker-compose up -d # Create and start containers
 
 # stops application containers
 stop:
-	docker-compose -f docker-compose-minimal.xml stop
+	docker-compose stop
 
 # stops and removes all docker assets used by this application
 clean: stop
-	docker-compose -f docker-compose-minimal.xml down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
+	docker-compose down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
 
 # stops and removes assets built for the application, leaves base images intact
 reset: stop
-	docker-compose -f docker-compose-minimal.xml down --volumes --rmi local
+	docker-compose down --volumes --rmi local
 
 # tails logs of running application
 logs:
-	docker-compose -f docker-compose-minimal.xml logs -f # Tail logs
+	docker-compose logs -f # Tail logs
 
 # opens up a REPL that lets you run code in the project
 console:
@@ -61,9 +59,13 @@ test:
 	bundle audit check --update
 	bundle exec ruby-audit check
 
-# builds, configures and starts application in the background
-daemon: stop
-	docker-compose -f docker-compose-minimal.xml up -d # Create and start containers
+# builds, configures and starts application in the background using tmux
+daemon: start-support-daemon
+	docker-compose up -d # Create and start containers
 	scripts/start-server-in-tmux.sh
 	echo "Webserver starting on http://localhost:3000"
 	echo "Mailcatcher starting on http://localhost:1080"
+
+
+stop-daemon:
+	script/stop-server-in-tmux.sh
