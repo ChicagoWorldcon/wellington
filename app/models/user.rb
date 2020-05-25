@@ -23,6 +23,8 @@ class User < ApplicationRecord
   has_many :notes
   has_many :reservations, through: :active_claims
 
+  has_one :download_counter
+
   validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
 
   scope :in_stripe, -> { where.not(stripe_id: nil) }
