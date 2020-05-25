@@ -20,6 +20,7 @@
 
 source "https://rubygems.org"
 
+gem "administrate"         # Rails web admin
 gem "aws-sdk"              # Hugo packet is big, let s3 handle the downloads
 gem "bootsnap"             # boot large ruby/rails apps faster
 gem "bundler-audit"        # checks for insecure gems

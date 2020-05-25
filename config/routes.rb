@@ -21,6 +21,24 @@ require "sidekiq-scheduler/web"
 
 # For more information about routes, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
+  namespace :admin do
+      resources :users
+      resources :supports
+      resources :memberships
+      resources :notes
+      resources :nominations
+      resources :categories
+      resources :conzealand_contacts
+      resources :dc_contacts
+      resources :claims
+      resources :chicago_contacts
+      resources :orders
+      resources :charges
+      resources :elections
+      resources :reservations
+
+      root to: "users#index"
+    end
   root to: "landing#index"
 
   # Sidekiq is our jobs server and keeps tabs on backround tasks

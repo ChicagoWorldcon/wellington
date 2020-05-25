@@ -13,3 +13,6 @@
 // limitations under the License.
 
 // Please prefer webpacker, Asset Pipeline a.k.a. Sprockets is turned off for this project
+
+//= link administrate/application.css
+//= link administrate/application.js
