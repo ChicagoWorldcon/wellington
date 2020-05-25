@@ -56,7 +56,11 @@
       <ul class="list-unstyled l-v-spacing">
         <li><%= link_to "Purchase Membership", memberships_path %></li>
         <li><%= link_to "My Memberships", reservations_path %></li>
+        <% if ENV["HUGO_PACKET_BUCKET"] %>
+          <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
+        <% end %>
         <li>Suggest for our Programme (coming soon)</li>
+        <li><%= link_to "Vote for the Hugo Awards", reservation_finalist_path(current_user.id, 'hugo') %></li>
         <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
         <li>Plan my trip(coming soon)</li>
         <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
@@ -66,7 +70,6 @@
         <ul class="list-unstyled l-v-spacing">
           <li><%= link_to "Check email (mailcatcher)", "http://localhost:1080" %></li>
           <li><%= link_to "Preview mailers", "/rails/mailers" %></li>
-          <li><%= link_to "Sidekiq Job Queue", sidekiq_web_path %></li>
         </ul>
       <% end %>
     </div>

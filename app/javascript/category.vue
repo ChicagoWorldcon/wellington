@@ -23,6 +23,7 @@
         :ranks="ranks"
       />
     </ul>
+    <button v-on:click="save(category)">Vote</button>
   </div>
 </template>
 
@@ -41,7 +42,27 @@ export default {
     },
   },
   components: { Finalist },
+  mounted(){
+    fetch("categories")
+    .then(response => response.json())
+    .then((data) => {
+      this.category = data
+    })
+  },
+  methods: {
+    save: (category) => {
+      fetch("category/" + category.id,{
+        body: JSON.stringify(category),
+        method: "PUT",
+        headers: { "Content-Type": "application/json"}
+      })
+        .then(() => {
+          console.log(category)
+        })
+    }
+  }
 };
+
 </script>
 
 <style scoped>

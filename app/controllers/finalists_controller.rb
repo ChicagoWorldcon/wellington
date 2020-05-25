@@ -31,6 +31,36 @@ class FinalistsController < ApplicationController
     end
   end
 
+  def update
+    builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
+    builder.from_params(params)
+    builder.save
+
+    if hugo_admin_signed_in?
+      @reservation.user.notes.create!(
+        content: %{
+          Voting form updated by hugo admin #{current_support.email}
+          on behalf of member ##{@reservation.membership_number}
+        }.strip_heredoc
+      )
+    end
+
+    @category = Category.find(params[:category_id])
+    @nominations_by_category = builder.nominations_by_category
+
+    if request.xhr?
+      category_decorator = CategoryFormDecorator.new(@category, @nominations_by_category[@category])
+      render json: {
+        updated_heading: category_decorator.heading,
+        updated_classes: category_decorator.accordion_classes,
+      }
+      return
+    end
+
+    # Render happens if someone hits the "submit all" button
+    render "nominations/show"
+  end
+
   private
 
   def sample_ranked_categories
