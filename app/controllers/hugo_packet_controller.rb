@@ -61,6 +61,14 @@ class HugoPacketController < ApplicationController
     @blobs = list_objects
   end
 
+  def show
+    if counter = current_user.download_counter
+      counter.update!(count: counter.count + 1)
+    else
+      DownloadCounter.create!(user: current_user, count: 1)
+    end
+  end
+
   private
 
   def check_access!

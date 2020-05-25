@@ -15,5 +15,5 @@
 
 class DownloadCounter < ApplicationRecord
   belongs_to :user
-  validates :count, numericality: {greater_than: 0}
+  validates :count, numericality: { greater_than: 0 }, uniqueness: { scope: :user_id }
 end

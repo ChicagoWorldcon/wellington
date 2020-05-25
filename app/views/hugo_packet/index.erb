@@ -84,7 +84,7 @@
         <ul class="list-group text-dark">
           <% @packets.select(&:downloadable?).each do |packet| %>
             <li class="list-group-item">
-              <%= link_to(packet.file_name, packet.signed_url) %>
+              <%= link_to(packet.file_name, hugo_packet_path(packet.file_name)) %>
               (<%= packet.download_size %>)
             </li>
           <% end %>
