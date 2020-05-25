@@ -20,10 +20,6 @@
 contact_name = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
 seed_symbol = "db:seed:#{contact_name}:development"
 
-puts "************************************************************************"
-puts "* Using #{seed_symbol} for bootstrap"
-puts "************************************************************************"
-
 namespace :dev do
   desc "Asserts you've got everything for a running system, doesn't clobber"
   task bootstrap: ["dev:reset:structure", "dev:setup:db", "db:migrate", seed_symbol]

@@ -15,8 +15,5 @@
 # limitations under the License.
 
 if tmux has-session -t wellington; then
-    echo 'Tmux already has a wellington session. Run `tmux attach-session -t wellington` to see the logs'
-else
-    tmux new-session -d -s wellington rails server
-    echo 'Rails started in the background. To see logs, run `tmux attach-session -t wellington`'
+    tmux kill-session -t wellington
 fi
