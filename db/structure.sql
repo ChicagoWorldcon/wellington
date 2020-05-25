@@ -301,38 +301,6 @@ ALTER SEQUENCE public.dc_contacts_id_seq OWNED BY public.dc_contacts.id;
 
 
 --
--- Name: download_counters; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.download_counters (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    count integer,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: download_counters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.download_counters_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: download_counters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.download_counters_id_seq OWNED BY public.download_counters.id;
-
-
---
 -- Name: elections; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -607,7 +575,8 @@ CREATE TABLE public.users (
     last_sign_in_at timestamp without time zone,
     current_sign_in_ip inet,
     last_sign_in_ip inet,
-    stripe_id character varying
+    stripe_id character varying,
+    hugo_download_counter integer DEFAULT 0 NOT NULL
 );
 
 
@@ -670,13 +639,6 @@ ALTER TABLE ONLY public.conzealand_contacts ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.dc_contacts ALTER COLUMN id SET DEFAULT nextval('public.dc_contacts_id_seq'::regclass);
-
-
---
--- Name: download_counters id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.download_counters ALTER COLUMN id SET DEFAULT nextval('public.download_counters_id_seq'::regclass);
 
 
 --
@@ -789,14 +751,6 @@ ALTER TABLE ONLY public.conzealand_contacts
 
 ALTER TABLE ONLY public.dc_contacts
     ADD CONSTRAINT dc_contacts_pkey PRIMARY KEY (id);
-
-
---
--- Name: download_counters download_counters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.download_counters
-    ADD CONSTRAINT download_counters_pkey PRIMARY KEY (id);
 
 
 --
@@ -932,13 +886,6 @@ CREATE INDEX index_conzealand_contacts_on_claim_id ON public.conzealand_contacts
 --
 
 CREATE INDEX index_dc_contacts_on_claim_id ON public.dc_contacts USING btree (claim_id);
-
-
---
--- Name: index_download_counters_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_download_counters_on_user_id ON public.download_counters USING btree (user_id);
 
 
 --
@@ -1090,14 +1037,6 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- Name: download_counters fk_rails_b43f7b91f1; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.download_counters
-    ADD CONSTRAINT fk_rails_b43f7b91f1 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: claims fk_rails_eea3fccade; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1182,6 +1121,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191229203558'),
 ('20191231004921'),
 ('20200304210408'),
-('20200525194641');
+('20200525204858');
 
 

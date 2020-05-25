@@ -52,14 +52,9 @@ class HugoPacketController < ApplicationController
   end
 
   def show
-    if counter = current_user.download_counter
-      counter.update!(count: counter.count + 1)
-    else
-      DownloadCounter.create!(user: current_user, count: 1)
-    end
+    current_user.update!(hugo_download_counter: hugo_download_counter + 1)
 
     hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/")
-
     s3_object = Aws::S3::Object.new(
       key: hugo_packet_path,
       bucket_name: ENV['HUGO_PACKET_BUCKET'],
