@@ -18,22 +18,13 @@
 require "aws-sdk"
 
 class HugoPacketController < ApplicationController
-  Packet = Struct.new(:s3_client, :prefix, :blob) do
+  Packet = Struct.new(:prefix, :blob) do
     include ActionView::Helpers::NumberHelper
 
     delegate :size, :key, to: :blob
 
     def downloadable?
       size > 0
-    end
-
-    def signed_url
-      object = Aws::S3::Object.new(
-        key: key,
-        bucket_name: ENV['HUGO_PACKET_BUCKET'],
-        client: s3_client,
-      )
-      object.presigned_url(:get, expires_in: 1.hour.to_i)
     end
 
     def file_name
@@ -48,14 +39,13 @@ class HugoPacketController < ApplicationController
   before_action :check_access!
 
   def index
-    s3_client = Aws::S3::Client.new
     list_objects = s3_client.list_objects_v2(
       bucket: ENV["HUGO_PACKET_BUCKET"],
       prefix: ENV["HUGO_PACKET_PREFIX"],
     )
 
     @packets = list_objects.contents.map do |blob|
-      Packet.new(s3_client, list_objects.prefix, blob)
+      Packet.new(list_objects.prefix, blob)
     end
 
     @blobs = list_objects
@@ -67,6 +57,16 @@ class HugoPacketController < ApplicationController
     else
       DownloadCounter.create!(user: current_user, count: 1)
     end
+
+    hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/")
+
+    s3_object = Aws::S3::Object.new(
+      key: hugo_packet_path,
+      bucket_name: ENV['HUGO_PACKET_BUCKET'],
+      client: s3_client,
+    )
+
+    redirect_to s3_object.presigned_url(:get, expires_in: 1.hour.to_i)
   end
 
   private
@@ -91,5 +91,10 @@ class HugoPacketController < ApplicationController
       redirect_to reservations_path
       return
     end
+  end
+
+
+  def s3_client
+    @s3_client ||= Aws::S3::Client.new
   end
 end
