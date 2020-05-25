@@ -49,12 +49,8 @@ all_memberships = Membership.all.to_a
       state = [Reservation::PAID, Reservation::INSTALMENT].sample
     end
 
-    new_claim = FactoryBot.create(:claim, :with_contact, user: new_user)
-    FactoryBot.create(:reservation, claim: new_claim, membership: random_purchase, state: state)
-  end
-
-  new_user.active_claims.each do |claim|
-    claim.update!(contact: FactoryBot.create(:conzealand_contact, claim: claim))
+    new_claim = FactoryBot.build(:claim, :with_contact, user: new_user)
+    FactoryBot.create(:reservation, claims: [new_claim], membership: random_purchase, state: state)
   end
 end
 
