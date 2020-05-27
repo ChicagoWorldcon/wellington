@@ -70,4 +70,29 @@ RSpec.describe HugoPacketController, type: :controller do
       end
     end
   end
+
+  describe "#show" do
+    subject(:get_show) { get :show, params: { id: "harry-potter.zip" } }
+    let(:s3_signed_url) { "https://www.wizardingworld.com/about-the-fan-club" }
+
+    before do
+      expect(Aws::S3::Object).to receive(:new).and_return(
+        instance_double(Aws::S3::Object, presigned_url: s3_signed_url)
+      )
+    end
+
+    let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+    let(:user) { reservation.user }
+    before { sign_in(user) }
+
+    it "increments our user's download counter" do
+      expect { get_show }
+        .to change { user.reload.hugo_download_counter }
+        .by(1)
+    end
+
+    it "redirects us to s3" do
+      expect(get_show).to redirect_to(s3_signed_url)
+    end
+  end
 end

@@ -52,7 +52,7 @@ class HugoPacketController < ApplicationController
   end
 
   def show
-    current_user.update!(hugo_download_counter: hugo_download_counter + 1)
+    current_user.update!(hugo_download_counter: current_user.hugo_download_counter + 1)
 
     hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/")
     s3_object = Aws::S3::Object.new(
