@@ -79,34 +79,12 @@ Configuration for development should be done using whatever method you use for p
 brew install direnv
 ```
 
+After that step, follow the instructions for your shell to [hook direnv into
+your shell](https://direnv.net/docs/hook.html) or else it won't work
+
 **Note:** if you intend to run the rails process directly in your shell (by
 running `rails` commands directly) then `direnv` will be a godsend, as the
 config won't otherwise read the `.env` file.
-
-Once you have direnv installed, this is a good basic setup for this website (put it in `.envrc`):
-
-```sh
-# set up a local ruby GEM_HOME
-layout ruby
-
-# provide rbenv aliases in the project
-use rbenv
-
-# for some bonkers reason, GEM_PATH doesn't include the new GEM_HOME
-path_add GEM_PATH $GEM_HOME
-
-# webpacker and the JS tools need a node modules setup too
-layout node
-
-# this will automatically add `.env` to the working environment. Many
-# of the keys in the .env template _must_ be present for the
-# application to work
-dotenv
-```
-
-*Note that if you choose not to use direnv's `ruby` layout, all of the `rails`
-and `rspec` commands below need to be prefixed with `bundle exec`. Direnv sets
-up local wrappers for you on those, which you will probably find a lot easier.**
 
 ### Install basic developer tools.
 1. [gnu make](https://www.gnu.org/software/make/),
@@ -132,9 +110,38 @@ This will create a directory named `worldcon_members_area` which you should run 
 cd worldcon_members_area
 ```
 
+### Setup direnv
+
+Before installing dependencies, set up direnv so that they'll be installed to
+project-local directories. Put this in the `.envrc` in the
+`worldcon_members_area` directory:
+
+```sh
+# set up a local ruby GEM_HOME
+layout ruby
+
+# provide rbenv aliases in the project
+use rbenv
+
+# for some bonkers reason, GEM_PATH doesn't include the new GEM_HOME
+path_add GEM_PATH $GEM_HOME
+
+# webpacker and the JS tools need a node modules setup too
+layout node
+
+# this will automatically add `.env` to the working environment. Many
+# of the keys in the .env template _must_ be present for the
+# application to work
+dotenv
+```
+
+*Note that if you choose not to use direnv's `ruby` layout, all of the `rails`
+and `rspec` commands below need to be prefixed with `bundle exec`. Direnv sets
+up local wrappers for you on those, which you will probably find a lot easier.**
+
 ### Install dependencies
 
-Assuming you're using direnv, you run these commands to install your ruby and node dependencies:
+Run these commands to install your ruby and node dependencies:
 
 ```sh
 bundle install
@@ -187,7 +194,7 @@ INSTALMENT_PAYMENT_STEP_CENTS=5000
 DB_HOST=localhost
 DB_PORT=35432
 POSTGRES_USER=postgres
-# POSTGRES_PASSWORD="super secret password"
+POSTGRES_PASSWORD=super secret password
 
 # Sidekiq is a background task manager which you can view on /sidekiq
 # Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
