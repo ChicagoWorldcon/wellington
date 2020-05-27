@@ -20,7 +20,7 @@
 
 source "https://rubygems.org"
 
-gem "aws-sdk"              # Hugo packet is big, let s3 handle the downloads
+gem "aws-sdk-s3"              # Hugo packet is big, let s3 handle the downloads
 gem "bootsnap"             # boot large ruby/rails apps faster
 gem "bundler-audit"        # checks for insecure gems
 gem "devise"               # authentication solution for Rails with Warden

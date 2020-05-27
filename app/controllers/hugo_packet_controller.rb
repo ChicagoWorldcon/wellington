@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "aws-sdk"
+require "aws-sdk-s3"
 
 class HugoPacketController < ApplicationController
   Packet = Struct.new(:prefix, :blob) do
