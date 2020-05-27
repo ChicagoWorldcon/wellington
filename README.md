@@ -73,11 +73,15 @@ rbenv install 2.7.1
 rbenv local 2.7.1
 ```
 
-Configuration for development should be done using whatever method you use for projects, but [direnv](https://direnv.net/) is probably the best one I know know:
+Configuration for development should be done using whatever method you use for projects, but [direnv](https://direnv.net/) is probably the best one:
 
 ```sh
 brew install direnv
 ```
+
+**Note:** if you intend to run the rails process directly in your shell (by
+running `rails` commands directly) then `direnv` will be a godsend, as the
+config won't otherwise read the `.env` file.
 
 Once you have direnv installed, this is a good basic setup for this website (put it in `.envrc`):
 
@@ -94,8 +98,9 @@ path_add GEM_PATH $GEM_HOME
 # webpacker and the JS tools need a node modules setup too
 layout node
 
-# this will automatically add `.env` to the working environment. That can make the
-# dockerizing process much more tolerable
+# this will automatically add `.env` to the working environment. Many
+# of the keys in the .env template _must_ be present for the
+# application to work
 dotenv
 ```
 
@@ -216,7 +221,7 @@ errors ;-)
 First, start your support services (redis, postgres, mailcatcher)
 
 ```sh
-make support-daemons
+make start-support-daemons
 ```
 
 You can stop these with `make stop` or reset them (tearing down

@@ -15,17 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# default target - starts daemons and get running
+start: start-support-daemons
+	rails server
+
 # starts daemon then tails logs
 start-support-daemons: stop
 	echo "Mailcatcher starting on http://localhost:1080"
 	docker-compose up -d # Create and start containers
 
-start: start-support-daemons
-	rails server
+stop-support-daemons:
+	docker-compose stop
 
 # stops application containers
-stop:
-	docker-compose stop
+stop: stop-daemon stop-support-daemons
+	echo "Stopped all services"
 
 # stops and removes all docker assets used by this application
 clean: stop
@@ -48,7 +52,7 @@ console:
 # open a databaes console so you can run SQL queries
 # e.g. SELECT * FROM users;
 sql:
-	postgres psql -U postgres worldcon_development
+	docker-compose exec postgres psql -U postgres worldcon_development
 
 # Tests only specs introduced on your current branch
 test_changes:
@@ -65,12 +69,11 @@ test:
 	bundle exec ruby-audit check
 
 # builds, configures and starts application in the background using tmux
-daemon: start-support-daemon
+daemon: start-support-daemons
 	docker-compose up -d # Create and start containers
-	scripts/start-server-in-tmux.sh
+	script/start-server-in-tmux.sh
 	echo "Webserver starting on http://localhost:3000"
 	echo "Mailcatcher starting on http://localhost:1080"
-
 
 stop-daemon:
 	script/stop-server-in-tmux.sh
