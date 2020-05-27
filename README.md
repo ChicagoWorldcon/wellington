@@ -125,7 +125,7 @@ SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
 
-# Only shows in menu if HUGO_PACKET_BUCKET present. To make available, you must
+# hugo packet only shows in menu if HUGO_PACKET_BUCKET present. To make available, you must
 # 1. Get the materials from the Hugo admins
 # 2. Put them in an S3 bucket that you control
 # 3. Create a user with programatic access that has read only access to this bucket
