@@ -16,7 +16,7 @@
 <p>
   Kia Ora
   <% if @reservations.count == 1 %>
-    <%= @reservations.first.active_claim.detail %>
+    <%= @reservations.first.active_claim.contact %>
   <% end %>
 </p>
 

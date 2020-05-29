@@ -18,7 +18,7 @@ class HugoMailer < ApplicationMailer
   default from: $member_services_email
 
   def nomination_ballot(reservation)
-    @detail = reservation.active_claim.detail
+    @detail = reservation.active_claim.contact
     nominated_categories = Category.joins(nominations: :reservation).where(reservations: {id: reservation})
 
     builder = MemberNominationsByCategory.new(
