@@ -23,8 +23,6 @@ class User < ApplicationRecord
   has_many :notes
   has_many :reservations, through: :active_claims
 
-  has_one :download_counter
-
   validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
   validates :hugo_download_counter, presence: true
 
