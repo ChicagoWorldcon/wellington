@@ -575,7 +575,8 @@ CREATE TABLE public.users (
     last_sign_in_at timestamp without time zone,
     current_sign_in_ip inet,
     last_sign_in_ip inet,
-    stripe_id character varying
+    stripe_id character varying,
+    hugo_download_counter integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1119,6 +1120,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191221233951'),
 ('20191229203558'),
 ('20191231004921'),
-('20200304210408');
+('20200304210408'),
+('20200525204858');
 
 

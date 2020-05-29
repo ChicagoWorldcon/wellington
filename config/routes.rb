@@ -61,7 +61,7 @@ Rails.application.routes.draw do
   resources :memberships
   resources :themes
   resources :upgrades
-  resources :hugo_packet
+  resources :hugo_packet, id: /[^\/]+/
 
   resources :reservations do
     resources :charges

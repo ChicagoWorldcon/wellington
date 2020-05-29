@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.5.0...master)
 
 ### Added
-- Nothing significant in this release
+- Hugo Packet Download now has a counter, if downloaded or nomination rights used there's a message
+  for support users near the "transfer membership" button.
+  [!182](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/182)
 
 ### Changed
 - Development process modified to reduce docker use for rails. The README now

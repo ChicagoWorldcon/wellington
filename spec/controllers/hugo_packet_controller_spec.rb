@@ -23,6 +23,12 @@ RSpec.describe HugoPacketController, type: :controller do
   let(:adult) { create(:membership, :adult) }
   let(:dublin) { create(:membership, :dublin_2019) }
 
+  before do
+    ENV["AWS_ACCESS_KEY_ID"] = "much-id"
+    ENV["AWS_REGION"] = "ap-southeast-2"
+    ENV["AWS_SECRET_ACCESS_KEY"] = "so-secret"
+  end
+
   describe "#index" do
     context "when logged out" do
       it "redirects with error" do
@@ -68,6 +74,31 @@ RSpec.describe HugoPacketController, type: :controller do
       it "renders ok" do
         expect(get :index).to have_http_status(:ok)
       end
+    end
+  end
+
+  describe "#show" do
+    subject(:get_show) { get :show, params: { id: "harry-potter.zip" } }
+    let(:s3_signed_url) { "https://www.wizardingworld.com/about-the-fan-club" }
+
+    before do
+      expect(Aws::S3::Object).to receive(:new).and_return(
+        instance_double(Aws::S3::Object, presigned_url: s3_signed_url)
+      )
+    end
+
+    let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+    let(:user) { reservation.user }
+    before { sign_in(user) }
+
+    it "increments our user's download counter" do
+      expect { get_show }
+        .to change { user.reload.hugo_download_counter }
+        .by(1)
+    end
+
+    it "redirects us to s3" do
+      expect(get_show).to redirect_to(s3_signed_url)
     end
   end
 end

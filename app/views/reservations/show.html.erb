@@ -17,6 +17,13 @@
 %>
 
 <h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
+
+<% if support_signed_in? && @rights_exhausted.any? %>
+  <div class="alert alert-danger" role="alert">
+    Note: User has <%= @rights_exhausted.to_sentence %>
+  </div>
+<% end %>
+
 <section class="l-section">
   <% if support_signed_in? %>
     <div class="row">
@@ -77,7 +84,7 @@
 
       <div class="col-12 col-md-6">
         <div class="l-panel support-pane">
-          <h2>Related Notes</h2>
+          <h2>User Notes</h2>
           <% if @notes.none? %>
             No notes for this membership
           <% else %>

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class User < ApplicationRecord
-  devise :trackable
+# RightsExhausted takes a reservation and gives a list of the rights used against it
+class RightsExhausted
+  attr_reader :reservation
 
-  has_many :active_claims, -> { active }, class_name: "Claim"
-  has_many :charges
-  has_many :claims
-  has_many :notes
-  has_many :reservations, through: :active_claims
+  def initialize(reservation)
+    @reservation = reservation
+  end
 
-  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
-  validates :hugo_download_counter, presence: true
-
-  scope :in_stripe, -> { where.not(stripe_id: nil) }
-  scope :not_in_stripe, -> { where(stripe_id: nil) }
-
-  def in_stripe?
-    stripe_id.present?
+  def call
+    [].tap do |result|
+      result << "nominated for hugos" if reservation.nominations.any?
+      result << "downloaded hugo packet" if reservation.user.hugo_download_counter > 0
+    end
   end
 end
