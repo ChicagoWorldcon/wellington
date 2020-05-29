@@ -23,7 +23,11 @@ RSpec.describe HugoPacketController, type: :controller do
   let(:adult) { create(:membership, :adult) }
   let(:dublin) { create(:membership, :dublin_2019) }
 
-  before { ENV["AWS_REGION"] = "ap-southeast-2" }
+  before do
+    ENV["AWS_ACCESS_KEY_ID"] = "much-id"
+    ENV["AWS_REGION"] = "ap-southeast-2"
+    ENV["AWS_SECRET_ACCESS_KEY"] = "so-secret"
+  end
 
   describe "#index" do
     context "when logged out" do
