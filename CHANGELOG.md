@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Development process modified to reduce docker use for rails. The README now
+  covers the direnv/local rails approach
+  [!181](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/181)
 
 ### Removed
 - Nothing significant in this release
