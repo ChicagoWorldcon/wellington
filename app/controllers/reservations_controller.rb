@@ -47,6 +47,7 @@ class ReservationsController < ApplicationController
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
+    @rights_exhausted = RightsExhausted.new(@reservation).call
   end
 
   def create

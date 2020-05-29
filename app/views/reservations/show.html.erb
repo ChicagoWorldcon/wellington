@@ -77,7 +77,13 @@
 
       <div class="col-12 col-md-6">
         <div class="l-panel support-pane">
-          <h2>Related Notes</h2>
+          <% if @rights_exhausted.any? %>
+            <div class="alert alert-danger" role="alert">
+              Note: User has <%= @rights_exhausted.to_sentence %>
+            </div>
+          <% end %>
+
+          <h2>User Notes</h2>
           <% if @notes.none? %>
             No notes for this membership
           <% else %>
