@@ -23,6 +23,8 @@ RSpec.describe HugoPacketController, type: :controller do
   let(:adult) { create(:membership, :adult) }
   let(:dublin) { create(:membership, :dublin_2019) }
 
+  before { ENV["AWS_REGION"] = "ap-southeast-2" }
+
   describe "#index" do
     context "when logged out" do
       it "redirects with error" do
