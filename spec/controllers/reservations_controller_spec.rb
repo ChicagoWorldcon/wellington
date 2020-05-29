@@ -260,11 +260,15 @@ RSpec.describe ReservationsController, type: :controller do
       end
 
       it 'adds the reservation to a cart' do
-        post :create, params: {
-          contact_model_key => valid_contact_params,
-          :offer => offer.hash
-        }
-        expect(flash[:error]).to match(/Implement A Cart/)
+        pending "This doesn't work yet"
+        expect {
+          post :create, params: {
+            contact_model_key => valid_contact_params,
+            :offer => offer.hash
+          }
+        }.to change(original_user, :cart)
+
+        expect(Cart.where(user: original_user)).to be_present
       end
     end
 
