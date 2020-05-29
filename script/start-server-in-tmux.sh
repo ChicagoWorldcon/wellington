@@ -14,9 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if tmux has-session -t wellington; then
-    echo 'Tmux already has a wellington session. Run `tmux attach-session -t wellington` to see the logs'
+if hash tmux 2>/dev/null; then
+    if tmux has-session -t wellington; then
+        echo 'Tmux already has a wellington session. Run `tmux attach-session -t wellington` to see the logs'
+    else
+        tmux new-session -d -s wellington rails server
+        echo 'Rails started in the background. To see logs, run `tmux attach-session -t wellington`'
+    fi
 else
-    tmux new-session -d -s wellington rails server
-    echo 'Rails started in the background. To see logs, run `tmux attach-session -t wellington`'
+    echo "tmux must be installed to start the service in the background"
+    exit 1
 fi

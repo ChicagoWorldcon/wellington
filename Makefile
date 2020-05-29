@@ -20,7 +20,7 @@ start: start-support-daemons
 	rails server
 
 # starts daemon then tails logs
-start-support-daemons: stop
+start-support-daemons: stop-support-daemons
 	echo "Mailcatcher starting on http://localhost:1080"
 	docker-compose up -d # Create and start containers
 
@@ -70,7 +70,6 @@ test:
 
 # builds, configures and starts application in the background using tmux
 daemon: start-support-daemons
-	docker-compose up -d # Create and start containers
 	script/start-server-in-tmux.sh
 	echo "Webserver starting on http://localhost:3000"
 	echo "Mailcatcher starting on http://localhost:1080"

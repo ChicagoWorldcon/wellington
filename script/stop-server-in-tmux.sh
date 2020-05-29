@@ -13,7 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-if tmux has-session -t wellington; then
-    tmux kill-session -t wellington
+if hash tmux 2>/dev/null; then
+    if tmux has-session -t wellington; then
+        tmux kill-session -t wellington
+    fi
+else
+    echo "tmux not found; skipping tmux service step"
 fi
