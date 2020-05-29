@@ -81,9 +81,6 @@ stop-daemon:
 # Gives you a full environment, seeded database
 # Reset database by setting NAPALM=true in your .env
 conzealand-start:
-	docker-compose -f docker-compose-with-rails.yml --pull build # Build or rebuild services; Attempt to pull a newer version of the image
-	echo "Webserver starting on http://localhost:3000"
-	echo "Mailcatcher starting on http://localhost:1080"
 	docker-compose -f docker-compose-with-rails.yml up # Create and start containers
 
 # stops application containers
