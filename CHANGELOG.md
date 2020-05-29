@@ -5,7 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.5.0...master)
+## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.5.1...master)
+
+### Added
+- Nothing significant in this release
+
+### Changed
+- Nothing significant in this release
+
+### Removed
+- Nothing significant in this release
+
+
+## [Tag 2.5.1 - 2020-05-30](https://gitlab.com/worldcon/2020-wellington/compare/2.5.0...2.5.1)
 
 ### Added
 - Hugo Packet Download now has a counter, if downloaded or nomination rights used there's a message
