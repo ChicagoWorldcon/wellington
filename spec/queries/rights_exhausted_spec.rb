@@ -30,7 +30,7 @@ RSpec.describe RightsExhausted do
 
     it "flags nominations when they're used" do
       create(:nomination, reservation: reservation)
-      expect(call).to include(/nomination/i)
+      expect(call).to include(/nominated/i)
     end
 
     it "flags hugo packet when downloaded" do
