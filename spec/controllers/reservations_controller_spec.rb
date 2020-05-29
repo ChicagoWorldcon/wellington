@@ -258,6 +258,14 @@ RSpec.describe ReservationsController, type: :controller do
           :offer => offer.hash,
         }
       end
+
+      it 'adds the reservation to a cart' do
+        post :create, params: {
+          contact_model_key => valid_contact_params,
+          :offer => offer.hash
+        }
+        expect(flash[:error]).to match(/Implement A Cart/)
+      end
     end
 
     context "when free offer selected" do
