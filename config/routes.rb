@@ -21,6 +21,7 @@ require "sidekiq-scheduler/web"
 
 # For more information about routes, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
+  use_doorkeeper
   root to: "landing#index"
 
   # Sidekiq is our jobs server and keeps tabs on backround tasks
