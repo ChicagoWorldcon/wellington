@@ -83,9 +83,11 @@ RSpec.configure do |config|
   # Generator for models https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
   config.include FactoryBot::Syntax::Methods
 
-  # Setup helpers for things like #login_as
+  # Setup helpers for things like #login_as or #sign_in(user)
   # https://github.com/plataformatec/devise/wiki/How-To:-Test-controllers-with-Rails-(and-RSpec)
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+
   include Warden::Test::Helpers
   config.before(:each) do
     Warden.test_reset!
