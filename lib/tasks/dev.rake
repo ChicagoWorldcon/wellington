@@ -16,9 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ugh... no idea how to pull concerns in here
+contact_name = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
+seed_symbol = "db:seed:#{contact_name}:development"
+
 namespace :dev do
   desc "Asserts you've got everything for a running system, doesn't clobber"
-  task bootstrap: %w(dev:reset:structure dev:setup:db db:migrate db:seed:conzealand:development)
+  task bootstrap: ["dev:reset:structure", "dev:setup:db", "db:migrate", seed_symbol]
+
 
   desc "Runs update actions across dependencies"
   task :update do

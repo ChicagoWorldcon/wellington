@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :reservations, through: :active_claims
 
   validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
+  validates :hugo_download_counter, presence: true
 
   scope :in_stripe, -> { where.not(stripe_id: nil) }
   scope :not_in_stripe, -> { where(stripe_id: nil) }

@@ -87,25 +87,25 @@ RSpec.describe TransfersController, type: :controller do
           .to(new_user)
       end
 
-      it "doens't copy details" do
-        expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.detail }
-        expect(new_user.reload.claims.last.detail).to be_nil
+      it "doens't copy contact" do
+        expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.conzealand_contact }
+        expect(new_user.reload.claims.last.conzealand_contact).to be_nil
       end
 
-      context "when #copy_details is set" do
+      context "when #copy_contat is set" do
         let(:show_update_params) do
           {
             id: new_user.email,
             reservation_id: reservation.id,
             plan_transfer: {
-              copy_details: "1",
+              copy_contact: "1",
             }
           }
         end
 
-        it "does copy details over" do
-          expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.detail }
-          expect(new_user.reload.claims.last.detail).to be_present
+        it "does copy contact over" do
+          expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.conzealand_contact }
+          expect(new_user.reload.claims.last.contact).to be_present
         end
       end
     end

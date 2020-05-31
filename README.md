@@ -37,12 +37,21 @@ keen have a look at this list and leave comments on any you'd like to try.
 
 # Getting Started
 
-This project is a super standard Ruby on Rails application that runs on Postgres and Redis. There's a really simple
-[OSX guide](OSX.md) guide for those that use it as their daily driver.
+This project is a super standard Ruby on Rails application that runs on Postgres
+and Redis.
 
-However to try make on-boarding for people who are just starting Ruby or want a simpler setup to manage, we've got
-methods to run inside Docker and Docker Compose. This simplifies setup and testing and is really easy to clean up when
-you're done. These steps rely on GNU Make for common commands, and git to track your project files.
+## Note On Local Development
+
+For ease of development, this process describes how to configure your
+environment to use a dockerized version of Postgres, Redis, and mailcatcher...
+but there's no reason you can't just run those locally if you know what you're
+doing. Consult your OS's package manager and docs for that
+
+## Set up your environment
+
+The instructions in this section assume you're on either macOS or Linux. All of
+the tools exist for Windows, but the commands will differ somewhat (A PR to
+update that would be welcome)
 
 If you run into troubles getting any of this working, ask for help by
 [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be in touch!
@@ -50,10 +59,38 @@ If you run into troubles getting any of this working, ask for help by
 From here onwards, we're assuming you're comfortable running commands in your console. These commands will create and install
 files on your machine.
 
-If you haven't already, please install:
-1. [docker and docker-compose](https://docs.docker.com/compose/install/),
-2. [gnu make](https://www.gnu.org/software/make/),
-3. and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+### Install docker for your platform
+
+[docker and docker-compose](https://docs.docker.com/compose/install/)
+
+### Install interpreters and environment
+
+To install and configure the ruby version used by Wellington:
+
+```sh
+brew install rbenv
+rbenv install 2.7.1
+rbenv local 2.7.1
+```
+
+Configuration for development should be done using whatever method you use for projects, but [direnv](https://direnv.net/) is probably the best one:
+
+```sh
+brew install direnv
+```
+
+After that step, follow the instructions for your shell to [hook direnv into
+your shell](https://direnv.net/docs/hook.html) or else it won't work
+
+**Note:** if you intend to run the rails process directly in your shell (by
+running `rails` commands directly) then `direnv` will be a godsend, as the
+config won't otherwise read the `.env` file.
+
+### Install basic developer tools.
+1. [gnu make](https://www.gnu.org/software/make/),
+2. [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+### Getting the source
 
 Once you have these, clone this project using the git clone command with the URL you get from the clone button on the
 top right of the page.
@@ -73,6 +110,46 @@ This will create a directory named `worldcon_members_area` which you should run 
 cd worldcon_members_area
 ```
 
+### Setup direnv
+
+Before installing dependencies, set up direnv so that they'll be installed to
+project-local directories. Put this in the `.envrc` in the
+`worldcon_members_area` directory:
+
+```sh
+# set up a local ruby GEM_HOME
+layout ruby
+
+# provide rbenv aliases in the project
+use rbenv
+
+# for some bonkers reason, GEM_PATH doesn't include the new GEM_HOME
+path_add GEM_PATH $GEM_HOME
+
+# webpacker and the JS tools need a node modules setup too
+layout node
+
+# this will automatically add `.env` to the working environment. Many
+# of the keys in the .env template _must_ be present for the
+# application to work
+dotenv
+```
+
+***Note 1**: If you choose not to use direnv's `ruby` layout, all of the `rails` and `rspec` commands below need to be prefixed with `bundle exec`. Direnv sets up local wrappers for you on those, which you will probably find a lot easier.*
+
+***Note 2**: `.env` and `.envrc` fill different roles. `.env` is a simple KEY=VALUE file that docker will use to populate docker containers. Anything all of your docker containers should know goes in here. `.envrc` is for your development environment. It configures  your local `GEM_PATH`, node modules, and tools. In addition, the example above sources `.env` so that running `rails server` will have the same environment as the docker containers.*
+
+### Install dependencies
+
+Run these commands to install your ruby and node dependencies:
+
+```sh
+bundle install
+yarn install
+```
+
+### Configuring the local system
+
 You're going to need to setup a `.env` file to run this project. This is just a text file, and will keep your
 configuration secrets out of source control. Here's an example to get you started!
 
@@ -89,7 +166,11 @@ STRIPE_CURRENCY=NZD
 
 # Con specific mailer configuration
 MAINTAINER_EMAIL=your.name@conzealand.nz
+
+# Con specific configuration
 MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
+WORLDCON_THEME=conzealand
+WORLDCON_CONTACT=conzealand
 
 # Reporting, if you don't set these they don't send
 NOMINATION_REPORTS_EMAIL=hugo-help@conzealand.nz
@@ -109,17 +190,31 @@ HUGO_CLOSED_AT=2020-08-02T12:00:00+13:00
 INSTALMENT_MIN_PAYMENT_CENTS=7500
 INSTALMENT_PAYMENT_STEP_CENTS=5000
 
-# Postgres default values
-DB_HOST=postgres
+# Postgres default values for the development docker-compose.yml services
+DB_HOST=localhost
+DB_PORT=35432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=secretcopypasta
 
 # Sidekiq is a background task manager which you can view on /sidekiq
 # Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
-SIDEKIQ_REDIS_URL=redis://redis:6379/0
+# The Redis URL is configured to use the port in the docker-compose.yml
+SIDEKIQ_REDIS_URL=redis://localhost:36379/0
 SIDEKIQ_NO_PASSWORD=true
 # SIDEKIQ_USER=sidekiq
 # SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
+
+# hugo packet only shows in menu if HUGO_PACKET_BUCKET present. To make available, you must
+# 1. Get the materials from the Hugo admins
+# 2. Put them in an S3 bucket that you control
+# 3. Create a user with programatic access that has read only access to this bucket
+# 4. Generate AWS keys for that user
+# 5. Configure on production / staging / local with the following:
+# HUGO_PACKET_BUCKET=FROM_STEP_2
+# HUGO_PACKET_PREFIX=FROM_STEP_2
+# AWS_REGION=ap-southeast-2
+# AWS_ACCESS_KEY_ID=FROM_STEP_4
+# AWS_SECRET_ACCESS_KEY=FROM_STEP_4
 
 # Uncomment to reset database on start up, good for switching branches when patches are present
 # NAPALM=true
@@ -128,10 +223,25 @@ SIDEKIQ_NO_PASSWORD=true
 If you're on production, please replace fields with your own values or the application will explode with copy pasta
 errors ;-)
 
-Now start your server with
+## Running the service during development
+
+First, start your support services (redis, postgres, mailcatcher)
 
 ```sh
-make start
+make start-support-daemons
+```
+
+You can stop these with `make stop` or reset them (tearing down
+the DB) using `make reset`. You'll want to do this in particular if you change
+the `WORLDCON_CONTACT` or `WORLDCON_THEME` variables, as both of those can
+impact the DB tables created and seeded.
+
+Next, start the actual rails application. In development mode it will run
+sidekiq in the same process. In production you'll use the different entry points
+and the two services will communicate via Redis.
+
+```sh
+rails server
 ```
 
 Changes you make to your machine will show up inside the application which you can browse from http://localhost:3000
@@ -142,7 +252,7 @@ receipts.
 If you want to run up a console so you can get a seeded user with dummy reservations, you can do this with:
 
 ```sh
-make console
+rails console
 User.all.sample.email
 ```
 
@@ -154,7 +264,6 @@ A default support user is created as part of seeds. You should be able to sign i
 If you need to install or upgrade dependencies, you can get a shell in your environment to run those commands
 
 ```sh
-make shell
 yarn upgrade
 bundle update
 ```
@@ -165,31 +274,19 @@ If you want to run tests for the project you can do this by running
 make test
 ```
 
+This runs a lot of tests, but if you're mostly interested in the spec tests this will work better:
+
+```sh
+rspec
+```
+
 If you've finished working and want to shut down the servers, run
 
 ```sh
 make stop
 ```
 
-You can also run your own commands in the container itself. Check out the Makefile for examples of how you might do
-this. Here are some examples to get you started:
-
-```sh
-# Generate migrations
-# see https://guides.rubyonrails.org/active_record_migrations.html
-docker-compose exec members_area bundle exec rails generate migration
-
-# Install a gem you've added to the project's Gemfile
-docker-compose exec members_area bundle install
-
-# Run migrations after changing branches
-docker-compose exec members_area bundle exec rake db:migrate
-```
-
-If you want to quickly reset your javascript dependencies and database, you can do this by setting
-`NAPALM=true` in your .env and restarting your database.
-
-You can go a step further and drop the disks backing those containers:
+Cleaning up and starting your DB over from scratch looks like this:
 
 ```sh
 make reset
@@ -201,7 +298,7 @@ Or you can go all the way and remove the docker containers, disks and networks:
 make clean
 ```
 
-From here you can delete the project files if you're done, or just run `make start` and everything will be built again
+From here you can delete the project files if you're done, or just run `make start-support-daemons` and everything will be built again
 from scratch.
 
 # Running in Production
@@ -396,6 +493,60 @@ bundle exec rake db:create db:structure:load
 bundle exec rake db:seed:conzealand:production
 ```
 
+# Tailoring to your Con
+
+Our objective is to create a theme for Atlantis 2100, and set the theme and contact by modifying our .env with
+
+```bash
+WORLDCON_CONTACT=atlantis
+WORLDCON_THEME=atlantis
+```
+
+To create a theme for your con, you'll need to:
+
+1. Copy over layout, styles and app files from another con to get you started
+   ```bash
+   cp app/views/layouts/{conzealand,atlantis}.html.erb
+   cp app/javascript/packs/{conzealand,atlantis}-app.js
+   cp app/javascript/packs/{conzealand,atlantis}-styles.scss
+   ```
+2. Copy your favicon into app/javascript/packs/atlantis-favicon.ico
+3. Modify app/views/layouts/atlantis.html.erb, change:
+   * stylesheet_pack_tag to point at atlantis-app
+   * javascript_pack_tag to point at atlantis-styles
+   * favicon's resolve_path_to_image should point at media/packs/atlantis-favicon.ico
+4. Open `app/lib/theme_concern.rb` and change `#theme_contact_form` to include a case for atlantis
+5. Set `WORLDCON_CONTACT=atlantis` in your .env
+6. Commit your work
+7. Taylor styles.scss and layout.html.erb to suit your con
+
+To create a model for your member contact form, you'll need to:
+
+1. Create a database migration for your tables
+   ```bash
+   make bash
+   bundle exec rails generate model AtlantisContact
+   ```
+2. Modify the `db/migrate/*_create_atlantis_contacts.rb` file, adding fields you need for your members.
+   If you get stuck, use the `db/migrate/20191209052126_create_dc_contact.rb` migration and look up
+   the guide on [Active Record Migrations](https://guides.rubyonrails.org/active_record_migrations.html)
+   from guides.rubyonrails.org.
+3. Update
+   * `app/models/atlantis_contact.rb` with constraints-- look at other \_contact models for reference
+   * `spec/factories/atlantis_contacts.rb` with defaults-- look at other factories in this directory for examples
+   * `spec/models/atlantis_contact_spec.rb` with tests if you've got logic in your model
+4. Open `./app/lib/theme_concern.rb` and modify `#theme_contact_param` with `:atlantis_contact`
+5. Copy over another con's form to get you started
+   ```bash
+   make bash
+   cp app/views/reservations/_{conzealand,atlantis}_contact_form.html.erb
+   ```
+6. Modify fields in `app/views/reservations/_atlantis_contact_form.html.erb` to match your contact model.
+   For reference, you can use the [Form Helpers guide](https://guides.rubyonrails.org/form_helpers.html)
+   from guides.rubyonrails.org.
+7. Set `WORLDCON_CONTACT=atlantis` in your .env
+8. Run migrations with `bundle exec db:migrate` and commit all your work.
+
 # Production Maintenance and Upgrades
 
 If you're using the docker images, the Docker entry point uses `script/docker_entry.sh` which runs unapplied patches
@@ -494,5 +645,6 @@ file distributed with this project.
 - Copyright 2019 Jen Zajac (jenofdoom)
 - Copyright 2019 Steven C Hartley
 - Copyright 2020 Matthew B. Gray
+- Copyright 2020 Steven Ensslen
 
 We are so grateful to all our contributors for helping us make this project great.

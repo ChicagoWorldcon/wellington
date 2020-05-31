@@ -1,6 +1,6 @@
 <%#
   Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
   Copyright 2019 AJ Esler
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,13 @@
 %>
 
 <h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
+
+<% if support_signed_in? && @rights_exhausted.any? %>
+  <div class="alert alert-danger" role="alert">
+    Note: User has <%= @rights_exhausted.to_sentence %>
+  </div>
+<% end %>
+
 <section class="l-section">
   <% if support_signed_in? %>
     <div class="row">
@@ -62,7 +69,7 @@
 
           <% Election.find_each do |election| %>
             <p>
-              Change 
+              Change
               <%=
                 link_to(
                   "Nominations for #{election.i18n_key}",
@@ -77,7 +84,7 @@
 
       <div class="col-12 col-md-6">
         <div class="l-panel support-pane">
-          <h2>Related Notes</h2>
+          <h2>User Notes</h2>
           <% if @notes.none? %>
             No notes for this membership
           <% else %>
@@ -168,7 +175,7 @@
       <div class="l-panel">
         <h2>Review your details</h2>
         <%= form_for(@reservation) do |form| %>
-          <%= render "detail_form" %>
+          <%= render worldcon_contact_form %>
         <% end %>
       </div>
     </div>

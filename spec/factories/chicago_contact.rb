@@ -15,30 +15,32 @@
 # limitations under the License.
 
 FactoryBot.define do
-  factory :detail do
+  factory :chicago_contact do
     address_line_1 { Faker::Address.street_address }
     country { Faker::Address.city }
     title { Faker::Superhero.prefix }
     first_name { Faker::Superhero.name }
     last_name { Faker::Superhero.suffix }
-    publication_format { Detail::PAPERPUBS_ELECTRONIC }
+    publication_format { ConzealandContact::PAPERPUBS_ELECTRONIC }
+
+    claim { build(:claim, :with_user, :with_reservation) }
 
     trait :with_claim do
-      after(:build) do |new_detail, _evaluator|
-        new_detail.claim = create(:claim, :with_user, :with_reservation)
+      after(:build) do |new_contact, _evaluator|
+        new_contact.claim = create(:claim, :with_user, :with_reservation)
       end
     end
 
     trait :paperpubs_mail do
-      publication_format { Detail::PAPERPUBS_MAIL }
+      publication_format { ConzealandContact::PAPERPUBS_MAIL }
     end
 
     trait :paperpubs_all do
-      publication_format { Detail::PAPERPUBS_BOTH }
+      publication_format { ConzealandContact::PAPERPUBS_BOTH }
     end
 
     trait :paperpubs_none do
-      publication_format { Detail::PAPERPUBS_NONE }
+      publication_format { ConzealandContact::PAPERPUBS_NONE }
     end
   end
 end

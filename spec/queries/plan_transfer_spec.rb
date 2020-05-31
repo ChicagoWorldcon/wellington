@@ -65,18 +65,18 @@ RSpec.describe PlanTransfer do
     end
   end
 
-  describe "#copy_details?" do
+  describe "#copy_contact?" do
     ["1", "2", true].each do |value|
       it "is true when set to #{value}" do
-        query = described_class.new(copy_details: value)
-        expect(query.copy_details?).to be_truthy
+        query = described_class.new(copy_contact: value)
+        expect(query.copy_contact?).to be_truthy
       end
     end
 
     ["0", false, nil].each do |value|
       it "is false when set to #{value}" do
-        query = described_class.new(copy_details: value)
-        expect(query.copy_details?).to be_falsey
+        query = described_class.new(copy_contact: value)
+        expect(query.copy_contact?).to be_falsey
       end
     end
   end

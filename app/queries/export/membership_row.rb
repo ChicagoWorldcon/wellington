@@ -24,32 +24,32 @@ class Export::MembershipRow
     ]
   }.freeze
 
-  DETAIL_KEYS = Detail.new.attributes.keys.freeze
+  CONTACT_KEYS = ConzealandContact.new.attributes.keys.freeze
 
   HEADINGS = [
     "membership_number",
     "email",
     "membership_name",
     "name_to_list",
-    *DETAIL_KEYS,
+    *CONTACT_KEYS,
   ].freeze
 
-  attr_reader :detail
+  attr_reader :contact
 
-  def initialize(detail)
-    @detail = detail
+  def initialize(contact)
+    @contact = contact
   end
 
   def values
-    reservation = detail.claim.reservation
-    detail_values = detail.slice(DETAIL_KEYS).values.map(&:to_s)
+    reservation = contact.claim.reservation
+    contact_values = contact.slice(CONTACT_KEYS).values.map(&:to_s)
 
     [
       reservation.membership_number,
-      detail.claim.user.email,
+      contact.claim.user.email,
       reservation.membership.name,
-      detail.to_s,
-      *detail_values,
+      contact.to_s,
+      *contact_values,
     ]
   end
 end

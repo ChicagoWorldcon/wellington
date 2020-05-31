@@ -89,9 +89,9 @@ RSpec.describe Import::DublinMembers do
       end
 
       it "creates details based on passed in data" do
-        expect { call }.to change { Detail.count }.by(1)
-        expect(Detail.last.country).to eq(sample_row[:country])
-        expect(Detail.last.first_name).to eq(sample_row[:fname])
+        expect { call }.to change { ConzealandContact.count }.by(1)
+        expect(ConzealandContact.last.country).to eq(sample_row[:country])
+        expect(ConzealandContact.last.first_name).to eq(sample_row[:fname])
       end
 
       it "creates notes with line numbers" do
