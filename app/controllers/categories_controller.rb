@@ -19,9 +19,7 @@ class CategoriesController < ApplicationController
 
     before_action :lookup_reservation!
     before_action :check_access!
-    before_action do
-        lookup_election!(election: params[:finalist_id])
-    end
+    before_action :lookup_election!
     #before_action :lookup_legal_name_or_redirect
 
     def update
@@ -89,4 +87,4 @@ class CategoriesController < ApplicationController
       @election.categories.order(:order, :id)
     end
   end
-  
+end

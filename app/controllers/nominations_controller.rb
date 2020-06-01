@@ -17,10 +17,8 @@
 class NominationsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
-  before_action do
-    lookup_election!(params[:id])
-  done
-  before_action :lookup_legal_name_or_redirect
+  before_action :lookup_election!
+  # before_action :lookup_legal_name_or_redirect
 
   def show
     builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
