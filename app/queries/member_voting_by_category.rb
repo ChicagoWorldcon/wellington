@@ -15,9 +15,7 @@
 # limitations under the License.
 
 # ListVoting given a reservation will give you objects to list out votes for a user
-class MemberVotesByCategory
-  NOMINATION_KEYS = (1..Nomination::VOTES_PER_CATEGORY).to_a.map(&:to_s)
-
+class MemberVotingByCategory
   include ActiveModel::Model
   include ActiveModel::Validations
 
@@ -51,7 +49,7 @@ class MemberVotesByCategory
     end
 
     if !reservation.can_vote?
-      errors.add(:reservation, "doesn't have voting rights")
+      errors.add(:reservation, "does not have voting rights")
     end
   end
 
@@ -60,7 +58,6 @@ class MemberVotesByCategory
       reset_votes
       record_user_votes
       record_submitted_votes(params)
-      add_empties_where_needed
     end
 
     self
@@ -70,7 +67,6 @@ class MemberVotesByCategory
     if valid?
       reset_votes
       record_user_votes
-      add_empties_where_needed
     end
 
     self
@@ -87,7 +83,7 @@ class MemberVotesByCategory
 
       votes_by_category.slice(*@submitted_categories).each do |category, votes|
         # n.b. blank votes don't save as they're not valid
-        votes.last(Nomination::VOTES_PER_CATEGORY).each(&:save)
+        votes.last(Election::VOTES_PER_CATEGORY).each(&:save)
       end
     end
 
@@ -115,7 +111,7 @@ class MemberVotesByCategory
   end
 
   def user_votes
-    reservation.votes.where(category: categories)
+    reservation.ranks.where(category: categories)
   end
 
   def record_submitted_votes(params)
@@ -123,7 +119,7 @@ class MemberVotesByCategory
 
     categories.each do |category|
       # Find submitted votes
-      votes = params.dig("category", category.id.to_s, "nomination")
+      votes = params.dig("category", category.id.to_s, "finalists")
       next unless votes
 
       # Reset and record submitted categories
@@ -132,26 +128,11 @@ class MemberVotesByCategory
 
 
       # Pull out up to VOTES_PER_CATEGORY of them, use their description field for a new Nomination
-      votes.slice(*NOMINATION_KEYS).values.each do |nom_params|
-        votes_by_category[category] << Nomination.new(
+      votes.slice(*VOTING_KEYS).values.each do |nom_params|
+        votes_by_category[category] << Rank.new(
           reservation: reservation,
           category: category,
-          field_1: nom_params["field_1"],
-          field_2: nom_params["field_2"],
-          field_3: nom_params["field_3"],
-        )
-      end
-    end
-  end
-
-  def add_empties_where_needed
-    votes_by_category.keys.each do |category|
-      remaining_votes = Nomination::VOTES_PER_CATEGORY - votes_by_category[category].size
-
-      remaining_votes.times do
-        votes_by_category[category] << Nomination.new(
-          category: category,
-          reservation: reservation,
+          rank: params["rank"]
         )
       end
     end

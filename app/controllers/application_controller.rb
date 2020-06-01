@@ -35,8 +35,8 @@ class ApplicationController < ActionController::Base
   end
 
   # Assumes i18n_key as id
-  def lookup_election!
-    @election = Election.find_by!(i18n_key: params[:id])
+  def lookup_election!(election:)
+    @election = Election.find_by!(i18n_key: election)
   end
 
   def lookup_legal_name_or_redirect

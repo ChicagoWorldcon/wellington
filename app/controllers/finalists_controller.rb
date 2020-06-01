@@ -17,8 +17,10 @@
 class FinalistsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
-  before_action :lookup_election!
-  before_action :lookup_legal_name_or_redirect
+  before_action do
+    lookup_election!(params[:id])
+  done
+  # before_action :lookup_legal_name_or_redirect
 
   def show
     respond_to do |format|
@@ -32,7 +34,7 @@ class FinalistsController < ApplicationController
   end
 
   def update
-    builder = MemberNominationsByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
+    builder = MemberVotingByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_params(params)
     builder.save
 
@@ -113,7 +115,7 @@ class FinalistsController < ApplicationController
     end
 
     if support_signed_in?
-      flash[:notice] = "Can't view finalists when signed in as support"
+      flash[:notice] = "Can't vote when signed in as support"
       redirect_to @reservation
     end
   end

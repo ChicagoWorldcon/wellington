@@ -57,7 +57,6 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  resources :categories
   resources :credits
   resources :landing
   resources :memberships
@@ -67,7 +66,9 @@ Rails.application.routes.draw do
 
   resources :reservations do
     resources :charges
-    resources :finalists, id: /[^\/]+/
+    resources :finalists, id: /[^\/]+/ do
+      resources :categories
+    end
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
