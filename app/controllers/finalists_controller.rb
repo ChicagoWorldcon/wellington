@@ -15,6 +15,9 @@
 # limitations under the License.
 
 class FinalistsController < ApplicationController
+  # controller also accessed by XHR, see https://stackoverflow.com/a/43122403/7359502
+  skip_before_action :verify_authenticity_token
+
   before_action :lookup_reservation!
   before_action :check_access!
   before_action :lookup_election!
@@ -32,6 +35,7 @@ class FinalistsController < ApplicationController
   end
 
   def update
+    pry
     builder = MemberVotingByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
     builder.from_params(params)
     builder.save

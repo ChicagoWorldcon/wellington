@@ -51,8 +51,8 @@ export default {
   },
   methods: {
     save: (category) => {
-      fetch("categories/" + category.id,{
-        body: JSON.stringify(category),
+      fetch("",{
+        body: JSON.stringify({"category": category}),
         method: "PUT",
         headers: { "Content-Type": "application/json"}
       })
