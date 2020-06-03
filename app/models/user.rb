@@ -39,11 +39,11 @@ class User < ApplicationRecord
 
   def email_address_format_valid
     if !email.match(Devise.email_regexp)
-      errors.add(:email, "is not a supported format")
+      errors.add(:email, "is an unsupported format")
     end
 
     if email.include?("/")
-      errors.add(:email, "slashes in email addresses are unsupported")
+      errors.add(:email, "slashes are unsupported")
     end
   end
 end
