@@ -38,6 +38,8 @@ class User < ApplicationRecord
   private
 
   def email_address_format_valid
+    return if email.nil? # covered by presence: true
+
     if !email.match(Devise.email_regexp)
       errors.add(:email, "is an unsupported format")
     end

@@ -131,7 +131,7 @@ RSpec.describe Token::LookupOrCreateUser do
 
     it "fails gracefully" do
       expect(command.call).to be_falsey
-      expect(command.errors).to include(/email is invalid/i)
+      expect(command.errors).to include(/can't be blank/i)
     end
   end
 
