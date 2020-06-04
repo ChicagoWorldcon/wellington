@@ -20,8 +20,29 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   # see https://github.com/doorkeeper-gem/doorkeeper-provider-app/blob/master/config/initializers/doorkeeper.rb
   resource_owner_authenticator do
-    # current_user || warden.authenticate!(scope: :user)
-    current_user || redirect_to(new_user_token_path)
+    if current_user.blank?
+      flash[:notice] = "Please sign into the members area"
+      next redirect_to(new_user_token_path)
+    end
+
+    memberships_held = Membership.joins(reservations: :user).where(users: { id: current_user })
+    if memberships_held.none?
+      flash[:notice] = "Please purchase a membership to continue"
+      next redirect_to(memberships_path)
+    end
+
+    if memberships_held.can_attend.none?
+      flash[:notice] = "Please upgrade one of your memberships to attend"
+      next redirect_to(reservations_path)
+    end
+
+    if memberships_held.can_attend.merge(Reservation.paid).none?
+      flash[:notice] = "Please finish paying off an attending membership to attend"
+      next redirect_to(reservations_path)
+    end
+
+    # Happy path. Let this user auth with SSO
+    current_user
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb

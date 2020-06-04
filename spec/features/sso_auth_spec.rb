@@ -23,8 +23,6 @@ require "rails_helper"
 # We don't want to leak information outside of our app
 RSpec.describe "SSO Integration Flows", type: :feature do
   let(:redirect_uri) { "https://oauthdebugger.com/debug" }
-  let(:attending_user) { create(:user, :with_reservation) }
-  let(:user) { create(:user) }
 
   let(:spoof_sso_url) do
     oauth_authorization_path(
@@ -59,7 +57,9 @@ RSpec.describe "SSO Integration Flows", type: :feature do
   #   redirect_uri: "https://something.you/expect_other_app_to_return_to",
   # )
   context "with integrations enabled" do
+    let(:attending_user) { create(:user, :with_reservation) }
     let!(:sso) { create(:doorkeeper_application, redirect_uri: redirect_uri) }
+
     let(:sso_url) do
       oauth_authorization_path(
         client_id: sso.uid,
@@ -75,8 +75,8 @@ RSpec.describe "SSO Integration Flows", type: :feature do
       expect(Doorkeeper::Application.count).to be 1
     end
 
-    it "will allow a signed in attending user to sign in" do
-      sign_in(user)
+    it "will allow a signed in attending user to pass" do
+      sign_in(attending_user)
       visit(sso_url)
       expect(page).to have_content("Authorize #{sso.name} to use your account?")
 
@@ -85,6 +85,28 @@ RSpec.describe "SSO Integration Flows", type: :feature do
       # So long as our user is on the remote host
       expect { click_on("Authorize") }.to raise_error(ActionController::RoutingError)
       expect(page.current_url).to start_with(redirect_uri)
+    end
+
+    context "wouldn't let a user sign in when" do
+      after do
+        visit(sso_url)
+        expect(page).to_not have_content("Authorize") # Doesn't have an Authorize button, or any metion of it
+        expect(page).to_not have_content(sso.name)    # Doesn't mention the sign in service
+      end
+
+      it "is without memberships" do
+        sign_in(create(:user))
+      end
+
+      it "has memberships, but none have attending rights" do
+        reservation = create(:reservation, :with_user, membership: create(:membership, :pre_support))
+        sign_in(reservation.user)
+      end
+
+      it "has attending membership, but it's not paid for" do
+        reservation = create(:reservation, :with_user, :instalment, membership: create(:membership, :adult))
+        sign_in(reservation.user)
+      end
     end
   end
 end
