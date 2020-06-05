@@ -634,6 +634,120 @@ bundle exec rake db:drop db:create db:schema:load db:seed:conzealand:production
 bundle exec rake db:drop db:create db:schema:load db:seed:conzealand:development
 ```
 
+# 3rd Party Integrations with OAuth 2.0
+
+This is turned off by default and routes will present errors unless we explicitly create the applications.
+This is enforced by CI with tests for the paranoid among us.
+
+We shell out to the [Doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
+to handle the bulk of the work. At this stage, this only allows a 3rd party application to read a user
+but not to access resources for that user. This type of API access isn't hard to set up, but at the time
+of writing we didn't have mobile app integartion requirements so this wasn't done.
+
+To test your setup, try creating your first integration wtih https://oauthdebugger.com
+against the Authorize URI http://localhost:3000/oauth/authorize
+
+These testing steps require:
+* [curl](https://curl.haxx.se/) to hit HTTP endpoints from the command line
+* [jq](https://stedolan.github.io/jq/) to format JSON in the responses
+
+To create a new OAuth integration:
+
+1. Go to https://oauthdebugger.com and copy the callback_uri. When doing this with a real provider,
+   you'll have to get in touch to get this from the real application.
+2. Create a new named OAuth integration in the rails console with:
+   ```ruby
+   Doorkeeper::Application.create!(
+     name: "Live stream for Worldcon",
+     redirect_uri: "https://oauthdebugger.com/debug",
+     scopes: "read",
+   )
+   # => #<Doorkeeper::Application:0x0000562561feb9d8
+   #   id: 3,
+   #   name: "Live stream for Worldcon",
+   #   uid: "pCXj_Rz8R2jzEsp4k_QzCW4RXMv8_H0w9mmJ07ctykg",
+   #   secret: "Sl52_GOvWDln1WZWIxXrg2JZWVYsSb49SuLm5odifNsa",
+   #   redirect_uri: "https://oauthdebugger.com/debug",
+   #   scopes: "read",
+   #   confidential: true,
+   #   created_at: Fri, 05 Jun 2020 21:01:21 UTC +00:00,
+   #   updated_at: Fri, 05 Jun 2020 21:01:21 UTC +00:00>
+   ```
+3. Share the generated uid, secret with the 3rd party application. In this case,
+   input these details into https://oauthdebugger.com and it'll generate you a URL
+   to send our users to. Click the "Send Request" button at the bottom of the page
+   to take you to `/oauth/authorize` with a few get params.
+4. A user is now redirected back to the callback_uri unless
+    * **signed out**: redirects to / and asks user to sign in
+    * **no memberships**: redirects to /memberships and asks user to purchase membership
+    * **no attending memberships**: redirects to /reservations and asks them to upgrade
+    * **not finished paying off their attending membership**: redirects to /reservations and asks them to complete payment
+5. If successful, the URL will contain a GET param with a `code`. When testing, this was set to<br>
+   https://oauthdebugger.com/debug?code=UlBRViaeX9270ZdGxfgocPZDzadkKxmUxHvB1gg1trs
+6. Our 3rd party application now needs to verify this authorization code by POST to
+   `/oauth/token`. This can be done using a vanilla form post, but you can also use
+   JSON on the wire by setting the `Accept` and `Content-Type` headers on your request.
+   Here's an example using our application and returned `code`:
+   ```bash
+   curl -vv -XPOST 'http://localhost:3000/oauth/token' \
+     -H 'Accept: application/json' \
+     -H 'Content-Type: application/json' \
+     --data '{
+       "client_id": "pCXj_Rz8R2jzEsp4k_QzCW4RXMv8_H0w9mmJ07ctykg",
+       "client_secret": "Sl52_GOvWDln1WZWIxXrg2JZWVYsSb49SuLm5odifNsa",
+       "grant_type": "authorization_code",
+       "code": "UlBRViaeX9270ZdGxfgocPZDzadkKxmUxHvB1gg1trs",
+       "redirect_uri": "https://oauthdebugger.com/debug"
+     }' | jq
+   ```
+6. This endpoint will respond with a 200 and details on success, or 400 and an error. Here's what success looks like:
+   ```yaml
+   {
+     "access_token": "R7HXoMHkRrZU0Ufl2tc4PMNkCY3b5NHkMz69XpgKvak", # <-- token to be used for further queries
+     "token_type": "Bearer",
+     "expires_in": 7200,
+     "scope": "read",
+     "created_at": 1591397960
+   }
+   ```
+   ...and here's what failure looks like:
+   ```yaml
+   {
+     "error": "invalid_grant",
+     "error_description": "The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."
+   }
+   ```
+7. Get more info about the token by hitting /oauth/token/info with the `Authorization` header using your bearer token:
+
+   ```bash
+   curl 'http://localhost:3000/oauth/token/info' -H 'Authorization: Bearer R7HXoMHkRrZU0Ufl2tc4PMNkCY3b5NHkMz69XpgKvak' | jq
+   ```
+   ...which responds with:
+   ```yaml
+   {
+     "resource_owner_id": 51,
+     "scope": [
+       "read"
+     ],
+     "expires_in": 28756, # 8 hours
+     "application": {
+       "uid": "pCXj_Rz8R2jzEsp4k_QzCW4RXMv8_H0w9mmJ07ctykg"
+     },
+     "created_at": 1591401451
+   }
+   ```
+
+To list or destroy existing OAuth integrations, just interact with the ActiveRecord models. You can do this on the
+with commands like these:
+
+```ruby
+Doorkeeper::Application.count         # count appliations configured
+Doorkeeper::Application.all           # look at application properties
+Doorkeeper::Application.last.destroy! # destroy the last app made
+Doorkeeper::Application.destroy_all   # destory all app integrations
+Doorkeeper::Application.create!(...)  # create another integration
+```
+
 # License
 
 This project is open source based on the Apache 2 Licence. You can read the terms of this in the [License](LICENSE)

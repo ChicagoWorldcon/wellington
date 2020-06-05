@@ -8,7 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.5.1...master)
 
 ### Added
-- Nothing significant in this release
+- SSO sign in for 3rd party apps (off by default) for fully paid attending memberships
+  [!168](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/168)
+  See README for details. Setup integrations with:
+  ```ruby
+  Doorkeeper::Application.create!(
+    name: "Live stream for Worldcon",
+    redirect_uri: "https://oauthdebugger.com/debug"
+  )
+  ```
 
 ### Changed
 - Nothing significant in this release
