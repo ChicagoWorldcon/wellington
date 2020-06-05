@@ -135,9 +135,9 @@ layout node
 dotenv
 ```
 
-***Note 1**: If you choose not to use direnv's `ruby` layout, all of the `rails` and `rspec` commands below need to be prefixed with `bundle exec`. Direnv sets up local wrappers for you on those, which you will probably find a lot easier.*
+**Note 1**: If you choose not to use direnv's `ruby` layout, all of the `rails` and `rspec` commands below need to be prefixed with `bundle exec`. Direnv sets up local wrappers for you on those, which you will probably find a lot easier.*
 
-***Note 2**: `.env` and `.envrc` fill different roles. `.env` is a simple KEY=VALUE file that docker will use to populate docker containers. Anything all of your docker containers should know goes in here. `.envrc` is for your development environment. It configures  your local `GEM_PATH`, node modules, and tools. In addition, the example above sources `.env` so that running `rails server` will have the same environment as the docker containers.*
+**Note 2**: `.env` and `.envrc` fill different roles. `.env` is a simple KEY=VALUE file that docker will use to populate docker containers. Anything all of your docker containers should know goes in here. `.envrc` is for your development environment. It configures  your local `GEM_PATH`, node modules, and tools. In addition, the example above sources `.env` so that running `rails server` will have the same environment as the docker containers.*
 
 ### Install dependencies
 
