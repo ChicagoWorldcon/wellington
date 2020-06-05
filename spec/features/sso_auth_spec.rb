@@ -22,8 +22,6 @@ require "rails_helper"
 # This is an attempt to make sure our library continues to meet expecations of the project
 # We don't want to leak information outside of our app
 RSpec.describe "SSO Integration Flows", type: :feature do
-  let(:redirect_uri) { "https://oauthdebugger.com/debug" }
-
   let(:spoof_sso_url) do
     oauth_authorization_path(
       client_id: "non-existant-client-id", # non existant application
@@ -61,15 +59,17 @@ RSpec.describe "SSO Integration Flows", type: :feature do
   # )
   context "with integrations enabled" do
     let(:attending_user) { create(:user, :with_reservation) }
+    let(:redirect_uri) { "https://oauthdebugger.com/debug" }
+
     let!(:sso) { create(:doorkeeper_application, redirect_uri: redirect_uri) }
 
     let(:sso_url) do
       oauth_authorization_path(
         client_id: sso.uid,
-        redirect_uri: redirect_uri,
         scope: sso.scopes,
-        response_mode: "form_post",
+        redirect_uri: redirect_uri,
         response_type: "code",
+        response_mode: "form_post",
         nonce: "nonce-metadata-42",
       )
     end
@@ -80,21 +80,22 @@ RSpec.describe "SSO Integration Flows", type: :feature do
 
     it "will allow a signed in attending user to pass" do
       sign_in(attending_user)
-      visit(sso_url)
-      expect(page).to have_content("Authorize #{sso.name} to use your account?")
 
-      # clicking authorize should take you out of the test
-      # Cappybara raises an error due to the test harness, but we're ok with it
-      # So long as our user is on the remote host
-      expect { click_on("Authorize") }.to raise_error(ActionController::RoutingError)
-      expect(page.current_url).to start_with(redirect_uri)
+      # Cappybara raises an error due to the test harness leaving this domain
+      # we only need to verify that a redirect is happening to verify the happy path
+      expect { visit(sso_url) }.to raise_error(ActionController::RoutingError)
+      expect(page).to have_content("You are being redirected")
+
+      redirect_link = page.find_link("redirected")
+      expect(redirect_link).to be_present
+      expect(redirect_link[:href]).to start_with(redirect_uri)
+      expect(redirect_link[:href]).to include("code=")
     end
 
     context "wouldn't let a user sign in when" do
       after do
         visit(sso_url)
-        expect(page).to_not have_content("Authorize") # Doesn't have an Authorize button, or any metion of it
-        expect(page).to_not have_content(sso.name)    # Doesn't mention the sign in service
+        expect(page).to_not have_content("You are being redirected")
       end
 
       it "is without memberships" do

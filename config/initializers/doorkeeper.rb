@@ -45,6 +45,13 @@ Doorkeeper.configure do
     current_user
   end
 
+  # You can ask for the user's permission, but we've turned this off for 2020
+  # To ask for permission, just return false here, or configure it to use the application somehow
+  # see https://doorkeeper.gitbook.io/guides/configuration/skip-authorization
+  skip_authorization do |resource_owner, client|
+    true
+  end
+
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
   # file then you need to declare this block in order to restrict access to the web interface for
   # adding oauth authorized applications. In other case it will return 403 Forbidden response
