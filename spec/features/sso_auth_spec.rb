@@ -26,12 +26,12 @@ RSpec.describe "SSO Integration Flows", type: :feature do
 
   let(:spoof_sso_url) do
     oauth_authorization_path(
-      client_id: "yahoo",
-      redirect_uri: redirect_uri,
-      scope: "read", # based on defaults
-      response_mode: "form_post",
+      client_id: "non-existant-client-id", # non existant application
+      nonce: "3rd-party-identifier-for-request",
+      redirect_uri: "https://oauthdebugger.com/debug",
+      scope: "read",
       response_type: "code",
-      nonce: "nonce-metadata-42",
+      response_mode: "form_post",
     )
   end
 
@@ -40,15 +40,18 @@ RSpec.describe "SSO Integration Flows", type: :feature do
   end
 
   context "when visiting with no applications" do
-    before { visit spoof_sso_url }
-
     it "asks you to log in" do
+      visit spoof_sso_url
       expect(page).to have_current_path(new_user_token_path)
       expect("Login Link").to be_in(page.body)
     end
 
-    it "doesn't have an authorize button present" do
-      expect(page).to_not have_content("Authorize")
+    it "displays error when user has attending membership" do
+      reservation = create(:reservation, :with_membership, :with_user)
+      sign_in(reservation.user)
+      visit spoof_sso_url
+      expect(page).to have_content("Client authentication failed")
+      expect(page).to have_content("unknown client")
     end
   end
 
