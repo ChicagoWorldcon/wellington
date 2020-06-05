@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe SendBallotSummaries, type: :job do
-  let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
+  let(:reservation) { create(:reservation, :with_membership, :with_user) }
 
   describe "#perform" do
     subject(:perform) { described_class.new.perform }

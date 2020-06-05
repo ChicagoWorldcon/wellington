@@ -26,7 +26,7 @@ RSpec.describe ReservationsController, type: :controller do
   let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
   let!(:adult) { create(:membership, :adult) }
   let!(:offer) { MembershipOffer.new(adult) }
-  let!(:existing_reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+  let!(:existing_reservation) { create(:reservation, :with_user, membership: adult) }
   let!(:original_user) { existing_reservation.user }
 
   let(:another_user) { create(:user) }

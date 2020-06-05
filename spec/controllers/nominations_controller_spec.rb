@@ -25,7 +25,7 @@ RSpec.describe NominationsController, type: :controller do
   let!(:retro_hugo) { create(:election, :retro) }
   let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
 
-  let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
+  let(:reservation) { create(:reservation, :with_membership, :with_user) }
   let(:user) { reservation.user }
 
   # Reset dates after tests run
@@ -85,7 +85,7 @@ RSpec.describe NominationsController, type: :controller do
 
         context "when you're a Dublin member" do
           let(:dublin) { create(:membership, :dublin_2019) }
-          let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+          let(:reservation) { create(:reservation, :with_user, membership: dublin) }
 
           it "doesn't redirect if you're a dublin member" do
             reservation.active_claim.contact.destroy!
@@ -93,7 +93,7 @@ RSpec.describe NominationsController, type: :controller do
           end
 
           context "and you upgrade to Supporting after nominations close" do
-            let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+            let(:reservation) { create(:reservation, :with_user, membership: dublin) }
             let(:supporting_without_nomination) { create(:membership, :supporting, can_nominate: false) }
 
             before do
@@ -139,7 +139,7 @@ RSpec.describe NominationsController, type: :controller do
             create(:reservation,
                    :instalment,
                    :with_membership,
-                   :with_claim_from_user,
+                   :with_user,
                    instalment_paid: 0)
           end
 

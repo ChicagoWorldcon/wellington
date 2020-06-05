@@ -22,7 +22,7 @@ RSpec.describe Export::NominationsToTds do
   describe "#call" do
     subject(:call) { command.call }
 
-    let!(:reservation) { create(:reservation, :with_claim_from_user) }
+    let!(:reservation) { create(:reservation, :with_user) }
     let!(:hugo_2020) { create(:election) }
     let!(:hugo_1945) { create(:election, :retro) }
     let!(:category_2020) { create(:category, election: hugo_2020) }

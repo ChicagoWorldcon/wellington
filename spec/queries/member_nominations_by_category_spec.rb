@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe MemberNominationsByCategory do
-  let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
+  let(:reservation) { create(:reservation, :with_membership, :with_user) }
 
   let!(:hugo) { create(:election) }
   let!(:retro_hugo) { create(:election, :retro) }
@@ -120,7 +120,7 @@ RSpec.describe MemberNominationsByCategory do
 
   context "for dublin memberships" do
     let(:dublin) { create(:membership, :dublin_2019) }
-    let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+    let(:reservation) { create(:reservation, :with_user, membership: dublin) }
     before { reservation.charges.destroy_all }
 
     it { is_expected.to be_valid }

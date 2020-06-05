@@ -23,7 +23,7 @@ RSpec.describe SetMembershipsController, type: :controller do
   let(:support) { create(:support) }
   let(:young_adult) { create(:membership, :young_adult) }
   let(:adult) { create(:membership, :adult) }
-  let(:reservation) { create(:reservation, :with_claim_from_user, membership: young_adult) }
+  let(:reservation) { create(:reservation, :with_user, membership: young_adult) }
 
   describe "#index" do
     subject(:get_index) do

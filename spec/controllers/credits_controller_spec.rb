@@ -24,7 +24,7 @@ RSpec.describe CreditsController, type: :controller do
   let(:reservation) do
     create(:reservation,
       :with_membership,
-      :with_claim_from_user,
+      :with_user,
       :instalment,
       instalment_paid: 0,
     )

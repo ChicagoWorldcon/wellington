@@ -37,7 +37,7 @@ RSpec.describe ChargeDescription do
     let(:charge) { create(:charge, reservation: unicorn_reservation) }
 
     let(:unicorn_reservation) do
-      create(:reservation, :with_claim_from_user, :instalment,
+      create(:reservation, :with_user, :instalment,
         membership_number: membership_number,
         membership: unicorn_membership,
         instalment_paid: 0,

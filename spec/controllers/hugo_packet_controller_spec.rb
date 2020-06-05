@@ -38,7 +38,7 @@ RSpec.describe HugoPacketController, type: :controller do
     end
 
     context "when logged in without voting rights" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+      let(:reservation) { create(:reservation, :with_user, membership: dublin) }
       before { sign_in(reservation.user) }
 
       it "redirects with error" do
@@ -48,7 +48,7 @@ RSpec.describe HugoPacketController, type: :controller do
     end
 
     context "when logged with voting rights but not paid" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult) }
+      let(:reservation) { create(:reservation, :with_user, :instalment, instalment_paid: 0, membership: adult) }
       before { sign_in(reservation.user) }
 
       it "redirects with error" do
@@ -58,7 +58,7 @@ RSpec.describe HugoPacketController, type: :controller do
     end
 
     context "when logged with voting rights" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+      let(:reservation) { create(:reservation, :with_user, membership: adult) }
       before { sign_in(reservation.user) }
 
       before do
@@ -87,7 +87,7 @@ RSpec.describe HugoPacketController, type: :controller do
       )
     end
 
-    let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+    let(:reservation) { create(:reservation, :with_user, membership: adult) }
     let(:user) { reservation.user }
     before { sign_in(user) }
 

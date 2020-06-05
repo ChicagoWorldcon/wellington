@@ -29,7 +29,7 @@ RSpec.describe Export::MembershipCsv do
     end
 
     context "with memberships" do
-      let!(:reservation) { create(:reservation, :with_claim_from_user, :with_membership) }
+      let!(:reservation) { create(:reservation, :with_user, :with_membership) }
 
       describe "the headings" do
         subject(:headings) { csv.first }

@@ -68,7 +68,7 @@ FactoryBot.define do
       end
     end
 
-    trait :with_claim_from_user do
+    trait :with_user do
       after(:build) do |new_reservation, _evaluator|
         new_claim = build(:claim, :with_user, :with_contact, reservation: new_reservation)
         new_reservation.claims << new_claim

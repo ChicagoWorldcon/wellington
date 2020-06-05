@@ -20,7 +20,7 @@ RSpec.describe ApplyCredit do
   let!(:adult_price) { Money.from_amount(400) }
   let!(:adult_membership) { create(:membership, :adult, price: adult_price) }
   let!(:reservation) do
-    create(:reservation, :instalment, :with_claim_from_user,
+    create(:reservation, :instalment, :with_user,
       membership: adult_membership,
       instalment_paid: 0,
     )

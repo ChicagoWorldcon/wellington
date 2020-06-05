@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe UpgradesController, type: :controller do
   let!(:silver_fern_membership) { create(:membership, :silver_fern) }
   let!(:adult_membership) { create(:membership, :adult) }
-  let!(:reservation) { create(:reservation, :with_claim_from_user, membership: silver_fern_membership) }
+  let!(:reservation) { create(:reservation, :with_user, membership: silver_fern_membership) }
   let!(:offer) { UpgradeOffer.new(from: silver_fern_membership, to: adult_membership) }
   let!(:user_pays_path) { new_reservation_charge_path(reservation) }
 

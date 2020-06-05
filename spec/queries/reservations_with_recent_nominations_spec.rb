@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe ReservationsWithRecentNominations do
   describe "#call" do
     subject(:call) { described_class.new.call }
-    let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
+    let(:reservation) { create(:reservation, :with_membership, :with_user) }
     let(:user) { reservation.user }
 
     it { is_expected.to_not be_present }

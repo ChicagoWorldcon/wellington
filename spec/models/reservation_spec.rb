@@ -42,7 +42,7 @@ RSpec.describe Reservation, type: :model do
   end
 
   context "with claim" do
-    subject(:model) { create(:reservation, :with_claim_from_user) }
+    subject(:model) { create(:reservation, :with_user) }
 
     it "has access ot the active claim" do
       expect(model.claims.active.count).to eq 1
@@ -69,7 +69,7 @@ RSpec.describe Reservation, type: :model do
   end
 
   describe "#has_paid_supporting?" do
-    subject(:model) { create(:reservation, :with_claim_from_user) }
+    subject(:model) { create(:reservation, :with_user) }
 
     it "isn't true without transactions" do
       expect(model).to_not have_paid_supporting

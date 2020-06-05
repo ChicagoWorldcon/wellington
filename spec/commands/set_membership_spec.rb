@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe SetMembership do
   let(:adult) { create(:membership, :adult) }
   let(:support) { create(:membership, :supporting) }
-  let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+  let(:reservation) { create(:reservation, :with_user, membership: adult) }
 
   let(:command) { described_class.new(reservation, to: support) }
 
@@ -42,7 +42,7 @@ RSpec.describe SetMembership do
     end
 
     context "when going to a larger membership" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, membership: support) }
+      let(:reservation) { create(:reservation, :with_user, membership: support) }
       let(:command) { described_class.new(reservation, to: adult) }
 
       it "sets membership to instalment" do
