@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe PlanTransfer do
-  let(:reservation)      { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
+  let(:reservation)      { create(:reservation, :with_claim_from_user, :with_membership) }
   let(:email_address) { Faker::Internet.email }
   subject(:query)     { described_class.new(reservation_id: reservation.id, new_owner: email_address) }
 

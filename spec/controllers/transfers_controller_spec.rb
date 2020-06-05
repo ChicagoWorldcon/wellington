@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe TransfersController, type: :controller do
   render_views
 
-  let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
+  let!(:reservation) { create(:reservation, :with_claim_from_user, :with_membership) }
   let!(:support) { create(:support) }
   let!(:old_user) { reservation.user }
   let!(:new_user) { create(:user) }

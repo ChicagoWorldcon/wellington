@@ -29,7 +29,7 @@ RSpec.describe Export::NominationCsv do
     end
 
     context "when there is a nomination" do
-      let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
+      let!(:reservation) { create(:reservation, :with_claim_from_user, :with_membership) }
       let!(:category) { create(:category) }
       let!(:nomination) { create(:nomination, reservation: reservation, category: category) }
 

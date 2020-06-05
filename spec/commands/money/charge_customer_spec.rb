@@ -29,7 +29,7 @@ RSpec.describe Money::ChargeCustomer do
 
   let(:reservation) do
     create(:reservation,
-      :with_order_against_membership,
+      :with_membership,
       :instalment,
       instalment_paid: 0,
       user: user

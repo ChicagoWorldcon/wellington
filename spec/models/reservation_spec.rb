@@ -29,7 +29,7 @@ RSpec.describe Reservation, type: :model do
   end
 
   context "with order" do
-    subject(:model) { create(:reservation, :with_order_against_membership) }
+    subject(:model) { create(:reservation, :with_membership) }
 
     it "has access to the active order" do
       expect(model.orders.active.count).to eq 1

@@ -25,7 +25,7 @@ RSpec.describe NominationsController, type: :controller do
   let!(:retro_hugo) { create(:election, :retro) }
   let!(:retro_best_novel) { create(:category, :retro_best_novel, election: retro_hugo) }
 
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
   let(:user) { reservation.user }
 
   # Reset dates after tests run
@@ -138,7 +138,7 @@ RSpec.describe NominationsController, type: :controller do
           let!(:reservation) do
             create(:reservation,
                    :instalment,
-                   :with_order_against_membership,
+                   :with_membership,
                    :with_claim_from_user,
                    instalment_paid: 0)
           end

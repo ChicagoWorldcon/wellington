@@ -22,7 +22,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     subject(:membership_right_description) { helper.membership_right_description(membership_right, reservation) }
     let(:election) { create(:election) }
     let(:election_name) { election.name.downcase }
-    let(:reservation) { create(:reservation, :with_order_against_membership) }
+    let(:reservation) { create(:reservation, :with_membership) }
 
     context "before nominations open" do
       let(:membership_right) { "rights.#{election_name}.nominate_soon" }

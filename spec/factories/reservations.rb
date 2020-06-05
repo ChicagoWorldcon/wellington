@@ -61,7 +61,7 @@ FactoryBot.define do
       end
     end
 
-    trait :with_order_against_membership do
+    trait :with_membership do
       after(:build) do |new_reservation, _evaluator|
         create(:order, :with_membership, reservation: new_reservation)
         new_reservation.reload

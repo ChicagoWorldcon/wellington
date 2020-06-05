@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe MemberNominationsByCategory do
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:reservation) { create(:reservation, :with_membership, :with_claim_from_user) }
 
   let!(:hugo) { create(:election) }
   let!(:retro_hugo) { create(:election, :retro) }

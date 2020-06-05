@@ -22,7 +22,7 @@ FactoryBot.define do
     # TODO make this the default, this is a required field
     trait :with_reservation do
       after(:build) do |claim, _evaluator|
-        claim.reservation = create(:reservation, :with_order_against_membership)
+        claim.reservation = create(:reservation, :with_membership)
       end
     end
 

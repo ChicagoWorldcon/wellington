@@ -25,7 +25,7 @@ RSpec.describe AmountOwedForReservation do
     subject(:amount_owed) { query.amount_owed }
 
     context "with no charges" do
-      let(:reservation) { create(:reservation, :with_order_against_membership) }
+      let(:reservation) { create(:reservation, :with_membership) }
       let(:membership) { reservation.membership }
 
       it { is_expected.to eq membership.price }

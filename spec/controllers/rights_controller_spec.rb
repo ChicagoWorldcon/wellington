@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe RightsController, type: :controller do
-  let(:reservation) { create(:reservation, :with_user, :with_order_against_membership) }
+  let(:reservation) { create(:reservation, :with_user, :with_membership) }
   let(:support) { create(:support) }
 
   describe "#create" do
