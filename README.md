@@ -683,7 +683,7 @@ To create a new OAuth integration:
     * **no attending memberships**: redirects to /reservations and asks them to upgrade
     * **not finished paying off their attending membership**: redirects to /reservations and asks them to complete payment
 5. If successful, the URL will contain a GET param with a `code`. When testing, this was set to<br>
-   https://oauthdebugger.com/debug?code=UlBRViaeX9270ZdGxfgocPZDzadkKxmUxHvB1gg1trs
+   https://oauthdebugger.com/debug?code=s0bIJdRlEMmUDKhqBCerFZUVsyHl0YtR8HHuIZ1V324
 6. Our 3rd party application now needs to verify this authorization code by POST to
    `/oauth/token`. This can be done using a vanilla form post, but you can also use
    JSON on the wire by setting the `Accept` and `Content-Type` headers on your request.
@@ -696,7 +696,7 @@ To create a new OAuth integration:
        "client_id": "pCXj_Rz8R2jzEsp4k_QzCW4RXMv8_H0w9mmJ07ctykg",
        "client_secret": "Sl52_GOvWDln1WZWIxXrg2JZWVYsSb49SuLm5odifNsa",
        "grant_type": "authorization_code",
-       "code": "UlBRViaeX9270ZdGxfgocPZDzadkKxmUxHvB1gg1trs",
+       "code": "s0bIJdRlEMmUDKhqBCerFZUVsyHl0YtR8HHuIZ1V324",
        "redirect_uri": "https://oauthdebugger.com/debug"
      }' | jq
    ```
@@ -704,6 +704,7 @@ To create a new OAuth integration:
    ```yaml
    {
      "access_token": "R7HXoMHkRrZU0Ufl2tc4PMNkCY3b5NHkMz69XpgKvak", # <-- token to be used for further queries
+     "refresh_token": "F1fRAHXoDUtSyT9_eIAeP_MtiuqjoHsAfdZTcaOY-og",
      "token_type": "Bearer",
      "expires_in": 7200,
      "scope": "read",
