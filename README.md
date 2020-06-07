@@ -1,21 +1,21 @@
 # Worldcon Members Management
 
-Kia ora and welcome to the [2020-wellington](https://gitlab.com/worldcon/2020-wellington) source code repository. This
+Kia ora and welcome to the [Wellington](https://gitlab.com/worldcon/wellington) source code repository. This
 site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) convention.
 
 What you'll find in this project is a series of compromises that we felt struck a balance with features and
 functionality. If you have an interest in making your convention or future conventions better do feel free to reach out
-by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be happy to talk it over.
+by [raising an issue](https://gitlab.com/worldcon/wellington/issues/new) and we'll be happy to talk it over.
 
-[![pipeline status](https://gitlab.com/worldcon/2020-wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
-[![coverage report](https://gitlab.com/worldcon/2020-wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/2020-wellington/commits/master)
+[![pipeline status](https://gitlab.com/worldcon/wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/wellington/commits/master)
+[![coverage report](https://gitlab.com/worldcon/wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/wellington/commits/master)
 
 # Changelog and Versioning
 
 All notable changes to this project will be documented in [our changelog](CHANGELOG.md).
 
 We maintain published docker images for this project in our
-[container registry](https://gitlab.com/worldcon/2020-wellington/container_registry). These track
+[container registry](https://gitlab.com/worldcon/wellington/container_registry). These track
 * all branches that ran through CI including master
 * all tags on the project which follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 * `:latest` tracks master which moves after things have gone through code review and basic testing
@@ -23,7 +23,7 @@ We maintain published docker images for this project in our
 
 # Contacting Us and Contributing
 
-You can contact us by [raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) in our tracker.
+You can contact us by [raising an issue](https://gitlab.com/worldcon/wellington/issues/new) in our tracker.
 
 If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
 team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
@@ -31,7 +31,7 @@ to respect our member's privacy and rights.
 
 If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
 
-We've got a [Good First Issue](https://gitlab.com/worldcon/2020-wellington/issues?label_name%5B%5D=Good+First+Issue)
+We've got a [Good First Issue](https://gitlab.com/worldcon/wellington/issues?label_name%5B%5D=Good+First+Issue)
 label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
 keen have a look at this list and leave comments on any you'd like to try.
 
@@ -54,7 +54,7 @@ the tools exist for Windows, but the commands will differ somewhat (A PR to
 update that would be welcome)
 
 If you run into troubles getting any of this working, ask for help by
-[raising an issue](https://gitlab.com/worldcon/2020-wellington/issues/new) and we'll be in touch!
+[raising an issue](https://gitlab.com/worldcon/wellington/issues/new) and we'll be in touch!
 
 From here onwards, we're assuming you're comfortable running commands in your console. These commands will create and install
 files on your machine.
@@ -101,7 +101,7 @@ clone button on your fork of this project.
 The command you run will end up looking something like this:
 
 ```sh
-git clone git@gitlab.com:worldcon/2020-wellington.git worldcon_members_area
+git clone git@gitlab.com:worldcon/wellington.git worldcon_members_area
 ```
 
 This will create a directory named `worldcon_members_area` which you should run all the following commands from.
@@ -306,10 +306,10 @@ from scratch.
 # Running in Production
 
 We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our
-[list of images](https://gitlab.com/worldcon/2020-wellington/container_registry)
+[list of images](https://gitlab.com/worldcon/wellington/container_registry)
 or just follow the `:latest` tag to get things that have gone through CI and code review.
 
-To see all versions available, check out our [container registry](https://gitlab.com/worldcon/2020-wellington/container_registry).
+To see all versions available, check out our [container registry](https://gitlab.com/worldcon/wellington/container_registry).
 Git tags move `:stable`, merged work that's passed review moves `:latest`.
 
 Below is an example setup which should get you most of the way towards a running instance.
@@ -367,7 +367,7 @@ services:
   production_web:
     env_file:
       production.env
-    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    image: registry.gitlab.com/worldcon/wellington:stable
     restart: always
     volumes:
       - type: tmpfs
@@ -375,7 +375,7 @@ services:
 
   production_worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:stable
+    image: registry.gitlab.com/worldcon/wellington:stable
     env_file:
       production.env
     restart: always
@@ -386,7 +386,7 @@ services:
   staging_web:
     env_file:
       staging.env
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     restart: always
     volumes:
       - type: tmpfs
@@ -394,7 +394,7 @@ services:
 
   staging_worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     env_file:
       production.env
     restart: always
@@ -486,7 +486,7 @@ Here's the basic recipe to load up a minimal conzealand produciton:
 
 ```
 # Run an interactive shell
-docker run --env-file=production.env registry.gitlab.com/worldcon/2020-wellington:latest /bin/sh
+docker run --env-file=production.env registry.gitlab.com/worldcon/wellington:latest /bin/sh
 
 # Create the database and load the schema
 bundle exec rake db:create db:structure:load
