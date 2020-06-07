@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ### Changed
-- Nothing significant in this release
+- Create documentation around classes in models, queries and commands folders
+  [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
+- Rename "2020-wellington" to just "wellington"
+  [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 
 ### Removed
 - Nothing significant in this release
