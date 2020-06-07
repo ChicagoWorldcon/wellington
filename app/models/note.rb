@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Note is a little piece of content to record against a user and is considered 'read only' by the system
+# New Note records are created for imported users or when commands like ApplyCredit or ApplyTransfer are called
 class Note < ApplicationRecord
   belongs_to :user
 

@@ -14,20 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#       User ---------,
-#      /   \           \
-#     /     \           ^
-#    ^       ^        Offer
-# Charge    Claim     v   v
-#    v       v       /     \
-#     \     /       /       \
-#      \   /    Product  Membership
-#   Reservation     \       /
-#         \          \     /
-#          \          ^   ^
-#           `--------< Order
-#
-# ClaimMembership takes a user and a membership and creates a claim and reservation for them.
+# ClaimMembership creates a relationship between a User and a Membership
+# It creates associated records and sets state to make those things active
+# See the models directory for what each of these things represents
+# If this does fail, it's going to 500 and roll back
 class ClaimMembership
   FIRST_MEMBERSHIP_NUMER = 100
 

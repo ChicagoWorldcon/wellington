@@ -186,6 +186,8 @@ HUGO_VOTING_OPEN_AT=2020-03-13T11:59:00-08:00
 HUGO_CLOSED_AT=2020-08-02T12:00:00+13:00
 
 # Instalment amounts for users to choose from
+# Note, min payment should cover whatever you set a Supporting membership to
+# Having a successful minimum payment unlocks nomination, voting, and hugo packet download
 # If not specified, defaults to $75 and $50
 INSTALMENT_MIN_PAYMENT_CENTS=7500
 INSTALMENT_PAYMENT_STEP_CENTS=5000

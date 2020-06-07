@@ -14,8 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Initially based off https://reg.discon3.org/reg/
+# DcContact represents a user's details as they enter them in their membership form
+# User is associated to DcContact through the Claim join table
+# Membership is associated to DcContact through the Reservation on Claim
+# This very tightly coupled to app/views/reservations/_dc_contact_form.html.erb
+# DcContact is created when a user creates a Reservation against a Membership
 class DcContact < ApplicationRecord
+  # Initially based off https://reg.discon3.org/reg/ <3
+
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"

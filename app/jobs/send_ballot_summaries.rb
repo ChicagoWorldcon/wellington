@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# SendBallotSummaries exists to tell a User when they've made Nomination records so they can be sure they've been saved
+# This is only sent when a User has a Nomination where it's #created_at is 10-30 mins older than Reservation#ballot_last_mailed_at
 class SendBallotSummaries
   include Sidekiq::Worker
 

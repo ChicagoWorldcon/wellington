@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
+# Export::CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
+# This SQL Server backs admin for the Hugo Nominations
 class Export::CategoriesToTds
   include ::Export::TdsClient
   include ActionView::Helpers::TextHelper

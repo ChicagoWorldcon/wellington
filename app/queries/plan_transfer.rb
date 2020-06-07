@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# PlanTransfer is here to capture information about a planned transfer
+# PlanTransfer is here to capture form information for a Support login to transfer a membership
 class PlanTransfer
   FORM_FALSE_VALUES = ["0", false, nil].freeze
 

@@ -15,7 +15,9 @@
 # limitations under the License.
 
 # Category represents a Hugo Award category
-# see http://www.thehugoawards.org/hugo-categories/
+# You can create Nomination or vote for a finalist in a category
+# Election divides categories up into groupings
+# see http://www.thehugoawards.org/hugo-categories/ for a full list of current categories
 class Category < ApplicationRecord
   belongs_to :election
   has_many :nominations

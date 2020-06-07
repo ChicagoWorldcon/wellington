@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ChicagoContact represents a user's details as they enter them in their membership form
+# User is associated to ChicagoContact through the Claim join table
+# Membership is associated to ChicagoContact through the Reservation on Claim
+# This very tightly coupled to app/views/reservations/_chicago_contact_form.html.erb
+# ChicagoContact is created when a user creates a Reservation against a Membership
 class ChicagoContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"

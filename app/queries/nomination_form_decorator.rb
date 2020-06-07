@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Utility methods in service of displaying a nomination on the Nominations form
+# NominationFormDecorator has utility methods to display a Nomination as a form
+# This helps primarily in layout of 1, 2 or 3 fields so it takes up the space without looking uncanny
 class NominationFormDecorator < SimpleDelegator
   attr_reader :nomination, :category
 

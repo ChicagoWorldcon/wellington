@@ -14,7 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# UpgradeOffer holds information about a membership upgrade at a price
+# UpgradeOffer is used for a User who is trying to upgrade between different membership types
+# This price is the difference between what the user has paid, and the Membership they're trying to set
+# e.g.
+# Silver Fern upgrading to Adult cost $50 on CoNZealand launch ($375 - $325 = $50)
+# But when prices rotated, upgrading to Adult cost $75 ($400 - $325 = $75)
 class UpgradeOffer
   attr_reader :from_membership, :to_membership
 
