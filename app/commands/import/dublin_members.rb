@@ -61,7 +61,7 @@ class Import::DublinMembers
       import_email = row["EMAIL"].downcase.strip
       import_user = User.find_or_create_by!(email: import_email)
       reservation = ClaimMembership.new(dublin_membership, customer: import_user).call
-      detail = Detail.new(
+      contact = ConzealandContact.new(
         claim: reservation.active_claim,
         first_name: row["FNAME"],
         last_name: row["LNAME"],
@@ -70,9 +70,9 @@ class Import::DublinMembers
         country: row["COUNTRY"],
         show_in_listings: false,
         share_with_future_worldcons: false,
-        publication_format: Detail::PAPERPUBS_ELECTRONIC,
+        publication_format: ConzealandContact::PAPERPUBS_ELECTRONIC,
       )
-      detail.as_import.save!
+      contact.as_import.save!
       import_user.notes.create!(content: "Dublin membership #{row["DUB#"]}")
       import_user.notes.create!(content: "#{description} row #{n}")
     end

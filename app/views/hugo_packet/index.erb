@@ -1,0 +1,95 @@
+<%#
+  Copyright 2020 Steven Ensslen
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<h1>Hugo Voter’s Packet 2020</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <p>
+          Welcome to the Hugo Voter’s Packet for 2020! While we know that you’re
+          excited to dive right into the materials, please take a moment to read
+          this brief introduction to the packet.
+        </p>
+
+        <p>
+          This download of materials from Hugo Award finalists is supplied free of
+          charge as a courtesy by the creators and publishers of works that are
+          nominated for the awards. The purpose is to allow those who are voting on
+          the Hugo Awards to be able to make an informed choice among the nominated
+          works. We are deeply appreciative of the publishers, authors, artists,
+          editors, and other creators who have generously provided their works to
+          this year’s Hugo Voter Packet. We also ask that you honour publishers’
+          and creators’ request that you reserve these copies for your personal use
+          only, and that you do not share these works with non-members of
+          CoNZealand.
+        </p>
+
+        <p>
+          We have divided the packet into categories for ease of downloading. Within
+          each category, each Finalist has their own folder that contains all of the
+          materials submitted. Sometimes, an individual finalist’s folder has further
+          sub-folders, but for the most part, we have tried to keep the nesting
+          folders to a minimum.
+        </p>
+
+        <p>
+          Some parts of the packet are quite large! Time your bandwidth usage
+          accordingly. Specifically, the Best Dramatic Presentation Short Form, Best
+          Related Work, Best Fancast, and Best Series folders are on the larger side.
+          Note that when you click on the link, the download will start
+          automatically.
+        </p>
+
+        <p>
+          The use of Net Galley widgets (a widget looks like a link) in our written
+          categories has increased this year. In each Table of Contents for the
+          categories, we have indicated when a work has a Net Galley widget. Net
+          Galley is a free service that allows you to download different copies of
+          a work. You must first register for an account and then come back to the
+          link in the packet and click on it to access the work. These links will
+          expire when voting closes. In one case (the Best Series submission for
+          Katherine Arden's Winternight trilogy) a further step is needed - the
+          publisher will make the material available only after you request it, via
+          the NetGalley widget provided.
+        </p>
+
+        <p>
+          Finally, we do have some materials in our Best Dramatic Presentation: Short
+          Form this year. Since we do not usually have materials submitted in this
+          category, we wanted to make sure that you check them out!
+        </p>
+
+        <p>
+          Happy reading everyone and remember to finalize your ballot choices by
+          July 15th. (Also, download your packet by then too! When voting closes,
+          the packet disappears into the ether.) If you have any problems with the
+          packet, please contact hugohelp@conzealand.nz.
+        </p>
+
+        <ul class="list-group text-dark">
+          <% @packets.select(&:downloadable?).each do |packet| %>
+            <li class="list-group-item">
+              <%= link_to(packet.file_name, hugo_packet_path(packet.file_name)) %>
+              (<%= packet.download_size %>)
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

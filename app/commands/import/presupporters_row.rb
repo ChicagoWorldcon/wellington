@@ -92,7 +92,7 @@ class Import::PresupportersRow
         return false
       end
 
-      details = Detail.new(
+      contact = ConzealandContact.new(
         claim:                            new_reservation.active_claim,
         import_key:                       cell_for("Import Key"),
         title:                            cell_for("Title"),
@@ -122,14 +122,14 @@ class Import::PresupportersRow
         updated_at:                       import_date,
       ).as_import
 
-      if !details.valid?
-        errors << details.errors.full_messages.to_sentence
+      if !contact.valid?
+        errors << contact.errors.full_messages.to_sentence
         return false
       end
 
       new_reservation.transaction do
         new_reservation.update!(state: Reservation::PAID)
-        details.save!
+        contact.save!
 
         new_user.notes.create!(content: comment)
         new_user.notes.create!(content: cell_for("Notes")) if cell_for("Notes").present?
@@ -172,13 +172,13 @@ class Import::PresupportersRow
 
   def preferred_publication_format
     if electronic_paperpubs? && mail_paperpubs?
-      Detail::PAPERPUBS_BOTH
+      ConzealandContact::PAPERPUBS_BOTH
     elsif electronic_paperpubs?
-      Detail::PAPERPUBS_ELECTRONIC
+      ConzealandContact::PAPERPUBS_ELECTRONIC
     elsif mail_paperpubs?
-      Detail::PAPERPUBS_MAIL
+      ConzealandContact::PAPERPUBS_MAIL
     else
-      Detail::PAPERPUBS_NONE
+      ConzealandContact::PAPERPUBS_NONE
     end
   end
 

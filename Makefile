@@ -15,16 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# default target - starts daemons and get running
+start: start-support-daemons
+	bundle exec rails server
+
 # starts daemon then tails logs
-start:
-	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
-	echo "Webserver starting on http://localhost:3000"
+start-support-daemons: stop-support-daemons
 	echo "Mailcatcher starting on http://localhost:1080"
-	docker-compose up # Create and start containers
+	docker-compose up -d # Create and start containers
+	rake dev:bootstrap
+
+stop-support-daemons:
+	docker-compose stop
 
 # stops application containers
-stop:
-	docker-compose stop
+stop: stop-daemon stop-support-daemons
+	echo "Stopped all services"
 
 # stops and removes all docker assets used by this application
 clean: stop
@@ -33,6 +39,8 @@ clean: stop
 # stops and removes assets built for the application, leaves base images intact
 reset: stop
 	docker-compose down --volumes --rmi local
+	docker-compose up -d
+	rake dev:bootstrap
 
 # tails logs of running application
 logs:
@@ -40,37 +48,59 @@ logs:
 
 # opens up a REPL that lets you run code in the project
 console:
-	docker-compose exec web bundle exec rails console
+	bundle exec rails console
 
 # open a databaes console so you can run SQL queries
 # e.g. SELECT * FROM users;
 sql:
 	docker-compose exec postgres psql -U postgres worldcon_development
 
-# lets you cd around and have a look at the project
-shell:
-	docker-compose exec web sh
-
-# Alias for people who have old habbits
-bash: shell
-
 # Tests only specs introduced on your current branch
 test_changes:
-	docker-compose exec web sh -c 'git diff origin/master... --name-only | grep '_spec' | ls | bundle exec rspec'
+	git diff origin/master... --name-only | grep '_spec' | ls | bundle exec rspec
 
 # Tests your setup, similar to CI
 test:
-	docker-compose exec web bundle exec rspec
-	docker-compose exec web rubocop
-	docker-compose exec web bundle exec rake test:branch:copyright
-	docker-compose exec web bundle update brakeman --quiet
-	docker-compose exec web bundle exec brakeman --run-all-checks --no-pager
-	docker-compose exec web bundle audit check --update
-	docker-compose exec web bundle exec ruby-audit check
+	bundle exec rspec
+	rubocop
+	rake test:branch:copyright
+	bundle update brakeman --quiet
+	bundle exec brakeman --run-all-checks --no-pager
+	bundle audit check --update
+	bundle exec ruby-audit check
 
-# builds, configures and starts application in the background
-daemon: stop
-	docker-compose build --pull # Build or rebuild services; Attempt to pull a newer version of the image
-	docker-compose up -d # Create and start containers
+# builds, configures and starts application in the background using tmux
+daemon: start-support-daemons
+	script/start-server-in-tmux.sh
 	echo "Webserver starting on http://localhost:3000"
 	echo "Mailcatcher starting on http://localhost:1080"
+
+stop-daemon:
+	script/stop-server-in-tmux.sh
+
+# Workflows speicifc to conzealand
+# Gives you a full environment, seeded database
+# Reset database by setting NAPALM=true in your .env
+conzealand-start:
+	docker-compose -f docker-compose-with-rails.yml up # Create and start containers
+
+# stops application containers
+conzealand-stop:
+	docker-compose -f docker-compose-with-rails.yml stop
+
+# stops and removes all docker assets used by this application
+conzealand-clean: stop
+	docker-compose -f docker-compose-with-rails.yml down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
+
+# opens up a REPL that lets you run code in the project
+conzealand-console:
+	docker-compose -f docker-compose-with-rails.yml exec web bundle exec rails console
+
+# open a databaes console so you can run SQL queries
+# e.g. SELECT * FROM users;
+conzealand-sql:
+	docker-compose -f docker-compose-with-rails.yml exec postgres psql -U postgres worldcon_development
+
+# lets you cd around and have a look at the project
+conzealand-bash:
+	docker-compose -f docker-compose-with-rails.yml exec web sh

@@ -20,14 +20,77 @@ if User.count > 0
   exit 1
 end
 
-FactoryBot.create(:membership, :chicago_donor)
-FactoryBot.create(:membership, :chicago_friend)
-FactoryBot.create(:membership, :chicago_star)
+puts "Running production seeds"
+require_relative "production.seeds.rb"
 
-# Create a default support user
-# http://localhost:3000/supports/sign_in
-Support.create(
+membership_distribution_averages = [
+  1,1,1,1,1,1,1,1,1,1, # 10/20 will be Individuals,
+  2,2,2,2,2,           # 5/20 will be Couples,
+  3,3,3,               # 3/20 will be Small families,
+  5,5,                 # 2/20 will be Families
+]
+
+
+all_memberships = Membership.all.to_a
+50.times do |count|
+  puts "Seeding #{count} of 50 users" if count % 5 == 0
+  new_user = FactoryBot.create(:user)
+  memberships_held = membership_distribution_averages.sample # <-- biased random number
+
+  all_memberships.sample(memberships_held).each do |rando_membership|
+    if rando_membership.price == 0
+      state = Reservation::PAID
+    else
+      state = [Reservation::PAID, Reservation::INSTALMENT].sample
+    end
+
+    FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
+  end
+
+  new_user.active_claims.each do |claim|
+    claim.update!(contact: FactoryBot.create(:chicago_contact, claim: claim))
+  end
+end
+
+puts "\nFinished creating users, try sign in with"
+puts "#{User.last.email}"
+
+support = Support.create(
   email: "support@worldcon.org",
   password: 111111,
   confirmed_at: Time.now,
 )
+puts
+puts "Support user created"
+puts "http://localhost:3000/supports/sign_in"
+puts "user: #{support.email}"
+puts "pass: 111111"
+puts
+
+hugo_admin = Support.create(
+  email: "hugoadmin@worldcon.org",
+  password: 111111,
+  confirmed_at: Time.now,
+  hugo_admin: true,
+)
+puts "Hugo admin created"
+puts "http://localhost:3000/supports/sign_in"
+puts "user: #{hugo_admin.email}"
+puts "pass: 111111"
+puts
+
+all_categories = Category.all.to_a
+nominators = Reservation.paid.joins(:membership).merge(Membership.with_nomination_rights).to_a
+
+nominators.each.with_index(1) do |reservation, count|
+  puts "Generated nominations for #{count}/#{nominators.count} members" if count % 5 == 0
+  sampled_categories = all_categories.sample(rand(0..all_categories.count))
+  sampled_categories.each do |sample_category|
+    rand(1..5).times do
+      FactoryBot.create(:nomination, reservation: reservation, category: sample_category)
+    end
+  end
+end
+
+# Avoid sending system emails for generated nominations
+Reservation.update_all(ballot_last_mailed_at: Time.now)

@@ -19,21 +19,43 @@ FactoryBot.define do
     active_from { 1.week.ago }
     created_at { 1.week.ago }
 
+    # TODO make this the default, this is a required field
     trait :with_reservation do
       after(:build) do |claim, _evaluator|
         claim.reservation = create(:reservation, :with_order_against_membership)
       end
     end
 
+    # TODO make this the default, this is a required field
     trait :with_user do
       after(:build) do |claim, _evaluator|
         claim.user = create(:user)
       end
     end
 
-    trait :with_detail do
-      after(:build) do |claim, _evaluator|
-        claim.detail = create(:detail)
+    trait :with_conzealand_contact do
+      after(:build) do |new_claim, _evaluator|
+        new_claim.conzealand_contact = create(:conzealand_contact, claim: new_claim)
+      end
+    end
+
+    trait :with_chicago_contact do
+      after(:build) do |new_claim, _evaluator|
+        new_claim.chicago_contact = create(:chicago_contact, claim: new_claim)
+      end
+    end
+
+    trait :with_dc_contact do
+      after(:build) do |new_claim, _evaluator|
+        new_claim.chicago_contact = create(:dc_contact, claim: new_claim)
+      end
+    end
+
+    trait :with_contact do
+      after(:build) do |new_claim, _evaluator|
+        new_claim.conzealand_contact = create(:conzealand_contact, claim: new_claim)
+        new_claim.chicago_contact = create(:chicago_contact, claim: new_claim)
+        new_claim.dc_contact = create(:dc_contact, claim: new_claim)
       end
     end
   end

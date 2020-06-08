@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class PlanTransfer
 
   attr_accessor :new_owner
   attr_accessor :reservation_id
-  attr_accessor :copy_details
+  attr_accessor :copy_contact
 
   validates :reservation_id, presence: true
   validates :new_owner, presence: true, format: Devise.email_regexp
@@ -40,12 +40,12 @@ class PlanTransfer
     User.find_or_create_by(email: new_owner)
   end
 
-  def detail
-    reservation.active_claim.detail
+  def contact
+    reservation.active_claim.contact
   end
 
   # Workaround, forms post 0 or 1 strings for checkboxes
-  def copy_details?
-    !copy_details.in?(FORM_FALSE_VALUES)
+  def copy_contact?
+    !copy_contact.in?(FORM_FALSE_VALUES)
   end
 end

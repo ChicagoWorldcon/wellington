@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@
 # limitations under the License.
 
 class ReservationsController < ApplicationController
+  include ThemeConcern
+
   before_action :lookup_reservation!, only: [:show, :update]
   before_action :lookup_offer, only: [:new, :create]
   before_action :setup_paperpubs, except: :index
@@ -25,13 +27,13 @@ class ReservationsController < ApplicationController
     if user_signed_in?
       @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
       @my_purcahses = @my_purcahses.joins(:membership)
-      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :detail)
+      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :contact)
     end
   end
 
   def new
     @reservation = Reservation.new
-    @detail = Detail.new
+    @contact = contact_model.new
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
@@ -41,26 +43,27 @@ class ReservationsController < ApplicationController
   end
 
   def show
-    @detail = @reservation.active_claim.detail || Detail.new
+    @contact = @reservation.active_claim.contact || contact_model.new
     @my_offer = MembershipOffer.new(@reservation.membership)
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
+    @rights_exhausted = RightsExhausted.new(@reservation).call
   end
 
   def create
     current_user.transaction do
-      @detail = Detail.new(params.require(:detail).permit(Detail::PERMITTED_PARAMS))
-      if !@detail.valid?
+      @contact = contact_model.new(contact_params)
+      if !@contact.valid?
         @reservation = Reservation.new
-        flash[:error] = @detail.errors.full_messages.to_sentence
+        flash[:error] = @contact.errors.full_messages.to_sentence
         render "/reservations/new"
         return
       end
 
       service = ClaimMembership.new(@my_offer.membership, customer: current_user)
       new_reservation = service.call
-      @detail.claim = new_reservation.active_claim
-      @detail.save!
+      @contact.claim = new_reservation.active_claim
+      @contact.save!
 
       flash[:notice] = %{
         Congratulations member ##{new_reservation.membership_number}!
@@ -77,17 +80,17 @@ class ReservationsController < ApplicationController
 
   def update
     @reservation.transaction do
-      current_details = @reservation.active_claim.detail
-      current_details ||= Detail.new(claim: @reservation.active_claim)
-      submitted_values = params.require(:detail).permit(Detail::PERMITTED_PARAMS)
-      if current_details.update(submitted_values)
-        flash[:notice] = "Details for #{current_details} member ##{@reservation.membership_number} have been updated"
+      current_contact = @reservation.active_claim.contact
+      current_contact ||= contact_model.new(claim: @reservation.active_claim)
+      submitted_values = contact_params
+      if current_contact.update(submitted_values)
+        flash[:notice] = "Details for #{current_contact} member ##{@reservation.membership_number} have been updated"
         redirect_to reservations_path
       else
-        @detail = @reservation.active_claim.detail || Detail.new
+        @contact = @reservation.active_claim.contact || contact_model.new
         @my_offer = MembershipOffer.new(@reservation.membership)
         @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
-        flash[:error] = current_details.errors.full_messages.to_sentence
+        flash[:error] = current_contact.errors.full_messages.to_sentence
         render "reservations/show"
       end
     end
@@ -107,6 +110,14 @@ class ReservationsController < ApplicationController
   end
 
   def setup_paperpubs
-    @paperpubs = Detail::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
+    @paperpubs = contact_model::PAPERPUBS_OPTIONS.map { |o| [o.humanize, o] }
+  end
+
+  def contact_params
+    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
+  end
+
+  def contact_model
+    Claim.contact_strategy
   end
 end

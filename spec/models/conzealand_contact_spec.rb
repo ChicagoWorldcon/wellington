@@ -16,14 +16,14 @@
 
 require "rails_helper"
 
-RSpec.describe Detail, type: :model do
-  TestDetail = Struct.new(:detail, :expected_output)
+RSpec.describe ConzealandContact, type: :model do
+  TestContact = Struct.new(:contact, :expected_output)
 
-  subject(:model) { create(:detail, :with_claim) }
+  subject(:model) { create(:conzealand_contact, :with_claim) }
   it { is_expected.to be_valid }
 
   it "is valid to miss out some fields when it's for import" do
-    model = build(:detail, :with_claim, country: nil, address_line_1: nil)
+    model = build(:conzealand_contact, :with_claim, country: nil, address_line_1: nil)
     expect(model).to_not be_valid
     expect(model.as_import).to be_valid
   end
@@ -31,26 +31,26 @@ RSpec.describe Detail, type: :model do
   describe "#to_s" do
     let(:tests) do
       [
-        TestDetail.new(
-          Detail.new(
+        TestContact.new(
+          described_class.new(
             first_name: "Spongebob",
             preferred_first_name: "Dr", preferred_last_name: "Who"
           ),
           "Dr Who",
         ),
-        TestDetail.new(
-          Detail.new(
+        TestContact.new(
+          described_class.new(
             first_name: "Spongebob",
             preferred_last_name: "Who?"
           ),
           "Who?",
         ),
-        TestDetail.new(
-          Detail.new(first_name: "Spongebob"),
+        TestContact.new(
+          described_class.new(first_name: "Spongebob"),
           "Spongebob",
         ),
-        TestDetail.new(
-          Detail.new(title: "Dr", first_name: "Spongebob", last_name: "Squarepants"),
+        TestContact.new(
+          described_class.new(title: "Dr", first_name: "Spongebob", last_name: "Squarepants"),
           "Dr Spongebob Squarepants",
         ),
       ]
@@ -58,7 +58,7 @@ RSpec.describe Detail, type: :model do
 
     it "uses firstname lastname if present, otherwise falls back to legal name" do
       tests.each do |test|
-        expect(test.detail.to_s).to eq(test.expected_output)
+        expect(test.contact.to_s).to eq(test.expected_output)
       end
     end
   end

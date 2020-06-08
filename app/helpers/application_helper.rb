@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 # limitations under the License.
 
 module ApplicationHelper
+  include ThemeConcern
+
   DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
 
   # The root page has an expanded menu
@@ -62,5 +64,9 @@ module ApplicationHelper
 
   def markdown
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+  end
+
+  def worldcon_contact_form
+    ApplicationHelper.theme_contact_form
   end
 end

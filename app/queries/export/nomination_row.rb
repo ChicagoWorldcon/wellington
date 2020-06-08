@@ -18,10 +18,7 @@
 class Export::NominationRow
   # JOINS describe fields needed to be preloaded on Nomination for speed
   # These are tied to the Nominations model
-  JOINS = [
-    # reservation: { active_claim: :detail },
-    reservation: :user
-  ].freeze
+  JOINS = [ reservation: :user ].freeze
 
   HEADINGS = %w[
     users.current_sign_in_ip
@@ -29,19 +26,19 @@ class Export::NominationRow
 
     users.current_sign_in_at
     users.last_sign_in_at
-    details.updated_at
+    contact.updated_at
     users.created_at
-    details.created_at
+    contact.created_at
     nominations.created_at
 
     reservations.membership_number
     users.email
     users.sign_in_count
-    details.preferred_first_name
-    details.preferred_last_name
-    details.title
-    details.first_name
-    details.last_name
+    contact.preferred_first_name
+    contact.preferred_last_name
+    contact.title
+    contact.first_name
+    contact.last_name
     categories.name
     nominations.field_1
     nominations.field_2
@@ -64,18 +61,18 @@ class Export::NominationRow
 
       user.current_sign_in_at,
       user.last_sign_in_at,
-      details.updated_at,
+      contact.updated_at,
       user.created_at,
-      details.created_at,
+      contact.created_at,
       nomination.created_at,
 
       reservation.membership_number,
       user.email,
-      details.preferred_first_name,
-      details.preferred_last_name,
-      details.title,
-      details.first_name,
-      details.last_name,
+      contact.preferred_first_name,
+      contact.preferred_last_name,
+      contact.title,
+      contact.first_name,
+      contact.last_name,
       nomination.category.name,
       nomination.field_1,
       nomination.field_2,
@@ -90,8 +87,8 @@ class Export::NominationRow
     nomination.reservation
   end
 
-  def details
-    reservation.active_claim.detail
+  def contact
+    reservation.active_claim.contact
   end
 
   def user

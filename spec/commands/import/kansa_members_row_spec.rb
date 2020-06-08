@@ -69,8 +69,8 @@ RSpec.describe Import::KansaMembersRow do
       expect(User.last.reservations).to eq(silver_fern.reservations)
     end
 
-    it "inserts detail rows" do
-      expect { command.call }.to change { Detail.count }.by(1)
+    it "inserts contact rows" do
+      expect { command.call }.to change { ConzealandContact.count }.by(1)
     end
 
     it "inserts notes rows" do
@@ -81,9 +81,9 @@ RSpec.describe Import::KansaMembersRow do
     it "sets first, middle and last name" do
       expect(Import::KansaNameSplitter).to receive(:new).and_call_original
       command.call
-      expect(Detail.last.title).to be_present
-      expect(Detail.last.first_name).to be_present
-      expect(Detail.last.last_name).to be_present
+      expect(ConzealandContact.last.title).to be_present
+      expect(ConzealandContact.last.first_name).to be_present
+      expect(ConzealandContact.last.last_name).to be_present
     end
 
     context "when charge is zero" do
@@ -134,7 +134,7 @@ RSpec.describe Import::KansaMembersRow do
       end
 
       it "set created_at on reservation dates based on spreadsheet" do
-        expect(Detail.last.created_at).to be < 1.week.ago
+        expect(ConzealandContact.last.created_at).to be < 1.week.ago
         expect(Order.last.created_at).to be < 1.week.ago
         expect(Charge.last.created_at).to be < 1.week.ago
         expect(Reservation.last.created_at).to be < 1.week.ago
@@ -152,8 +152,8 @@ RSpec.describe Import::KansaMembersRow do
       end
 
       it "sets share settings to false" do
-        expect(Detail.last.show_in_listings).to be false
-        expect(Detail.last.share_with_future_worldcons).to be false
+        expect(ConzealandContact.last.show_in_listings).to be false
+        expect(ConzealandContact.last.share_with_future_worldcons).to be false
       end
 
       context "when created_at is not set" do

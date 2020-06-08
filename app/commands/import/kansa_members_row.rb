@@ -86,7 +86,7 @@ class Import::KansaMembersRow
 
     name_splitter = Import::KansaNameSplitter.new(cell_for("Full name"))
 
-    details = Detail.new(
+    contact = ConzealandContact.new(
       claim:                            new_reservation.active_claim,
       title:                            name_splitter.title,
       first_name:                       name_splitter.first_name,
@@ -98,18 +98,18 @@ class Import::KansaMembersRow
       address_line_1:                   cell_for("Address Line1"),
       address_line_2:                   cell_for("Address Line2"),
       country:                          cell_for("Country"),
-      publication_format:               Detail::PAPERPUBS_ELECTRONIC,
+      publication_format:               ConzealandContact::PAPERPUBS_ELECTRONIC,
       created_at:                       import_date,
       updated_at:                       import_date,
     ).as_import
 
     # This should be opt in, people need to have seen the checkbox to have accepted these terms.
     # As this didn't exist in Kansa, we're setting it to false here. Forms going forward will have these set.
-    details[:show_in_listings] = false
-    details[:share_with_future_worldcons] = false
+    contact[:show_in_listings] = false
+    contact[:share_with_future_worldcons] = false
 
-    if !details.valid?
-      errors << details.errors.full_messages.to_sentence
+    if !contact.valid?
+      errors << contact.errors.full_messages.to_sentence
       return false
     end
 
@@ -125,7 +125,7 @@ class Import::KansaMembersRow
         new_reservation.update!(state: Reservation::PAID)
       end
 
-      details.save!
+      contact.save!
       new_reservation.update!(created_at: import_date, updated_at: import_date)
       new_reservation.charges.reload.update_all(created_at: import_date, updated_at: import_date)
       new_reservation.orders.reload.update_all(created_at: import_date, updated_at: import_date, active_from: import_date)

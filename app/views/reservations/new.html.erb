@@ -1,7 +1,7 @@
 <%#
   Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
+  Copyright 2020 Matthew B. Gray
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -29,14 +29,14 @@
     </div>
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <% if user_signed_in? %>
-          <h2>Reserve a New Membership</h2>
-          <%= form_for(@reservation) do |form| %>
-            <%= render "detail_form", reservation_form: form %>
-          <% end %>
-        <% else %>
+        <% if !user_signed_in? %>
           <h2>Sign in to Reserve Membership</h2>
           <%= render "sign_in_notice" %>
+        <% else %>
+          <h2>Reserve a New Membership</h2>
+          <%= form_for(@reservation) do |form| %>
+            <%= render worldcon_contact_form, reservation_form: form %>
+          <% end %>
         <% end %>
       </div>
     </div>

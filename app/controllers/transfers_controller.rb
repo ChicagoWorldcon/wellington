@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ class TransfersController < ApplicationController
 
   def new
     @reservation = Reservation.find(params[:reservation_id])
-    @detail = @reservation.active_claim.detail
+    @contact = @reservation.active_claim.contact
   end
 
   def show
@@ -47,14 +47,14 @@ class TransfersController < ApplicationController
     puts "Got to Transfers: update"
 
     current_support.transaction do
-      owner_detail = @transfer.detail
+      owner_contact = @transfer.copy_contact
 
       service = ApplyTransfer.new(
         @transfer.reservation,
         from: @transfer.from_user,
         to: @transfer.to_user,
         audit_by: current_support.email,
-        copy_details: @transfer.copy_details?,
+        copy_contact: @transfer.copy_contact?,
       )
       new_claim = service.call
       if !new_claim
@@ -66,7 +66,7 @@ class TransfersController < ApplicationController
       MembershipMailer.transfer(
         from: @transfer.from_user.email,
         to: @transfer.to_user.email,
-        owner_name: owner_detail&.to_s,
+        owner_name: owner_contact&.to_s,
         membership_number: @transfer.reservation.membership_number,
       ).deliver_later
 
@@ -85,7 +85,7 @@ class TransfersController < ApplicationController
     @transfer = PlanTransfer.new(
       new_owner: params[:id],
       reservation_id: params[:reservation_id],
-      copy_details: params.dig("plan_transfer", "copy_details"),
+      copy_contact: params.dig("plan_transfer", "copy_contact"),
     )
 
     if !@transfer.valid?

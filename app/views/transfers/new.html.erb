@@ -1,5 +1,5 @@
 <%#
-  Copyright 2019 Matthew B. Gray
+  Copyright 2020 Matthew B. Gray
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,8 +19,17 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
+<<<<<<< HEAD
+=======
+        <h2>
+          From
+          <%= @contact %>
+          &lt;<%= @reservation.user.email %>&gt;
+        </h2>
+
+>>>>>>> master
         <p>
-          This process will send email to <%= @detail || @reservation.user.email %> and the new email address.
+          This process will send email to <%= @contact || @reservation.user.email %> and the new email address.
         </p>
       </div>
 
@@ -58,10 +67,10 @@
             <th>Membership Details</th>
           </thead>
           <tbody>
-            <%= User.eager_load(active_claims: :detail).find_each do |user| %>
+            <%= User.eager_load(active_claims: :contact).find_each do |user| %>
               <tr>
                 <td><%= link_to user.email, reservation_transfer_path(user.email, reservation_id: @reservation)  %></td>
-                <td><%= user.active_claims.map(&:detail).map(&:to_s).to_sentence %></td>
+                <td><%= user.active_claims.map(&:contact).map(&:to_s).to_sentence %></td>
               </p>
             <% end %>
           </tbody>

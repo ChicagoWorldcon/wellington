@@ -40,7 +40,7 @@ all_memberships = Membership.all.to_a
 50.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
-  memberships_held = membership_distribution_averages.sample # <-- biased sample
+  memberships_held = membership_distribution_averages.sample # <-- biased random number
 
   all_memberships.sample(memberships_held).each do |rando_membership|
     if rando_membership.price == 0
@@ -53,7 +53,7 @@ all_memberships = Membership.all.to_a
   end
 
   new_user.active_claims.each do |claim|
-    claim.update!(detail: FactoryBot.create(:detail, claim: claim))
+    claim.update!(contact: FactoryBot.create(:conzealand_contact, claim: claim))
   end
 end
 

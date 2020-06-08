@@ -29,7 +29,7 @@ class MembershipMailerPreview < ActionMailer::Preview
     MembershipMailer.transfer(
       from: Faker::Internet.email,
       to: Faker::Internet.email,
-      owner_name: reservation.active_claim.detail.to_s,
+      owner_name: reservation.active_claim.conzealand_contact.to_s,
       membership_number: reservation.membership_number,
     )
   end

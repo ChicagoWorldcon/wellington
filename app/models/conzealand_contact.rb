@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Detail < ApplicationRecord
+class ConzealandContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"
