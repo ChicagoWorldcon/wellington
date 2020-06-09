@@ -117,11 +117,11 @@ project-local directories. Put this in the `.envrc` in the
 `worldcon_members_area` directory:
 
 ```sh
-# set up a local ruby GEM_HOME
-layout ruby
-
 # provide rbenv aliases in the project
 use rbenv
+
+# set up a local ruby GEM_HOME
+layout ruby
 
 # for some bonkers reason, GEM_PATH doesn't include the new GEM_HOME
 path_add GEM_PATH $GEM_HOME
