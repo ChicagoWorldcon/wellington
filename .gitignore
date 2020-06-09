@@ -23,6 +23,7 @@
 
 .env*
 /.bundle
+/.direnv
 /log/*
 /tmp/*
 /node_modules
