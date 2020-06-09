@@ -28,7 +28,7 @@ RSpec.describe TransfersController, type: :controller do
     { reservation_id: reservation.id }
   end
 
-  let(:show_update_params) do
+  let(:show_create_update_params) do
     {
       id: new_user.email,
       reservation_id: reservation.id,
@@ -54,7 +54,7 @@ RSpec.describe TransfersController, type: :controller do
 
   describe "#show" do
     it "bounces you if you're not logged in as support" do
-      get :show, params: show_update_params
+      get :show, params: show_create_update_params
       expect(response).to redirect_to(new_support_session_path)
     end
 
@@ -62,16 +62,39 @@ RSpec.describe TransfersController, type: :controller do
       before { sign_in(support) }
 
       it "renders" do
-        get :show, params: show_update_params
+        get :show, params: show_create_update_params
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(old_user.email)
+      end
+
+    end
+  end
+
+  describe "#create" do
+    it "bounces you if you're not logged in as support" do
+      get :create, params: show_create_update_params
+      expect(response).to redirect_to(new_support_session_path)
+    end
+
+    context "when signed in as support" do
+      before { sign_in(support) }
+
+      it "renders" do
+        get :create, params: show_create_update_params
+        expect(response).to have_http_status(:ok)
+        expect(response).to include(old_user.email)
+      end
+
+      it "redirects to the update path" do
+        get :create, params: show_create_update_params
+        expect(response).to redirect_to(reservation_transfer_path)
       end
     end
   end
 
   describe "#update" do
     before { sign_in(support) }
-    subject(:update_reservation_transfer) { patch(:update, params: show_update_params) }
+    subject(:update_reservation_transfer) { patch(:update, params: show_create_update_params) }
 
     context "when there aren't errors" do
       before do
@@ -93,7 +116,7 @@ RSpec.describe TransfersController, type: :controller do
       end
 
       context "when #copy_contat is set" do
-        let(:show_update_params) do
+        let(:show_create_update_params) do
           {
             id: new_user.email,
             reservation_id: reservation.id,

@@ -19,15 +19,6 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
-<<<<<<< HEAD
-=======
-        <h2>
-          From
-          <%= @contact %>
-          &lt;<%= @reservation.user.email %>&gt;
-        </h2>
-
->>>>>>> master
         <p>
           This process will send email to <%= @contact || @reservation.user.email %> and the new email address.
         </p>
@@ -39,7 +30,7 @@
         </h2>
         <h4>
           <%= @detail %>
-          &lt;<%= @reservation.user.email %>&gt;
+          <%= @reservation.user.email %>
         </h4>
         </div>
 

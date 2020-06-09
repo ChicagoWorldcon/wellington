@@ -15,7 +15,6 @@
 # limitations under the License.
 
 #
-require 'pry'
 
 class TransfersController < ApplicationController
   helper ReservationsHelper
