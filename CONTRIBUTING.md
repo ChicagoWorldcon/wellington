@@ -57,36 +57,8 @@ This project is distributed under the Apache license. We do this because it's an
 our work without worrying about legal liability, patient infringement and other stuff that gets in the way of writing
 code for our convention.
 
-To do this, we need to maintain some boilerplate text in our files.
-
 New contributors should add their name to the [LICENSE](LICENSE) file in the root of this project, and the
-[README.md](README.md). Try put your name in alphabetical order, and mention the current year.
+[README.md](README.md). Try put your name in alphabetical order, and you can mention the year you started contributing,
+or the current one, as suits you.
 
-Where there are multiple authors please try keep them sorted by year, then alphabetically.
-
-If you're creating a new file in this project, please add the following boilerplate comment in the top to declare the
-licence that file is under:
-
-> Copyright [year] [author name]
->
-> Licensed under the Apache License, Version 2.0 (the "License");
-> you may not use this file except in compliance with the License.
-> You may obtain a copy of the License at
->
->   http://www.apache.org/licenses/LICENSE-2.0
->
-> Unless required by applicable law or agreed to in writing, software
-> distributed under the License is distributed on an "AS IS" BASIS,
-> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-> See the License for the specific language governing permissions and
-> limitations under the License.
-
-There are CI scripts running to ensure that the license header is in place in all relevant files. To verify this locally, you can run these commands:
-
-```
-# For docker developers
-docker-compose exec -T members_area bundle exec rake test:branch:copyright
-
-# For system ruby developers
-bundle exec rake test:branch:copyright
-```
+In addition,
