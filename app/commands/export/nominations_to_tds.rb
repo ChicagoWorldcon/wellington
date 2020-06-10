@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NominationsToTds takes nominations made and pushes them up to Dave's nominations SQL Server setup
+# Export::NominationsToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
+# This SQL Server backs admin for the Hugo Nominations
 class Export::NominationsToTds
   include ::Export::TdsClient
 

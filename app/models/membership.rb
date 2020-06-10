@@ -14,6 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Membership represents present and histircal records for types of membership
+# Reservation is associated with a Membership through Order
+# User is associated with a Membership through Reservation
+# Membership records are displayed for purchase from the MembershipsController when they're 'active'
+# Membership may also be associated to a user on import or when a Support user uses the SetMembership class
+# Cycling prices means you may have 4 Adult memberships, but it's likely only 1 will be active at a time
+# Membership holds rights such as attendance, site selection, nomination and voting
+# Membership types that were never available for purchase can be made by setting active_from and active_to to the same time in the past, e.g. dublin_2019
 class Membership < ApplicationRecord
   include ActiveScopes
 
@@ -41,6 +49,8 @@ class Membership < ApplicationRecord
     name.humanize
   end
 
+  # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
+  # So we created new active Membership records at the same price
   # These match i18n values set in config/locales
   def all_rights
     [].tap do |rights|

@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Used in 2020 for importing Presupporters from a spreadsheet
+# Can be nuked or adapted as it is no longer required
 class Import::PresupportersRow
   HEADINGS = [
     "Timestamp",

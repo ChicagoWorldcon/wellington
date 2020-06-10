@@ -14,9 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# An Election represents a set of categories, nominations and balots
-# If you make 2 elections, they are treated as separate types of nomination and voting in our system
-# An example of this would be Hugo Awards and Retro Hugo awards
+# Election represents a grouping of categories, nominations and balots depending on your con requirements.
+# For instance, 'retro hugo' and 'hugo' are two groupings you could use to show two entirely separate pages for nomination and voting.
+# And will route to Nominations for a Reservation tucked into the URL, e.g. https://members.conzealand.nz/reservations/123/nominations/retro_hugo
+# i18n_key is used in those URL paths, i.e. a record with retro_hugo exists in 2020
+# i18n_key is used to toggle the link displayed in from app/views/application/_reservation_card.html.erb
+# Configure display of i18n values from config/locales/en.yml
 class Election < ApplicationRecord
   has_many :categories
 

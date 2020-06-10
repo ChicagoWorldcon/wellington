@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# PaymentAmountOptions is used to restrict the instalment amounts available to a User when paying for a Reservation
+# It's configurable in your env via INSTALMENT_MIN_PAYMENT_CENTS and INSTALMENT_PAYMENT_STEP_CENTS
 class PaymentAmountOptions
   MIN_PAYMENT = Money.new(ENV["INSTALMENT_MIN_PAYMENT_CENTS"] || 75_00)
   PAYMENT_STEP = Money.new(ENV["INSTALMENT_PAYMENT_STEP_CENTS"] || 50_00)

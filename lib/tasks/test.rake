@@ -59,7 +59,7 @@ namespace :test do
         puts "This project is distributed under an Apache licence"
         puts "We need clear attribution in order to be able to accept work from other people"
         puts "For more information, please check out our contribution guidelines"
-        puts "https://gitlab.com/worldcon/2020-wellington/blob/master/CONTRIBUTING.md"
+        puts "https://gitlab.com/worldcon/wellington/blob/master/CONTRIBUTING.md"
         puts
 
         errors.each do |error|

@@ -41,7 +41,7 @@ services:
 
   mail:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     ports:
       - "1080:1080"
       - "1025:1025"

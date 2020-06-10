@@ -9,15 +9,15 @@ few guidelines that we need our contributors to follow so that we can have a cha
 ## Getting started: Forking the project
 
 1. Make sure you have a [Gitlab account](https://gitlab.com/users/sign_in#register-pane)
-2. Check the [list of issues](https://gitlab.com/worldcon/2020-wellington/issues) to see if there's already a
+2. Check the [list of issues](https://gitlab.com/worldcon/wellington/issues) to see if there's already a
    conversation about your feature/bug
-3. If there's nothing there, [raise a new issue](https://gitlab.com/worldcon/2020-wellington/issues/new) with the
+3. If there's nothing there, [raise a new issue](https://gitlab.com/worldcon/wellington/issues/new) with the
    as much detail as you can, including
     - a clear description of the issue,
     - when it is a bug, steps to reproduce the behaviour,
     - information about the  application version and operating system,
     - note, a ticket is not necessary for trivial changes.
-4. [Fork the project](https://gitlab.com/worldcon/2020-wellington/forks/new) on Gitlab, make changes if you can or just
+4. [Fork the project](https://gitlab.com/worldcon/wellington/forks/new) on Gitlab, make changes if you can or just
    a test if you can't.
 
 ## Making changes: Committing and sharing
@@ -40,7 +40,7 @@ few guidelines that we need our contributors to follow so that we can have a cha
   [for rubocop](https://docs.rubocop.org/en/latest/integration_with_other_tools/)
   and [for eslint](https://eslint.org/docs/user-guide/integrations)
   for quick feedback as you work.
-* [Mention any issues](https://gitlab.com/worldcon/2020-wellington/issues) relating to your change in your commit
+* [Mention any issues](https://gitlab.com/worldcon/wellington/issues) relating to your change in your commit
   messages. For example
   ```
   issue #1: Rework guide, move OSX specific instructions into it's own file

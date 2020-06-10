@@ -16,6 +16,8 @@
 
 require "csv"
 
+# Import::DublinMembers takes a CSV provided by Dublin in 2020 for import into CoNZealand
+# Can be adapted or removed, no longer in use
 class Import::DublinMembers
   HEADINGS = [
     "eligibility",
