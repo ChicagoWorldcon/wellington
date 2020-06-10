@@ -15,6 +15,8 @@
 # limitations under the License.
 
 #
+require 'pry'
+
 class TransfersController < ApplicationController
   helper ReservationsHelper
 
@@ -27,9 +29,23 @@ class TransfersController < ApplicationController
   end
 
   def show
+    puts "Got to Transfers: show"
+  end
+
+  def create
+    puts "Got to Transfers: create"
+    email = params[:email]
+    resID = params[:reservation_id]
+    puts email
+    puts resID
+    @reservation = Reservation.find(params[:reservation_id])
+    redirect_to reservation_transfer_path(params[:email], reservation_id: @reservation)
   end
 
   def update
+
+    puts "Got to Transfers: update"
+
     current_support.transaction do
       owner_contact = @transfer.copy_contact
 
