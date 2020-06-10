@@ -35,34 +35,44 @@ class FinalistsController < ApplicationController
   end
 
   def update
-    pry
-    builder = MemberVotingByCategory.new(categories: ordered_categories_for_election, reservation: @reservation)
-    builder.from_params(params)
-    builder.save
 
-    if hugo_admin_signed_in?
-      @reservation.user.notes.create!(
-        content: %{
-          Voting form updated by hugo admin #{current_support.email}
-          on behalf of member ##{@reservation.membership_number}
-        }.strip_heredoc
-      )
+    if ! params[:category].respond_to? :each then
+      categories = params[:category]
+    else
+      categories = [ params[:category] ]
     end
 
-    @category = Category.find(params[:category_id])
-    @nominations_by_category = builder.nominations_by_category
-
-    if request.xhr?
-      category_decorator = CategoryFormDecorator.new(@category, @nominations_by_category[@category])
-      render json: {
-        updated_heading: category_decorator.heading,
-        updated_classes: category_decorator.accordion_classes,
-      }
-      return
+    votes = []
+    categories.each do |cat|
+      votes += cat[:finalists]
     end
 
-    # Render happens if someone hits the "submit all" button
-    render "nominations/show"
+    vote_finalists = []
+    votes.each do |vote|
+      vote_finalists << vote[:id]
+    end
+
+    @reservation.transaction do
+      existing_votes = @reservation.ranks.where(finalist: vote_finalists)
+      existing_votes.destroy_all
+
+      votes.each do |vote|
+        @reservation.ranks << Rank.new(
+          position: vote[:rank],
+          reservation_id: @reservation[:id],
+          finalist_id: vote[:id]
+        )
+      end
+
+      if hugo_admin_signed_in?
+        @reservation.user.notes.create!(
+          content: %{
+            Voting form updated by hugo admin #{current_support.email}
+            on behalf of member ##{@reservation.membership_number}
+          }.strip_heredoc
+        )
+      end
+    end
   end
 
   private
@@ -120,5 +130,9 @@ class FinalistsController < ApplicationController
       flash[:notice] = "Can't vote when signed in as support"
       redirect_to @reservation
     end
+  end
+
+  def ordered_categories_for_election
+    @election.categories.order(:order, :id)
   end
 end

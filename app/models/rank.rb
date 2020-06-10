@@ -18,7 +18,7 @@ class Rank < ApplicationRecord
   belongs_to :finalist
   belongs_to :reservation
 
-  validate :position_unique_in_category
+  # validate :position_unique_in_category
 
   validates :finalist, uniqueness: { scope: :reservation }
   validates :position, presence: true
