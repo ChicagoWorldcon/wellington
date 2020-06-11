@@ -648,5 +648,6 @@ file distributed with this project.
 - Copyright 2019 Steven C Hartley
 - Copyright 2020 Matthew B. Gray
 - Copyright 2020 Steven Ensslen
+- Copyright 2020 Victoria Garcia
 
 We are so grateful to all our contributors for helping us make this project great.
