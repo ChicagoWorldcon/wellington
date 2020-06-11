@@ -21,6 +21,7 @@ RSpec.describe TransfersController, type: :controller do
 
   let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
   let!(:support) { create(:support) }
+  let(:user) { create(:user) }
   let!(:old_user) { reservation.user }
   let!(:new_user) { create(:user) }
 
@@ -69,6 +70,32 @@ RSpec.describe TransfersController, type: :controller do
     end
   end
 
+  describe "#create" do
+    subject(:post_create) do
+      post :create, params: { email: new_user.email,
+      reservation_id: reservation.id }
+    end
+
+    it "bounces you if you're not logged in" do
+      post_create
+      expect(response).to redirect_to(new_support_session_path)
+    end
+
+    it "bounces you if you're signed in as non-support" do
+      sign_in(user)
+      post_create
+      expect(response).to redirect_to(new_support_session_path)
+    end
+
+    context "when signed in as support" do
+      before { sign_in(support) }
+      it "redirects" do
+        post_create
+        expect(response).to have_http_status(:found)
+      end
+    end
+  end
+
   describe "#update" do
     before { sign_in(support) }
     subject(:update_reservation_transfer) { patch(:update, params: show_update_params) }
@@ -87,12 +114,12 @@ RSpec.describe TransfersController, type: :controller do
           .to(new_user)
       end
 
-      it "doens't copy contact" do
+      it "doesn't copy contact" do
         expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.conzealand_contact }
         expect(new_user.reload.claims.last.conzealand_contact).to be_nil
       end
 
-      context "when #copy_contat is set" do
+      context "when #copy_contact is set" do
         let(:show_update_params) do
           {
             id: new_user.email,
