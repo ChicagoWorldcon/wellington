@@ -15,30 +15,36 @@
 # GlueSync takes a user and gives you the information you need to sync to
 # Glue for the Virtual Worldcon in 2020
 class GlueSync
-  attr_reader :user
+  attr_reader :user, :remote_user
 
-  def initialize(user)
+  def initialize(user, remote_user: {})
     @user = user
+    @remote_user = remote_user
   end
 
   def call
     {
       id: user.id.to_s,
       email: user.email,
+      roles: roles,
       name: "",
       display_name: "",
-      roles: roles,
     }
   end
 
   private
 
   def roles
+    roles = remote_user[:roles]
+    roles = [] unless roles.kind_of?(Array)
+
     if paid_attending_reservations.any?
-      ["video"]
+      roles << "video"
     else
-      []
+      roles.delete("video")
     end
+
+    roles.uniq
   end
 
   def paid_attending_reservations

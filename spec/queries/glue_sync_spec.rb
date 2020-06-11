@@ -55,5 +55,32 @@ RSpec.describe GlueSync do
         expect(call[:roles]).to include("video")
       end
     end
+
+    context "with rights from other systems" do
+      subject(:call) { described_class.new(user, remote_user: from_glue).call }
+
+      let(:from_glue) do
+        {
+          id: user.id.to_s,
+          email: user.email,
+          name: "Harry Potter",
+          display_name: "Catalonian Fireball slayer",
+          roles: ["moderator"],
+        }
+      end
+
+      it "keeps the remote roles" do
+        expect(call[:roles]).to include("moderator")
+      end
+
+      it "doesn't add video without attending membership" do
+        expect(call[:roles]).to_not include("video")
+      end
+
+      it "adds video when attending membership present" do
+        create(:reservation, membership: adult, user: user)
+        expect(call[:roles]).to include("video")
+      end
+    end
   end
 end
