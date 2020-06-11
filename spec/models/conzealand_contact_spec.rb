@@ -62,4 +62,19 @@ RSpec.describe ConzealandContact, type: :model do
       end
     end
   end
+
+  describe "#badge_display" do
+    it "combines badge title and subtitle if present" do
+      expect(described_class.new(badge_title: "excellent").badge_display).to eq "excellent"
+      expect(described_class.new(badge_subtitle: "excellent").badge_display).to eq "excellent"
+
+      model = described_class.new(badge_title: "excellent", badge_subtitle: "sausage")
+      expect(model.badge_display).to eq "excellent: sausage"
+    end
+
+    it "uses display name if badge title and subtitle not present" do
+      model = build(:conzealand_contact, badge_title: "", badge_subtitle: "")
+      expect(model.badge_display).to eq(model.to_s)
+    end
+  end
 end

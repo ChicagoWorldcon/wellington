@@ -92,6 +92,15 @@ class ConzealandContact < ApplicationRecord
     "#{title} #{first_name} #{last_name}".strip
   end
 
+  def badge_display
+    badge_attrs = [badge_title, badge_subtitle].reject(&:blank?)
+    if badge_attrs.any?
+      badge_attrs.join(": ")
+    else
+      to_s # fall back on name
+    end
+  end
+
   def playful_nickname
     if fun_badge_title?
       "#{nickname} (psst, we know it's really you #{badge_title.humanize})"
