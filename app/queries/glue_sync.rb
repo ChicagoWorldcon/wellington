@@ -27,8 +27,8 @@ class GlueSync
       id: user.id.to_s,
       email: user.email,
       roles: roles,
-      name: "",
-      display_name: "",
+      name: preferred_contact.to_s,
+      display_name: preferred_contact.badge_display,
     }
   end
 
@@ -45,6 +45,19 @@ class GlueSync
     end
 
     roles.uniq
+  end
+
+  def preferred_contact
+    return @preferred_contact if @preferred_contact.present?
+
+    attending_contacts = ConzealandContact.joins(claim: :reservation).where(
+      reservations: {
+        id: paid_attending_reservations
+      }
+    )
+
+    earliest_contact = attending_contacts.order("reservations.created_at").first
+    @preferred_contact = earliest_contact || ConzealandContact.new
   end
 
   def paid_attending_reservations

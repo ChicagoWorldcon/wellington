@@ -49,10 +49,30 @@ RSpec.describe GlueSync do
     end
 
     context "with paid attending membership" do
-      before { create(:reservation, membership: adult, user: user) }
+      let!(:reservation) { create(:reservation, membership: adult, user: user) }
 
       it "includes the video role" do
         expect(call[:roles]).to include("video")
+      end
+
+      it "leaves the names blank when contact information is missing" do
+        expect(call[:name]).to be_blank
+      end
+
+      # This is a CNZ only requirement. Get in touch if you need this integration
+      it "uses the conzealand_contact details on the member" do
+        conzealand_contact = create(:conzealand_contact, claim: reservation.active_claim)
+        expect(call[:name]).to eq(conzealand_contact.to_s)
+        expect(call[:display_name]).to eq(conzealand_contact.badge_display)
+      end
+
+      # This happens when we integrate data from other systems so we just do our best
+      it "leaves the names blank when record is invalid" do
+        conzealand_contact = create(:conzealand_contact, claim: reservation.active_claim)
+        conzealand_contact.update_column(:country, nil)
+        expect(conzealand_contact.reload).to_not be_valid
+        expect(call[:name]).to eq(conzealand_contact.to_s)
+        expect(call[:display_name]).to eq(conzealand_contact.badge_display)
       end
     end
 
