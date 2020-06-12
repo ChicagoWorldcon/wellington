@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# GlueSync takes a user and gives you the information you need to sync to
+# GlueContact takes a user and gives you the information you need to sync to
 # Glue for the Virtual Worldcon in 2020
-class GlueSync
+class GlueContact
   attr_reader :user, :remote_user
 
   def initialize(user, remote_user: {})

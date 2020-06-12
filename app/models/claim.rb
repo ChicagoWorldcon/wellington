@@ -42,6 +42,6 @@ class Claim < ApplicationRecord
   after_commit :sync_with_glue
   def sync_with_glue
     return unless Claim.contact_strategy == ConzealandContact
-    GlueSync.new(user).call
+    GlueContact.new(user).call
   end
 end

@@ -162,14 +162,14 @@ RSpec.describe Claim, type: :model do
       create(:claim, :with_user, :with_reservation)
     end
 
-    it "dosn't call to GlueSync outside of conzealand" do
+    it "dosn't call to GlueContact outside of conzealand" do
       Rails.configuration.contact_model = "dc"
-      expect(GlueSync).to_not receive(:new)
+      expect(GlueContact).to_not receive(:new)
     end
 
     it "gets called when conzealand" do
       Rails.configuration.contact_model = "conzealand"
-      expect(GlueSync)
+      expect(GlueContact)
         .to receive_message_chain(:new, :call)
         .and_return({})
     end
