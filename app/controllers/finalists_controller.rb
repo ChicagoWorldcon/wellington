@@ -21,7 +21,9 @@ class FinalistsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
   before_action :lookup_election!
-  # before_action :lookup_legal_name_or_redirect
+
+  # TODO: Figure out why this works for the nominations controller but not here
+  #before_action :lookup_legal_name_or_redirect
 
   def show
     respond_to do |format|

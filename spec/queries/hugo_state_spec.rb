@@ -64,7 +64,7 @@ RSpec.describe HugoState do
     before do
       $nomination_opens_at = 2.days.ago
       $voting_opens_at = 1.day.ago
-      $hugo_closed_at = Time.now
+      $hugo_closed_at = 1.minute.ago
     end
 
     it { is_expected.to_not have_nominations_opened }

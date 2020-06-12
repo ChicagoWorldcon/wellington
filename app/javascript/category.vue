@@ -23,12 +23,12 @@
         :ranks="ranks"
       />
     </ul>
-    <v-btn
+    <button
       v-on:click="save(category)"
       v-bind:key="category.id"
       :disabled="saved"
       class="btn"
-    >Vote for {{ category.name }}</v-btn>
+    >Vote for {{ category.name }}</button>
   </div>
 </template>
 
@@ -38,7 +38,7 @@ import Finalist from "./finalist.vue";
 export default {
   props: ["category"],
   data: {
-    saved: true
+    saved: true,
   },
   computed: {
     ranks: ({ category }) => {
@@ -68,8 +68,9 @@ export default {
         method: "PUT",
         headers: { "Content-Type": "application/json" }
       }).then(() => {
-        this.saved = true;
+        console.log('save complete')
       });
+      this.saved = true;
     }
   }
 };
