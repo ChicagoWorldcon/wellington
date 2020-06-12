@@ -18,6 +18,11 @@ class Claim < ApplicationRecord
   include ActiveScopes
   include ThemeConcern
 
+  # Configure the way we save user details based on configuration for this con
+  def self.contact_strategy
+    theme_contact_class
+  end
+
   belongs_to :user
   belongs_to :reservation
 
@@ -25,19 +30,12 @@ class Claim < ApplicationRecord
   has_one :conzealand_contact
   has_one :chicago_contact
   has_one :dc_contact
+  has_one :contact, class_name: theme_contact_class.to_s
 
-  validates :reservation, uniqueness: {
-    conditions: -> { active } # There can't be other active claims against the same reservation
-  }, if: :active?
+  # There can't be other active claims against the same reservation
+  validates :reservation, uniqueness: { conditions: -> { active } }, if: :active?
 
   def transferable?
     active_to.nil?
   end
-
-  # Configure the model strategy depending on configuration.
-  def self.contact_strategy
-    theme_contact_class
-  end
-
-  has_one :contact, class_name: contact_strategy.to_s
 end
