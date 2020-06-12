@@ -28,6 +28,7 @@
 /node_modules
 /yarn-error.log
 .byebug_history
+.vscode/*
 
 # Timings per spec, good for debugging slow specs
 spec/examples.txt

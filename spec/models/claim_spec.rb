@@ -152,4 +152,26 @@ RSpec.describe Claim, type: :model do
       expect(existing_claim).to be_valid
     end
   end
+
+  # If this is failing
+  # And CoNZealand is no longer running
+  # Please feel free to backspace this entire block
+  context "after #sync_with_glue called" do
+    after do
+      # it's an after_commit hook, so executes after save
+      create(:claim, :with_user, :with_reservation)
+    end
+
+    it "dosn't call to GlueSync outside of conzealand" do
+      Rails.configuration.contact_model = "dc"
+      expect(GlueSync).to_not receive(:new)
+    end
+
+    it "gets called when conzealand" do
+      Rails.configuration.contact_model = "conzealand"
+      expect(GlueSync)
+        .to receive_message_chain(:new, :call)
+        .and_return({})
+    end
+  end
 end
