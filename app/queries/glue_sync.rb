@@ -47,6 +47,8 @@ class GlueSync
     roles.uniq
   end
 
+  # This is a CNZ only requirement. Get in touch if you need this integration
+  # Or just rework it to
   def preferred_contact
     return @preferred_contact if @preferred_contact.present?
 
