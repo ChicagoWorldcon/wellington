@@ -38,7 +38,7 @@ class GlueSync
     roles = remote_user[:roles]
     roles = [] unless roles.kind_of?(Array)
 
-    if paid_attending_reservations.any?
+    if my_attending_reservations.any?
       roles << "video"
     else
       roles.delete("video")
@@ -50,17 +50,14 @@ class GlueSync
   def preferred_contact
     return @preferred_contact if @preferred_contact.present?
 
-    attending_contacts = ConzealandContact.joins(claim: :reservation).where(
-      reservations: {
-        id: paid_attending_reservations
-      }
-    )
-
-    earliest_contact = attending_contacts.order("reservations.created_at").first
+    contacts = ConzealandContact.joins(claim: :reservation)
+    my_attending_contacts = contacts.where(reservations: { id: my_attending_reservations })
+    earliest_contact = my_attending_contacts.order("reservations.created_at").first
     @preferred_contact = earliest_contact || ConzealandContact.new
   end
 
-  def paid_attending_reservations
-    Reservation.paid.joins(:membership).merge(Membership.can_attend)
+  def my_attending_reservations
+    my_reservations = Reservation.paid.joins(:membership, :user).where(users: {id: user})
+    my_reservations.merge(Membership.can_attend).merge(Claim.active)
   end
 end
