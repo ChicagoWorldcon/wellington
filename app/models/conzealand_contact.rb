@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
