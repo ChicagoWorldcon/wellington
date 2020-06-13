@@ -26,7 +26,6 @@
     <button
       v-on:click="save(category)"
       v-bind:key="category.id"
-      :disabled="saved"
       class="btn"
     >Vote for {{ category.name }}</button>
   </div>
@@ -38,7 +37,7 @@ import Finalist from "./finalist.vue";
 export default {
   props: ["category"],
   data: {
-    saved: true,
+    unsaved: false,
   },
   computed: {
     ranks: ({ category }) => {
@@ -56,10 +55,12 @@ export default {
       .then(data => {
         this.category = data;
       });
-    this.saved = true;
+    this.unsaved = false;
+    console.log(this)
   },
   updated() {
-    this.saved = false;
+    this.unsaved = true;
+    console.log(this)
   },
   methods: {
     save: category => {
@@ -67,10 +68,9 @@ export default {
         body: JSON.stringify({ category: category }),
         method: "PUT",
         headers: { "Content-Type": "application/json" }
-      }).then(() => {
-        console.log('save complete')
       });
-      this.saved = true;
+      category.unsaved = false;
+      console.log(category)
     }
   }
 };
