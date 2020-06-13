@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/2020-wellington/compare/2.5.1...master)
 
 ### Added
-- Nothing significant in this release
+- Integration into The Fantasy Network for 2020 Virtual Worldcon
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+  Add this to you env
+  ```
+  GLUE_BASE_URL=https://api.thefantasy.network/v1
+  GLUE_AUTHORIZATION_HEADER=
+  ```
 
 ### Changed
 - Nothing significant in this release
