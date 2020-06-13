@@ -16,7 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'sidekiq/testing/inline'
+# If redis not present, then just do this inline
+if ENV["SIDEKIQ_REDIS_URL"].nil?
+  require 'sidekiq/testing/inline'
+end
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
