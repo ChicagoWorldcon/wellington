@@ -19,6 +19,12 @@ require "net/http"
 class GlueSync
   include Sidekiq::Worker
 
+  def self.all_users
+    User.find_each do |user|
+      perform_async(user.email)
+    end
+  end
+
   def perform(email)
     user = User.find_by!(email: email)
     remote_user = get_remote_user(email)

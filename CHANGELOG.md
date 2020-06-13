@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   GLUE_BASE_URL=https://api.thefantasy.network/v1
   GLUE_AUTHORIZATION_HEADER=
   ```
+  Full sync with
+  ```ruby
+  GlueSync.all_users
+  ```
 
 ### Changed
 - Nothing significant in this release
