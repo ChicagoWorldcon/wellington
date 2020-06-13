@@ -15,14 +15,14 @@
 
 require "rails_helper"
 
-RSpec.describe GlueSync, type: :job do
+RSpec.describe GlooSync, type: :job do
   subject(:job) { described_class.new }
   let(:user) { create(:user) }
   let(:adult) { create(:membership, :adult) }
 
   before do
-    ENV["GLUE_BASE_URL"] = "https://apitemp.thefantasy.network/v1"
-    ENV["GLUE_AUTHORIZATION_HEADER"] = "let_me_in_please"
+    ENV["GLOO_BASE_URL"] = "https://apitemp.thefantasy.network/v1"
+    ENV["GLOO_AUTHORIZATION_HEADER"] = "let_me_in_please"
   end
 
   let(:lookup_user_found) do

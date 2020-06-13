@@ -15,8 +15,8 @@
 
 require "net/http"
 
-# GlueSync sends users to Gloo
-class GlueSync
+# GlooSync sends users to Gloo
+class GlooSync
   include Sidekiq::Worker
 
   def self.all_users
@@ -28,7 +28,7 @@ class GlueSync
   def perform(email)
     user = User.find_by!(email: email)
     remote_user = get_remote_user(email)
-    updated_remote_user = GlueContact.new(user, remote_user: remote_user).call
+    updated_remote_user = GlooContact.new(user, remote_user: remote_user).call
     post(users_url, updated_remote_user.to_json)
   end
 
@@ -64,14 +64,14 @@ class GlueSync
     # e.g. "https://api.thefantasy.network/v1/users"
     # e.g. "https://api.thefantasy.network/v1/users/super@man.net"
     # e.g. "https://api.thefantasy.network/v1/users/super@man.net/roles"
-    url_parts = [ENV.fetch("GLUE_BASE_URL"), "users"] + resources
+    url_parts = [ENV.fetch("GLOO_BASE_URL"), "users"] + resources
     url_parts.join("/")
   end
 
   def standard_headers
     {
       "Content-Type" => "application/json",
-      "Authorization" => ENV.fetch("GLUE_AUTHORIZATION_HEADER"),
+      "Authorization" => ENV.fetch("GLOO_AUTHORIZATION_HEADER"),
     }
   end
 end

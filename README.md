@@ -217,8 +217,8 @@ SIDEKIQ_NO_PASSWORD=true
 # AWS_SECRET_ACCESS_KEY=FROM_STEP_4
 
 # Uncomment this if you're CoNZealand and need a virtual worldcon <3
-# GLUE_BASE_URL=https://api.thefantasy.network/v1
-# GLUE_AUTHORIZATION_HEADER=eix1iesa0Shohw1oowoocei0foox4Phij3Dimoa
+# GLOO_BASE_URL=https://api.thefantasy.network/v1
+# GLOO_AUTHORIZATION_HEADER=eix1iesa0Shohw1oowoocei0foox4Phij3Dimoa
 
 # Uncomment to reset database on start up, good for switching branches when patches are present
 # NAPALM=true

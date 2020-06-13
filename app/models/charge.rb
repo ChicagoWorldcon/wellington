@@ -60,11 +60,11 @@ class Charge < ApplicationRecord
   end
 
   # Sync when payments are made as this may mean a user can now attend
-  after_commit :sync_with_glue
-  def sync_with_glue
+  after_commit :sync_with_gloo
+  def sync_with_gloo
     return unless Claim.contact_strategy == ConzealandContact
-    return unless ENV["GLUE_BASE_URL"].present?
+    return unless ENV["GLOO_BASE_URL"].present?
     return unless successful?
-    GlueSync.perform_async(user.email)
+    GlooSync.perform_async(user.email)
   end
 end

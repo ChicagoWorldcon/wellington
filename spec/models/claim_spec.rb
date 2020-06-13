@@ -156,28 +156,28 @@ RSpec.describe Claim, type: :model do
   # If this is failing
   # And CoNZealand is no longer running
   # Please feel free to backspace this entire block
-  context "after #sync_with_glue called" do
+  context "after #sync_with_gloo called" do
     after do
       # it's an after_commit hook, so executes after save
       create(:claim, :with_user, :with_reservation)
     end
 
-    it "dosn't call GlueSync outside of conzealand" do
+    it "dosn't call GlooSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"
-      ENV["GLUE_BASE_URL"] = "https://api.thefantasy.network/v1"
-      expect(GlueSync).to_not receive(:perform_async)
+      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlooSync).to_not receive(:perform_async)
     end
 
-    it "doesn't call GlueSync when not configured" do
+    it "doesn't call GlooSync when not configured" do
       Rails.configuration.contact_model = "conzealand"
-      ENV["GLUE_BASE_URL"] = nil
-      expect(GlueSync).to_not receive(:perform_async)
+      ENV["GLOO_BASE_URL"] = nil
+      expect(GlooSync).to_not receive(:perform_async)
     end
 
     it "calls when confgured in conzealand" do
       Rails.configuration.contact_model = "conzealand"
-      ENV["GLUE_BASE_URL"] = "https://api.thefantasy.network/v1"
-      expect(GlueSync).to receive(:perform_async)
+      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlooSync).to receive(:perform_async)
     end
   end
 end

@@ -14,7 +14,7 @@
 
 require "rails_helper"
 
-RSpec.describe GlueContact do
+RSpec.describe GlooContact do
   let(:supporting) { create(:membership, :supporting) }
   let(:adult) { create(:membership, :adult) }
   let(:user) { create(:user) }
@@ -77,9 +77,9 @@ RSpec.describe GlueContact do
     end
 
     context "with rights from other systems" do
-      subject(:call) { described_class.new(user, remote_user: from_glue).call }
+      subject(:call) { described_class.new(user, remote_user: from_gloo).call }
 
-      let(:from_glue) do
+      let(:from_gloo) do
         {
           id: user.id.to_s,
           email: user.email,
@@ -110,17 +110,17 @@ RSpec.describe GlueContact do
       early_bird_reservation = create(:reservation, user: user, created_at: 365.days.ago, membership: adult)
       create(:conzealand_contact, first_name: "early bird price", claim: early_bird_reservation.active_claim)
 
-      result = GlueContact.new(user).call
+      result = GlooContact.new(user).call
       expect(result[:display_name]).to match(/early bird price/)
       expect(result[:roles]).to include("video")
 
       ApplyTransfer.new(early_bird_reservation, from: user, to: create(:user), audit_by: "agile squirrel").call
-      result = GlueContact.new(user.reload).call
+      result = GlooContact.new(user.reload).call
       expect(result[:display_name]).to match(/last minute decision/)
       expect(result[:roles]).to include("video")
 
       ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
-      result = GlueContact.new(user.reload).call
+      result = GlooContact.new(user.reload).call
       expect(result[:display_name]).to be_empty
       expect(result[:roles]).to be_empty
     end

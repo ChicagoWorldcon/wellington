@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# GlueContact takes a user and gives you the information you need to sync to
-# Glue for the Virtual Worldcon in 2020
-class GlueContact
+# GlooContact takes a user and gives you the information you need to sync to Gloo for the Virtual Worldcon in 2020
+class GlooContact
   attr_reader :user, :remote_user
 
   def initialize(user, remote_user: {})

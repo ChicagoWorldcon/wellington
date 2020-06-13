@@ -40,10 +40,10 @@ class Claim < ApplicationRecord
   end
 
   # Sync when claim changes as transfers can cause users to loose or gain attending rights
-  after_commit :sync_with_glue
-  def sync_with_glue
+  after_commit :sync_with_gloo
+  def sync_with_gloo
     return unless Claim.contact_strategy == ConzealandContact
-    return unless ENV["GLUE_BASE_URL"].present?
-    GlueSync.perform_async(user.email)
+    return unless ENV["GLOO_BASE_URL"].present?
+    GlooSync.perform_async(user.email)
   end
 end
