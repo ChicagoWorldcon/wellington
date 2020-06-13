@@ -162,16 +162,22 @@ RSpec.describe Claim, type: :model do
       create(:claim, :with_user, :with_reservation)
     end
 
-    it "dosn't call to GlueContact outside of conzealand" do
+    it "dosn't call GlueSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"
-      expect(GlueContact).to_not receive(:new)
+      ENV["GLUE_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlueSync).to_not receive(:perform_async)
     end
 
-    it "gets called when conzealand" do
+    it "doesn't call GlueSync when not configured" do
       Rails.configuration.contact_model = "conzealand"
-      expect(GlueContact)
-        .to receive_message_chain(:new, :call)
-        .and_return({})
+      ENV["GLUE_BASE_URL"] = nil
+      expect(GlueSync).to_not receive(:perform_async)
+    end
+
+    it "calls when confgured in conzealand" do
+      Rails.configuration.contact_model = "conzealand"
+      ENV["GLUE_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlueSync).to receive(:perform_async)
     end
   end
 end

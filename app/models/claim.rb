@@ -38,10 +38,12 @@ class Claim < ApplicationRecord
   def transferable?
     active_to.nil?
   end
-  
+
+  # Sync when claim changes as transfers can cause users to loose or gain attending rights
   after_commit :sync_with_glue
   def sync_with_glue
     return unless Claim.contact_strategy == ConzealandContact
-    GlueContact.new(user).call
+    return unless ENV["GLUE_BASE_URL"].present?
+    GlueSync.perform_async(user.email)
   end
 end

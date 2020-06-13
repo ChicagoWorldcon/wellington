@@ -17,11 +17,19 @@
 class Order < ApplicationRecord
   include ActiveScopes
 
-  validates :membership, presence: true
-  validates :reservation, presence: true, uniqueness: {
-    conditions: -> { active } # There can't be other active orders against the same reservation
-  }, if: :active?
-
   belongs_to :membership
   belongs_to :reservation
+
+  # There can't be other active orders against the same reservation
+  validates :reservation, presence: true, uniqueness: { conditions: -> { active } }, if: :active?
+
+  # Sync when order changes as upgrades can cause users to loose or gain attending rights
+  after_commit :sync_with_glue
+  def sync_with_glue
+    return unless Claim.contact_strategy == ConzealandContact
+    return unless ENV["GLUE_BASE_URL"].present?
+    user = reservation.user
+    return unless user.present?
+    GlueSync.perform_async(user.email)
+  end
 end
