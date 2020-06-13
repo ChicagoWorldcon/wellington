@@ -157,10 +157,11 @@ RSpec.describe Claim, type: :model do
   # And CoNZealand is no longer running
   # Please feel free to backspace this entire block
   context "after #sync_with_gloo called" do
-    after do
-      # it's an after_commit hook, so executes after save
-      create(:claim, :with_user, :with_reservation)
-    end
+    # it's an after_commit hook, so executes after save
+    after { create(:claim, :with_user, :with_reservation) }
+
+    # Tidy up after this spec
+    after { ENV["GLOO_BASE_URL"] = nil }
 
     it "dosn't call GlooSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"

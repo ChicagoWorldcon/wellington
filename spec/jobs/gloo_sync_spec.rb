@@ -25,6 +25,9 @@ RSpec.describe GlooSync, type: :job do
     ENV["GLOO_AUTHORIZATION_HEADER"] = "let_me_in_please"
   end
 
+  # Tidy up after this spec
+  after { ENV["GLOO_BASE_URL"] = nil }
+
   let(:lookup_user_found) do
     instance_double(HTTParty::Response,
       code: 200,

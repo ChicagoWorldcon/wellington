@@ -28,6 +28,9 @@ RSpec.describe Charge, type: :model do
     # it's an after_commit hook, so executes after save
     after { create(:charge) }
 
+    # Tidy up after this spec
+    after { ENV["GLOO_BASE_URL"] = nil }
+
     it "dosn't call GlooSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"
       ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"

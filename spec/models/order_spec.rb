@@ -89,6 +89,9 @@ RSpec.describe Order, type: :model do
       create(:order, :with_membership, reservation: reservation)
     end
 
+    # Tidy up after this spec
+    after { ENV["GLOO_BASE_URL"] = nil }
+
     it "dosn't call GlooSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"
       ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
