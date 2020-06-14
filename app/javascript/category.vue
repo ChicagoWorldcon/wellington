@@ -20,6 +20,7 @@
         v-for="finalist in category.finalists"
         :key="finalist.id"
         :finalist="finalist"
+        :disabled="unsaved"
         :ranks="ranks"
       />
     </ul>
@@ -32,47 +33,48 @@
 </template>
 
 <script>
-import Finalist from "./finalist.vue";
+import Finalist from './finalist.vue';
 
 export default {
-  props: ["category"],
-  data: {
-    unsaved: false,
+  props: ['category'],
+  data() {
+    return {
+      unsaved: false,
+    };
   },
   computed: {
     ranks: ({ category }) => {
-      const ranks = category.finalists.map(finalist => finalist.rank);
+      const ranks = category.finalists.map((finalist) => finalist.rank);
       return ranks
-        .filter(r => !!r)
-        .map(r => parseInt(r, 10))
+        .filter((r) => !!r)
+        .map((r) => parseInt(r, 10))
         .sort();
-    }
+    },
   },
   components: { Finalist },
   mounted() {
-    fetch("categories")
-      .then(response => response.json())
-      .then(data => {
+    fetch('categories')
+      .then((response) => response.json())
+      .then((data) => {
         this.category = data;
       });
     this.unsaved = false;
-    console.log(this)
   },
   updated() {
     this.unsaved = true;
-    console.log(this)
   },
   methods: {
-    save: category => {
-      fetch("", {
-        body: JSON.stringify({ category: category }),
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
+    save: (category) => {
+      fetch('', {
+        body: JSON.stringify({ category }),
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
       });
-      category.unsaved = false;
-      console.log(category)
-    }
-  }
+      // Work around mutating arguements "no-param-reassign"
+      const categoryRef = category;
+      categoryRef.unsaved = false;
+    },
+  },
 };
 </script>
 
