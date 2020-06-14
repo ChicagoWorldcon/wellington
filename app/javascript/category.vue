@@ -14,7 +14,7 @@
 
 <template>
   <div class="category-component">
-    <p>{{ category.name }}</p>
+    <h2>{{ category.name }}</h2>
     <ul class="list-group list-group-flush text-dark">
       <finalist
         v-for="finalist in category.finalists"
