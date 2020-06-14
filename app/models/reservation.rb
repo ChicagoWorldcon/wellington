@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Reservation represents a person who holds a membership
+# Reservations have unique "membership_numbers" given out in ascending order
+# People are associated to Reservation through Claim which is a join table to User
+# Membership details like display name are associated to Reservation through Order which is a join table to Membership
 class Reservation < ApplicationRecord
   PAID = "paid"
   DISABLED = "disabled"
@@ -31,7 +35,11 @@ class Reservation < ApplicationRecord
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
 
+  # Displayed like "Adult membership #42" is based on #membership_number and Membership#name
   validates :membership_number, presence: true, uniqueness: true
+
+  # Successful charges are used exclusively when determining if a reservation is instalment or paid, and how much is owed
+  # This state is set by commands such as ClaimMembership when price is 0, all importers and ApplyCredit
   validates :state, presence: true, inclusion: [PAID, INSTALMENT, DISABLED]
 
   scope :disabled, -> { where(state: DISABLED) }

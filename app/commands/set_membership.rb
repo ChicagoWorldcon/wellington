@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# SetMembership is a Support user function, used to set a membership to any level and evaluate if it's been paid off yet
+# If this does fail, it's going to 500 and roll back
 class SetMembership
   attr_reader :reservation, :to_membership, :audit_by
 

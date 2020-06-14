@@ -38,7 +38,7 @@ services:
 
   web:
     entrypoint: "script/docker_web_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     depends_on:
       - postgres
       - redis
@@ -55,7 +55,7 @@ services:
 
   worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     depends_on:
       - web
       - postgres
@@ -71,7 +71,7 @@ services:
 
   mail:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"
-    image: registry.gitlab.com/worldcon/2020-wellington:latest
+    image: registry.gitlab.com/worldcon/wellington:latest
     depends_on:
       - web
       - worker

@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# MembershipOffer is a representation of how to display a price of a Membership to a User
+# MembershipOffer#options generates what's displayed in the shop based on Membership#active records
+# MembershipOffer is used in ReservationsController to display prices, but also to check if an offer is available
+# see also SetMembership
 class MembershipOffer
   attr_reader :membership
 

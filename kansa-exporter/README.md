@@ -1,6 +1,6 @@
 # Kansa Exporter
 
-Exports a Kansa `api` database for importing into https://gitlab.com/worldcon/2020-wellington
+Exports a Kansa `api` database for importing into https://gitlab.com/worldcon/wellington
 
 
 ## Run

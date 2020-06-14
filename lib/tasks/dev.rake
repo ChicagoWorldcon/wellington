@@ -35,7 +35,7 @@ namespace :dev do
     # Push branch, check out where we were and delete branch
     current_branch = `git rev-parse --abbrev-ref HEAD`.chomp
     puts "Dependencies updated. Open a MR with this link:"
-    puts "https://gitlab.com/worldcon/2020-wellington/merge_requests/new?merge_request[source_branch]=#{current_branch}&merge_request[force_remove_source_branch]=true"
+    puts "https://gitlab.com/worldcon/wellington/merge_requests/new?merge_request[source_branch]=#{current_branch}&merge_request[force_remove_source_branch]=true"
   end
 
   namespace :setup do

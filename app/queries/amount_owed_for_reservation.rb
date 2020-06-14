@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# AmountOwedForReservation compares successful Charge records on the Reservation to the cost of a Membership
 class AmountOwedForReservation
   attr_reader :reservation
 

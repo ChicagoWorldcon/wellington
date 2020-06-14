@@ -14,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ChargeDescription gives a description based on the state of the charge taking into account the time of the charge.
-# The goal is that you may retrospectively create these descriptions.
+# ChargeDescription gives a description based on the state of the charge taking into account the time of the charge
+# The goal is that you may build desciptions based on the history of charges against a reservation
+# And to create a Charge#description with a hat tip to previous charge records
+# And so that accountants get really nice text in reports
 class ChargeDescription
   include ActionView::Helpers::NumberHelper
 

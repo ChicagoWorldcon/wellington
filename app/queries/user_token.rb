@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Token is an ActiveModel and isn't stored but is rather used to represent token based authentication
-# See https://guides.rubyonrails.org/active_model_basics.html
-
-# TODO Consider reworking this as a devise model based on database_authenticatable
+# UserToken is a class use for validation and representation of actions on the UserTokensController
+# It's useful for form logic and validation
 class UserToken
+  # Consider reworking this as a devise model based on database_authenticatable
+
   include ActiveModel::Model
   include ActiveModel::Validations::Callbacks
 

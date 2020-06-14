@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Stripe::SyncCustomers goes through all customers in Stripe and associates a stripe customer with a User in conzealand
+# was extracted from sync_customers_spec to get good test coverage for confidence in mass updates to stripe records in prod
+# we needed this to be accurate as users could see these udpates
+# and because the accountant in 2020 wanted payments in a different format for reporting
 class Stripe::SyncCustomers
   def call
     Stripe::Customer.list.auto_paging_each do |stripe_customer|

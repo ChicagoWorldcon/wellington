@@ -15,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ConzealandContact represents a user's details as they enter them in their membership form
+# User is associated to ConzealandContact through the Claim join table
+# Membership is associated to ConzealandContact through the Reservation on Claim
+# This very tightly coupled to app/views/reservations/_conzealand_contact_form.html.erb
+# ConzealandContact is created when a user creates a Reservation against a Membership
 class ConzealandContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
