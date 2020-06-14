@@ -77,4 +77,37 @@ RSpec.describe ConzealandContact, type: :model do
       expect(model.badge_display).to eq(model.to_s)
     end
   end
+
+  # If this is failing
+  # And CoNZealand is no longer running
+  # Please feel free to backspace this entire block
+  context "after #sync_with_gloo called" do
+    # it's an after_commit hook, so executes after save
+    after { create(:conzealand_contact, :with_claim) }
+
+    # Tidy up after this spec
+    around do |test|
+      old_value = ENV["GLOO_BASE_URL"]
+      test.run
+      ENV["GLOO_BASE_URL"] = old_value
+    end
+
+    it "dosn't call GlooSync outside of conzealand" do
+      Rails.configuration.contact_model = "dc"
+      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlooSync).to_not receive(:perform_async)
+    end
+
+    it "doesn't call GlooSync when not configured" do
+      Rails.configuration.contact_model = "conzealand"
+      ENV["GLOO_BASE_URL"] = nil
+      expect(GlooSync).to_not receive(:perform_async)
+    end
+
+    it "calls when confgured in conzealand" do
+      Rails.configuration.contact_model = "conzealand"
+      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
+      expect(GlooSync).to receive(:perform_async).at_least(:once)
+    end
+  end
 end

@@ -161,7 +161,11 @@ RSpec.describe Claim, type: :model do
     after { create(:claim, :with_user, :with_reservation) }
 
     # Tidy up after this spec
-    after { ENV["GLOO_BASE_URL"] = nil }
+    around do |test|
+      old_value = ENV["GLOO_BASE_URL"]
+      test.run
+      ENV["GLOO_BASE_URL"] = old_value
+    end
 
     it "dosn't call GlooSync outside of conzealand" do
       Rails.configuration.contact_model = "dc"

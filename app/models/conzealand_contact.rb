@@ -119,4 +119,14 @@ class ConzealandContact < ApplicationRecord
     return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
   end
+
+  # Sync when claim changes as transfers can cause users to loose or gain attending rights
+  after_commit :sync_with_gloo
+  def sync_with_gloo
+    return unless Claim.contact_strategy == ConzealandContact
+    return unless ENV["GLOO_BASE_URL"].present?
+    user = claim.user
+    return unless user.present?
+    GlooSync.perform_async(user.email)
+  end
 end
