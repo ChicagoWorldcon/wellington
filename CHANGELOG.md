@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Changed
-- Nothing significant in this release
+- In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
 
 ### Removed
 - Nothing significant in this release
