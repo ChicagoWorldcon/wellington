@@ -120,13 +120,9 @@ class ConzealandContact < ApplicationRecord
     true
   end
 
-  # Sync when claim changes as transfers can cause users to loose or gain attending rights
-  after_commit :sync_with_gloo
-  def sync_with_gloo
-    return unless Claim.contact_strategy == ConzealandContact
-    return unless ENV["GLOO_BASE_URL"].present?
-    user = claim.user
-    return unless user.present?
-    GlooSync.perform_async(user.email)
+  # Sync when you update your details so we have your current name
+  after_commit :gloo_sync
+  def gloo_lookup_user
+    claim.user
   end
 end

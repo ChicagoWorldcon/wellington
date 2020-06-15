@@ -100,4 +100,10 @@ class Reservation < ApplicationRecord
   def disabled?
     state == DISABLED
   end
+
+  # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off
+  after_commit :gloo_sync
+  def gloo_lookup_user
+    active_claim&.user
+  end
 end

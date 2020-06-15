@@ -16,4 +16,15 @@
 
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
+
+  protected
+
+  # CoNZealand only thing, this'll do nothing unless configured
+  def gloo_sync
+    return unless ENV["GLOO_BASE_URL"].present?
+    return unless Claim.contact_strategy == ConzealandContact
+    return unless gloo_lookup_user.present?
+
+    GlooSync.perform_async(gloo_lookup_user.email)
+  end
 end

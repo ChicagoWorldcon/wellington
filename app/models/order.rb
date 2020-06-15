@@ -24,12 +24,8 @@ class Order < ApplicationRecord
   validates :reservation, presence: true, uniqueness: { conditions: -> { active } }, if: :active?
 
   # Sync when order changes as upgrades can cause users to loose or gain attending rights
-  after_commit :sync_with_gloo
-  def sync_with_gloo
-    return unless Claim.contact_strategy == ConzealandContact
-    return unless ENV["GLOO_BASE_URL"].present?
-    user = reservation.user
-    return unless user.present?
-    GlooSync.perform_async(user.email)
+  after_commit :gloo_sync
+  def gloo_lookup_user
+    reservation&.user
   end
 end
