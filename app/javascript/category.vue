@@ -20,13 +20,14 @@
         v-for="finalist in category.finalists"
         :key="finalist.id"
         :finalist="finalist"
-        :disabled="unsaved"
+        :disabled="dirty"
         :ranks="ranks"
       />
     </ul>
     <button
       v-on:click="save(category)"
       v-bind:key="category.id"
+      v-bind:disabled="!dirty"
       class="btn"
     >Vote for {{ category.name }}</button>
   </div>
@@ -39,7 +40,7 @@ export default {
   props: ["category"],
   data() {
     return {
-      unsaved: false
+      dirty: false
     };
   },
   computed: {
@@ -52,16 +53,8 @@ export default {
     }
   },
   components: { Finalist },
-  mounted() {
-    fetch("categories")
-      .then(response => response.json())
-      .then(data => {
-        this.category = data;
-      });
-    this.unsaved = false;
-  },
   updated() {
-    this.unsaved = true;
+    this.dirty = true;
   },
   methods: {
     save: category => {
@@ -69,10 +62,11 @@ export default {
         body: JSON.stringify({ category }),
         method: "PUT",
         headers: { "Content-Type": "application/json" }
+      }).then(() => {
+        // Work around mutating arguements "no-param-reassign"
+        const categoryRef = category;
+        categoryRef.dirty = false;
       });
-      // Work around mutating arguements "no-param-reassign"
-      const categoryRef = category;
-      categoryRef.unsaved = false;
     }
   }
 };
