@@ -24,23 +24,29 @@ RSpec.describe FinalistsController, type: :controller do
 
   describe "show" do
     subject(:get_show) { get :show, params: params }
-
+    
     let(:params) do
       {
         reservation_id: reservation.id,
         id: election.i18n_key,
       }
     end
-
+    
     it "404s when not signed in" do
       expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
     end
-
+    
     context "when signed in" do
-      before { sign_in reservation.user }
 
+      before do
+        sign_in reservation.user
+        expect(HugoState)
+          .to receive_message_chain(:new, :has_voting_opened?)
+          .and_return(true)
+      end
+      
       it { is_expected.to have_http_status(:ok) }
-
+      
       it "sets content type" do
         expect(get_show.media_type).to eq "text/html"
       end
