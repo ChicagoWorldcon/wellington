@@ -13,9 +13,9 @@
 // limitations under the License.
 
 <template>
-  <div class="category-component">
+  <div class="category-component l-v-spacing">
     <h2>{{ category.name }}</h2>
-    <ul class="list-group list-group-flush text-dark">
+    <ul class="list-group list-group-flush text-dark l-v-spacing">
       <finalist
         v-for="finalist in category.finalists"
         :key="finalist.id"
@@ -33,29 +33,29 @@
 </template>
 
 <script>
-import Finalist from './finalist.vue';
+import Finalist from "./finalist.vue";
 
 export default {
-  props: ['category'],
+  props: ["category"],
   data() {
     return {
-      unsaved: false,
+      unsaved: false
     };
   },
   computed: {
     ranks: ({ category }) => {
-      const ranks = category.finalists.map((finalist) => finalist.rank);
+      const ranks = category.finalists.map(finalist => finalist.rank);
       return ranks
-        .filter((r) => !!r)
-        .map((r) => parseInt(r, 10))
+        .filter(r => !!r)
+        .map(r => parseInt(r, 10))
         .sort();
-    },
+    }
   },
   components: { Finalist },
   mounted() {
-    fetch('categories')
-      .then((response) => response.json())
-      .then((data) => {
+    fetch("categories")
+      .then(response => response.json())
+      .then(data => {
         this.category = data;
       });
     this.unsaved = false;
@@ -64,17 +64,17 @@ export default {
     this.unsaved = true;
   },
   methods: {
-    save: (category) => {
-      fetch('', {
+    save: category => {
+      fetch("", {
         body: JSON.stringify({ category }),
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" }
       });
       // Work around mutating arguements "no-param-reassign"
       const categoryRef = category;
       categoryRef.unsaved = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
