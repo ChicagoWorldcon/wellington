@@ -204,7 +204,7 @@ category.finalists.create!(description: "The Wicked King, by Holly Black (Little
 category.finalists.create!(description: "No award")
 
 # Retro Hugos 1945
-category = Category.joins(:election).find_by(name: "Best Novel", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Novel", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "The Golden Fleece (Hercules, My Shipmate), by Robert Graves (Cassell)")
 category.finalists.create!(description: "Land of Terror, by Edgar Rice Burroughs (Edgar Rice Burroughs, Inc.)")
 category.finalists.create!(description: "“Shadow Over Mars” (The Nemesis from Terra), by Leigh Brackett (Startling Stories, Fall 1944)")
@@ -214,7 +214,7 @@ category.finalists.create!(description: "“The Winged Man”, by A.E. van Vogt 
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Novella", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Novella", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "“The Changeling”, by A.E. van Vogt (Astounding Science Fiction, April 1944)")
 category.finalists.create!(description: "“A God Named Kroo”, by Henry Kuttner (Thrilling Wonder Stories, Winter 1944)")
 category.finalists.create!(description: "“Intruders from the Stars”, by Ross Rocklynne (Amazing Stories, January 1944)")
@@ -224,7 +224,7 @@ category.finalists.create!(description: "“Trog”, by Murray Leinster (Astound
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Novelette", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Novelette", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "“Arena”, by Fredric Brown (Astounding Science Fiction, June 1944)")
 category.finalists.create!(description: "“The Big and the Little” (“The Merchant Princes”), by Isaac Asimov (Astounding Science Fiction, August 1944)")
 category.finalists.create!(description: "“The Children’s Hour”, by Lawrence O’Donnell (C.L. Moore and Henry Kuttner) (Astounding Science Fiction, March 1944)")
@@ -234,7 +234,7 @@ category.finalists.create!(description: "“When the Bough Breaks”, by Lewis P
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Short Story", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Short Story", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "“And the Gods Laughed”, by Fredric Brown (Planet Stories, Spring 1944)")
 category.finalists.create!(description: "“Desertion”, by Clifford D. Simak (Astounding Science Fiction, November 1944)")
 category.finalists.create!(description: "“Far Centaurus”, by A. E. van Vogt (Astounding Science Fiction, January 1944)")
@@ -243,7 +243,7 @@ category.finalists.create!(description: "“I, Rocket”, by Ray Bradbury (Amazi
 category.finalists.create!(description: "“The Wedge” (“The Traders”), by Isaac Asimov (Astounding Science Fiction, October 1944)")
 category.finalists.create!(description: "No award")
 
-category = Category.joins(:election).find_by(name: "Best Series", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Series", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "Captain Future, by Brett Sterling (Edmond Hamilton)")
 category.finalists.create!(description: "The Cthulhu Mythos, by H. P. Lovecraft, August Derleth, and others")
 category.finalists.create!(description: "Doc Savage, by Kenneth Robeson/Lester Dent")
@@ -252,7 +252,7 @@ category.finalists.create!(description: "Pellucidar, by Edgar Rice Burroughs")
 category.finalists.create!(description: "The Shadow, by Maxwell Grant (Walter B. Gibson)")
 category.finalists.create!(description: "No award")
 
-category = Category.joins(:election).find_by(name: "Best Related Work", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Related Work", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "Fancyclopedia, by Jack Speer (Forrest J. Ackerman)")
 category.finalists.create!(description: "’42 To ’44: A Contemporary Memoir Upon Human Behavior During the Crisis of the World Revolution, by H.G. Wells (Secker & Warburg)")
 category.finalists.create!(description: "Mr. Tompkins Explores the Atom, by George Gamow (Cambridge University Press)")
@@ -261,7 +261,7 @@ category.finalists.create!(description: "“The Science-Fiction Field”, by Lei
 category.finalists.create!(description: "“The Works of H.P. Lovecraft: Suggestions for a Critical Appraisal”, by Fritz Leiber (The Acolyte, Fall 1944)")
 category.finalists.create!(description: "No award")
 
-category = Category.joins(:election).find_by(name: "Best Graphic Story or Comic", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Graphic Story or Comic", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "Buck Rogers: “Hollow Planetoid”, by Dick Calkins (National Newspaper Service)")
 category.finalists.create!(description: "Donald Duck: “The Mad Chemist”, by Carl Barks (Dell Comics)")
 category.finalists.create!(description: "Flash Gordon: “Battle for Tropica”, by Don Moore and Alex Raymond (King Features Syndicate)")
@@ -271,7 +271,7 @@ category.finalists.create!(description: "Superman: “The Mysterious Mr. Mxyztpl
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Dramatic Presentation, Short Form", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Dramatic Presentation, Short Form", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "The Canterville Ghost, screenplay by Edwin Harvey Blum from a story by Oscar Wilde, directed by Jules Dassin (Metro-Goldwyn-Mayer (MGM))")
 category.finalists.create!(description: "The Curse of the Cat People, written by DeWitt Bodeen, directed by Gunther V. Fritsch and Robert Wise (RKO Radio Pictures)")
 category.finalists.create!(description: "Donovan’s Brain, adapted by Robert L. Richards from a story by Curt Siodmak, producer, director and editor William Spier (CBS Radio Network)")
@@ -281,7 +281,7 @@ category.finalists.create!(description: "It Happened Tomorrow, screenplay and ad
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Editor, Short Form", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Editor, Short Form", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "John W. Campbell, Jr.")
 category.finalists.create!(description: "Oscar J. Friend")
 category.finalists.create!(description: "Mary Gnaedinger")
@@ -291,7 +291,7 @@ category.finalists.create!(description: "W. Scott Peacock")
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Professional Artist", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Professional Artist", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "Earle K. Bergey")
 category.finalists.create!(description: "Margaret Brundage")
 category.finalists.create!(description: "Boris Dolgov")
@@ -301,7 +301,7 @@ category.finalists.create!(description: "William Timmins")
 category.finalists.create!(description: "No award")
 
 
-category = Category.joins(:election).find_by(name: "Best Fanzine", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Fanzine", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "The Acolyte, edited by Francis T. Laney and Samuel D. Russell")
 category.finalists.create!(description: "Diablerie, edited by Bill Watson")
 category.finalists.create!(description: "Futurian War Digest, edited by J. Michael Rosenblum")
@@ -310,7 +310,7 @@ category.finalists.create!(description: "Voice of the Imagi-Nation, edited by Fo
 category.finalists.create!(description: "Le Zombie, edited by Bob Tucker and E.E. Evans")
 category.finalists.create!(description: "No award")
 
-category = Category.joins(:election).find_by(name: "Best Fan Writer", elections: { i18n_key: "retro_hugo" })
+category = Category.joins(:election).find_by(name: "Retro Best Fan Writer", elections: { i18n_key: "retro_hugo" })
 category.finalists.create!(description: "Fritz Leiber")
 category.finalists.create!(description: "Morojo/Myrtle R. Douglas")
 category.finalists.create!(description: "J. Michael Rosenblum")
