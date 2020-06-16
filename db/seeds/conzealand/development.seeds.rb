@@ -101,7 +101,7 @@ end
 Reservation.update_all(ballot_last_mailed_at: Time.now)
 
 puts "Creating finalists..."
-require_relative "./development_finalist.seeds.rb"
+require_relative "./production_finalist.seeds.rb"
 
 puts "Ranking finalists..."
 finalists_by_category = Finalist.all.to_a.group_by(&:category_id)
