@@ -34,41 +34,41 @@
 </template>
 
 <script>
-import Finalist from "./finalist.vue";
+import Finalist from './finalist.vue';
 
 export default {
-  props: ["category"],
+  props: ['category'],
   data() {
     return {
-      dirty: false
+      dirty: false,
     };
   },
   computed: {
     ranks: ({ category }) => {
-      const ranks = category.finalists.map(finalist => finalist.rank);
+      const ranks = category.finalists.map((finalist) => finalist.rank);
       return ranks
-        .filter(r => !!r)
-        .map(r => parseInt(r, 10))
+        .filter((r) => !!r)
+        .map((r) => parseInt(r, 10))
         .sort();
-    }
+    },
   },
   components: { Finalist },
   updated() {
     this.dirty = true;
   },
   methods: {
-    save: category => {
-      fetch("", {
+    save: (category) => {
+      fetch('', {
         body: JSON.stringify({ category }),
-        method: "PUT",
-        headers: { "Content-Type": "application/json" }
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
       }).then(() => {
         // Work around mutating arguements "no-param-reassign"
         const categoryRef = category;
         categoryRef.dirty = false;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
