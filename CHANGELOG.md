@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
+- Update Rails against allowing untrusted users to run migrations on production
+  [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
+- Update Rack against cookie override vulnerability
+  [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
 
 ### Removed
 - Nothing significant in this release
