@@ -40,7 +40,11 @@ class UserTokensController < ApplicationController
     target_email = params[:email]&.strip
     new_user = User.find_or_initialize_by(email: target_email)
 
-    if new_user.valid? && !new_user.persisted?
+    if !new_user.valid? # ...invalid user
+      flash[:error] = new_user.errors.full_messages.to_sentence
+      redirect_to referrer_path
+      return
+    elsif !new_user.persisted? # ...valid and never been seen before
       new_user.save!
       sign_in(new_user)
       flash[:notice] = %{

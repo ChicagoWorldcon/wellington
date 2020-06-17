@@ -39,6 +39,15 @@ RSpec.describe UserTokensController, type: :controller do
       expect(flash[:notice]).to_not be_present
     end
 
+    it "sets an error when slashes in address" do
+      expect {
+        post :create, params: { email: "harry/potter@hogwarts.net" }
+      }.to_not change { controller.current_user }.from(nil)
+      expect(flash[:error]).to be_present
+      expect(flash[:error]).to match(/slash/i) # say something about slash
+      expect(flash[:notice]).to_not be_present
+    end
+
     it "sets notification when pointing at existing user" do
       expect(MembershipMailer)
         .to receive_message_chain(:login_link, :deliver_later)
