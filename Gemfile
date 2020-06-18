@@ -50,6 +50,7 @@ group :development, :test do
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
+  gem "rails-controller-testing"                      # assert template and rendering tests
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
   gem "rubocop-performance"                           # performance static analysis

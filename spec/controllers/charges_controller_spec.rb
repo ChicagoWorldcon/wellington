@@ -17,19 +17,25 @@
 
 require "rails_helper"
 
-RSpec.shared_context "single reservation" do
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :instalment) }
+RSpec.shared_context "selected reservation" do
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :instalment, instalment_paid: 0) }
+  let(:reservations) { reservation }
+  let(:user) { reservation.user }
+end
+
+RSpec.shared_context "multiple reservations" do
+  let(:reservations) {
+    user = create(:user)
+    create_list(:reservation, 3, :with_order_against_membership, :with_claim_for_user, :instalment, user: user, instalment_paid: 0)
+  }
+  let(:user) { reservations[0].user }
 end
 
 RSpec.describe ChargesController, type: :controller do
-  render_views
-
-  let(:user) { reservation.user }
-
   before { sign_in(user) }
 
   describe "#new" do
-    include_context "single reservation"
+    include_context "selected reservation"
 
     context "when the reservation is paid for" do
       before { reservation.update!(state: Reservation::PAID) }
@@ -51,13 +57,54 @@ RSpec.describe ChargesController, type: :controller do
       it "renders" do
         get :new, params: { reservation_id: reservation.id }
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to render_template(:new_for_reservation)
+      end
+
+      it "sets a single pending charge" do
+        get :new, params: { reservation_id: reservation.id }
+
+        expect(assigns(:pending_charge)).to_not be(nil)
+      end
+
+      it "sets all needed attributes on the pending charge" do
+        get :new, params: { reservation_id: reservation.id }
+
+        expect(assigns(:pending_charge)).to have_attributes(
+          :reservation => reservation,
+          :membership => reservation.membership,
+          :outstanding_amount => reservation.membership.price,
+        )
+
+        expect(assigns(:pending_charge).price_options).not_to be_empty
       end
     end
   end
 
+  describe "#new without id" do
+    include_context "multiple reservations"
+
+    context "when the reservations are all paid" do
+      before { reservations.each{ |r| r.update!(state: Reservation::PAID ) }}
+
+      it "redirects to the reservations controller" do
+        get :new
+
+        expect(response).to redirect_to(reservations_path)
+      end
+    end
+
+    context "when any reservation needs to be paid" do
+      it "renders the new template" do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
+    end
+
+  end
+
   describe "#create" do
-    include_context "single reservation"
+    include_context "selected reservation"
 
     let(:amount_posted) { 230_00 }
     let(:amount_owed) { Money.new(230_00) }

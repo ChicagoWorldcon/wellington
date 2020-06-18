@@ -1,0 +1,59 @@
+<%
+# Copyright 2020 Chris Rose
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+%>
+
+<h1>
+  Make a Payment towards #<%= @reservation.membership_number %>
+</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@pending_charge.reservation, @pending_charge.membership)) do %>
+          <article>
+            <div id="error_explanation"></div>
+
+            <p>
+              You need to pay <%= @pending_charge.outstanding_amount.format(with_currency: true) %> to cover this membership. Please pay
+              the full amount, or choose an instalment from the list.
+            </p>
+
+            <label class="amount">
+              <span>Amount:
+                <%= select_tag(:amount, options_for_select(@pending_charge.price_options, selected: @pending_charge.outstanding_amount)) %>
+              </span>
+            </label>
+          </article>
+
+          <%= hidden_field_tag(:stripeToken) %>
+          <%= hidden_field_tag(:stripeEmail) %>
+          <%= hidden_field_tag(:reservation, @pending_charge.reservation.id) %>
+          <div class="l-v-spacing-both">
+            <div class="form-group">
+              <%= submit_tag("Pay for #{@pending_charge.membership} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @pending_charge.reservation) %>
+      </div>
+    </div>
+  </div>
+</section>

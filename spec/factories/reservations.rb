@@ -68,6 +68,17 @@ FactoryBot.define do
       end
     end
 
+    trait :with_claim_for_user do
+      transient do
+        user { create(:user) }
+      end
+
+      after(:build) do |new_reservation, evaluator|
+        new_claim = build(:claim, :with_contact, reservation: new_reservation, user: evaluator.user)
+        new_reservation.claims << new_claim
+      end
+    end
+
     trait :with_claim_from_user do
       after(:build) do |new_reservation, _evaluator|
         new_claim = build(:claim, :with_user, :with_contact, reservation: new_reservation)
