@@ -17,15 +17,20 @@
 
 require "rails_helper"
 
+RSpec.shared_context "single reservation" do
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :instalment) }
+end
+
 RSpec.describe ChargesController, type: :controller do
   render_views
 
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user, :instalment) }
   let(:user) { reservation.user }
 
   before { sign_in(user) }
 
   describe "#new" do
+    include_context "single reservation"
+
     context "when the reservation is paid for" do
       before { reservation.update!(state: Reservation::PAID) }
 
@@ -52,6 +57,8 @@ RSpec.describe ChargesController, type: :controller do
   end
 
   describe "#create" do
+    include_context "single reservation"
+
     let(:amount_posted) { 230_00 }
     let(:amount_owed) { Money.new(230_00) }
     let(:allowed_payment_amounts) { [Money.new(amount_posted)] }
