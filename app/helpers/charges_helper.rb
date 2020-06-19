@@ -16,11 +16,11 @@
 # limitations under the License.
 
 module ChargesHelper
-  def stripe_config(reservation, membership)
+  def stripe_config(user, pending_charges)
     {
       key: Rails.configuration.stripe[:publishable_key],
-      description: "CoNZealand #{membership.name} membership",
-      email: reservation.user.email,
+      description: "CoNZealand memberships",
+      email: user.email,
       currency: $currency,
     }.to_json
   end
