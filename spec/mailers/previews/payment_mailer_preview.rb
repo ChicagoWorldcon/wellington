@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class UserMailerPreview < ActionMailer::Preview
+class PaymentMailerPreview < ActionMailer::Preview
   StubReservation = Struct.new(:name, :number, :instalment?, :paid?)
   StubUser = Struct.new(:email, :login_url)
   StubCharge = Struct.new(:id, :amount)
