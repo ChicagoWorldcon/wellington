@@ -22,7 +22,11 @@
 Rails.application.config.content_security_policy do |policy|
   script_sources = []
   script_sources << "https://checkout.stripe.com" if ENV["STRIPE_PUBLIC_KEY"].present?
-  script_sources << :unsafe_eval if Rails.env.development? # for quick vue sourcemaps
+
+  # FIXME Only use this for Rails.env.development? As it opens a security hole
+  # This was enabled because it was pretty hard to get Vue to compile without eval
+  # However this should be possible with "vue-template-compiler"
+  script_sources << :unsafe_eval
 
   api_endpoints = []
   api_endpoints << "http://localhost:3035" if Rails.env.development? # hot reloading scripts
