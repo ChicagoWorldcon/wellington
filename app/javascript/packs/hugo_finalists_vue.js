@@ -16,7 +16,7 @@
 
 import $ from 'jquery';
 import Vue from 'vue/dist/vue.esm';
-import App from '../app.vue';
+import App from '../finalists/app.vue';
 
 document.addEventListener('DOMContentLoaded', () => {
   $.getJSON(window.location.path, (json, state) => {
