@@ -33,6 +33,11 @@ class SiteSelection < ApplicationRecord
   validate :token_checksum
   validates :token, uniqueness: true
 
+  before_validation do
+    # Set site selection token if blank
+    self.token ||= SiteSelection.generate_token
+  end
+
   private
 
   def token_checksum

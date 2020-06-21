@@ -57,11 +57,12 @@ Rails.application.routes.draw do
 
   resources :categories
   resources :credits
+  resources :hugo_packet, id: /[^\/]+/
   resources :landing
   resources :memberships
+  resources :site_selections
   resources :themes
   resources :upgrades
-  resources :hugo_packet, id: /[^\/]+/
 
   resources :reservations do
     resources :charges
