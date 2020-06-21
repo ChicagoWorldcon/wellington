@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
 - Update Rack against cookie override vulnerability
   [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
+- Mount working directory to /hack for conzealand development
+  [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 
 ### Removed
 - Nothing significant in this release
