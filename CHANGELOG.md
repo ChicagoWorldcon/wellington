@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
 
 ### Added
-- Nothing significant in this release
+- Emails for Hugo voting
 
 ### Changed
+- Adds Hugo voting emails
+  [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
+
 
 ### Removed
 - Nothing significant in this release

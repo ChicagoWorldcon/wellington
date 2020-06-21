@@ -23,6 +23,7 @@
 
 .env*
 /.bundle
+/.vscode/*
 /.direnv
 /log/*
 /tmp/*
