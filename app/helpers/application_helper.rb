@@ -41,7 +41,7 @@ module ApplicationHelper
     elsif match = membership_right.match(/rights\.(.*)\.nominate_only\z/)
       election_i18n_key = match[1]
       link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
-    elsif match = membership_right.match(/rights\.(.*)\.vote\z/)
+    elsif finalists_loaded? && match = membership_right.match(/rights\.(.*)\.vote\z/)
       election_i18n_key = match[1]
       link_to description, reservation_finalist_path(reservation_id: reservation, id: election_i18n_key)
     else
@@ -73,5 +73,9 @@ module ApplicationHelper
 
   def worldcon_contact_form
     ApplicationHelper.theme_contact_form
+  end
+
+  def finalists_loaded?
+    @voting_open ||= Finalist.count > 0
   end
 end
