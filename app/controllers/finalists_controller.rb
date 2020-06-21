@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# FinalistsController collects Hugo votes and shows the Hugo votes by a user
 class FinalistsController < ApplicationController
   # controller also accessed by XHR, see https://stackoverflow.com/a/43122403/7359502
   skip_before_action :verify_authenticity_token
