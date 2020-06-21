@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ListNominations given a reservation will give you objects to list out nominations for a user
+# MemberNominationsByCategory given a reservation will give you the layout used by NominationsController
+# It groups Nomination records by Category
+# It flushes and saves validates individual Nomination
 class MemberNominationsByCategory
   NOMINATION_KEYS = (1..Nomination::VOTES_PER_CATEGORY).to_a.map(&:to_s)
 

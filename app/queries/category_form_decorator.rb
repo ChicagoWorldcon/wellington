@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# CategoryFormDecorator is used for display in the top of Category forms in the NominationsController
+# It tells you how many Nomination records you've saved and how many are left
+# It handles display things like classes and colours
+# Generally only 1 con will need this at a time, so you can go to town editing this ;-)
 class CategoryFormDecorator
   attr_reader :category, :nominations
 

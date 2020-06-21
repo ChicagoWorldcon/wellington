@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# CreatePayment charges a customer and creates a charge record. Truthy returns mean the charge succeeded, but false
-# means the charge failed. Check #errors for failure details.
+# Money::ChargeCustomer creates a charge record against a User for the Stripe integrations
+# Truthy returns mean the charge succeeded, otherwise check #errors for failure details.
 class Money::ChargeCustomer
   attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
 

@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Claim represents a User holding a Membership through a Reservation
+# ChicagoContact, DcContact and ConzealandContact represent details of the user who currently hold that membership
+# Configure what model you're using through the env variable WORLDCON_CONTACT
+# A new Claim is created when ApplyTransfer is called, marking the new claim as 'active' by setting properties on it
+# Looking at the history of a Claim helps if you're considering refunding someone as it's no longer held by the same person
 class Claim < ApplicationRecord
   include ActiveScopes
   include ThemeConcern

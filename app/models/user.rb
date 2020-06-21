@@ -14,7 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# User is a login to the members area
+# This relies on Devise for handling cookies and sessions and inherits from global config set in config/initializers/devise.rb
+# Membership is associated to User through Reservation
+# Reservation is associated to user through Claim
+# Charge records payment a User makes towards a Reservation
 class User < ApplicationRecord
+  # Currently this is based on expiring email tokens
+  # This avoids lots of people asking for password resets
+  # Wouldn't this be cool if we used a passwordless standard like WebAuthn instead - https://webauthn.io/
+
   devise :trackable
 
   has_many :active_claims, -> { active }, class_name: "Claim"
@@ -23,13 +32,29 @@ class User < ApplicationRecord
   has_many :notes
   has_many :reservations, through: :active_claims
 
-  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
+  validates :email, presence: true, uniqueness: true
   validates :hugo_download_counter, presence: true
+
+  validate :email_address_format_valid
 
   scope :in_stripe, -> { where.not(stripe_id: nil) }
   scope :not_in_stripe, -> { where(stripe_id: nil) }
 
   def in_stripe?
     stripe_id.present?
+  end
+
+  private
+
+  def email_address_format_valid
+    return if email.nil? # covered by presence: true
+
+    if !email.match(Devise.email_regexp)
+      errors.add(:email, "is an unsupported format")
+    end
+
+    if email.include?("/")
+      errors.add(:email, "slashes are unsupported")
+    end
   end
 end

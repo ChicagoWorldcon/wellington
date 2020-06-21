@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ApplicationRecord is an abstract class which anything which saves to Postgres relies on.
+# It's configured through config/database.yml and inherited by most things in the models directory
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 

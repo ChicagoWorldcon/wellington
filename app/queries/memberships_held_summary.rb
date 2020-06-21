@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# MembershipsHeldSummary is a way to tell a user about all the memberships they hold
+# It's used in 2020 to set text at the top of new reservation's to let user's know they have other memberships
+# The goal was to stop them purchasing new memberships when they had existing ones
 class MembershipsHeldSummary
   attr_reader :current_user
 

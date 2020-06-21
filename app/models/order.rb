@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Order represents a Membership associated to Reservation even when that Membership isn't active
+# User is associated to Order through Reservation
+# For instance, instalment payments could continue to be made towards a Membership when it's not being displayed in the store
+# New orders are created through import scripts, or commands like UpgradeMembership and ClaimMembership
 class Order < ApplicationRecord
   include ActiveScopes
 

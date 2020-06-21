@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Export::TdsClient represents an abstraction over a connection to Microsoft SQL Server
+# You can mix these into anything that needs to execute SQL without worrying about details of the connection
 module Export::TdsClient
   def execute(sql_template, *args)
     safe_args = args.flatten.map { |a| a.is_a?(String) ? client.escape(a) : a }

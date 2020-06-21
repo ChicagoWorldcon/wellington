@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ExportNominationsJob syncs categories and nominations with Dave's Microsoft SQL database
+# ExportNominationsJob syncs categories and nominations in batches with Dave's Microsoft SQL database
+# Enabled by setting TDS_DATABASE in your env
+# Runs on a schedule defined in config/sidekiq.yml
 class NominationsTdsSync
   include Sidekiq::Worker
 

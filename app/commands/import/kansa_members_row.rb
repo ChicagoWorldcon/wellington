@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Given a Row from a CSV, creates associated records
+# Used in 2020 for importing from Kansa
+# Can be nuked or adapted as is no longer being depended on
 class Import::KansaMembersRow
   HEADINGS = [
     "Full name",

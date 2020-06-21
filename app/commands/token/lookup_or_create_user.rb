@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Token::LookupOrCreateUser is used to create new User records based on JWT tokens
+# It also whitelists paths for redirct from the token
+# This is useful because a User may end up on a Reservation form for a Membership
+# Users are allowed to see a lot before they're asked to acutally give us their details
 class Token::LookupOrCreateUser
   include Rails.application.routes.url_helpers
 
@@ -83,7 +87,8 @@ class Token::LookupOrCreateUser
   end
 
   def lookup_and_validate_user
-    @user = User.find_or_create_by(email: @token.first["email"]&.downcase)
+    lookup_email = @token.first["email"]&.downcase
+    @user = User.find_or_create_by(email: lookup_email)
     if !@user.valid?
       @user.errors.full_messages.each do |validation_error|
         errors << validation_error
