@@ -19,7 +19,7 @@
 # There are up to 3 fields filled out depending on the Category. This makes it configurable in the database
 # The display names for these fields live in Category under field_1, field_2, field_3
 # If the Category only specifies field_1, then only a single filed will be displayed for the user to enter
-# A full summary is mailed out from SendBallotSummaries on a schedule
+# A full summary is mailed out from SendNominationSummaries on a schedule
 # Optional: May be exported by NominationsTdsSync to a Microsoft SQL server if you want admin Nominations using Dave's system
 class Nomination < ApplicationRecord
   VOTES_PER_CATEGORY = 5

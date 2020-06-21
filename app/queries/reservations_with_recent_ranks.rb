@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ReservationsWithRecentNominations returns a list of reservations who need to be sent nomination summaries
-# It's used by SendNominationSummaries to get a shortlist of Reservation records that need to have an email sent out
-class ReservationsWithRecentNominations
+# ReservationsWithRecentRanks returns a list of reservations who need to be sent rank summaries
+# It's used by SendRankSummaries to get a shortlist of Reservation records that need to have an email sent out
+class ReservationsWithRecentRanks
   MINIMUM_WAIT = 10.minutes
 
   def call
@@ -26,17 +26,17 @@ class ReservationsWithRecentNominations
   private
 
   def reservations_with_recent_activity
-    reservations.where("nominations.created_at > ?", MINIMUM_WAIT.ago)
+    reservations.where("ranks.created_at > ?", MINIMUM_WAIT.ago)
   end
 
   def reservations_with_updates
     reservations.where(%{
-      reservations.ballot_last_mailed_at IS NULL                     -- User has never been mailed their ballot
-      OR nominations.created_at > reservations.ballot_last_mailed_at -- Or user has made nomination since their last mail
+      reservations.ballot_last_mailed_at IS NULL               -- User has never been mailed their ballot
+      OR ranks.created_at > reservations.ballot_last_mailed_at -- Or user has made rank since their last mail
     })
   end
 
   def reservations
-    Reservation.joins(:nominations)
+    Reservation.joins(:ranks)
   end
 end
