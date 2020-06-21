@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+# frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
 #
@@ -14,21 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Wait for postgres opens it's ports to start services
-if [[ -z $DB_HOST ]]; then
-  DB_HOST="postgres"
-fi
+require "rails_helper"
 
-until psql -Atx "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST" -c 'select current_date'; do
-  echo "waiting for postgres..."
-  sleep 5
-done
+RSpec.describe Charge, type: :model do
+  subject(:model) { create(:charge) }
 
-# Development setup runs when RAILS_ENV is not set
-if [[ -z $RAILS_ENV ]]; then
-  bundle install --quiet
-  yarn install
-fi
-
-# Start sidekiq following default and mailer queues
-bundle exec sidekiq -q default -q mailers
+  it { is_expected.to be_valid }
+end

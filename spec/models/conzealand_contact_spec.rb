@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,6 +60,21 @@ RSpec.describe ConzealandContact, type: :model do
       tests.each do |test|
         expect(test.contact.to_s).to eq(test.expected_output)
       end
+    end
+  end
+
+  describe "#badge_display" do
+    it "combines badge title and subtitle if present" do
+      expect(described_class.new(badge_title: "excellent").badge_display).to eq "excellent"
+      expect(described_class.new(badge_subtitle: "excellent").badge_display).to eq "excellent"
+
+      model = described_class.new(badge_title: "excellent", badge_subtitle: "sausage")
+      expect(model.badge_display).to eq "excellent: sausage"
+    end
+
+    it "uses display name if badge title and subtitle not present" do
+      model = build(:conzealand_contact, badge_title: "", badge_subtitle: "")
+      expect(model.badge_display).to eq(model.to_s)
     end
   end
 end

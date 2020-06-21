@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,11 +21,15 @@
 class Order < ApplicationRecord
   include ActiveScopes
 
-  validates :membership, presence: true
-  validates :reservation, presence: true, uniqueness: {
-    conditions: -> { active } # There can't be other active orders against the same reservation
-  }, if: :active?
-
   belongs_to :membership
   belongs_to :reservation
+
+  # There can't be other active orders against the same reservation
+  validates :reservation, presence: true, uniqueness: { conditions: -> { active } }, if: :active?
+
+  # Sync when order changes as upgrades can cause users to loose or gain attending rights
+  after_commit :gloo_sync
+  def gloo_lookup_user
+    reservation&.user
+  end
 end

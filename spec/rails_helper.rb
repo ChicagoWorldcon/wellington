@@ -86,6 +86,8 @@ RSpec.configure do |config|
   # Setup helpers for things like #login_as
   # https://github.com/plataformatec/devise/wiki/How-To:-Test-controllers-with-Rails-(and-RSpec)
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   include Warden::Test::Helpers
   config.before(:each) do
     Warden.test_reset!
