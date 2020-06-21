@@ -91,6 +91,7 @@ RSpec.describe GlooSync, type: :job do
   describe "#perform" do
     context "when service down" do
       after do
+        # Basically rely on sidekiq to add this to the retry queue
         expect { job.perform(user.email) }.to raise_error("service down")
       end
 

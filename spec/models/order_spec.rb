@@ -78,40 +78,4 @@ RSpec.describe Order, type: :model do
       end
     end
   end
-
-  # If this is failing
-  # And CoNZealand is no longer running
-  # Please feel free to backspace this entire block
-  context "after #sync_with_gloo called" do
-    # it's an after_commit hook, so executes after save
-    after do
-      reservation = create(:reservation, :with_user)
-      create(:order, :with_membership, reservation: reservation)
-    end
-
-    # Tidy up after this spec
-    around do |test|
-      old_value = ENV["GLOO_BASE_URL"]
-      test.run
-      ENV["GLOO_BASE_URL"] = old_value
-    end
-
-    it "dosn't call GlooSync outside of conzealand" do
-      Rails.configuration.contact_model = "dc"
-      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
-      expect(GlooSync).to_not receive(:perform_async)
-    end
-
-    it "doesn't call GlooSync when not configured" do
-      Rails.configuration.contact_model = "conzealand"
-      ENV["GLOO_BASE_URL"] = nil
-      expect(GlooSync).to_not receive(:perform_async)
-    end
-
-    it "calls when confgured in conzealand" do
-      Rails.configuration.contact_model = "conzealand"
-      ENV["GLOO_BASE_URL"] = "https://api.thefantasy.network/v1"
-      expect(GlooSync).to receive(:perform_async).at_least(:twice) # order + claim
-    end
-  end
 end

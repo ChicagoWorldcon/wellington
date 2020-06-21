@@ -21,9 +21,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   # CoNZealand only thing, this'll do nothing unless configured
   def gloo_sync
-    return unless ENV["GLOO_BASE_URL"].present?
-    return unless Claim.contact_strategy == ConzealandContact
-    return unless gloo_lookup_user.present?
+    return if Rails.env.test?                                 # guard against trigger background jobs from specs
+    return unless ENV["GLOO_BASE_URL"].present?               # guard against sync unless configured
+    return unless Claim.contact_strategy == ConzealandContact # guard against sync unless conzealand specifically
+    return unless gloo_lookup_user.present?                   # guard against sync if we can't associate a user with this model
 
     GlooSync.perform_async(gloo_lookup_user.email)
   end
