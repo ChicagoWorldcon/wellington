@@ -8,9 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
 
 ### Added
-- Nothing significant in this release
+- Integration into The Fantasy Network for 2020 Virtual Worldcon
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+  Add this to you env
+  ```
+  GLOO_BASE_URL=https://api.thefantasy.network/v1
+  GLOO_AUTHORIZATION_HEADER=
+  ```
+  Full sync with
+  ```ruby
+  GlooSync.all_users
+  ```
 
 ### Changed
+- In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
