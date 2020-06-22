@@ -20,7 +20,7 @@
 class PaymentMailer < ApplicationMailer
   default from: $member_services_email
 
-  def paid(user:, charge:)
+  def paid_one(user:, charge:)
     @charge = charge
     @reservation = charge.reservation
     @contact = @reservation.active_claim.contact
@@ -28,6 +28,17 @@ class PaymentMailer < ApplicationMailer
     mail(
       to: user.email,
       subject: "CoNZealand Payment: Payment for member ##{@reservation.membership_number}"
+    )
+  end
+
+  def paid(user:, charges:)
+    @charges = charges
+    @reservations = charge.map(&:reservation)
+    @contacts = @reservations.map(&:active_claim).map(&:contact)
+
+    mail(
+      to: user.email,
+      subject: "CoNZealand Payment: Payment for memberships"
     )
   end
 
