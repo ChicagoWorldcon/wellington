@@ -18,10 +18,10 @@
 # Money::ChargeCustomer creates a charge record against a User for the Stripe integrations
 # Truthy returns mean the charge succeeded, otherwise check #errors for failure details.
 class Money::ChargeCustomer
-  attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
+  attr_reader :reservations, :user, :token, :charge_amount, :pending_charges, :charges, :amount_owed
 
-  def initialize(reservation, user, token, amount_owed, charge_amount: nil)
-    @reservation = reservation
+  def initialize(reservations, user, token, amount_owed, charge_amount: nil)
+    @reservations = reservations
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
@@ -29,45 +29,55 @@ class Money::ChargeCustomer
   end
 
   def call
-    @charge = ::Charge.stripe.pending.create!(
+    @pending_charges = reservations.map{ |r| [r, ::Charge.stripe.pending.create!(
       user: user,
-      reservation: reservation,
+      reservation: r,
       stripe_id: token,
       amount: charge_amount,
       comment: "Pending stripe payment",
-    )
+    )] }.to_h
 
     check_charge_amount
     setup_stripe_customer unless errors.any?
     create_stripe_charge unless errors.any?
 
     if errors.any?
-      @charge.state = ::Charge::STATE_FAILED
-      @charge.comment = error_message
+      each_charge do |charge| 
+        charge.state = ::Charge::STATE_FAILED
+        charge.comment = error_message
+      end
     elsif !@stripe_charge[:paid]
-      @charge.state = ::Charge::STATE_FAILED
+      each_charge do |charge| 
+        charge.state = ::Charge::STATE_FAILED
+      end
     else
-      @charge.state = ::Charge::STATE_SUCCESSFUL
-    end
-
-    if @stripe_charge.present?
-      @charge.stripe_id       = @stripe_charge[:id]
-      @charge.amount_cents    = @stripe_charge[:amount]
-      @charge.comment         = @stripe_charge[:description]
-      @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
-    end
-
-    reservation.transaction do
-      @charge.comment = ChargeDescription.new(@charge).for_users
-      @charge.save!
-      if fully_paid?
-        reservation.update!(state: Reservation::PAID)
-      else
-        reservation.update!(state: Reservation::INSTALMENT)
+      each_charge do |charge| 
+        charge.state = ::Charge::STATE_SUCCESSFUL
       end
     end
 
-    @charge.successful?
+    if @stripe_charge.present?
+      each_charge do |charge| 
+        charge.stripe_id       = @stripe_charge[:id]
+        charge.amount_cents    = @stripe_charge[:amount]
+        charge.comment         = @stripe_charge[:description]
+        charge.stripe_response = json_to_hash(@stripe_charge.to_json)
+      end
+    end
+
+    pending_charges.each do |reservation, charge| 
+      reservation.transaction do
+        charge.comment = ChargeDescription.new(charge).for_users
+        charge.save!
+        if fully_paid?
+          reservation.update!(state: Reservation::PAID)
+        else
+          reservation.update!(state: Reservation::INSTALMENT)
+        end
+      end
+    end
+    @charges = pending_charges.values
+    pending_charges.values.all?(&:successful?)
   end
 
   def error_message
@@ -101,14 +111,21 @@ class Money::ChargeCustomer
     @card_id = card_response.id
   rescue Stripe::StripeError => e
     errors << e.message.to_s
-    @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment = "Failed to setup customer - #{e.message}"
+    each_charge do |charge| 
+      charge.stripe_response = json_to_hash(e.response)
+      charge.comment = "Failed to setup customer - #{e.message}"
+    end
   end
 
   def create_stripe_charge
     # Note, stripe does everything in cents
+    all_charge_descriptions = @pending_charges.map do |_, charge|
+      ChargeDescription.new(charge).for_accounts
+    end
+    description = all_charge_descriptions.join(",")
+
     @stripe_charge = Stripe::Charge.create(
-      description: ChargeDescription.new(@charge).for_accounts,
+      description: description,
       currency: $currency,
       customer: user.stripe_id,
       source: @card_id,
@@ -116,8 +133,10 @@ class Money::ChargeCustomer
     )
   rescue Stripe::StripeError => e
     errors << e.message
-    @charge.stripe_response = json_to_hash(e.response)
-    @charge.comment =  "failed to create Stripe::Charge - #{e.message}"
+    each_charge do |charge| 
+      charge.stripe_response = json_to_hash(e.response)
+      charge.comment =  "failed to create Stripe::Charge - #{e.message}"
+    end
   end
 
   def json_to_hash(obj)
@@ -127,6 +146,12 @@ class Money::ChargeCustomer
   end
 
   def fully_paid?
-    @charge.successful? && (amount_owed - charge_amount) <= 0
+    @pending_charges.all?{ |_, charge| charge.successful? } && (amount_owed - charge_amount) <= 0
+  end
+
+  def each_charge
+    @pending_charges.each do |reservation, charge|
+      yield(charge)
+    end
   end
 end
