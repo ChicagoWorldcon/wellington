@@ -18,7 +18,12 @@
 require "rails_helper"
 
 RSpec.describe PaymentAmountOptions, type: :model do
+  let(:amount_owed) { Money.new(225_00) }
   subject(:amounts) { described_class.new(amount_owed).amounts }
+
+  it "has the expected steps for a new set of payments" do
+    is_expected.to eq([Money.new(75_00), Money.new(125_00), Money.new(175_00), Money.new(225_00)])
+  end
 
   context "when the amount owed is less than the minimum payment" do
     let(:amount_owed) { Money.new(32_00) }
