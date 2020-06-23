@@ -13,7 +13,7 @@
 // limitations under the License.
 
 <template>
-  <div class="category-component l-v-spacing">
+  <div v-if="0 < category.finalists.length" class="category-component l-v-spacing">
     <h2>{{ category.name }}</h2>
     <ul class="list-group list-group-flush text-dark l-v-spacing">
       <finalist
