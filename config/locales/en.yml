@@ -68,10 +68,8 @@ en:
     # Maps onto text from Election#i18n_key
     hugo:
       voting: |
-        Welcome to the final ballot for the 2020 Hugo Awards, Lodestar Award and Astounding Award!
-        ----------------------------------------
-
         How to vote:
+        ----------------------------------------
 
         * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
         * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
@@ -178,10 +176,8 @@ en:
     # Maps onto text from Election#i18n_key
     retro_hugo:
       voting: |
-        Welcome to the final ballot for the 1945 Retro Hugo Awards!
-        ----------------------------------------
-
         How to vote:
+        ----------------------------------------
 
         * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
         * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
