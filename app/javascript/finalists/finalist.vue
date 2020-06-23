@@ -75,7 +75,7 @@ export default {
 
 <style>
 input {
-  width: 25px;
+  width: 40px;
   margin: 0 5px 5px 0;
   text-align: center;
   line-height: 1em;
