@@ -160,7 +160,7 @@ category.finalists.create!(description: "Claire Rousseau’s YouTube channel, pr
 category.finalists.create!(description: "The Coode Street Podcast, presented by Jonathan Strahan and Gary K. Wolfe")
 category.finalists.create!(description: "Galactic Suburbia, presented by Alisa Krasnostein, Alexandra Pierce and Tansy Rayner Roberts, producer Andrew Finch")
 category.finalists.create!(description: "Our Opinions Are Correct, presented by Annalee Newitz and Charlie Jane Anders")
-category.finalists.create!(description: "The Skiffy and Fanty Show, presented by Jen Zink and Shaun Duke")
+category.finalists.create!(description: "The Skiffy and Fanty Show, presented by Jen Zink, Shaun Duke, Paul Weimer, Alex Acks, Trish Matson, David Annandale, and The Skiffy and Fanty Crew")
 category.finalists.create!(description: "No award")
 
 
