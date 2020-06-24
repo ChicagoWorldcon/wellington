@@ -81,6 +81,13 @@ RSpec.describe UserTokensController, type: :controller do
       expect(controller.current_user).to be_present
       expect(controller.current_user.email).to eq(marys_email)
     end
+
+    it "doesn't say 'Email has already been taken' with upper case" do
+      upper_case_email = "SHOUTY_EMAIL_ADDRESS@newzealand.com"
+      create(:user, email: upper_case_email)
+      post :create, params: { email: upper_case_email }
+      expect(flash[:error]).to_not be_present
+    end
   end
 
   # Note, this is also has a feature spec in spec/features/login_flow_spec.rb

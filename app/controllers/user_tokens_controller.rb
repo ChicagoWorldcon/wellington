@@ -38,7 +38,7 @@ class UserTokensController < ApplicationController
 
   def create
     target_email = params[:email]&.strip
-    new_user = User.find_or_initialize_by(email: target_email)
+    new_user = User.find_or_initialize_by(email: target_email&.downcase)
 
     if !new_user.valid? # ...invalid user
       flash[:error] = new_user.errors.full_messages.to_sentence
