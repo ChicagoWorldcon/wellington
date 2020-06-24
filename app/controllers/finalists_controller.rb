@@ -23,9 +23,7 @@ class FinalistsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
   before_action :lookup_election!
-
-  # TODO: Figure out why this works for the nominations controller but not here
-  #before_action :lookup_legal_name_or_redirect
+  before_action :lookup_legal_name_or_redirect
 
   def show
     respond_to do |format|
@@ -130,4 +128,21 @@ class FinalistsController < ApplicationController
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
   end
+
+  def lookup_legal_name_or_redirect
+    detail = @reservation.active_claim.contact
+    if detail.present?
+      @legal_name = detail.hugo_name
+      return
+    end
+
+    if @reservation.membership.name == "dublin_2019"
+      @legal_name = "Dublin Friend"
+      return
+    end
+
+    flash[:notice] = "Please enter your details to nominate for hugo"
+    redirect_to @reservation
+  end
+  
 end
