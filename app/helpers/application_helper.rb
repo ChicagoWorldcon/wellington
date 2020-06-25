@@ -32,7 +32,6 @@ module ApplicationHelper
 
   # These match i18n values set in config/locales
   # see Membership#all_rights
-  # TODO: add reservation finalist path
   def membership_right_description(membership_right, reservation)
     description = I18n.t(:description, scope: membership_right)
     if match = membership_right.match(/rights\.(.*)\.nominate\z/)
