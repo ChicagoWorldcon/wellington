@@ -136,13 +136,7 @@ class FinalistsController < ApplicationController
       return
     end
 
-    if @reservation.membership.name == "dublin_2019"
-      @legal_name = "Dublin Friend"
-      return
-    end
-
     flash[:notice] = "Please enter your details to nominate for hugo"
     redirect_to @reservation
   end
-  
 end
