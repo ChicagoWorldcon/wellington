@@ -114,13 +114,13 @@ class FinalistsController < ApplicationController
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
 
-    if !HugoState.new.has_voting_opened?
-      flash[:notice] = "Can't vote when voting is not open"
-      redirect_to @reservation
-    end
+    errors = []
+    errors << "voting is not open" if !HugoState.new.has_voting_opened?
+    errors << "signed in as support" if support_signed_in?
+    errors << "this membership doesn't have voting rights" if !@reservation.can_vote?
 
-    if support_signed_in?
-      flash[:notice] = "Can't vote when signed in as support"
+    if errors.any?
+      flash[:notice] = errors.to_sentence
       redirect_to @reservation
     end
   end
