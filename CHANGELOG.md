@@ -35,7 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 
 ### Removed
-- Nothing significant in this release
+- Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu
+  [!203](https://gitlab.com/worldcon/wellington/-/merge_requests/203)
 
 
 ## [Tag 2.5.1 - 2020-05-30](https://gitlab.com/worldcon/wellington/compare/2.5.0...2.5.1)
