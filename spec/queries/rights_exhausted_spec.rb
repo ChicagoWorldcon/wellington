@@ -37,5 +37,10 @@ RSpec.describe RightsExhausted do
       reservation.user.update!(hugo_download_counter: 1)
       expect(call).to include(/hugo packet/i)
     end
+
+    it "flags hugo raking when ranked" do
+      create(:rank, reservation: reservation)
+      expect(call).to include(/voted/i)
+    end
   end
 end
