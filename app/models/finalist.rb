@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Finalist represents someone who has is contending for a Hugo in a Category
+# A signed in User may use the rights on their Reservation to Rank finalists
 class Finalist < ApplicationRecord
   belongs_to :category
   has_many :ranks
