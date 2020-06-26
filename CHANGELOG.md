@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```ruby
   GlooSync.all_users
   ```
+- Hugo finalists for 2020 are now available
+  [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
+  Note, links only show up when you load them
+  ```bash
+  bin/rake db:seed:production_finalist
+  ```
 
 ### Changed
 - In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
