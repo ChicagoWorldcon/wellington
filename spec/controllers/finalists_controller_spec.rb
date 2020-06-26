@@ -32,8 +32,8 @@ RSpec.describe FinalistsController, type: :controller do
       }
     end
 
-    it "404s when not signed in" do
-      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+    it "403s when not signed in" do
+      expect(get_show).to have_http_status(:forbidden)
     end
 
     context "when signed in, without voting rights" do

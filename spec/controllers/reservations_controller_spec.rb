@@ -116,14 +116,14 @@ RSpec.describe ReservationsController, type: :controller do
 
   describe "#show" do
     it "can't be found when not signed in" do
-      expect { get :show, params: { id: existing_reservation.id } }
-        .to raise_error(ActiveRecord::RecordNotFound)
+      expect(get :show, params: { id: existing_reservation.id })
+        .to have_http_status(:forbidden)
     end
 
     it "cant find it when you're signed in as a different user" do
       sign_in(another_user)
-      expect { get :show, params: { id: existing_reservation.id } }
-        .to raise_error(ActiveRecord::RecordNotFound)
+      expect(get :show, params: { id: existing_reservation.id })
+        .to have_http_status(:forbidden)
     end
 
     it "can find your own reservations" do
@@ -148,8 +148,8 @@ RSpec.describe ReservationsController, type: :controller do
 
       it "can't be found for original user" do
         sign_in(original_user)
-        expect { get :show, params: { id: existing_reservation.id } }
-          .to raise_error(ActiveRecord::RecordNotFound)
+        expect(get :show, params: { id: existing_reservation.id })
+          .to have_http_status(:forbidden)
       end
 
       it "is found for new user" do
@@ -178,8 +178,7 @@ RSpec.describe ReservationsController, type: :controller do
     end
 
     it "can't be found when not signed in" do
-      expect { get :show, params: valid_params }
-        .to raise_error(ActiveRecord::RecordNotFound)
+      expect(get :show, params: valid_params).to have_http_status(:forbidden)
     end
 
     context "when signed in as support" do

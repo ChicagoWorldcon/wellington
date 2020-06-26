@@ -37,12 +37,12 @@ RSpec.describe UpgradesController, type: :controller do
     subject(:get_index) { get :index, params: { reservation_id: reservation.id } }
 
     it "doesn't render when signed out" do
-      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(get_index).to have_http_status(:forbidden)
     end
 
     it "doesn't render when signed in user doesn't own the membership" do
       sign_in(create(:user))
-      expect { get_index }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(get_index).to have_http_status(:forbidden)
     end
 
     context "when the user is signed in" do
@@ -60,8 +60,8 @@ RSpec.describe UpgradesController, type: :controller do
   describe "#create" do
     # shallow checks, also tested by reservations_controller_spec for things like transferred membership
     it "fails to find record when you're not signed in" do
-      expect { put :create, params: { id: reservation.id } }
-        .to raise_error(ActiveRecord::RecordNotFound)
+      expect(put :create, params: { id: reservation.id })
+        .to have_http_status(:forbidden)
     end
 
     context "when signed in" do
