@@ -64,6 +64,12 @@
         <li>Plan my trip(coming soon)</li>
         <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
       </ul>
+      <% if current_support.present? %>
+        <h2 class="h4-like">Support links</h2>
+        <ul class="list-unstyled l-v-spacing">
+          <li><%= link_to "All Memberships", reservations_path %></li>
+        </ul>
+      <% end %>
       <% if Rails.env.development? %>
         <h2 class="h4-like">Developer links</h2>
         <ul class="list-unstyled l-v-spacing">
