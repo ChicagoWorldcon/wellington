@@ -60,6 +60,20 @@ RSpec.describe Membership, type: :model do
     end
   end
 
+  describe "#with_rights" do
+    let!(:adult)       { create(:membership, :adult) }
+    let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
+    let!(:kiwi)        { create(:membership, :kiwi) }
+    let!(:silver_fern) { create(:membership, :silver_fern) }
+
+    subject { described_class.with_rights.pluck(:name) }
+
+    it { is_expected.to include(adult.name) }
+    it { is_expected.to include(kid_in_tow.name) }
+    it { is_expected.to_not include(kiwi.name) }
+    it { is_expected.to_not include(silver_fern.name) }
+  end
+
   describe "#to_s" do
     subject(:to_s) { create(:membership, :kid_in_tow).to_s }
     it { is_expected.to eq "Kid in tow" }
