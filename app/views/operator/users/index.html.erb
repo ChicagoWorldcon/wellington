@@ -1,0 +1,57 @@
+<%#
+  Copyright 2020 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<h1>User List</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        These are all your users
+
+        <table class="js-data-table table table-hover table-striped table-dark table-responsive-lg">
+          <thead>
+            <th>Email</th>
+            <th>Signed up at</th>
+            <th>Sign in count</th>
+            <th>Sign in at</th>
+            <th>Last sign in at</th>
+            <th>Sign in ip</th>
+            <th>Last sign in ip</th>
+            <th>Stripe id</th>
+          </thead>
+
+          <tbody>
+            <% User.find_each do |user| %>
+              <tr>
+                <td>
+                  <%= link_to(user.email, operator_user_path(user)) %>
+                </td>
+                <td><%= fuzzy_time(user.created_at) %></td>
+                <td><%= user.sign_in_count %></td>
+                <td><%= fuzzy_time(user.current_sign_in_at) %></td>
+                <td><%= fuzzy_time(user.last_sign_in_at) %></td>
+                <td><%= user.current_sign_in_ip %></td>
+                <td><%= user.last_sign_in_ip %></td>
+                <td><%= user.stripe_id %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
