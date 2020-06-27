@@ -63,26 +63,7 @@
           <p>
             This page is a kind of godmode. Be careful who you show this too, these details are private.
           </p>
-          <table class="js-data-table table table-hover table-striped table-dark table-responsive-lg">
-            <thead>
-              <th>#</th>
-              <th>Legal Name</th>
-              <th>Preferred Name</th>
-              <th>Email</th>
-              <th>Membership</th>
-            </thead>
-            <tbody>
-              <% Claim.active.eager_load(:user, :contact, reservation: :membership).each do |claim| %>
-                <tr>
-                  <td><%= claim.reservation.membership_number %></td>
-                  <td><%= link_to(claim.contact&.legal_name, reservation_path(claim.reservation)) %></td>
-                  <td><%= claim.contact&.preferred_name %></td>
-                  <td><%= claim.user.email %></td>
-                  <td><%= claim.reservation.membership %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+          <%= render("operator_claims_table", claims: Claim.active)  %>
         </div>
       </div>
     </div>
