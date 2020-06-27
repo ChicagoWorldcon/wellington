@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class SetMembershipsController < ApplicationController
+class Operator::SetMembershipsController < ApplicationController
   before_action :authenticate_support!
   before_action :lookup_reservation!
 

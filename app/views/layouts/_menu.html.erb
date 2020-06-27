@@ -53,23 +53,33 @@
 <nav class="container <%= "collapse" if request.path != root_path %>" id="navbarHeader">
   <div class="row">
     <div class="col-sm-8 col-md-6 py-4">
-      <ul class="list-unstyled l-v-spacing">
-        <li><%= link_to "Purchase Membership", memberships_path %></li>
-        <li><%= link_to "My Memberships", reservations_path %></li>
-        <% if ENV["HUGO_PACKET_BUCKET"] %>
-          <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
-        <% end %>
-        <li>Suggest for our Programme (coming soon)</li>
-        <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
-        <li>Plan my trip(coming soon)</li>
-        <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
-      </ul>
+      <% if current_support.nil? %>
+        <ul class="list-unstyled l-v-spacing">
+          <li><%= link_to "Purchase Membership", memberships_path %></li>
+          <li><%= link_to "My Memberships", reservations_path %></li>
+          <% if ENV["HUGO_PACKET_BUCKET"] %>
+            <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
+          <% end %>
+          <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
+          <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
+        </ul>
+      <% end %>
+
       <% if current_support.present? %>
         <h2 class="h4-like">Support links</h2>
         <ul class="list-unstyled l-v-spacing">
-          <li><%= link_to "All Memberships", reservations_path %></li>
+          <li><%= link_to "Membership List", reservations_path %></li>
+          <li>
+            <%= link_to(
+              "Logout of Support",
+              destroy_support_session_path,
+              action: :delete, method: :delete, class: "button"
+            ) %>
+            (<%= current_support.email %>)
+          </li>
         </ul>
       <% end %>
+
       <% if Rails.env.development? %>
         <h2 class="h4-like">Developer links</h2>
         <ul class="list-unstyled l-v-spacing">

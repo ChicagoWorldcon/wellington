@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   end
 
   # /operator are maintenance routes for support people
-  scope :operator do
+  namespace :operator do
     resources :reservations do
       resources :credits
       resources :set_memberships

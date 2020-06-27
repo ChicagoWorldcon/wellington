@@ -25,7 +25,7 @@ RSpec.describe "Transfer request", :type => :request do
 
   it "accepts a transferee's email address and redirects to the transfer confirmation page" do
     sign_in(support)
-    post reservation_transfers_path(reservation_id:  reservation.id), params: { email: new_user.email,
+    post operator_reservation_transfers_path(reservation_id:  reservation.id), params: { email: new_user.email,
     reservation_id: reservation.id}
     follow_redirect!
     expect(response.body).to include("Transferring Membership: Confirm transfer")

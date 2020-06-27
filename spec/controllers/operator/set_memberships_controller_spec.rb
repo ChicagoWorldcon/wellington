@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe SetMembershipsController, type: :controller do
+RSpec.describe Operator::SetMembershipsController, type: :controller do
   render_views
 
   let(:user) { create(:user) }

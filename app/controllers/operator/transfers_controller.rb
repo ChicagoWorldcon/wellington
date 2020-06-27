@@ -14,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-
-class TransfersController < ApplicationController
+class Operator::TransfersController < ApplicationController
   helper ReservationsHelper
 
   before_action :authenticate_support!
@@ -32,7 +30,7 @@ class TransfersController < ApplicationController
 
   def create
     @reservation = Reservation.find(params[:reservation_id])
-    redirect_to reservation_transfer_path(params[:email], reservation_id: @reservation)
+    redirect_to operator_reservation_transfer_path(params[:email], reservation_id: @reservation)
   end
 
   def update
