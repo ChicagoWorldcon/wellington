@@ -48,10 +48,10 @@ module ApplicationHelper
     end
   end
 
-  def fuzzy_time(as_at)
+  def fuzzy_time(as_at, unset_text: "open ended")
     content_tag(
       :span,
-      fuzzy_time_in_words(as_at),
+      as_at ? fuzzy_time_in_words(as_at) : unset_text,
       title: as_at&.iso8601 || "Time not set",
     )
   end
