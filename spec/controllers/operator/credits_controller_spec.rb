@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe CreditsController, type: :controller do
+RSpec.describe Operator::CreditsController, type: :controller do
   render_views
 
   let(:user) { create(:user) }

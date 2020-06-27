@@ -31,17 +31,17 @@
         <div class="l-panel support-pane">
           <h2>Support Actions</h2>
           <p>
-            <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
+            <%= link_to "Transfer membership", new_operator_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>
 
           <p>
-            <%= link_to "Set membership", reservation_set_memberships_path(reservation_id: @reservation) %>
+            <%= link_to "Set membership", operator_reservation_set_memberships_path(reservation_id: @reservation) %>
             to any level that's been in our system
           </p>
 
           <p>
-            <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
+            <%= link_to "Credit account", new_operator_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
 
@@ -50,7 +50,7 @@
               <%=
                 link_to(
                   "Enable Membership Rights",
-                  reservation_rights_path(reservation_id: @reservation),
+                  operator_reservation_rights_path(reservation_id: @reservation),
                   method: :post,
                 )
               %>
@@ -59,7 +59,7 @@
               <%=
                 link_to(
                   "Disable Membership Rights",
-                  reservation_rights_path(reservation_id: @reservation),
+                  operator_reservation_rights_path(reservation_id: @reservation),
                   method: :post,
                 )
               %>

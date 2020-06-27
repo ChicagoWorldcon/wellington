@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # CreditsController allows us to list and grant account credit to a user
-class CreditsController < ApplicationController
+class Operator::CreditsController < ApplicationController
   before_action :authenticate_support!
   before_action :lookup_reservation!
 
