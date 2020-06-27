@@ -17,6 +17,9 @@ require "net/http"
 
 # GlooSync sends users to Gloo
 class GlooSync
+  class ServiceDown < StandardError
+  end
+
   include Sidekiq::Worker
 
   def self.all_users
@@ -46,17 +49,15 @@ class GlooSync
     user_data.merge(role_data)
   end
 
-  private
-
   def post(url, body)
     HTTParty.post(url, headers: standard_headers, body: body).tap do |resp|
-      raise "service down" if resp.code.in?(500..599)
+      raise ServiceDown.new("#{url} failed with #{resp.code}") if resp.code.in?(500..599)
     end
   end
 
   def get(url)
     HTTParty.get(url, headers: standard_headers).tap do |resp|
-      raise "service down" if resp.code.in?(500..599)
+      raise ServiceDown.new("#{url} failed with #{resp.code}") if resp.code.in?(500..599)
     end
   end
 
