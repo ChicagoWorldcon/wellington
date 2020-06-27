@@ -45,7 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 - Update all node modules
   [!202](https://gitlab.com/worldcon/wellington/-/merge_requests/202)
-
+- Support users now have a different menu. Most support actions are namespaced in Operator::*
+  [!205](https://gitlab.com/worldcon/wellington/-/merge_requests/205)
 
 ### Removed
 - Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu
