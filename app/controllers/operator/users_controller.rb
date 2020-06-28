@@ -25,6 +25,10 @@ class Operator::UsersController < ApplicationController
 
     if ENV["GLOO_BASE_URL"].present?
       @gloo_contact = GlooContact.new(@user.reservations.first)
+      @gloo_contact.remote_state # fetch and cache results
     end
+  rescue GlooContact::ServiceUnavailable => e
+    @gloo_contact = nil
+    flash[:error] = "Failed to connect to The Fantasy Network: #{e.to_s}"
   end
 end
