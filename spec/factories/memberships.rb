@@ -85,6 +85,12 @@ FactoryBot.define do
       active_to { 1.day.ago }
     end
 
+    trait :community_sponsor do
+      name { :community_sponsor }
+      price_cents { 0 }
+      active_to { 1.day.ago }
+    end
+
     trait :press_pass do
       name { :press_pass }
       price_cents { 0 }
