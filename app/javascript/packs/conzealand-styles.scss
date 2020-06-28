@@ -424,3 +424,8 @@ footer {
 .card {
   color: $black;
 }
+
+code {
+  // linebreaks in codeblocks are displayed in html
+  white-space: pre;
+}

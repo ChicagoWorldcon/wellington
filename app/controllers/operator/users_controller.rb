@@ -22,5 +22,9 @@ class Operator::UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+
+    if ENV["GLOO_BASE_URL"].present?
+      @gloo_contact = GlooContact.new(@user.reservations.first)
+    end
   end
 end

@@ -66,6 +66,14 @@ module ApplicationHelper
     end
   end
 
+  def pretty_print(hash)
+    formattable = [
+      '<code>',
+      JSON.pretty_generate(hash),
+      '</code>',
+    ].join("\n")
+  end
+
   def markdown
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
   end
