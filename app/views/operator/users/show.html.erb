@@ -17,34 +17,6 @@
 <h1>User <%= @user.email %></h1>
 
 <section class="l-section">
-  <% if @gloo_contact.present? %>
-    <div class="l-panel">
-      <div class="row">
-        <div class="col-12">
-          <h2>
-            The Fantasy Network - <%= @gloo_contact.state_in_words %>
-          </h2>
-          <ul class="list-unstyled l-v-spacing">
-            <li><%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %></li>
-            <li><%= link_to "Force sync now", operator_user_the_fantasy_network_roles_path(@user), method: :post %></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12 col-md-6">
-          <p>Local State</p>
-          <%= raw pretty_print(@gloo_contact.local_state) %>
-        </div>
-
-        <div class="col-12 col-md-6">
-          <p>Remote State</p>
-          <%= raw pretty_print(@gloo_contact.remote_state) %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
@@ -70,4 +42,36 @@
       </div>
     </div>
   </div>
+
+  <% if @gloo_contact.present? %>
+    <div class="l-panel">
+      <div class="row">
+        <div class="col-12">
+          <h2>
+            The Fantasy Network - <%= @gloo_contact.state_in_words %>
+          </h2>
+          <ul class="list-unstyled l-v-spacing">
+            <li><%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %></li>
+            <li><%= link_to "Force sync now", operator_user_the_fantasy_network_roles_path(@user), method: :post %></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <p>
+            Local State
+            <%= raw pretty_print(@gloo_contact.local_state) %>
+          </p>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <p>
+            Remote State
+            <%= raw pretty_print(@gloo_contact.remote_state) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </section>
