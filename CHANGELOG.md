@@ -10,9 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+  and [!204](https://gitlab.com/worldcon/wellington/-/merge_requests/204)
   Add this to you env
   ```
-  GLOO_BASE_URL=https://api.thefantasy.network/v1
+  GLOO_BASE_URL=https://api.thefantasy.network
   GLOO_AUTHORIZATION_HEADER=
   ```
   Full sync with

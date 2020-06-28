@@ -15,11 +15,8 @@
 
 require "net/http"
 
-# GlooSync sends users to Gloo
+# GlooSync sends user data to Gloo so they can log in for the virtual worldcon in 2020
 class GlooSync
-  class ServiceDown < StandardError
-  end
-
   include Sidekiq::Worker
 
   def self.all_users
@@ -28,51 +25,20 @@ class GlooSync
     end
   end
 
-  def perform(email)
+  # FIXME there are interfaces here that are non existant and non tested
+  def perform(email, roles = [])
     user = User.find_by!(email: email)
-    remote_user = get_remote_user(email)
-    updated_remote_user = GlooContact.new(user, remote_user: remote_user).call
-    post(users_url, updated_remote_user.to_json)
-  end
 
-  private
+    syncable_reservations = Reservation.paid
+      .joins(:membership, :user)
+      .where(users: {id: user})
+      .merge(Membership.with_rights)
+      .merge(Claim.active)
 
-  def get_remote_user(email)
-    user = get(users_url(email))
-    return {} if user.code != 200
+    earliest_reservation = syncable_reservations.order("reservations.created_at").first
 
-    # Because roles are not attached to users in the current API
-    # This may change, and if it does we can simplify this
-    roles = get(users_url(email, "roles"))
-    user_data = JSON.parse(user.body, symbolize_names: true)
-    role_data = JSON.parse(roles.body, symbolize_names: true)
-    user_data.merge(role_data)
-  end
-
-  def post(url, body)
-    HTTParty.post(url, headers: standard_headers, body: body).tap do |resp|
-      raise ServiceDown.new("#{url} failed with #{resp.code}") if resp.code.in?(500..599)
-    end
-  end
-
-  def get(url)
-    HTTParty.get(url, headers: standard_headers).tap do |resp|
-      raise ServiceDown.new("#{url} failed with #{resp.code}") if resp.code.in?(500..599)
-    end
-  end
-
-  def users_url(*resources)
-    # e.g. "https://api.thefantasy.network/v1/users"
-    # e.g. "https://api.thefantasy.network/v1/users/super@man.net"
-    # e.g. "https://api.thefantasy.network/v1/users/super@man.net/roles"
-    url_parts = [ENV.fetch("GLOO_BASE_URL"), "users"] + resources
-    url_parts.join("/")
-  end
-
-  def standard_headers
-    {
-      "Content-Type" => "application/json",
-      "Authorization" => ENV.fetch("GLOO_AUTHORIZATION_HEADER"),
-    }
+    contact = GlooContact.new(earliest_reservation)
+    contact.set_remote_roles(roles)
+    contact.save!
   end
 end
