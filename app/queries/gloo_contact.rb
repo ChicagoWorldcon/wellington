@@ -80,6 +80,18 @@ class GlooContact
     }
   end
 
+  def state_in_words
+    if in_sync?
+      "LGTM"
+    else
+      "Out of sync"
+    end
+  end
+
+  def in_sync?
+    local_state == remote_state
+  end
+
   def preferred_contact
     reservation.active_claim.conzealand_contact || ConzealandContact.new
   end
