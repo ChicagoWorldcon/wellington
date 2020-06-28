@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   resources :hugo_packet, id: /[^\/]+/
 
   resources :reservations do
+    post :add_to_cart, on: :collection
     resources :charges
     resources :nominations, id: /[^\/]+/
     resources :upgrades

@@ -99,6 +99,24 @@ RSpec.describe ReservationsController, type: :controller do
         expect(flash[:error]).to include(offer.hash)
       end
     end
+
+    describe "#add_to_cart" do
+      before do
+        post :add_to_cart, params: {
+          contact_model_key => valid_contact_params,
+          :offer => offer.hash,
+        }
+      end
+
+      it "redirects back to memberships" do
+        expect(response).to have_http_status(:found)
+      end
+
+      it "sets error mentioning the original offer" do
+        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include(offer.hash)
+      end
+    end
   end
 
   describe "#index" do
@@ -273,6 +291,31 @@ RSpec.describe ReservationsController, type: :controller do
         }
         expect(response).to have_http_status(:ok)
         expect(flash[:error]).to be_present
+      end
+    end
+  end
+
+  describe "#add_to_cart" do
+    before { sign_in(original_user) }
+    let(:params) {
+      { contact_model_key => valid_contact_params , :offer => offer.hash }
+    }
+    context "when adult offer is selected" do
+      it "redirects to the reservations page" do
+        post :add_to_cart, params: params
+        expect(flash[:error]).to_not be_present
+        expect(flash[:notice]).to be_present
+        expect(response).to redirect_to(reservations_path)
+      end
+    end
+
+    context "when free offer is selected" do
+      let(:offer) { MembershipOffer.new(kid_in_tow) }
+      it "redirects to the reservations page" do
+        post :add_to_cart, params: params
+        expect(flash[:error]).to_not be_present
+        expect(flash[:notice]).to be_present
+        expect(response).to redirect_to(reservations_path)
       end
     end
   end
