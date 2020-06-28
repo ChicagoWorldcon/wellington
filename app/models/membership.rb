@@ -50,6 +50,10 @@ class Membership < ApplicationRecord
     name.humanize
   end
 
+  def community?
+    name.match(/community/)
+  end
+
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
   # So we created new active Membership records at the same price
   # These match i18n values set in config/locales

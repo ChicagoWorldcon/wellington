@@ -12,53 +12,118 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# GlooContact takes a user and gives you the information you need to sync to Gloo for the Virtual Worldcon in 2020
+# GlooContact has methods for both looking up a remote user in Gloo
+# and also saving our local representation to the remote
+# the complete 'saved state' is on the remote or assumed to be default
 class GlooContact
-  attr_reader :user, :remote_user
-
-  def initialize(user, remote_user: {})
-    @user = user
-    @remote_user = remote_user
+  # ServiceUnavailable can be raised when endpoints are unavailable
+  class ServiceUnavailable < StandardError
   end
 
-  def call
+  # Magic strings agreed to on this roles register document:
+  # https://docs.google.com/spreadsheets/d/1L-nWrdgpLJOKJu6ZKvQ0ssXiKv8GdTcsooFc5ymT4mo/edit#gid=441845492
+  MEMBER_ATTENDING = "M_Attending"
+  MEMBER_VOTING = "M_Voting"
+  MEMBER_HUGO = "M_HUGO"
+  REMOTE_ROLES = %w(
+    Discord_ServerMod
+    Discord_PlatMod
+    Discord_Experience_support
+    Discord_Exec
+    Discord_ConCom
+    Discord_Mission_Control
+    Discord_Tech_staff
+    Discord_Staff
+    Discord_Crew
+    Discord_Treasury
+  )
+
+  attr_reader :reservation
+
+  def initialize(reservation)
+    @reservation = reservation
+  end
+
+  # remote_state hits gloo APIs and returns a representation of the user.
+  # Because roles are not attached to users in the current API But this is
+  # expected when you post them back I'm trying to keep this symetric so you
+  # can compare what we'll post vs what the remote has.
+  def remote_state
+    return @remote_state if @remote_state.present?
+
+    email = reservation.user.email
+    user = get_json("/v1/users/#{email}")
+    roles = get_json("/v1/users/#{email}/roles")
+    @remote_state = user.merge(roles)
+  rescue SocketError
+    raise ServiceUnavailable.new("Gloo isn't accepting connections on #{base_url}")
+  end
+
+  # local_state uses models associated with a user's reservation to assemble a
+  # representation of the user. Note, we only know if REMOTE_ROLES are set if
+  # they come back from Gloo Treating REST responses as IO because iwe don't
+  # actually know what these systems are but do need to advise them of their roles.
+  def local_state
+    derived_roles = remote_state[:roles] || []
+    derived_roles = derived_roles & REMOTE_ROLES # filter to what we store against remote
+    derived_roles << MEMBER_ATTENDING if reservation.can_attend?
+    derived_roles << MEMBER_VOTING if reservation.can_vote?
+    derived_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+
     {
-      id: user.id.to_s,
-      email: user.email,
-      roles: roles,
+      id: reservation.user.id.to_s,
+      email: reservation.user.email,
+			expiration: nil,
       name: preferred_contact.to_s,
       display_name: preferred_contact.badge_display,
+      roles: derived_roles,
     }
+  end
+
+  def preferred_contact
+    reservation.active_claim.conzealand_contact || ConzealandContact.new
   end
 
   private
 
-  def roles
-    roles = remote_user[:roles]
-    roles = [] unless roles.kind_of?(Array)
+  # get_json hits a url using standard auth headers and parses the response body
+  # from json to a ruby hash. If the service is down, raises an error.
+  def get_json(path)
+    url = [base_url, path].join
+    resp = HTTParty.get(url, headers: standard_headers)
+    parse_json(url, resp)
+  end
 
-    if my_attending_reservations.any?
-      roles << "video"
+  # post_json takes a ruby hash and converts it to a json post body
+  # responses are translated from json back to a ruby hash. If the service
+  # is down, raises an error.
+  def post_json(path, body)
+    url = [base_url, path].join
+    resp = HTTParty.post(url, headers: standard_headers, body: body.to_json)
+    parse_json(url, resp)
+  end
+
+  # parse_json takes a response and parses the body if it can
+  # raises a ServiceUnavailable if response code not supported
+  def parse_json(url, resp)
+    case resp.code
+    when 200
+      JSON.parse(resp.body, symbolize_names: true)
+    when 404
+      {}
     else
-      roles.delete("video")
+      raise ServiceUnavailable.new("#{url} failed with #{resp.code}")
     end
-
-    roles.uniq
   end
 
-  # This is a CNZ only requirement. Get in touch if you need this integration
-  # Or just rework it to
-  def preferred_contact
-    return @preferred_contact if @preferred_contact.present?
-
-    contacts = ConzealandContact.joins(claim: :reservation)
-    my_attending_contacts = contacts.where(reservations: { id: my_attending_reservations })
-    earliest_contact = my_attending_contacts.order("reservations.created_at").first
-    @preferred_contact = earliest_contact || ConzealandContact.new
+  def standard_headers
+    {
+      "Content-Type" => "application/json",
+      "Authorization" => ENV.fetch("GLOO_AUTHORIZATION_HEADER"),
+    }
   end
 
-  def my_attending_reservations
-    my_reservations = Reservation.paid.joins(:membership, :user).where(users: {id: user})
-    my_reservations.merge(Membership.can_attend).merge(Claim.active)
+  def base_url
+    ENV.fetch("GLOO_BASE_URL")
   end
 end
