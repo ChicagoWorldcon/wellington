@@ -20,9 +20,15 @@
   <% if @gloo_contact.present? %>
     <div class="l-panel">
       <div class="row">
-        <h2>
-          The Fantasy Network - <%= @gloo_contact.state_in_words %>
-        </h2>
+        <div class="col-12">
+          <h2>
+            The Fantasy Network - <%= @gloo_contact.state_in_words %>
+          </h2>
+          <ul class="list-unstyled l-v-spacing">
+            <li><%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %></li>
+            <li><%= link_to "Force sync now", operator_user_the_fantasy_network_roles_path(@user), method: :post %></li>
+          </ul>
+        </div>
       </div>
 
       <div class="row">

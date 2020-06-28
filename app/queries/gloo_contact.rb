@@ -25,7 +25,7 @@ class GlooContact
   MEMBER_ATTENDING = "M_Attending"
   MEMBER_VOTING = "M_Voting"
   MEMBER_HUGO = "M_HUGO"
-  REMOTE_ROLES = %w(
+  DISCORD_ROLES = %w(
     Discord_ServerMod
     Discord_PlatMod
     Discord_Experience_support
@@ -60,15 +60,14 @@ class GlooContact
   end
 
   # local_state uses models associated with a user's reservation to assemble a
-  # representation of the user. Note, we only know if REMOTE_ROLES are set if
+  # representation of the user. Note, we only know if DISCORD_ROLES are set if
   # they come back from Gloo Treating REST responses as IO because iwe don't
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
-    derived_roles = remote_state[:roles] || []
-    derived_roles = derived_roles & REMOTE_ROLES # filter to what we store against remote
-    derived_roles << MEMBER_ATTENDING if reservation.can_attend?
-    derived_roles << MEMBER_VOTING if reservation.can_vote?
-    derived_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+    local_roles = discord_roles.dup
+    local_roles << MEMBER_ATTENDING if reservation.can_attend?
+    local_roles << MEMBER_VOTING if reservation.can_vote?
+    local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
 
     {
       id: reservation.user.id.to_s,
@@ -76,8 +75,15 @@ class GlooContact
 			expiration: nil,
       name: preferred_contact.to_s,
       display_name: preferred_contact.badge_display,
-      roles: derived_roles,
+      roles: local_roles,
     }
+  end
+
+  def discord_roles
+    return @discord_roles unless @discord_roles.nil?
+
+    @discord_roles = remote_state[:roles] || []
+    @discord_roles = @discord_roles & DISCORD_ROLES # filter to what we store against remote
   end
 
   def state_in_words
