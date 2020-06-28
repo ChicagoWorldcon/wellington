@@ -71,7 +71,9 @@ Rails.application.routes.draw do
 
   # /operator are maintenance routes for support people
   namespace :operator do
-    resources :users
+    resources :users do
+      resources :the_fantasy_network_roles
+    end
 
     resources :reservations do
       resources :credits
