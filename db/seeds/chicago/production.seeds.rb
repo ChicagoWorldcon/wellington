@@ -19,6 +19,8 @@ Membership.create!(
   name: "Donor",
   price: Money.new(20_00),
   description: "With our thanks!",
+  can_attend: false,
+
 )
 
 Membership.create!(
@@ -31,4 +33,5 @@ Membership.create!(
   name: "Star",
   price: Money.new(500_00),
   description: "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and hing cool for you at the convention! (Shhh…it’s a surprise!)",
+  can_attend: true,
 )
