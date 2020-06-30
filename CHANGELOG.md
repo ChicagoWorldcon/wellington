@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
 - Mount working directory to /hack for conzealand development
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
+- Update all node modules
+  [!202](https://gitlab.com/worldcon/wellington/-/merge_requests/202)
 
 ### Removed
 - Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu
