@@ -9,14 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Emails for Hugo voting
+- Integration into The Fantasy Network for 2020 Virtual Worldcon
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+  Add this to you env
+  ```
+  GLOO_BASE_URL=https://api.thefantasy.network/v1
+  GLOO_AUTHORIZATION_HEADER=
+  ```
+  Full sync with
+  ```ruby
+  GlooSync.all_users
+  ```
+- Hugo finalists for 2020 are now available
+  [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
+  Note, links only show up when you load them
+  ```bash
+  bin/rake db:seed:production_finalist
+  ```
 
 ### Changed
 - Adds Hugo voting emails
   [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
+- In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+>>>>>>> CHANGELOG.md
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
+- Update Rails against allowing untrusted users to run migrations on production
+  [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
+- Update Rack against cookie override vulnerability
+  [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
+- Mount working directory to /hack for conzealand development
+  [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 
 
 ### Removed

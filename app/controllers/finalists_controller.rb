@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# FinalistsController collects Hugo votes and shows the Hugo votes by a user
 class FinalistsController < ApplicationController
   # controller also accessed by XHR, see https://stackoverflow.com/a/43122403/7359502
   skip_before_action :verify_authenticity_token
@@ -21,9 +23,7 @@ class FinalistsController < ApplicationController
   before_action :lookup_reservation!
   before_action :check_access!
   before_action :lookup_election!
-
-  # TODO: Figure out why this works for the nominations controller but not here
-  #before_action :lookup_legal_name_or_redirect
+  before_action :lookup_legal_name_or_redirect
 
   def show
     respond_to do |format|
@@ -114,18 +114,29 @@ class FinalistsController < ApplicationController
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
 
-    if !HugoState.new.has_voting_opened?
-      flash[:notice] = "Can't vote when voting is not open"
-      redirect_to @reservation
-    end
+    errors = []
+    errors << "voting is not open" if !HugoState.new.has_voting_opened?
+    errors << "signed in as support" if support_signed_in?
+    errors << "this membership doesn't have voting rights" if !@reservation.can_vote?
 
-    if support_signed_in?
-      flash[:notice] = "Can't vote when signed in as support"
+    if errors.any?
+      flash[:notice] = errors.to_sentence
       redirect_to @reservation
     end
   end
 
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
+  end
+
+  def lookup_legal_name_or_redirect
+    detail = @reservation.active_claim.contact
+    if detail.present?
+      @legal_name = detail.hugo_name
+      return
+    end
+
+    flash[:notice] = "Please enter your details to nominate for hugo"
+    redirect_to @reservation
   end
 end

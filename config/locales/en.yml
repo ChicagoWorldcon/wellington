@@ -67,7 +67,23 @@ en:
 
     # Maps onto text from Election#i18n_key
     hugo:
-      instructions: |
+      voting: |
+        How to vote:
+        ----------------------------------------
+
+        * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
+        * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
+        * A lower preference is considered only if all the candidates ranked higher have been eliminated.
+        * You are not required to rank all the finalists in any category.
+        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all.
+        * If you decide not to vote in any given category, leave it blank.
+        * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
+        * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
+        * When the ballots are counted, all the first place votes will be tabulated.
+        * If no finalist receives more than half of the votes, the finalist with the fewest first place votes is eliminated, and their votes are transferred to the finalists with the next preferences on those ballots.
+        * This process of elimination of the last-placed finalist and redistribution of their votes to the next available preference continues until one finalist has more than half of all remaining votes, at which point that finalist becomes the winner (except under specific conditions described in Sections 3.6 and 3.12 of the [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf)).
+
+      nominations: |
         Eligibility to Nominate
         ----------------------------------------
 
@@ -159,7 +175,23 @@ en:
 
     # Maps onto text from Election#i18n_key
     retro_hugo:
-      instructions: |
+      voting: |
+        How to vote:
+        ----------------------------------------
+
+        * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
+        * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
+        * A lower preference is considered only if all the candidates ranked higher have been eliminated.
+        * You are not required to rank all the finalists in any category.
+        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all.
+        * If you decide not to vote in any given category, leave it blank.
+        * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
+        * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
+        * When the ballots are counted, all the first place votes will be tabulated.
+        * If no finalist receives more than half of the votes, the finalist with the fewest first place votes is eliminated, and their votes are transferred to the finalists with the next preferences on those ballots.
+        * This process of elimination of the last-placed finalist and redistribution of their votes to the next available preference continues until one finalist has more than half of all remaining votes, at which point that finalist becomes the winner (except under specific conditions described in Sections 3.6 and 3.12 of the [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf)).
+
+      nominations: |
         Eligibility to Nominate
         ----------------------------------------
 

@@ -38,6 +38,7 @@ services:
 
   web:
     entrypoint: "script/docker_web_entry.sh"
+    working_dir: /hack
     image: registry.gitlab.com/worldcon/wellington:latest
     depends_on:
       - postgres
@@ -48,13 +49,14 @@ services:
       - "3000:3000"
     restart: always
     volumes:
-      - ./:/app                         # Mount current working directory
-      - node_modules:/app/node_modules  # Except node_modules folder which is exclusive to the container
+      - node_modules:/hack/node_modules  # Except node_modules folder which is exclusive to the container
+      - ./:/hack                         # Mount current working directory to /hack for hacking :)
       - type: tmpfs
-        target: /app/tmp
+        target: /hack/tmp
 
   worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
+    working_dir: /hack
     image: registry.gitlab.com/worldcon/wellington:latest
     depends_on:
       - web
@@ -64,10 +66,10 @@ services:
       .env
     restart: always
     volumes:
-      - ./:/app                         # Mount current working directory
-      - node_modules:/app/node_modules  # Except node_modules folder which is exclusive to the container
+      - node_modules:/hack/node_modules  # Except node_modules folder which is exclusive to the container
+      - ./:/hack                         # Mount current working directory to /hack for hacking :)
       - type: tmpfs
-        target: /app/tmp
+        target: /hack/tmp
 
   mail:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"

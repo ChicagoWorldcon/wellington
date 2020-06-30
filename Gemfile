@@ -20,11 +20,12 @@
 
 source "https://rubygems.org"
 
-gem "aws-sdk-s3"              # Hugo packet is big, let s3 handle the downloads
+gem "aws-sdk-s3"           # hugo packet is big, let s3 handle the downloads
 gem "bootsnap"             # boot large ruby/rails apps faster
 gem "bundler-audit"        # checks for insecure gems
 gem "devise"               # authentication solution for Rails with Warden
 gem "gem-licenses"         # print libraries depended on by this project, grouped by licence
+gem "httparty"             # high level abstraction for rest integrations
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "money-rails"          # dealing with money and currency conversion in Rails

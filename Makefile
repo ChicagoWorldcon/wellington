@@ -81,7 +81,7 @@ stop-daemon:
 # Workflows speicifc to conzealand
 # Gives you a full environment, seeded database
 # Reset database by setting NAPALM=true in your .env
-conzealand-start:
+conzealand-start: conzealand-stop
 	docker-compose -f docker-compose-with-rails.yml up # Create and start containers
 
 # stops application containers

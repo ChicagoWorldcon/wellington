@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 # Copyright 2019 AJ Esler
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -97,6 +97,15 @@ class ConzealandContact < ApplicationRecord
     "#{title} #{first_name} #{last_name}".strip
   end
 
+  def badge_display
+    badge_attrs = [badge_title, badge_subtitle].reject(&:blank?)
+    if badge_attrs.any?
+      badge_attrs.join(": ")
+    else
+      to_s # fall back on name
+    end
+  end
+
   def playful_nickname
     if fun_badge_title?
       "#{nickname} (psst, we know it's really you #{badge_title.humanize})"
@@ -114,5 +123,11 @@ class ConzealandContact < ApplicationRecord
     return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
     return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
+  end
+
+  # Sync when you update your details so we have your current name
+  after_commit :gloo_sync
+  def gloo_lookup_user
+    claim.user
   end
 end

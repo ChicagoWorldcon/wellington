@@ -21,6 +21,10 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to be_valid }
 
+  it "shouldn't allow slashes in email addresses" do
+    expect(build(:user, email: "harry/potter@hogwarts.net")).to_not be_valid
+  end
+
   # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
   # the :with_reservation trait.
   describe "user factory links" do

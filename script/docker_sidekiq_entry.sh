@@ -26,7 +26,7 @@ done
 
 # Development setup runs when RAILS_ENV is not set
 if [[ -z $RAILS_ENV ]]; then
-  bundle install
+  bundle install --quiet
   yarn install
 fi
 

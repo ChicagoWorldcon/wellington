@@ -31,7 +31,11 @@ class ApplicationController < ActionController::Base
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
 
-    @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
+    @reservation = visible_reservations.find_by(id: params[:reservation_id] || params[:id])
+
+    if @reservation.nil?
+      head :forbidden
+    end
   end
 
   # Assumes i18n_key as id

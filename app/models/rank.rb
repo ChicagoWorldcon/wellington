@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Rank represents a ranked choice in votes for the Hugo Awards
+# A User creates a rank through their Reservation for a Finalist in a Category
+# Validations about duplciate ranks are higher level than this
+# But you should only be able to at most submit one rank on a Reservation per Finalist
 class Rank < ApplicationRecord
   belongs_to :finalist
   belongs_to :reservation

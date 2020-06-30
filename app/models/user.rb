@@ -32,13 +32,29 @@ class User < ApplicationRecord
   has_many :notes
   has_many :reservations, through: :active_claims
 
-  validates :email, presence: true, uniqueness: true, format: Devise.email_regexp
+  validates :email, presence: true, uniqueness: true
   validates :hugo_download_counter, presence: true
+
+  validate :email_address_format_valid
 
   scope :in_stripe, -> { where.not(stripe_id: nil) }
   scope :not_in_stripe, -> { where(stripe_id: nil) }
 
   def in_stripe?
     stripe_id.present?
+  end
+
+  private
+
+  def email_address_format_valid
+    return if email.nil? # covered by presence: true
+
+    if !email.match(Devise.email_regexp)
+      errors.add(:email, "is an unsupported format")
+    end
+
+    if email.include?("/")
+      errors.add(:email, "slashes are unsupported")
+    end
   end
 end

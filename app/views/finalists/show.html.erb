@@ -1,5 +1,6 @@
 <%#
   Copyright 2020 Matthew B. Gray
+  Copyright 2020 Steven Ensslen
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -13,9 +14,81 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
+<% if @privacy_warning.present? %>
+  <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centred" role="document">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacy-warning-title">Multiple Accounts Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= render "multiple_accounts_disclaimer" %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 
-<div id="finalist-form">
-  <finalists :categories="categories" />
+<h1>Welcome to the final ballot for the <%= @election.name %> Awards!</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="l-v-spacing l-panel hugo-description">
+        <% instructions = t(:voting, scope: [:rights, @election.i18n_key]) %>
+        <%= raw markdown.render(instructions) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-8" <%= "hidden" if request.post? %>>
+      <div class="l-v-spacing l-panel">
+        <p>
+          Please type
+          <strong><%= @legal_name %></strong>
+          to show you understand the terms stated above.
+          This is based on your legal name as stated on your membership.
+        </p>
+        <p>
+        <input
+          id="hugo-show-form"
+          data-name="<%= @legal_name %>"
+          type="text"
+          class="form-control"
+        ></input>
+        </p>
+
+        <p class="hugo-show-form-thanks" hidden>
+          Thanks. Here's your form!
+        </p>
+
+        <p class="hugo-show-form-thanks" hidden>
+          To see all categories at once, click "open all categories" at the top of the form.
+        </p>
+
+        <p class="hugo-show-form-thanks" hidden>
+          Note that this form does not autosave. You will need to click the
+          save buttons at the bottom of each section.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div id="finalist-form"  class="hugo-show-form-thanks" hidden>
+    <finalists :categories="categories" />
+  </div>
 </div>
 
 <%= javascript_pack_tag 'hugo_finalists_vue' %>

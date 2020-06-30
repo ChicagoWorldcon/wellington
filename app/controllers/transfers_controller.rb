@@ -15,6 +15,7 @@
 # limitations under the License.
 
 #
+
 class TransfersController < ApplicationController
   helper ReservationsHelper
 
@@ -27,6 +28,11 @@ class TransfersController < ApplicationController
   end
 
   def show
+  end
+
+  def create
+    @reservation = Reservation.find(params[:reservation_id])
+    redirect_to reservation_transfer_path(params[:email], reservation_id: @reservation)
   end
 
   def update

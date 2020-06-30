@@ -14,20 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# RightsExhausted takes a Reservation and gives a human readable list of the rights used against it
-# It's used by a Support login when deciding weather to refund or transfer a membership
-class RightsExhausted
-  attr_reader :reservation
+require "rails_helper"
 
-  def initialize(reservation)
-    @reservation = reservation
-  end
+RSpec.describe Charge, type: :model do
+  subject(:model) { create(:charge) }
 
-  def call
-    [].tap do |result|
-      result << "nominated for hugos" if reservation.nominations.any?
-      result << "voted for hugos" if reservation.ranks.any?
-      result << "downloaded hugo packet" if reservation.user.hugo_download_counter > 0
-    end
-  end
+  it { is_expected.to be_valid }
 end

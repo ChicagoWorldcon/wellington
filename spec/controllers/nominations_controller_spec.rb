@@ -35,7 +35,7 @@ RSpec.describe NominationsController, type: :controller do
 
     it "404s when signed out" do
       expect(HugoState).to_not receive(:new)
-      expect { get_show }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(get_show).to have_http_status(:forbidden)
     end
 
     context "when signed in with hugo_admin rights" do
