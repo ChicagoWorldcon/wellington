@@ -35,28 +35,29 @@
 export default {
   props: ['finalist', 'ranks'],
   computed: {
-    rankSet: (vm) => !!vm.finalist.rank,
+    rankSet: (vm) => 0 < vm.finalist.rank,
     rankInRange: ({ finalist }) => (
-      finalist.rank >= 1 && finalist.rank <= 7
+      finalist.rank == null || (finalist.rank >= 1 && finalist.rank <= 7)
     ),
     rankAlreadySet: ({ finalist, ranks }) => {
-      const matching = ranks.filter((rank) => rank === finalist.rank);
-      return matching.length > 1;
+      if (finalist.rank != null) {
+        const matching = ranks.filter((rank) => rank === finalist.rank);
+        return matching.length > 1;
+      }
     },
     ranksSmallToLarge: ({ finalist, ranks }) => {
+      if (finalist.rank == null) {
+        return true;
+      } else {
       const expectedOffset = finalist.rank - 1;
       return ranks[expectedOffset] === finalist.rank;
-    },
+    }},
     // TODO check out validation options in vue's model
     // https://vuejs.org/v2/api/#model
     invalid: ({ errors }) => (
       errors.length > 0
     ),
     errors: (vm) => {
-      if (!vm.rankSet) {
-        return [];
-      }
-
       const errors = [];
       if (vm.rankAlreadySet) {
         errors.push(`Rank ${vm.finalist.rank} is set on another finalist`);
