@@ -23,6 +23,10 @@ class ChargesController < ApplicationController
 
   PendingCharges = Struct.new(:reservation, :membership, :outstanding_amount, :price_options)
 
+  def index
+    redirect_to action: :new
+  end
+
   def new
     unpaid_reservations = @reservations.reject{ |r| r.paid? }
     if unpaid_reservations.empty?

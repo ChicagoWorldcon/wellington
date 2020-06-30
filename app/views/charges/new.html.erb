@@ -17,20 +17,19 @@
 %>
 
 <h1>
-  Make a Payment towards #<%= @reservation.membership_number %>
+  Make a Payment towards <%= @pending_charges.size %> memberships.
 </h1>
 
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@reservation)) do %>
+        <%= form_tag(charges_path, "id" => "charge-form", "data-stripe" => stripe_config(current_user, @pending_charges)) do %>
           <article>
             <div id="error_explanation"></div>
 
             <p>
-              You need to pay <%= @outstanding_amount.format(with_currency: true) %> to cover this membership. Please pay
-              the full amount, or choose an instalment from the list.
+              You need to pay <%= @outstanding_amount.format(with_currency: true) %> to cover these memberships.
             </p>
 
             <label class="amount">
