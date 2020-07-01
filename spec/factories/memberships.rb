@@ -155,7 +155,6 @@ FactoryBot.define do
       name { :donor }
       price_cents { 20_00 }
       description { "With our thanks!" }
-      can_attend { false }
     end
 
     trait :chicago_friend do
@@ -168,7 +167,6 @@ FactoryBot.define do
       name { :donor }
       price_cents { 500_00 }
       description { "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and hing cool for you at the convention! (Shhh…it’s a surprise!)" }
-      can_attend { true }
     end
 
     trait :with_order_for_reservation do
