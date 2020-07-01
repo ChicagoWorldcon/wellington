@@ -2,6 +2,7 @@
   Copyright 2018 Rosanna Gray
   Copyright 2019 Jen Zajac (jenofdoom)
   Copyright 2020 Matthew B. Gray
+  Copyright 2020 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -252,7 +253,7 @@
       give you the experience you are after.
     </p>
 
-    <% if @my_offer.membership.can_attend %>
+    <% if @my_offer.can_attend? %>
     <%= render partial: "chicago_opts_attending_form", locals: { contact_form: contact_form } %>
     <% else %>
     <%= render partial: "chicago_opts_supporting_form", locals: { contact_form: contact_form } %>
