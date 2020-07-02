@@ -20,14 +20,12 @@
         v-for="finalist in category.finalists"
         :key="finalist.id"
         :finalist="finalist"
-        :disabled="dirty"
         :ranks="ranks"
       />
     </ul>
     <button
       v-on:click="save(category)"
       v-bind:key="category.id"
-      v-bind:disabled="!dirty"
       class="btn"
     >Vote for {{ category.name }}</button>
   </div>
@@ -38,11 +36,6 @@ import Finalist from './finalist.vue';
 
 export default {
   props: ['category'],
-  data() {
-    return {
-      dirty: false,
-    };
-  },
   computed: {
     ranks: ({ category }) => {
       const ranks = category.finalists.map((finalist) => finalist.rank);
@@ -51,22 +44,27 @@ export default {
         .map((r) => parseInt(r, 10))
         .sort();
     },
+    errors: () => {
+      for (let i = 0; i <= this.ranks.length; i += 1) {
+        if (this.ranks[i] !== i + 1) {
+          return true;
+        }
+      }
+      return false;
+    },
   },
   components: { Finalist },
-  updated() {
-    this.dirty = true;
-  },
   methods: {
     save: (category) => {
-      fetch('', {
-        body: JSON.stringify({ category }),
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-      }).then(() => {
-        // Work around mutating arguements "no-param-reassign"
-        const categoryRef = category;
-        categoryRef.dirty = false;
-      });
+      if (category.errors) {
+        alert("Correct errors before saving")
+      } else {
+        fetch('', {
+          body: JSON.stringify({ category }),
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     },
   },
 };
