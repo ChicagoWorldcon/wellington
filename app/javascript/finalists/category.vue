@@ -24,6 +24,7 @@
       />
     </ul>
     <button
+      v-if:"!errors"
       v-on:click="save(category)"
       v-bind:key="category.id"
       class="btn"
@@ -44,9 +45,9 @@ export default {
         .map((r) => parseInt(r, 10))
         .sort();
     },
-    errors: () => {
-      for (let i = 0; i <= this.ranks.length; i += 1) {
-        if (this.ranks[i] !== i + 1) {
+    errors: (vm) => {
+      for (let i = 0; i <= vm.ranks.length; i += 1) {
+        if (vm.ranks[i] !== i + 1) {
           return true;
         }
       }
@@ -57,7 +58,7 @@ export default {
   methods: {
     save: (category) => {
       if (category.errors) {
-        alert("Correct errors before saving")
+        alert('Correct errors before saving');
       } else {
         fetch('', {
           body: JSON.stringify({ category }),
