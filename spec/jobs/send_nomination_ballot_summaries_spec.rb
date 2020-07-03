@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe SendBallotSummaries, type: :job do
+RSpec.describe SendNominationSummaries, type: :job do
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
 
   describe "#perform" do
@@ -25,13 +25,13 @@ RSpec.describe SendBallotSummaries, type: :job do
     it "doesn't send to a user twice" do
       reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
 
-      expect(HugoMailer)
+      expect(NominationMailer)
         .to receive_message_chain(:nomination_ballot, :deliver_now)
         .and_return(true)
 
       expect { described_class.new.perform }.to change { reservation.reload.ballot_last_mailed_at }
 
-      expect(HugoMailer).to_not receive(:nomination_ballot)
+      expect(NominationMailer).to_not receive(:nomination_ballot)
       described_class.new.perform
     end
 
@@ -40,7 +40,7 @@ RSpec.describe SendBallotSummaries, type: :job do
 
       it "sends when a user nominated" do
         reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-        expect(HugoMailer)
+        expect(NominationMailer)
           .to receive_message_chain(:nomination_ballot, :deliver_now)
           .and_return(true)
       end
@@ -48,12 +48,12 @@ RSpec.describe SendBallotSummaries, type: :job do
       it "doesn't include users who have already been mailed" do
         reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
         reservation.update!(ballot_last_mailed_at: Time.now)
-        expect(HugoMailer).to_not receive(:nomination_ballot)
+        expect(NominationMailer).to_not receive(:nomination_ballot)
       end
 
       it "ignores users who voted under 10 minutes ago" do
         reservation.nominations << create(:nomination, created_at: 5.minutes.ago)
-        expect(HugoMailer).to_not receive(:nomination_ballot)
+        expect(NominationMailer).to_not receive(:nomination_ballot)
       end
 
       it "doesn't mail you if you're still updating the form" do
@@ -61,14 +61,14 @@ RSpec.describe SendBallotSummaries, type: :job do
         reservation.nominations << create(:nomination, created_at: 10.minutes.ago)
         reservation.nominations << create(:nomination, created_at: 15.minutes.ago)
         reservation.nominations << create(:nomination, created_at: 20.minutes.ago)
-        expect(HugoMailer).to_not receive(:nomination_ballot)
+        expect(NominationMailer).to_not receive(:nomination_ballot)
       end
 
       it "emails people if we've not run the job in a while" do
         reservation.update!(ballot_last_mailed_at: 24.hours.ago)
         reservation.nominations << create(:nomination, created_at: 23.hours.ago)
         reservation.nominations << create(:nomination, created_at: 22.hours.ago)
-        expect(HugoMailer)
+        expect(NominationMailer)
           .to receive_message_chain(:nomination_ballot, :deliver_now)
           .and_return(true)
       end

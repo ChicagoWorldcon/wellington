@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # ReservationsWithRecentNominations returns a list of reservations who need to be sent nomination summaries
-# It's used by SendBallotSummaries to get a shortlist of Reservation records that need to have an email sent out
+# It's used by SendNominationSummaries to get a shortlist of Reservation records that need to have an email sent out
 class ReservationsWithRecentNominations
   MINIMUM_WAIT = 10.minutes
 

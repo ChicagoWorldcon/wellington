@@ -31,6 +31,35 @@ class ApplicationController < ActionController::Base
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
 
-    @reservation = visible_reservations.find(params[:reservation_id] || params[:id])
+    @reservation = visible_reservations.find_by(id: params[:reservation_id] || params[:id])
+
+    if @reservation.nil?
+      head :forbidden
+    end
+  end
+
+  # Assumes i18n_key as id
+  def lookup_election!
+    @election = Election.find_by!(i18n_key: params[:finalist_id] || params[:id])
+  end
+
+  def lookup_legal_name_or_redirect
+    detail = @reservation.active_claim.detail
+    if detail.present?
+      @legal_name = detail.hugo_name
+      return
+    end
+
+    if @reservation.membership.name == "dublin_2019"
+      @legal_name = "Dublin Friend"
+      return
+    end
+
+    flash[:notice] = "Please enter your details to nominate for hugo"
+    redirect_to @reservation
+  end
+
+  def hugo_admin_signed_in?
+    support_signed_in? && current_support.hugo_admin.present?
   end
 end

@@ -28,6 +28,7 @@ class Reservation < ApplicationRecord
   has_many :claims
   has_many :nominations
   has_many :orders
+  has_many :ranks
 
   has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
   has_one :active_order, ->() { active }, class_name: "Order" # See Order's validations, one order active at a time
@@ -78,6 +79,8 @@ class Reservation < ApplicationRecord
     end
   end
 
+  # You can nominate if any of your order history had this ability
+  # Gets around upgrades after nomination rights are no longer available
   def can_nominate?
     Membership.can_nominate.where(id: orders.select(:membership_id)).exists?
   end
