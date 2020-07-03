@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NominationsReminder sends reminders to users who can nominate to tell them "not long to go!"
-class NominationReminderMassMailout
+# RanksReminder sends reminders to users who can vote to tell them "not long to go!"
+class RankReminderMassMailout
   include Sidekiq::Worker
 
   def perform(force: false)
     return unless force || within_send_window?
 
     last_time = Time.now
-    users_to_remind = User.eager_load(reservations: :membership).merge(Membership.can_nominate)
+    users_to_remind = User.eager_load(reservations: :membership).merge(Membership.can_vote)
 
     users_to_remind.find_each.with_index do |user, i|
-      NominationMailer.nominations_reminder_3_days_left(email: user.email).deliver_later
+      RankMailer.ranks_reminder_3_days_left(email: user.email).deliver_later
 
       # Throttle to 10 per second so we don't saturate production
       if i % 10 == 0
@@ -41,7 +41,7 @@ class NominationReminderMassMailout
 
   # 3 days from now, but lets keep it close the 72 hours to go mark
   def within_send_window?
-    three_days_to_go = utc($voting_opens_at - 3.days)
+    three_days_to_go = utc($voting_closes_at - 3.days)
     now = utc(DateTime.now)
     upper_bound = three_days_to_go + 15.minutes
     lower_bound = three_days_to_go - 15.minutes

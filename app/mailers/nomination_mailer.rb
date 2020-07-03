@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class HugoMailer < ApplicationMailer
+class NominationMailer < ApplicationMailer
   default from: $member_services_email
 
   def nomination_ballot(reservation)

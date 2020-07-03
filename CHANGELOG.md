@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
 
 ### Added
+- Emails for Hugo voting
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
   Add this to you env
@@ -27,8 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Changed
+- Adds Hugo voting emails
+  [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
 - In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+>>>>>>> CHANGELOG.md
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
@@ -39,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!196](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/196)
 - Mount working directory to /hack for conzealand development
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
+
 
 ### Removed
 - Nothing significant in this release

@@ -14,28 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Preview all emails at http://localhost:3000/rails/mailers/hugo_mailer
-class HugoMailerPreview < ActionMailer::Preview
+# Preview all emails at http://localhost:3000/rails/mailers/nomination_mailer
+class NominationMailerPreview < ActionMailer::Preview
   def nomination_ballot
     reservation = Reservation.joins(:nominations).sample
-    HugoMailer.nomination_ballot(reservation)
+    NominationMailer.nomination_ballot(reservation)
   end
 
   def nominations_open_dublin
     if params[:user]
-      mailer = HugoMailer.nominations_open_dublin(
+      mailer = NominationMailer.nominations_open_dublin(
         user: User.find_by!(email: params[:user]),
       )
       return mailer
     end
 
     dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019}).distinct
-    HugoMailer.nominations_open_dublin(user: dublin_users.sample)
+    NominationMailer.nominations_open_dublin(user: dublin_users.sample)
   end
 
   def nominations_open_conzealand
     if params[:user]
-      mailer = HugoMailer.nominations_open_conzealand(
+      mailer = NominationMailer.nominations_open_conzealand(
         user: User.find_by!(email: params[:user]),
       )
       return mailer
@@ -43,7 +43,7 @@ class HugoMailerPreview < ActionMailer::Preview
 
     users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
     conzealand_users = users.where.not(memberships: {name: :dublin_2019})
-    HugoMailer.nominations_open_conzealand(user: conzealand_users.sample)
+    NominationMailer.nominations_open_conzealand(user: conzealand_users.sample)
   end
 
   def nominations_reminder_2_weeks_left_conzealand
@@ -53,7 +53,7 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.sample
     end
 
-    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email)
+    NominationMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email)
   end
 
   def nominations_reminder_2_weeks_left_dublin
@@ -63,12 +63,12 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.sample
     end
 
-    HugoMailer.nominations_reminder_2_weeks_left_dublin(email: user.email)
+    NominationMailer.nominations_reminder_2_weeks_left_dublin(email: user.email)
   end
 
   def nominations_reminder_2_weeks_left_conzealand_multi_membership
     multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
-    HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: multi_user.email)
+    NominationMailer.nominations_reminder_2_weeks_left_conzealand(email: multi_user.email)
   end
 
   def nominations_reminder_3_days_left
@@ -78,6 +78,6 @@ class HugoMailerPreview < ActionMailer::Preview
       user = User.all.joins(:reservations).sample
     end
 
-    HugoMailer.nominations_reminder_3_days_left(email: user.email)
+    NominationMailer.nominations_reminder_3_days_left(email: user.email)
   end
 end
