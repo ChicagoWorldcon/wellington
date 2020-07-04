@@ -133,7 +133,8 @@ CREATE TABLE public.chicago_contacts (
     share_with_future_worldcons boolean DEFAULT true,
     show_in_listings boolean DEFAULT true,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    mail_souvenir_book boolean
 );
 
 
@@ -1121,6 +1122,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191229203558'),
 ('20191231004921'),
 ('20200304210408'),
-('20200525204858');
+('20200525204858'),
+('20200629100946');
 
 
