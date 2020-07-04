@@ -2,6 +2,7 @@
 
 # Copyright 2019 Steven C Hartley
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +17,14 @@
 # limitations under the License.
 
 class MembershipMailer < ApplicationMailer
+  include ApplicationHelper
   default from: $member_services_email
 
   def login_link(token:, email:)
     @token = token
     mail(
       to: email,
-      subject: "CoNZealand Login Link for #{email}"
+      subject: "#{worldcon_public_name} Login Link for #{email}"
     )
   end
 
@@ -35,7 +37,7 @@ class MembershipMailer < ApplicationMailer
     mail(
       to: [from, to],
       cc: $member_services_email,
-      subject: "CoNZealand: Transferred ##{membership_number} from #{from} to #{to}"
+      subject: "#{worldcon_public_name}: Transferred ##{membership_number} from #{from} to #{to}"
     )
   end
 end

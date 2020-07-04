@@ -57,6 +57,8 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
+  #TODO: Change the defaults on these from New Zealand
+
   $maintainer_email = ENV.fetch(
     "MAINTAINER_EMAIL",
     "registrations@conzealand.nz",
@@ -65,6 +67,11 @@ Rails.application.config.action_mailer.tap do |action_mailer|
   $member_services_email = ENV.fetch(
     "MEMBER_SERVICES_EMAIL",
     "registrations@conzealand.nz",
+  ).downcase
+
+  $hugo_help_email = ENV.fetch(
+    "HUGO_HELP_EMAIL",
+    "hugohelp@conzealand.nz"
   ).downcase
 
   if Rails.env.production? && ENV["MEMBER_SERVICES_EMAIL"].nil?
