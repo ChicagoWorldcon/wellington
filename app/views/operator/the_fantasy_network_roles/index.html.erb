@@ -14,11 +14,33 @@
   limitations under the License.
 %>
 
-<ul class="list-group list-group-flush mt-3 mb-4">
-  <% @current_roles.each do |(role_name, value)| %>
-    <li>
-      <%= check_box(role_name, value) %>
-      <%= role_name %> --- <%= value %>
-    </li>
-  <% end %>
-</ul>
+<h1>Alter Roles on The Fantasy Network for <%= @user.email %></h1>
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <%= render("reservation_card", reservation: @gloo_contact.reservation) do %>
+        <p><%= link_to "Review all other memberships for this user", operator_user_path(@user) %></p>
+      <% end %>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="l-panel">
+        <p>
+          Current state of this user
+          <%= raw pretty_print(@gloo_contact.local_state) %>
+        </p>
+
+        <p>Set roles on this user</p>
+
+        <ul class="list-unstyled l-v-spacing">
+          <% @current_roles.each do |(role_name, value)| %>
+            <li>
+              <%= check_box(role_name, value) %>
+              <%= role_name %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
