@@ -46,6 +46,30 @@ class HugoMailerPreview < ActionMailer::Preview
     HugoMailer.nominations_open_conzealand(user: conzealand_users.sample)
   end
 
+  def nominations_open_chicago
+    # TODO- MAKE SURE THIS WORKS
+    if params[:user]
+      mailer = HugoMailer.nominations_open_chicago(
+        user: User.find_by!(email: params[:user]),
+      )
+      return mailer
+    end
+    users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
+    chicago_users = # TODO-- WRITE THIS QUERY.
+    HugoMailer.nominations_open_chicago(user: chicago_users.sample)
+  end
+
+  def nominations_reminder_2_weeks_left_chicago
+    # TODO- MAKE SURE THIS WORKS
+    if params[:user]
+      user = User.find_by!(email: params[:user])
+    else
+      user = User.all.sample
+    end
+
+    HugoMailer.nominations_reminder_2_weeks_left_chicago(email: user.email)
+  end
+
   def nominations_reminder_2_weeks_left_conzealand
     if params[:user]
       user = User.find_by!(email: params[:user])
@@ -71,7 +95,14 @@ class HugoMailerPreview < ActionMailer::Preview
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: multi_user.email)
   end
 
+  def nominations_reminder_2_weeks_left_chicago_multi_membership
+    # TODO: Make sure this will work for Chicago.
+    multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
+    HugoMailer.nominations_reminder_2_weeks_left_chicago(email: multi_user.email)
+  end
+
   def nominations_reminder_3_days_left
+    # TODO:  Make sure this will work for Chicago
     if params[:user]
       user = User.find_by!(email: params[:user])
     else

@@ -61,5 +61,7 @@ module Conzealand
 
     # Configure the year of the convention based on WORLDCON_YEAR env var
     config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
+
+    config.hugo_help_email = (ENV["HUGO_HELP_EMAIL"] || "hugohelp@conzealand.nz")
   end
 end

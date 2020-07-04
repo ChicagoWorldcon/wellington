@@ -87,4 +87,14 @@ module ApplicationHelper
   def site_selection_year
     ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
   end
+
+  def retro_hugo_year
+    ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+  end
+
+  def email_hugo_help
+    ApplicationHelper.theme_hugo_help_email
+  end
+
+
 end

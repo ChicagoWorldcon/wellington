@@ -76,6 +76,10 @@ module ThemeConcern
       end
     end
 
+    def theme_hugo_help_email
+      Rails.configuration.hugo_help_email
+    end
+
     def theme_con_year
       Rails.configuration.con_year
     end

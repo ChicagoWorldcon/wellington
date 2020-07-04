@@ -16,6 +16,7 @@
 
 # Preview all emails at http://localhost:3000/rails/mailers/membership_mailer
 class MembershipMailerPreview < ActionMailer::Preview
+  include ThemeConcern
   def login_link
     MembershipMailer.login_link(
       email: Faker::Internet.email,
@@ -24,6 +25,8 @@ class MembershipMailerPreview < ActionMailer::Preview
   end
 
   def transfer
+
+    #TODO-- Write helpers to replace that owner name bit with one for Chicago. 
     reservation = Reservation.last(30).sample
 
     MembershipMailer.transfer(

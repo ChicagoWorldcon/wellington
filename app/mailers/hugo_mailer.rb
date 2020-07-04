@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +16,10 @@
 # limitations under the License.
 
 class HugoMailer < ApplicationMailer
+
+  include ApplicationHelper
+
+
   default from: $member_services_email
 
   def nomination_ballot(reservation)
@@ -29,9 +34,9 @@ class HugoMailer < ApplicationMailer
     @nominations_by_category = builder.nominations_by_category
 
     mail(
-      subject: "Your 2020 Hugo and 1945 Retro Hugo Nominations Ballot",
+      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_year} Retro Hugo Nominations Ballot",
       to: reservation.user.email,
-      from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
+      from: "Hugo Awards #{worldcon_year} <#{email_hugo_help}>"
     )
   end
 
@@ -126,7 +131,7 @@ class HugoMailer < ApplicationMailer
 
     @details = Detail.where(claim_id: user.active_claims)
 
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+    mail(to: user.email, from: "#{hugo_help_email}", subject: subject)
   end
 
   private
@@ -138,5 +143,9 @@ class HugoMailer < ApplicationMailer
 
   def conzealand_memberships
     Membership.can_nominate.where.not(name: :dublin).joins(:reservations)
+  end
+
+  def chicago_memberships
+    # TODO: Write this query
   end
 end
