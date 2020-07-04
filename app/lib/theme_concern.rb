@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2010 Chris Rose
+# Copyright 2020 Chris Rose
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,9 +61,27 @@ module ThemeConcern
     def theme_layout
       Rails.configuration.site_theme
     end
+
+    def theme_con_public_name
+      case Rails.configuration.con_public_name
+      when "chicago"
+        # TODO: Change to non-secret name before going live
+        "Tasfic II"
+      when "dc"
+        "DisCon III"
+      when "wellington"
+        "ConZealand"
+      else
+        raise "Unknown Convention Public Name: #{Rails.configuration.con_public_name}"
+      end
+    end
+
+    def theme_con_year
+      Rails.configuration.con_year
+    end
   end
 
-  # instance methods should also be created to reference the private ones aboe
+  # instance methods should also be created to reference the private ones above
   private
 
   def theme_contact_param
@@ -75,5 +94,13 @@ module ThemeConcern
 
   def theme_contact_form
     self.class.theme_contact_form
+  end
+
+  def theme_con_public_name
+    self.class.theme_con_public_name
+  end
+
+  def theme_con_year
+    self.class.theme_con_year
   end
 end

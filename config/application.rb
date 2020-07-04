@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,10 +48,18 @@ module Conzealand
       config.active_job.queue_adapter = :sidekiq
     end
 
+    # TODO: After ConZealand is over, change these defaults
+
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
     config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
 
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = (ENV["WORLDCON_THEME"] || "conzealand").downcase
+
+    # Configure the pubic-facing name for the convention based on WORLDCON_PUBLIC_NAME env var
+    config.con_public_name = (ENV["WORLDCON_PUBLIC_NAME"] || "wellington").downcase
+
+    # Configure the year of the convention based on WORLDCON_YEAR env var
+    config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
   end
 end

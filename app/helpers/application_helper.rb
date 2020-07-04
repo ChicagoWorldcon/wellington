@@ -2,6 +2,7 @@
 
 # Copyright 2019 AJ Esler
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@
 # limitations under the License.
 
 module ApplicationHelper
+
   include ThemeConcern
 
   DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
@@ -68,5 +70,21 @@ module ApplicationHelper
 
   def worldcon_contact_form
     ApplicationHelper.theme_contact_form
+  end
+
+  def worldcon_public_name
+    ApplicationHelper.theme_con_public_name
+  end
+
+  def worldcon_public_name_spaceless
+    ApplicationHelper.theme_con_public_name.remove(" ");
+  end
+
+  def worldcon_year
+    ApplicationHelper.theme_con_year
+  end
+
+  def site_selection_year
+    ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
   end
 end
