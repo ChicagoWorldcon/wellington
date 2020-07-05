@@ -21,6 +21,7 @@
 class Category < ApplicationRecord
   belongs_to :election
   has_many :nominations
+  has_many :finalists
 
   validates :description, presence: true
   validates :name, presence: true

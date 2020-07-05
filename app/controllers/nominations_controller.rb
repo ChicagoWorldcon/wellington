@@ -65,30 +65,17 @@ class NominationsController < ApplicationController
 
   private
 
-  def lookup_election!
-    @election = Election.find_by!(i18n_key: params[:id])
-  end
-
   def check_access!
     # You have unrestricted access if you're a hugo admin
     return true if hugo_admin_signed_in?
 
-    now = DateTime.now
+    errors = []
+    errors << "nominations are closed" if !HugoState.new.has_nominations_opened?
+    errors << "this membership doesn't have nomination rights" if !@reservation.can_nominate?
+    errors << "unavailable when signed in as support" if support_signed_in?
 
-    if now < $nomination_opens_at
-      raise ActiveRecord::RecordNotFound
-    end
-
-    if $voting_opens_at < now
-      raise ActiveRecord::RecordNotFound
-    end
-
-    if !@reservation.can_nominate?
-      raise ActiveRecord::RecordNotFound
-    end
-
-    if support_signed_in?
-      flash[:notice] = "Can't view nominations when signed in as support"
+    if errors.any?
+      flash[:notice] = errors.to_sentence
       redirect_to @reservation
     end
   end
@@ -115,9 +102,5 @@ class NominationsController < ApplicationController
 
   def ordered_categories_for_election
     @election.categories.order(:order, :id)
-  end
-
-  def hugo_admin_signed_in?
-    support_signed_in? && current_support.hugo_admin.present?
   end
 end

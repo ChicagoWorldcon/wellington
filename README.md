@@ -204,7 +204,7 @@ INSTALMENT_PAYMENT_STEP_CENTS=5000
 DB_HOST=localhost
 DB_PORT=35432
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=super secret password
+POSTGRES_PASSWORD=secretcopypasta
 
 # Sidekiq is a background task manager which you can view on /sidekiq
 # Setting SIDEKIQ_NO_PASSWORD means you can hit this URL without basicauth
@@ -329,7 +329,7 @@ Below is an example setup which should get you most of the way towards a running
 CoNZealand has a few URLs, one for stable and one for master. Because staging traffic is minimal, the rails servers are
 loaded onto the same AWS EC2 t2.micro instance using Ubuntu with
 [docker-compose](https://docs.docker.com/compose/install/). Our database concerns are served by an AWS RDS db.t2.micro
-which handles patching, backups and maintenence.
+which handles patching, backups and maintenance.
 
 For an easy setup with SSL, conzealand uses [Caddy](https://caddyserver.com/) because it handles SSL with
 [Lets Encrypt](https://letsencrypt.org/) and is fairly quick.
@@ -488,13 +488,13 @@ SMTP_PASSWORD=SG.woithuz8Hiefah1aevaeph4tha8yi1ecopypastaitotouliaGoo0eey7te9hiu
 ```
 
 There's also a `staging.env` next to this which is a variation on these settings. Make sure you use different variables
-where possible, particularly `DB_NAME` and `REDIS_URL` options so you don't have clobering data stores.
+where possible, particularly `DB_NAME` and `REDIS_URL` options so you don't have clobbering data stores.
 
 On your first run you're going to have to load in the database schema load and some seeds. You can do this from the
-image itself by running up an interactive shell and using the rake commands available to that environemnt. Our database
-seeds are stored in `db/seeds` and corrospond to runnable rake commands.
+image itself by running up an interactive shell and using the rake commands available to that environment. Our database
+seeds are stored in `db/seeds` and correspond to runnable rake commands.
 
-Here's the basic recipe to load up a minimal conzealand produciton:
+Here's the basic recipe to load up a minimal conzealand production:
 
 ```
 # Run an interactive shell
