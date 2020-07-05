@@ -77,8 +77,8 @@ export default {
   methods: {
     changeRank() {
       this.$emit('valid', this.errors.length === 0);
-    }
-  }
+    },
+  },
 };
 </script>
 
