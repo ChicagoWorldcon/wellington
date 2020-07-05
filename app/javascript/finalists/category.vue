@@ -52,14 +52,6 @@ export default {
         .map((r) => parseInt(r, 10))
         .sort();
     },
-    valid: (vm) => {
-      for (let i = 0; i < vm.ranks.length; i += 1) {
-        if (vm.ranks[i] !== i + 1) {
-          return false;
-        }
-      }
-      return true;
-    },
   },
   components: { Finalist },
   methods: {
