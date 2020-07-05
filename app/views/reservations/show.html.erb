@@ -18,18 +18,18 @@
 
 <h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
 
-<% if support_signed_in? && @rights_exhausted.any? %>
+<% if operator_signed_in? && @rights_exhausted.any? %>
   <div class="alert alert-danger" role="alert">
     Note: User has <%= @rights_exhausted.to_sentence %>
   </div>
 <% end %>
 
 <section class="l-section">
-  <% if support_signed_in? %>
+  <% if operator_signed_in? %>
     <div class="row">
       <div class="col-12 col-md-6">
-        <div class="l-panel support-pane">
-          <h2>Support Actions</h2>
+        <div class="l-panel operator-pane">
+          <h2>Operator Actions</h2>
           <p>
             <%= link_to "Transfer membership", new_operator_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
@@ -83,7 +83,7 @@
       </div>
 
       <div class="col-12 col-md-6">
-        <div class="l-panel support-pane">
+        <div class="l-panel operator-pane">
           <h2>User Notes</h2>
           <% if @notes.none? %>
             No notes for this membership

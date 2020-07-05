@@ -17,7 +17,7 @@
 class Operator::TransfersController < ApplicationController
   helper ReservationsHelper
 
-  before_action :authenticate_support!
+  before_action :authenticate_operator!
   before_action :setup_transfer, only: [:show, :update]
 
   def new
@@ -34,14 +34,14 @@ class Operator::TransfersController < ApplicationController
   end
 
   def update
-    current_support.transaction do
+    current_operator.transaction do
       owner_contact = @transfer.copy_contact
 
       service = ApplyTransfer.new(
         @transfer.reservation,
         from: @transfer.from_user,
         to: @transfer.to_user,
-        audit_by: current_support.email,
+        audit_by: current_operator.email,
         copy_contact: @transfer.copy_contact?,
       )
       new_claim = service.call

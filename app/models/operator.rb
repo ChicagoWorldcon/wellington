@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Support is not a User, but does present a login means for people who need to access admin pages
+# Operator is not a User, but does present a login means for people who need to access admin pages
 # This relies on Devise for handling cookies and sessions and inherits from global config set in config/initializers/devise.rb
-# Support actions live on URLs prefixed with /operator
-# Support#hugo_admin property exists for sensitive actions that Hugo Admins want exclusive control over, set this to true to alter Nomination forms
-# You can use these credentials to sign in through /supports/sign_in
-class Support < ApplicationRecord
-  # Currently you create Support users thorugh the rails console with Support.create!(email: "...", password: "...")
+# Operator actions live on URLs prefixed with /operator
+# Operator#hugo_admin property exists for sensitive actions that Hugo Admins want exclusive control over, set this to true to alter Nomination forms
+# You can use these credentials to sign in through /operators/sign_in
+class Operator < ApplicationRecord
+  # Currently you create Operator users thorugh the rails console with Operator.create!(email: "...", password: "...")
   # However this can be configured to use Google or Facebook auth instead
   # Please open a MR if you want to do this, and make it configurable plz <3
 

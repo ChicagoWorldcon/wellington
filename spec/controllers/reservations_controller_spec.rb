@@ -30,7 +30,7 @@ RSpec.describe ReservationsController, type: :controller do
   let!(:original_user) { existing_reservation.user }
 
   let(:another_user) { create(:user) }
-  let(:support) { create(:support) }
+  let(:operator) { create(:operator) }
 
   let(:valid_contact_params) do
     FactoryBot.build(:conzealand_contact).slice(
@@ -132,8 +132,8 @@ RSpec.describe ReservationsController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
-    context "when signed in as support" do
-      before { sign_in(support) }
+    context "when signed in as operator" do
+      before { sign_in(operator) }
 
       it "can view any membership" do
         get :show, params: { id: existing_reservation.id }
@@ -143,7 +143,7 @@ RSpec.describe ReservationsController, type: :controller do
 
     context "after transferring a membership" do
       before do
-        ApplyTransfer.new(existing_reservation, from: original_user, to: another_user, audit_by: support.email).call
+        ApplyTransfer.new(existing_reservation, from: original_user, to: another_user, audit_by: operator.email).call
       end
 
       it "can't be found for original user" do
@@ -181,8 +181,8 @@ RSpec.describe ReservationsController, type: :controller do
       expect(get :show, params: valid_params).to have_http_status(:forbidden)
     end
 
-    context "when signed in as support" do
-      before { sign_in(support) }
+    context "when signed in as operator" do
+      before { sign_in(operator) }
 
       it "updates when all values present" do
         post :update, params: valid_params

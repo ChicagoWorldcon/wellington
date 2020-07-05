@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # RightsExhausted takes a Reservation and gives a human readable list of the rights used against it
-# It's used by a Support login when deciding weather to refund or transfer a membership
+# It's used by a Operator login when deciding weather to refund or transfer a membership
 class RightsExhausted
   attr_reader :reservation
 

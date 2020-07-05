@@ -53,7 +53,7 @@
 <nav class="container <%= "collapse" if request.path != root_path %>" id="navbarHeader">
   <div class="row">
     <div class="col-sm-8 col-md-6 py-4">
-      <% if current_support.nil? %>
+      <% if !current_operator.present? %>
         <ul class="list-unstyled l-v-spacing">
           <li><%= link_to "Purchase Membership", memberships_path %></li>
           <li><%= link_to "My Memberships", reservations_path %></li>
@@ -65,17 +65,17 @@
         </ul>
       <% end %>
 
-      <% if current_support.present? %>
-        <h2 class="h4-like">Support links</h2>
+      <% if current_operator.present? %>
+        <h2 class="h4-like">Operator links</h2>
         <ul class="list-unstyled l-v-spacing">
           <li><%= link_to "Membership List", reservations_path %></li>
           <li>
             <%= link_to(
-              "Logout of Support",
-              destroy_support_session_path,
+              "Logout of Operator account",
+              destroy_operator_session_path,
               action: :delete, method: :delete, class: "button"
             ) %>
-            (<%= current_support.email %>)
+            (<%= current_operator.email %>)
           </li>
         </ul>
       <% end %>

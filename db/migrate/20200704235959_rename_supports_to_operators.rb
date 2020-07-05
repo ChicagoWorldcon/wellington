@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,19 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Operator::SetMembershipsController < ApplicationController
-  before_action :authenticate_operator!
-  before_action :lookup_reservation!
-
-  def index
-    @memberships = Membership.all
-    @as_at = Time.now
-  end
-
-  def update
-    membership = Membership.find(params[:id])
-    SetMembership.new(@reservation, to: membership, audit_by: current_operator.email).call
-    flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
-    redirect_to @reservation
+class RenameSupportsToOperators < ActiveRecord::Migration[6.0]
+  def change
+    rename_table :supports, :operators
   end
 end

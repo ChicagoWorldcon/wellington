@@ -18,13 +18,13 @@ require "rails_helper"
 
 RSpec.describe "Transfer request", :type => :request do
 
-  let!(:support) { create(:support) }
+  let!(:operator) { create(:operator) }
   let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
   let(:user) { create(:user) }
   let!(:new_user) { create(:user) }
 
   it "accepts a transferee's email address and redirects to the transfer confirmation page" do
-    sign_in(support)
+    sign_in(operator)
     post operator_reservation_transfers_path(reservation_id:  reservation.id), params: { email: new_user.email,
     reservation_id: reservation.id}
     follow_redirect!

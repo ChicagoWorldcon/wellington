@@ -20,7 +20,7 @@ RSpec.describe Operator::CreditsController, type: :controller do
   render_views
 
   let(:user) { create(:user) }
-  let(:support) { create(:support) }
+  let(:operator) { create(:operator) }
   let(:reservation) do
     create(:reservation,
       :with_order_against_membership,
@@ -37,24 +37,24 @@ RSpec.describe Operator::CreditsController, type: :controller do
 
     it "doesn't render when signed out" do
       get_new
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
     it "doesn't render for users" do
       sign_in user
       get_new
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    it "works for support" do
-      sign_in support
+    it "works for operator" do
+      sign_in operator
       expect(get_new).to have_http_status(:ok)
     end
   end
 
   describe "#create" do
     before do
-      sign_in support
+      sign_in operator
     end
 
     [

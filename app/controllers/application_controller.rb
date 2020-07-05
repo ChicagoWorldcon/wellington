@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
 
-    if !support_signed_in?
+    if !operator_signed_in?
       visible_reservations = visible_reservations.where(users: { id: current_user })
     end
 
@@ -60,6 +60,6 @@ class ApplicationController < ActionController::Base
   end
 
   def hugo_admin_signed_in?
-    support_signed_in? && current_support.hugo_admin.present?
+    operator_signed_in? && current_operator.hugo_admin.present?
   end
 end

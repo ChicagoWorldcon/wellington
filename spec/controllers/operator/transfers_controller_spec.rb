@@ -20,7 +20,7 @@ RSpec.describe Operator::TransfersController, type: :controller do
   render_views
 
   let!(:reservation) { create(:reservation, :with_claim_from_user, :with_order_against_membership) }
-  let!(:support) { create(:support) }
+  let!(:operator) { create(:operator) }
   let(:user) { create(:user) }
   let!(:old_user) { reservation.user }
   let!(:new_user) { create(:user) }
@@ -37,13 +37,13 @@ RSpec.describe Operator::TransfersController, type: :controller do
   end
 
   describe "#new" do
-    it "bounces you if you're not logged in as support" do
+    it "bounces you if you're not logged in as operator" do
       get :new, params: new_params
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    context "when signed in as support" do
-      before { sign_in(support) }
+    context "when signed in as operator" do
+      before { sign_in(operator) }
 
       it "renders with the email address of the person being transferred from" do
         get :new, params: new_params
@@ -54,13 +54,13 @@ RSpec.describe Operator::TransfersController, type: :controller do
   end
 
   describe "#show" do
-    it "bounces you if you're not logged in as support" do
+    it "bounces you if you're not logged in as operator" do
       get :show, params: show_update_params
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    context "when signed in as support" do
-      before { sign_in(support) }
+    context "when signed in as operator" do
+      before { sign_in(operator) }
 
       it "renders" do
         get :show, params: show_update_params
@@ -78,17 +78,17 @@ RSpec.describe Operator::TransfersController, type: :controller do
 
     it "bounces you if you're not logged in" do
       post_create
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    it "bounces you if you're signed in as non-support" do
+    it "bounces you if you're signed in as non-operator" do
       sign_in(user)
       post_create
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    context "when signed in as support" do
-      before { sign_in(support) }
+    context "when signed in as operator" do
+      before { sign_in(operator) }
       it "redirects" do
         post_create
         expect(response).to have_http_status(:found)
@@ -97,7 +97,7 @@ RSpec.describe Operator::TransfersController, type: :controller do
   end
 
   describe "#update" do
-    before { sign_in(support) }
+    before { sign_in(operator) }
     subject(:update_reservation_transfer) { patch(:update, params: show_update_params) }
 
     context "when there aren't errors" do

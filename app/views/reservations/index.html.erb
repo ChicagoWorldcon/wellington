@@ -16,7 +16,7 @@
 
 %>
 
-<% if !support_signed_in? %>
+<% if !operator_signed_in? %>
   <h1>Review My Memberships</h1>
   <section class="l-section">
     <div class="row">
@@ -51,9 +51,9 @@
   </section>
 <% end %>
 
-<% if support_signed_in? %>
+<% if operator_signed_in? %>
   <h1>Review All Memberships</h1>
-  <p>(note, sign out of support to see your personal memberships)</p>
+  <p>(note, sign out of operator account to see your personal memberships)</p>
 
   <section class="l-section">
     <div class="row">
