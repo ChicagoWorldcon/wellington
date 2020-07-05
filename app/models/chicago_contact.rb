@@ -56,7 +56,8 @@ class ChicagoContact < ApplicationRecord
     :interest_dealers,
     :interest_selling_at_art_show,
     :interest_exhibiting,
-    :interest_performing
+    :interest_performing,
+    :mail_souvenir_book
   ].freeze
 
   belongs_to :claim, required: false
