@@ -22,9 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 - Hugo finalists for 2020 are now available
   [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
-  Note, links only show up when you load them
+  Note, links only show up when you load them, yes this is order dependent
   ```bash
-  bin/rake db:seed:production_finalist
+  bin/rake db:seed:conzealand:production_finalist
+  bin/rake db:seed:conzealand:production_rename_hugo
   ```
 
 ### Changed
