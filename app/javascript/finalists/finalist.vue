@@ -19,6 +19,8 @@
         type="text"
         v-model.number="finalist.rank"
         :class="{ 'text-danger': invalid }"
+        @change='changeRank()'
+        @keyup='changeRank()'
       >
       <span v-bind:class="{ 'text-danger': invalid }">
         {{ finalist.name }}
@@ -72,6 +74,11 @@ export default {
       return errors;
     },
   },
+  methods: {
+    changeRank() {
+      this.$emit('valid', this.errors.length === 0);
+    }
+  }
 };
 </script>
 

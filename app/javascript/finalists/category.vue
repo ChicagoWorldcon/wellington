@@ -21,8 +21,10 @@
         :key="finalist.id"
         :finalist="finalist"
         :ranks="ranks"
+        @valid="valid = $event"
       />
     </ul>
+
     <button
       v-if="valid"
       v-on:click="save(category)"
@@ -37,6 +39,11 @@ import Finalist from './finalist.vue';
 
 export default {
   props: ['category'],
+  data: () => (
+    {
+      valid: true,
+    }
+  ),
   computed: {
     ranks: ({ category }) => {
       const ranks = category.finalists.map((finalist) => finalist.rank);
