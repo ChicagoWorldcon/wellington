@@ -19,14 +19,7 @@ class RankMailer < ApplicationMailer
 
   def rank_ballot(reservation)
     @detail = reservation.active_claim.contact
-    nominated_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
-
-    builder = MemberRanksByCategory.new(
-      reservation: reservation,
-      categories: nominated_categories.order(:order, :id),
-    )
-    builder.from_reservation
-    @ranks_by_category = builder.ranks_by_category
+    @ranks = reservation.ranks
 
     mail(
       subject: "Your 2020 Hugo and 1945 Retro Hugo Ballot",

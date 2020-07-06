@@ -16,11 +16,11 @@
 <p>Kia ora <%= @detail %></p>
 
 <p>
-Thank you for your votes in the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em> Award
+Thank you for voting in the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em> Award
   and the 1945 Retro Hugo Awards.
 </p>
 
-<% if !@ranks_by_category.present? %>
+<% if !@ranks.present? %>
   <p>
     Your ballot is currently empty.
   </p>
@@ -29,19 +29,22 @@ Thank you for your votes in the 2020 Hugo Awards, Lodestar Award, <em>Astounding
     Below is a summary of your current voting ballot:
   </p>
 
-  <% @ranks_by_category.each do |category, ranks| %>
-    <p><%= category %></p>
-    <ul>
-      <% ranks.select(&:persisted?).each do |rank| %>
-        <li><%= rank %></li>
+    <% @ranks.each do |rank| %>
+      <% if !@previous_category %>
+        <p><%= rank.finalist.category.name %></p><ol>
+      <% elsif rank.finalist.category.name != @previous_category %>
+        </ol><p><%= rank.finalist.category.name %></p><ol>
       <% end %>
-    </ul>
-  <% end %>
+      <% @previous_category = rank.finalist.category.name %>
+        <li> <%= rank.finalist.description %> </li>
+    <% end %>
+  </ol>
 <% end %>
 
+
 <p>
-  The deadline for votes is 15 July 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59
-  Irish time, and 8:59 am 16 July 2020 New Zealand time).
+  The deadline for votes is 22 July 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59
+  Irish time, and 8:59 am 23 July 2020 New Zealand time).
 </p>
 
 <p>

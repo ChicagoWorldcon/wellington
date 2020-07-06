@@ -33,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
 - In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
->>>>>>> CHANGELOG.md
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"

@@ -41,25 +41,25 @@ RSpec.describe RankReminderMassMailout, type: :job do
       end
 
       it "doesn't execute 20 minutes before the window" do
-        $voting_closes_at = 3.days.from_now + 20.minutes
+        $hugo_closed_at = 3.days.from_now + 20.minutes
         expect(RankMailer).to_not receive(:ranks_reminder_3_days_left)
         perform
       end
 
       it "doesn't execute 20 minutes after the window" do
-        $voting_closes_at = 3.days.from_now - 20.minutes
+        $hugo_closed_at = 3.days.from_now - 20.minutes
         expect(RankMailer).to_not receive(:ranks_reminder_3_days_left)
         perform
       end
 
       it "calls within the window" do
-        $voting_closes_at = 3.days.from_now
+        $hugo_closed_at = 3.days.from_now
         expect(RankMailer).to receive_message_chain(:ranks_reminder_3_days_left, :deliver_later).and_return(true)
         perform
       end
 
       it "calls within the window across timezones" do
-        $voting_closes_at = "2020-03-13T11:59:00-08:00".to_datetime
+        $hugo_closed_at = "2020-03-13T11:59:00-08:00".to_datetime
         three_days_from_welly = "2020-03-11T08:59:00+13:00".to_datetime
         Timecop.freeze(three_days_from_welly) do
           expect(RankMailer).to receive_message_chain(:ranks_reminder_3_days_left, :deliver_later).and_return(true)
@@ -68,7 +68,7 @@ RSpec.describe RankReminderMassMailout, type: :job do
       end
 
       it "does execute 20 minutes before the window when force is set" do
-        $voting_closes_at = 10.days.from_now
+        $hugo_closed_at = 10.days.from_now
         expect(RankMailer).to receive_message_chain(:ranks_reminder_3_days_left, :deliver_later).and_return(true)
         job.perform(force: true)
       end
