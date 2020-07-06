@@ -18,6 +18,7 @@
 %>
 
 <%= fields_for(@contact) do |contact_form| %>
+  <%# TODO: Deal with URLs %>
   <p>
     For more information about how we handle and use your personal information, please read our
     <a href="https://conzealand.nz/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a> and our
@@ -272,8 +273,9 @@
       <% end %>
     </div>
 
+    <%# TODO: Deal with city %>
     <p>
-      This charge will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
+      This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in New Zealand, and use Stripe as our
       payment processor.
     </p>
 

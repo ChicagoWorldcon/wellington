@@ -1,5 +1,6 @@
 <%#
   Copyright 2020 Steven Ensslen
+  Copyright 2020 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,14 +15,14 @@
   limitations under the License.
 %>
 
-<h1>Hugo Voter’s Packet 2020</h1>
+<h1>Hugo Voter’s Packet <%= worldcon_year %></h1>
 
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
         <p>
-          Welcome to the Hugo Voter’s Packet for 2020! While we know that you’re
+          Welcome to the Hugo Voter’s Packet for <%= worldcon_year %>! While we know that you’re
           excited to dive right into the materials, please take a moment to read
           this brief introduction to the packet.
         </p>
@@ -36,7 +37,7 @@
           this year’s Hugo Voter Packet. We also ask that you honour publishers’
           and creators’ request that you reserve these copies for your personal use
           only, and that you do not share these works with non-members of
-          CoNZealand.
+          <%= worldcon_public_name %>.
         </p>
 
         <p>
@@ -62,23 +63,26 @@
           Galley is a free service that allows you to download different copies of
           a work. You must first register for an account and then come back to the
           link in the packet and click on it to access the work. These links will
-          expire when voting closes. In one case (the Best Series submission for
+          expire when voting closes. <%= (theme_contact_class == ConzealandContact) ? "In one case (the Best Series submission for
           Katherine Arden's Winternight trilogy) a further step is needed - the
           publisher will make the material available only after you request it, via
-          the NetGalley widget provided.
+          the NetGalley widget provided." : "" %>
         </p>
 
+          <%# TODO: Deal with this category %>
         <p>
           Finally, we do have some materials in our Best Dramatic Presentation: Short
           Form this year. Since we do not usually have materials submitted in this
           category, we wanted to make sure that you check them out!
         </p>
 
+
+        <%# TODO: Deal with this date %>
         <p>
           Happy reading everyone and remember to finalize your ballot choices by
           July 15th. (Also, download your packet by then too! When voting closes,
           the packet disappears into the ether.) If you have any problems with the
-          packet, please contact hugohelp@conzealand.nz.
+          packet, please contact <%= hugo_help_email %>.
         </p>
 
         <ul class="list-group text-dark">

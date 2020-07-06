@@ -1,9 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <%#
   Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
+  Copyright 2020 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -41,8 +42,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="CoNZealand is a convention for science fiction enthusiasts.">
-  <meta name="keywords" content="conzealand, science fiction, convention, meet up, sci-fi" />
+  <meta name="description" content="<%= worldcon_public_name %> is a convention for science fiction enthusiasts.">
+  <meta name="keywords" content="<%= worldcon_public_name.downcase %>, science fiction, convention, meet up, sci-fi" />
 </head>
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
