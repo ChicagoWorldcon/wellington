@@ -57,7 +57,7 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
-  #TODO: Change the defaults on these from New Zealand
+  #TODO: POST-BID: Change the defaults on these from New Zealand
 
   $maintainer_email = ENV.fetch(
     "MAINTAINER_EMAIL",
@@ -81,6 +81,11 @@ Rails.application.config.action_mailer.tap do |action_mailer|
 
   if Rails.env.production? && ENV["MAINTAINER_EMAIL"].nil?
     puts "Please set MAINTAINER_EMAIL to allow for reply address on report emails"
+    exit 1
+  end
+
+  if Rails.env.production? && ENV["HUGO_HELP_EMAIL"].nil?
+    puts "Please set HUGO_HELP_EMAIL to allow for reply address on report emails"
     exit 1
   end
 

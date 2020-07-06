@@ -70,7 +70,7 @@ module ThemeConcern
       when "dc"
         "DisCon III"
       when "wellington"
-        "ConZealand"
+        "CoNZealand"
       else
         raise "Unknown Convention Public Name: #{Rails.configuration.con_public_name}"
       end
@@ -82,6 +82,32 @@ module ThemeConcern
 
     def theme_con_year
       Rails.configuration.con_year
+    end
+
+    def theme_con_city
+      Rails.configuration.con_city
+    end
+
+    def theme_con_country
+      case Rails.configuration.con_country
+      when "us"
+        "the USA"
+      when "new zealand"
+        "New Zealand"
+      else
+        raise "Unknown Convention Country: #{Rails.configuration.con_country}"
+    end
+
+    def theme_greeting
+      case Rails.configuration.basic_greeting
+      when "chicago"
+        "greetings"
+      when "dc"
+        "hello"
+      when "wellington"
+        "kia ora"
+      else
+        raise "Unknown Convention Public Name: #{Rails.configuration.basic_greeting}"
     end
   end
 
@@ -106,5 +132,13 @@ module ThemeConcern
 
   def theme_con_year
     self.class.theme_con_year
+  end
+
+  def theme_con_city
+    self.class.theme_con_city
+  end
+
+  def theme_con_country
+    self.class.theme_con_country
   end
 end

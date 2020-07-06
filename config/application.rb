@@ -62,6 +62,16 @@ module Conzealand
     # Configure the year of the convention based on WORLDCON_YEAR env var
     config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
 
+    # Configure the email for help with Hugo issues
     config.hugo_help_email = (ENV["HUGO_HELP_EMAIL"] || "hugohelp@conzealand.nz")
+
+    # Configure the default basic greeting
+    config.basic_greeting = (ENV["GREETING"] || "wellington").downcase
+
+    # Configure the name of the host city
+    config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
+
+    config.con_country = (ENV["WORLDCON_COUNTRY"] || "new zealand").downcase
+
   end
 end

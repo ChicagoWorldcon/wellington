@@ -96,5 +96,30 @@ module ApplicationHelper
     ApplicationHelper.theme_hugo_help_email
   end
 
+  def worldcon_basic_greeting
+    ApplicationHelper.theme_greeting
+  end
+
+  def worldcon_greeting_sentence
+    ApplicationHelper.theme_greeting.capitalize.concat(".")
+  end
+
+  def worldcon_greeting_sentence_excited
+    ApplicationHelper.theme_greeting.capitalize.concat("!")
+  end
+
+  def worldcon_greening_init_caps
+    # TODO: Make this happen
+  end
+
+  def worldcon_city
+    ApplicationHelper.theme_con_city
+  end
+
+  def worldcon_country
+    ApplicationHelper.theme_con_country
+  end
+
+
 
 end

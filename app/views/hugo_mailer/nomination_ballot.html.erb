@@ -13,11 +13,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-<p>Kia ora <%= @detail %></p>
+<p><%= worldcon_basic_greeting.capitalize => <%= @detail %></p>
 
 <p>
-Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em> Award
-  and the 1945 Retro Hugo Awards.
+Thank you for your nominations for the <%= worldcon_year %> Hugo Awards, Lodestar Award, <em>Astounding</em> Award
+  and the <%= retro_hugo_year %> Retro Hugo Awards.
 </p>
 
 <% if !@nominations_by_category.present? %>
@@ -39,6 +39,7 @@ Thank you for your nominations for the 2020 Hugo Awards, Lodestar Award, <em>Ast
   <% end %>
 <% end %>
 
+<%# TODO:  See what all we need to do about this. %>
 <p>
   The deadline for nominations is 13 March 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59
   Irish time, and 8:59 pm 14 March 2020 New Zealand time).
