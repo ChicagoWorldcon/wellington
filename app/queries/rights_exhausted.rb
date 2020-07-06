@@ -26,6 +26,7 @@ class RightsExhausted
   def call
     [].tap do |result|
       result << "nominated for hugos" if reservation.nominations.any?
+      result << "voted for hugos" if reservation.ranks.any?
       result << "downloaded hugo packet" if reservation.user.hugo_download_counter > 0
     end
   end

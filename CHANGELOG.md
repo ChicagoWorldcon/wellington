@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
 
 ### Added
+- Emails for Hugo voting
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
   Add this to you env
@@ -19,10 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```ruby
   GlooSync.all_users
   ```
+- Hugo finalists for 2020 are now available
+  [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
+  Note, links only show up when you load them, yes this is order dependent
+  ```bash
+  bin/rake db:seed:conzealand:production_finalist
+  bin/rake db:seed:conzealand:production_rename_hugo
+  ```
 
 ### Changed
+- Adds Hugo voting emails
+  [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
 - In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+>>>>>>> CHANGELOG.md
 - Create documentation around classes in models, queries and commands folders
   [!191](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/191)
 - Rename "2020-wellington" to just "wellington"
@@ -35,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 - Update all node modules
   [!202](https://gitlab.com/worldcon/wellington/-/merge_requests/202)
+
 
 ### Removed
 - Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu

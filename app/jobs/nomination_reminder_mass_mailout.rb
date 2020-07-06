@@ -25,7 +25,7 @@ class NominationReminderMassMailout
     users_to_remind = User.eager_load(reservations: :membership).merge(Membership.can_nominate)
 
     users_to_remind.find_each.with_index do |user, i|
-      HugoMailer.nominations_reminder_3_days_left(email: user.email).deliver_later
+      NominationMailer.nominations_reminder_3_days_left(email: user.email).deliver_later
 
       # Throttle to 10 per second so we don't saturate production
       if i % 10 == 0

@@ -20,18 +20,23 @@
 
 # Be sure to restart your server when you modify this file.
 Rails.application.config.content_security_policy do |policy|
-  static_hosts = []
-  static_hosts << "https://checkout.stripe.com" if ENV["STRIPE_PUBLIC_KEY"].present?
+  script_sources = []
+  script_sources << "https://checkout.stripe.com" if ENV["STRIPE_PUBLIC_KEY"].present?
+
+  # FIXME Only use this for Rails.env.development? As it opens a security hole
+  # This was enabled because it was pretty hard to get Vue to compile without eval
+  # However this should be possible with "vue-template-compiler"
+  script_sources << :unsafe_eval
 
   api_endpoints = []
-  api_endpoints << "http://localhost:3035" if Rails.env.development?
-  api_endpoints << "ws://localhost:3035" if Rails.env.development?
+  api_endpoints << "http://localhost:3035" if Rails.env.development? # hot reloading scripts
+  api_endpoints << "ws://localhost:3035" if Rails.env.development? # hot reload scripts
 
   policy.default_src :self, :https
   policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data
   policy.object_src  :none
-  policy.script_src  :self, :https, *static_hosts
+  policy.script_src  :self, :https, *script_sources
   policy.style_src   :self, :https
 
   policy.connect_src :self, :https, *api_endpoints

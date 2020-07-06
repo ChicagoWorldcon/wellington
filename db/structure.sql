@@ -133,7 +133,8 @@ CREATE TABLE public.chicago_contacts (
     share_with_future_worldcons boolean DEFAULT true,
     show_in_listings boolean DEFAULT true,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    mail_souvenir_book boolean
 );
 
 
@@ -331,6 +332,38 @@ ALTER SEQUENCE public.elections_id_seq OWNED BY public.elections.id;
 
 
 --
+-- Name: finalists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.finalists (
+    id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    description character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: finalists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.finalists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: finalists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.finalists_id_seq OWNED BY public.finalists.id;
+
+
+--
 -- Name: memberships; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -469,6 +502,39 @@ CREATE SEQUENCE public.orders_id_seq
 --
 
 ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+
+
+--
+-- Name: ranks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.ranks (
+    id bigint NOT NULL,
+    finalist_id bigint NOT NULL,
+    reservation_id bigint NOT NULL,
+    "position" integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: ranks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.ranks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: ranks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.ranks_id_seq OWNED BY public.ranks.id;
 
 
 --
@@ -649,6 +715,13 @@ ALTER TABLE ONLY public.elections ALTER COLUMN id SET DEFAULT nextval('public.el
 
 
 --
+-- Name: finalists id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finalists ALTER COLUMN id SET DEFAULT nextval('public.finalists_id_seq'::regclass);
+
+
+--
 -- Name: memberships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -674,6 +747,13 @@ ALTER TABLE ONLY public.notes ALTER COLUMN id SET DEFAULT nextval('public.notes_
 --
 
 ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
+
+
+--
+-- Name: ranks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ranks ALTER COLUMN id SET DEFAULT nextval('public.ranks_id_seq'::regclass);
 
 
 --
@@ -762,6 +842,14 @@ ALTER TABLE ONLY public.elections
 
 
 --
+-- Name: finalists finalists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finalists
+    ADD CONSTRAINT finalists_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -791,6 +879,14 @@ ALTER TABLE ONLY public.notes
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ranks ranks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ranks
+    ADD CONSTRAINT ranks_pkey PRIMARY KEY (id);
 
 
 --
@@ -896,6 +992,13 @@ CREATE UNIQUE INDEX index_elections_on_i18n_key ON public.elections USING btree 
 
 
 --
+-- Name: index_finalists_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_finalists_on_category_id ON public.finalists USING btree (category_id);
+
+
+--
 -- Name: index_nominations_on_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -928,6 +1031,20 @@ CREATE INDEX index_orders_on_membership_id ON public.orders USING btree (members
 --
 
 CREATE INDEX index_orders_on_reservation_id ON public.orders USING btree (reservation_id);
+
+
+--
+-- Name: index_ranks_on_finalist_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_ranks_on_finalist_id ON public.ranks USING btree (finalist_id);
+
+
+--
+-- Name: index_ranks_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_ranks_on_reservation_id ON public.ranks USING btree (reservation_id);
 
 
 --
@@ -978,6 +1095,14 @@ CREATE INDEX index_users_on_email ON public.users USING btree (email);
 
 ALTER TABLE ONLY public.nominations
     ADD CONSTRAINT fk_rails_1724df02dc FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: ranks fk_rails_23cee67c32; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ranks
+    ADD CONSTRAINT fk_rails_23cee67c32 FOREIGN KEY (finalist_id) REFERENCES public.finalists(id);
 
 
 --
@@ -1034,6 +1159,22 @@ ALTER TABLE ONLY public.orders
 
 ALTER TABLE ONLY public.notes
     ADD CONSTRAINT fk_rails_7f2323ad43 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: finalists fk_rails_c29553688f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.finalists
+    ADD CONSTRAINT fk_rails_c29553688f FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: ranks fk_rails_c35ad96879; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ranks
+    ADD CONSTRAINT fk_rails_c35ad96879 FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
 
 
 --
@@ -1121,6 +1262,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191229203558'),
 ('20191231004921'),
 ('20200304210408'),
-('20200525204858');
+('20200324223914'),
+('20200324223922'),
+('20200525204858'),
+('20200629100946');
 
 

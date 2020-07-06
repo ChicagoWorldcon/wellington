@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 Jen Zajac (jenofdoom)
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -53,6 +54,10 @@ class MembershipOffer
 
   def name
     "#{membership}"
+  end
+
+  def can_attend?
+    membership.can_attend
   end
 
   def membership_rights

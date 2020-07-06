@@ -43,6 +43,6 @@ services:
     entrypoint: "mailcatcher -f --ip 0.0.0.0"
     image: registry.gitlab.com/worldcon/wellington:latest
     ports:
-      - "1080:1080"
-      - "1025:1025"
+      - "1080:1080" # Browser viewable mailbox
+      - "1025:1025" # Open SMTP reciever port
     restart: always
