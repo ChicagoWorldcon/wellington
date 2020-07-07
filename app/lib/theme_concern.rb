@@ -88,14 +88,37 @@ module ThemeConcern
       Rails.configuration.con_city
     end
 
+    def theme_con_city_previous
+      Rails.configuration.con_city_previous
+    end
+
+    def theme_con_tos_url
+      Rails.configuration.worldcon_tos_url
+    end
+
+    def theme_con_volunteering_url
+      Rails.configuration.worldcon_volunteering_url
+    end
+
+    def theme_con_privacy_url
+      Rails.configuration.worldcon_privacy_policy_url
+    end
+
+    def theme_con_homepage_url
+      Rails.configuration.worldcon_homepage_url
+    end
+
     def theme_con_country
       case Rails.configuration.con_country
       when "us"
+        "the USA"
+      when "dc"
         "the USA"
       when "new zealand"
         "New Zealand"
       else
         raise "Unknown Convention Country: #{Rails.configuration.con_country}"
+      end
     end
 
     def theme_greeting
@@ -108,6 +131,7 @@ module ThemeConcern
         "kia ora"
       else
         raise "Unknown Convention Public Name: #{Rails.configuration.basic_greeting}"
+      end
     end
   end
 
@@ -140,5 +164,21 @@ module ThemeConcern
 
   def theme_con_country
     self.class.theme_con_country
+  end
+
+  def theme_con_tos_url
+    self.class.theme_con_tos_url
+  end
+
+  def theme_con_privacy_url
+    self.class.theme_con_privacy_url
+  end
+
+  def theme_con_homepage_url
+    self.class.theme_con_homepage_url
+  end
+
+  def theme_con_city_previous
+    self.class.theme_con_city_previous
   end
 end

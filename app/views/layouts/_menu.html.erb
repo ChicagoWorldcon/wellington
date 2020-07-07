@@ -60,9 +60,9 @@
         <% if ENV["HUGO_PACKET_BUCKET"] %>
           <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
         <% end %>
-        <%# TODO: Deal with URLs %>
-        <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
-        <li><a href="https://conzealand.nz">Back to <%= worldcon_public_name %> homepage</a></li>
+
+        <li><a href="<%= worldcon_url_volunteering %>">Volunteering</a></li>
+        <li><a href="<%= worldcon_url_homepage %>">Back to <%= worldcon_public_name %> homepage</a></li>
       </ul>
       <% if Rails.env.development? %>
         <h2 class="h4-like">Developer links</h2>

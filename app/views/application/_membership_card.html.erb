@@ -29,7 +29,8 @@
       <ul class="list-group list-group-flush mt-3 mb-4">
         <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
-            <%= t(:description, scope: membership_right) %>
+            <% interpolation_vals = translation_interpolation_vals %>
+            <%= t(:description, scope: membership_right ) %>
             <i class="far fa-question-circle"
               title="<%= t(:layman, scope: membership_right) %>"
               data-toggle="tooltip"

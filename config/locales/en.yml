@@ -53,9 +53,9 @@ en:
     description: With this membership, you can
 
     attend:
-      description: Attend in 2020
+      description: Attend in %{worldcon_year}
       layman:
-        You get to fully participate in the interactive virtual CoNZealand in 2020, with things such as panels and
+        You get to fully participate in %{virtual} %{worldcon_public_name} in %{worldcon_year}, with things such as panels and
         streaming video to informal hangouts and late-night networking, attend award ceremonies, shop in virtual dealer
         rooms with sci-fi games/books, and much more!
 
@@ -63,7 +63,7 @@ en:
       description: Vote in Site Selection
       layman:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
-        able to help choose where the worldcon will be hosted in 2022.
+        able to help choose where the worldcon will be hosted in %{site_selection_year}.
 
     # Maps onto text from Election#i18n_key
     hugo:
