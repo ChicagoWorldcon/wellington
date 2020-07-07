@@ -19,7 +19,7 @@ class RankMailer < ApplicationMailer
 
   def rank_ballot(reservation)
     @detail = reservation.active_claim.contact
-    @ranks = reservation.ranks
+    @ranks = reservation.ranks.sort_by{ |rank| [rank.finalist.category.id, rank.position]}
 
     mail(
       subject: "Your 2020 Hugo and 1945 Retro Hugo Ballot",
