@@ -89,45 +89,137 @@ module ApplicationHelper
   end
 
   def worldcon_year
-    ApplicationHelper.theme_con_year
+    ouryear = ApplicationHelper.theme_con_year
+  end
+
+  def worldcon_year_before
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 1).to_s
+  end
+
+  def worldcon_year_after
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) + 1).to_s
   end
 
   def site_selection_year
-    ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
   end
 
   def retro_hugo_year
-    ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+  end
+
+  def retro_hugo_year_before
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 76).to_s
   end
 
   def email_hugo_help
-    ApplicationHelper.theme_hugo_help_email
+    ouremail = ApplicationHelper.theme_hugo_help_email
   end
 
   def worldcon_basic_greeting
-    ApplicationHelper.theme_greeting
+    ourgreeting = ApplicationHelper.theme_greeting
+    binding.pry
+    return ourgreeting
+  end
+
+  def worldcon_greeting_init_caps
+    # TODO: Make this happen
+    ourgreeting = ApplicationHelper.theme_greeting.split.map{|word| word.upcase}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
+    binding.pry
+    return ourgreeting
   end
 
   def worldcon_greeting_sentence
-    ApplicationHelper.theme_greeting.capitalize.concat(".")
+    ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat(".")
+    binding.pry
+    return ourgreeting
   end
 
   def worldcon_greeting_sentence_excited
-    ApplicationHelper.theme_greeting.capitalize.concat("!")
-  end
-
-  def worldcon_greening_init_caps
-    # TODO: Make this happen
+    ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat("!")
+    binding.pry
+    return ourgreeting
   end
 
   def worldcon_city
-    ApplicationHelper.theme_con_city
+    ourcity = ApplicationHelper.theme_con_city
+    binding.pry
+    return ourcity
   end
 
   def worldcon_country
-    ApplicationHelper.theme_con_country
+    ourcountry = ApplicationHelper.theme_con_country
+    binding.pry
+    return ourcountry
   end
 
+  def worldcon_url_tos
+    ApplicationHelper.theme_con_tos_url
+  end
 
+  def worldcon_url_privacy
+    ApplicationHelper.theme_con_privacy_url
+  end
 
+  def worldcon_url_volunteering
+    ApplicationHelper.theme_con_volunteering_url
+  end
+
+  def worldcon_url_homepage
+    ApplicationHelper.theme_con_homepage_url
+  end
+
+  def worldcon_previous_city
+    ApplicationHelper.theme_con_city_previous
+  end
+
+  def finalists_loaded?
+    @voting_open ||= Finalist.count > 0
+  end
+
+  #TODO:  WRAP THESE
+  def hugo_nom_start
+    $nomination_opens_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+  end
+
+  def hugo_nom_deadline
+    $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+  end
+
+  def hugo_vote_deadline
+    $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+  end
+
+  def hugo_ballot_pub_month
+    rough_guess_month = Date._parse($hugo_closed_at.to_s)[:mon] + 1
+    rough_guess_year = Date._parse($hugo_closed_at.to_s)[:year]
+    if (rough_guess_month > 12)
+      rough_guess_month = rough_guess_month - 12
+      rough_guess_year = rough_guess_year + 1
+    end
+    return "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
+  end
+
+  def translation_interpolation_vals
+    ourHash = {
+      :hugo_noms_open => hugo_nom_start,
+      :hugo_nom_dl => hugo_nom_deadline,
+      :hugo_vote_dl => hugo_vote_deadline,
+      :hugo_ballot_month => hugo_ballot_pub_month,
+      :virtual_language => virtual_con_lang,
+      :worldcon_country => worldcon_country,
+      :worldcon_hugo_email => email_hugo_help,
+      :worldcon_previous_city => worldcon_previous_city,
+      :worldcon_public_name => worldcon_public_name,
+      :worldcon_year => worldcon_year,
+      :worldcon_year_after => worldcon_year_after,
+      :worldcon_year_before => worldcon_year_before,
+      :retro_hugo_year => retro_hugo_year,
+    }
+    return ourHash
+  end
+
+  def virtual_con_language
+    ApplicationHelper.theme_con_year == "2020" ? "the interactive virtual" : ""
+  end
 end

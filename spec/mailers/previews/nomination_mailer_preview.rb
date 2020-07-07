@@ -49,14 +49,14 @@ class NominationMailerPreview < ActionMailer::Preview
   def nominations_open_chicago
     # TODO- MAKE SURE THIS WORKS
     if params[:user]
-      mailer = HugoMailer.nominations_open_chicago(
+      mailer = NominationMailer.nominations_open_chicago(
         user: User.find_by!(email: params[:user]),
       )
       return mailer
     end
     users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
     chicago_users = # TODO-- WRITE THIS QUERY.
-    HugoMailer.nominations_open_chicago(user: chicago_users.sample)
+    NominationMailer.nominations_open_chicago(user: chicago_users.sample)
   end
 
   def nominations_reminder_2_weeks_left_chicago
@@ -67,7 +67,7 @@ class NominationMailerPreview < ActionMailer::Preview
       user = User.all.sample
     end
 
-    HugoMailer.nominations_reminder_2_weeks_left_chicago(email: user.email)
+    NominationMailer.nominations_reminder_2_weeks_left_chicago(email: user.email)
   end
 
   def nominations_reminder_2_weeks_left_conzealand
@@ -98,7 +98,7 @@ class NominationMailerPreview < ActionMailer::Preview
   def nominations_reminder_2_weeks_left_chicago_multi_membership
     # TODO: Make sure this will work for Chicago.
     multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
-    HugoMailer.nominations_reminder_2_weeks_left_chicago(email: multi_user.email)
+    NominationMailer.nominations_reminder_2_weeks_left_chicago(email: multi_user.email)
   end
 
   def nominations_reminder_3_days_left

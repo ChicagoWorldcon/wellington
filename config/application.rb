@@ -73,5 +73,16 @@ module Conzealand
 
     config.con_country = (ENV["WORLDCON_COUNTRY"] || "new zealand").downcase
 
+    config.worldcon_volunteering_url = (ENV["WORLDCON_VOLUNTEERING_URL"] || "https://conzealand.nz/conzealand-needs").downcase
+
+    config.worldcon_tos_url = (ENV["WORLDCON_TOS_URL"] || "https://conzealand.nz/about-conzealand/policies-and-expectations/" ).downcase
+
+    config.worldcon_privacy_policy_url = (ENV["WORLDCON_PRIVACY_POLICY_URL"] || "https://conzealand.nz/privacy-policy/").downcase
+
+    config.worldcon_homepage_url = (ENV["WORLDCON_HOMEPAGE_URL"] || "https://conzealand.nz/").downcase
+
+    config.con_city_previous =
+    (ENV["WORLDCON_CITY_PREVIOUS"] || "wellington").downcase
+
   end
 end
