@@ -41,7 +41,7 @@ class RankReminderMassMailout
 
   # 3 days from now, but lets keep it close the 72 hours to go mark
   def within_send_window?
-    three_days_to_go = utc($voting_closes_at - 3.days)
+    three_days_to_go = utc($hugo_closed_at - 3.days)
     now = utc(DateTime.now)
     upper_bound = three_days_to_go + 15.minutes
     lower_bound = three_days_to_go - 15.minutes

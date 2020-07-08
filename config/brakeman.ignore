@@ -7,7 +7,7 @@
       "check_name": "UnscopedFind",
       "message": "Unscoped call to `Category#find`",
       "file": "app/controllers/nominations_controller.rb",
-      "line": 34,
+      "line": 50,
       "link": "https://brakemanscanner.org/docs/warning_types/unscoped_find/",
       "code": "Category.find(params[:category_id])",
       "render_path": null,
@@ -23,19 +23,19 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
-      "fingerprint": "b66dbbf141d2e57ee7c3478648c6cb0cc14409f7b3c55e6f08a2df3c7ca9f642",
+      "fingerprint": "ba5e957ffc7a09f54dbea352df7b07ebb2bee2363b8298ad2c1e857894c9f34e",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/nominations/show.html.erb",
       "line": 44,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "markdown.render(t(:instructions, :scope => ([:rights, Election.find_by!(:i18n_key => params[:id]).i18n_key])))",
+      "code": "markdown.render(t(:nominations, :scope => ([:rights, Election.find_by!(:i18n_key => ((params[:finalist_id] or params[:id]))).i18n_key])))",
       "render_path": [
         {
           "type": "controller",
           "class": "NominationsController",
           "method": "show",
-          "line": 28,
+          "line": 34,
           "file": "app/controllers/nominations_controller.rb",
           "rendered": {
             "name": "nominations/show",
@@ -47,11 +47,42 @@
         "type": "template",
         "template": "nominations/show"
       },
-      "user_input": "Election.find_by!(:i18n_key => params[:id]).i18n_key",
+      "user_input": "Election.find_by!(:i18n_key => ((params[:finalist_id] or params[:id]))).i18n_key",
       "confidence": "Weak",
-      "note": "Election is seeded and impossible to set by the user. i18n values are not private."
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "c5302b6bfc6b1f482ac0b5c60bd034f3ed926c3eaffaac265e1df966706eb0dd",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/finalists/show.html.erb",
+      "line": 44,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "markdown.render(t(:voting, :scope => ([:rights, Election.find_by!(:i18n_key => ((params[:finalist_id] or params[:id]))).i18n_key])))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "FinalistsController",
+          "method": "show",
+          "line": 30,
+          "file": "app/controllers/finalists_controller.rb",
+          "rendered": {
+            "name": "finalists/show",
+            "file": "app/views/finalists/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "finalists/show"
+      },
+      "user_input": "Election.find_by!(:i18n_key => ((params[:finalist_id] or params[:id]))).i18n_key",
+      "confidence": "Weak",
+      "note": ""
     }
   ],
-  "updated": "2019-11-20 17:13:36 +1300",
-  "brakeman_version": "4.7.0"
+  "updated": "2020-07-06 07:47:18 +0000",
+  "brakeman_version": "4.8.2"
 }

@@ -1,4 +1,5 @@
-# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Matthew B.
+# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,28 +13,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Scheudle format is in cron
+# Schedule format is in cron
 # more information can be found at https://crontab.guru/
 schedule:
   sync_nominations_to_dave:
-    cron: '10 0 * * * America/Los_Angeles' # At 00:10 every day
+    cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: NominationsTdsSync
 
   email_nomination_reports:
-    cron: '10 0 * * * America/Los_Angeles' # At 00:10 every day
+    cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: SendNominationReports
 
   email_membership_reports:
-    cron: '0 1 * * 6 Pacific/Auckland' # At 01:00 on Saturday
+    cron: "0 1 * * 6 Pacific/Auckland" # At 01:00 on Saturday
     class: SendMembershipReports
 
   # TODO maybe it would have been better to use this http://localhost:3000/sidekiq/scheduled
   # This job returns early if you're not close to 72 hours of nomination close
   # It runs a lot so that the reminder is timely
   email_nomination_reminder_3_days:
-    cron: '0 * * * * Pacific/Auckland' # Every hour on the hour
+    cron: "0 * * * * Pacific/Auckland" # Every hour on the hour
     class: NominationReminderMassMailout
 
   email_nomination_ballot_summaries:
-    cron: '*/30 * * * * Pacific/Auckland' # Runs every half an hour
-    class: SendBallotSummaries
+    cron: "*/30 * * * * Pacific/Auckland" # Runs every half an hour
+    class: SendNominationSummaries
+
+  email_voting_reminder_3_days:
+    cron: "0 * * * * Pacific/Auckland" # Every hour on the hour
+    class: RankReminderMassMailout
+
+  email_voting_summaries:
+    cron: "*/15 * * * * Pacific/Auckland" # Runs every half an hour
+    class: SendRankSummaries
