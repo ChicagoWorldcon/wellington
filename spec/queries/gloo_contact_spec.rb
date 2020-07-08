@@ -232,4 +232,29 @@ RSpec.describe GlooContact do
       it { is_expected.to include(remote_roles.first) }
     end
   end
+
+  describe "#save!" do
+    subject(:save!) { described_class.new(reservation).save! }
+
+    before do
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+    end
+
+    it "doesn't raise when successful" do
+      expect(HTTParty).to receive(:post)
+        .with(%r{/v1/users/#{user.email}}, any_args)
+        .and_return(post_success)
+
+      save!
+    end
+
+    it "raises error when server is down" do
+      expect(HTTParty).to receive(:post)
+        .with(%r{/v1/users/#{user.email}}, any_args)
+        .and_return(service_down_response)
+
+      expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+    end
+  end
 end

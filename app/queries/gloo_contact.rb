@@ -51,7 +51,6 @@ class GlooContact
   def remote_state
     return @remote_state if @remote_state.present?
 
-    email = reservation.user.email
     user = get_json("/v1/users/#{email}")
     roles = get_json("/v1/users/#{email}/roles")
     @remote_state = user.merge(roles)
@@ -102,7 +101,15 @@ class GlooContact
     reservation.active_claim.conzealand_contact || ConzealandContact.new
   end
 
+  def save!
+    post_json("/v1/users/#{email}", local_state)
+  end
+
   private
+
+  def email
+    @email ||= reservation.user.email
+  end
 
   # get_json hits a url using standard auth headers and parses the response body
   # from json to a ruby hash. If the service is down, raises an error.

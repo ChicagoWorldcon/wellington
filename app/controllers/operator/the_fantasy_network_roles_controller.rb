@@ -20,6 +20,9 @@ class Operator::TheFantasyNetworkRolesController < ApplicationController
     all_roles = as_hash(GlooContact::DISCORD_ROLES, value: false)
     remote_roles = as_hash(@gloo_contact.discord_roles, value: true)
     @current_roles = all_roles.merge(remote_roles)
+  rescue GlooContact::ServiceUnavailable => e
+    flash[:error] = "Failed to connect to The Fantasy Network: #{e.to_s}"
+    redirect_to operator_user_path(@user)
   end
 
   # FIXME This should post to TFN through Gloo
