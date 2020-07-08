@@ -1,23 +1,22 @@
 ---
-name: "Build Image for Deploy"
+name: "Test pull requests"
 
 on:
-  push:
+  pull_request:
     branches:
-      - main
+      - master
       - staging
-      - ci-testing
 
 jobs:
-  release:
+  test:
     runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Extract branch name
+      - name: Extract PR number
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }'))"
         id: extract_name
 
       - name: Configure AWS Credentials
@@ -34,7 +33,7 @@ jobs:
       - name: Define the repository labels
         run: |
             echo '::set-env name=CONTAINER_TEST_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}'
-            echo '::set-env name=CONTAINER_STAGING_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}'
+            echo '::set-env name=CONTAINER_STAGING_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ steps.extract_name.outputs.branch }}'
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
@@ -46,18 +45,7 @@ jobs:
           docker run -d --name="test-database" --hostname "postgres" -e "POSTGRES_PASSWORD=test" postgres:latest
           docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_REPOSITORY bundle exec rake db:create db:structure:load spec
 
-      - name: Run security tests
-        if: ${{ startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/security-') }}
-        run: |
-          docker pull $CONTAINER_TEST_REPOSITORY
-          docker run $CONTAINER_TEST_REPOSITORY bundle update brakeman --quiet
-          docker run $CONTAINER_TEST_REPOSITORY bundle exec brakeman --run-all-checks --no-pager
-          docker run $CONTAINER_TEST_REPOSITORY bundle exec bundler-audit check --update
-          docker run $CONTAINER_TEST_REPOSITORY bundle exec ruby-audit check
-          docker run $CONTAINER_TEST_REPOSITORY script/yarn_smart_audit.rb
-          docker run $CONTAINER_TEST_REPOSITORY yarn check --integrity
-
-      - name: Publish to the branch tag
+      - name: Publish to the PR tag
         run: |
           docker pull $CONTAINER_TEST_REPOSITORY
           docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_STAGING_REPOSITORY
