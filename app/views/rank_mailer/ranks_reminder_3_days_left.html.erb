@@ -15,9 +15,9 @@
 %>
 <p>
   <% if @details.count == 1 %>
-    <%= worldcon_greeting_init_caps %> <%= @details.first %>!
+    <%= @worldcon_greeting_init_caps %> <%= @details.first %>!
   <% else %>
-    <%= worldcon_greeting_init_caps %>!
+    <%= @worldcon_greeting_init_caps %>!
   <% end %>
 </p>
 
@@ -27,7 +27,7 @@
   - sometimes there are hiccups in the login process, and it can take our team
   some time to fix those for you. So if you plan to vote and have not logged
   in and accessed the voting form yet, please do so ASAP. The deadline for
-  voting is <%= hugo_vote_deadline %>.
+  voting is <%= @hugo_vote_deadline %>.
 </p>
 
 <p>
@@ -47,7 +47,7 @@
 </p>
 
 <p>
-  Please contact <%= email_hugo_help %>if you have difficulties accessing the
+  Please contact <%= @email_hugo_help %>if you have difficulties accessing the
   online ballot(s), or you have any other questions on the Hugo process.
 </p>
 
@@ -58,7 +58,7 @@
   <%=
     link_to(
       "A4",
-      hugo_ballot_download_a4,
+      @hugo_ballot_download_a4,
     )
   %>,
 
@@ -66,18 +66,18 @@
   <%=
     link_to(
       "US letter",
-      hugo_ballot_download_letter,
+      @hugo_ballot_download_letter,
     )
   %> sizes. The WSFS Constitution is also available online
-  <a href=<%= wsfs_constitution_link %>>here</a>.
+  <a href=<%= @wsfs_constitution_link %>>here</a>.
 </p>
 
 <p>
-  We look forward to your participation in the <%= worldcon_year %> Hugo Awards and <%= retro_hugo_75_ago %> Retro
-  Hugos, and hope to see you at <%= convention_public_name %>!
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro
+  Hugos, and hope to see you at <%= @convention_public_name %>!
 </p>
 
 <p>
-  <%= organizers_names_for_signature %><br>
+  <%= @organizers_names_for_signature %><br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

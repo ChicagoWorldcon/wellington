@@ -76,3 +76,10 @@ Membership.create!(
   can_attend: false,
   can_nominate: true,
 )
+
+########################################
+# Other prod data migrations that happened post deploy
+
+require_relative "development_hugo.seeds.rb"
+require_relative "development_dublin.seeds.rb"
+require_relative "development_hugo_ordering.seeds.rb"
