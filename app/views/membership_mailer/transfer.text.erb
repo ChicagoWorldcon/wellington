@@ -18,7 +18,7 @@
 # limitations under the License.
 %>
 <%# TODO: Deal with URL %>
-<%= worldcon_greeting_sentence_excited %>
+<%= @worldcon_greeting_sentence_excited %>
 
 You've received this email because <%= @owner_name || "somebody" %> requested to transfer
 membership #<%= @membership_number %> from "<%= @from %>" to "<%= @to %>"
@@ -26,5 +26,5 @@ and this should now be in effect.
 
 If you have any questions or concerns, please reply to this email.
 
-<%= worldcon_public_name %> – <%= $member_services_email %>
-https://conzealand.nz/
+<%= @worldcon_public_name %> – <%= $member_services_email %>
+<%= @worldcon_homepage_url %>

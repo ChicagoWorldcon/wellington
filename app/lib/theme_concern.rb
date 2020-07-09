@@ -124,7 +124,7 @@ module ThemeConcern
     def theme_greeting
       case Rails.configuration.basic_greeting
       when "chicago"
-        "greetings"
+        "hi there, friend"
       when "dc"
         "hello"
       when "wellington"

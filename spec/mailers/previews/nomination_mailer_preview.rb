@@ -17,6 +17,7 @@
 # Preview all emails at http://localhost:3000/rails/mailers/nomination_mailer
 class NominationMailerPreview < ActionMailer::Preview
   def nomination_ballot
+    binding.pry
     reservation = Reservation.joins(:nominations).sample
     NominationMailer.nomination_ballot(reservation)
   end

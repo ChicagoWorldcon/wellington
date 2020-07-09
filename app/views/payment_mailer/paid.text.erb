@@ -18,7 +18,7 @@
 %>
 
 <%# TODO: Deal with URL %>
-<%= worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
+<%= @worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
 
 We've sent you this email to let you know that you've just finished paying for your <%= @reservation.membership %> membership,
 and that your membership number is #<%= @reservation.membership_number %>.
@@ -28,5 +28,5 @@ identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= wo
 
 You can update your detals and access our services any time by returning to the members area.
 
-<%= worldcon_public_name %> - <%= $member_services_email %>
-https://conzealand.nz/
+<%= @worldcon_public_name %> - <%= $member_services_email %>
+<%= @worldcon_url_homepage %>

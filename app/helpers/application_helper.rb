@@ -100,12 +100,17 @@ module ApplicationHelper
     ouryear = ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
   end
 
-  def retro_hugo_year
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+  def retro_hugo_years
+    #TODO: Make a mechanism to populate this array
+    []
   end
 
-  def retro_hugo_year_before
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 76).to_s
+  def retro_hugo?
+    retro_hugo.length > 0
+  end
+
+  def number_of_retro_hugos
+    retro_hugo_years.length
   end
 
   def email_hugo_help
@@ -114,37 +119,32 @@ module ApplicationHelper
 
   def worldcon_basic_greeting
     ourgreeting = ApplicationHelper.theme_greeting
-    binding.pry
     return ourgreeting
   end
 
   def worldcon_greeting_init_caps
-    # TODO: Make this happen
-    ourgreeting = ApplicationHelper.theme_greeting.split.map{|word| word.upcase}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
-    binding.pry
+    ourgreeting = ApplicationHelper.theme_greeting.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
     return ourgreeting
   end
 
   def worldcon_greeting_sentence
     ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat(".")
-    binding.pry
     return ourgreeting
   end
 
   def worldcon_greeting_sentence_excited
     ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat("!")
-    binding.pry
     return ourgreeting
   end
 
   def worldcon_city
-    ourcity = ApplicationHelper.theme_con_city
+    ourcity = ApplicationHelper.theme_con_city.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
     binding.pry
     return ourcity
   end
 
   def worldcon_country
-    ourcountry = ApplicationHelper.theme_con_country
+    ourcountry = ApplicationHelper.theme_con_country.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
     binding.pry
     return ourcountry
   end
@@ -173,7 +173,6 @@ module ApplicationHelper
     @voting_open ||= Finalist.count > 0
   end
 
-  #TODO:  WRAP THESE
   def hugo_nom_start
     $nomination_opens_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
@@ -196,14 +195,21 @@ module ApplicationHelper
     return "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
   end
 
-  def translation_interpolation_vals
+  def virtual_con_language
+    (ApplicationHelper.theme_con_year == "2020") ? "the interactive virtual" : ""
+  end
+
+  def interpolation_vals
     ourHash = {
+      :email_hugo_help => email_hugo_help,
       :hugo_noms_open => hugo_nom_start,
       :hugo_nom_dl => hugo_nom_deadline,
       :hugo_vote_dl => hugo_vote_deadline,
       :hugo_ballot_month => hugo_ballot_pub_month,
       :virtual_language => virtual_con_lang,
       :worldcon_country => worldcon_country,
+      :worldcon_greeting_sentence => worldcon_greeting_sentence,
+      :worldcon_greeting_sentence_excited => worldcon_greeting_sentence_excited,
       :worldcon_hugo_email => email_hugo_help,
       :worldcon_previous_city => worldcon_previous_city,
       :worldcon_public_name => worldcon_public_name,
@@ -211,13 +217,9 @@ module ApplicationHelper
       :worldcon_year_after => worldcon_year_after,
       :worldcon_year_before => worldcon_year_before,
       :retro_hugo_year => retro_hugo_year,
+      :virtual_con_language => virtual_con_language
     }
     return ourHash
   end
-
-  def virtual_con_language
-    ApplicationHelper.theme_con_year == "2020") ? "the interactive virtual" : ""
-  end
-
 
 end

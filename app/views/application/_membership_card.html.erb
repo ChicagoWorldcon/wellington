@@ -32,7 +32,7 @@
             <% interpolation_vals = translation_interpolation_vals %>
             <%= t(:description, scope: membership_right ) %>
             <i class="far fa-question-circle"
-              title="<%= t(:layman, scope: membership_right) %>"
+              title="<%= t(:layman, scope: membership_right, deep_interpolation: true, ) %>"
               data-toggle="tooltip"
               aria-label="More information"
               height="15px"

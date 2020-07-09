@@ -83,6 +83,5 @@ module Conzealand
 
     config.con_city_previous =
     (ENV["WORLDCON_CITY_PREVIOUS"] || "wellington").downcase
-
   end
 end

@@ -15,17 +15,39 @@
 # limitations under the License.
 
 class RankMailer < ApplicationMailer
+  include ApplicationHelper
   default from: $member_services_email
 
   def rank_ballot(reservation)
     @detail = reservation.active_claim.contact
-    @ranks = reservation.ranks
+    nominated_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
+
+    builder = MemberRanksByCategory.new(
+      reservation: reservation,
+      categories: nominated_categories.order(:order, :id),
+    )
+    builder.from_reservation
+    @ranks_by_category = builder.ranks_by_category
 
     mail(
       subject: "Your 2020 Hugo and 1945 Retro Hugo Ballot",
       to: reservation.user.email,
       from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
     )
+  end
+
+  def ranks_open_chicago(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).merge(Membership.can_vote)
+
+    account_numbers = account_numbers_from(@reservations)
+    if account_numbers.count == 1
+      subject = "CoNZealand: Hugo voting is now open for member #{account_numbers.first}"
+    else
+      subject = "CoNZealand: Hugo voting is now open for members #{account_numbers.to_sentence}"
+    end
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
   def ranks_open_conzealand(user:)

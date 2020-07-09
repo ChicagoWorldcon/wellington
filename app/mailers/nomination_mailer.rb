@@ -22,6 +22,7 @@ class NominationMailer < ApplicationMailer
   default from: $member_services_email
 
   def nomination_ballot(reservation)
+    binding.pry
     @detail = reservation.active_claim.contact
     nominated_categories = Category.joins(nominations: :reservation).where(reservations: {id: reservation})
 
