@@ -22,6 +22,9 @@ class MembershipMailer < ApplicationMailer
 
   def login_link(token:, email:)
     @token = token
+    @worldcon_public_name = worldcon_public_name
+    @worldcon_greeting_sentence_excited = worldcon_greeting_sentence_excited
+    @worldcon_homepage_url = worldcon_url_homepage
     mail(
       to: email,
       subject: "#{worldcon_public_name} Login Link for #{email}"
@@ -29,11 +32,13 @@ class MembershipMailer < ApplicationMailer
   end
 
   def transfer(from:, to:, owner_name:, membership_number:)
+    @worldcon_public_name = worldcon_public_name
+    @worldcon_greeting_sentence_excited = worldcon_greeting_sentence_excited
+    @worldcon_homepage_url = worldcon_url_homepage
     @from = from
     @to = to
     @owner_name = owner_name
     @membership_number = membership_number
-
     mail(
       to: [from, to],
       cc: $member_services_email,

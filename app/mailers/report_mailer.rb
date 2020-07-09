@@ -15,6 +15,7 @@
 # limitations under the License.
 
 class ReportMailer < ApplicationMailer
+  include ApplicationHelper
   default from: $maintainer_email
 
   helper_method :border_styles

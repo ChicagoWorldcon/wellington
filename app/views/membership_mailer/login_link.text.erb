@@ -18,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
-<%= worldcon_greeting_sentence %>
+<%= @worldcon_greeting_sentence %>
 
 We're emailing you because we've received a request for a login link.
 
@@ -31,5 +31,5 @@ This link will expire 30 minutes after it was created, but you can always create
 
 If you've got any queries or concerns, please reply to this email.
 
-CoNZealand – <%= $member_services_email %>
-https://conzealand.nz/
+<%= @worldcon_public_name %> – <%= $member_services_email %>
+<%= @worldcon_homepage_url %>

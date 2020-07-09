@@ -15,7 +15,9 @@
 # limitations under the License.
 
 class TestMailer < ApplicationMailer
+  include ApplicationHelper
   def this_is_just_a_test(subject:, to:, from: $member_services_email)
+    @init_cap_greeting = worldcon_greeting_init_caps
     @test_subject = subject
     mail(subject: "Testing #{subject}", to: to, from: from)
   end

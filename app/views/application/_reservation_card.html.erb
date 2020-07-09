@@ -33,6 +33,7 @@
       <p>Reserved, but not fully paid</p>
       <p><%= amount_to_pay(reservation) %></p>
     <% end %>
+    <% virtual_con = (worldcon_year == "2020") ? "the interactive virtual" : "" %>
 
     <% if reservation.paid? || reservation.has_paid_supporting? %>
       <p><%= t("rights.description") %></p>
@@ -40,7 +41,7 @@
         <p>
           <%= raw membership_right_description(membership_right, reservation) %>
           <i class="far fa-question-circle"
-            title="<%= t(:layman, scope: membership_right) %>"
+            title="<%= t(:layman, scope: membership_right, :virtual=> virtual_con, :site_selection_year=> site_selection_year, :worldcon_public_name=> worldcon_public_name) %>"
             data-toggle="tooltip"
             aria-label="More information"
             height="15px"
