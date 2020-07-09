@@ -48,19 +48,25 @@ module Conzealand
       config.active_job.queue_adapter = :sidekiq
     end
 
+
+
+
+    # Configure the location of the en.yml file used for i18n translation such
+    # that it will serve con-specific text.  Note that this will NOT override
+    # the location used by outside gems, which is why devise.en.yml has to be
+    # where it is.
+    config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
     @city_folder = ENV["WORLDCON_CITY"].to_s.downcase
-
-    binding.pry
-
     config.i18n.load_path += Dir[Rails.root.join('config','locales', @city_folder, '*.{rb,yml}')]
-
-    # TODO: After ConZealand is over, change these defaults
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
     config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
 
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = (ENV["WORLDCON_THEME"] || "conzealand").downcase
+
+    # Configure the name of the host city
+
 
     # Configure the pubic-facing name for the convention based on WORLDCON_PUBLIC_NAME env var
     config.con_public_name = (ENV["WORLDCON_PUBLIC_NAME"] || "wellington").downcase
@@ -74,8 +80,7 @@ module Conzealand
     # Configure the default basic greeting
     config.basic_greeting = (ENV["GREETING"] || "wellington").downcase
 
-    # Configure the name of the host city
-    config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
+
 
     config.con_country = (ENV["WORLDCON_COUNTRY"] || "new zealand").downcase
 
