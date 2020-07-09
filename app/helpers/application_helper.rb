@@ -93,27 +93,27 @@ module ApplicationHelper
   end
 
   def worldcon_year
-    ouryear = ApplicationHelper.theme_con_year
+    ApplicationHelper.theme_con_year
   end
 
   def retro_hugo_75_ago
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+     ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
   end
 
   def worldcon_year_before
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 1).to_s
+     ((ApplicationHelper.theme_con_year.to_i) - 1).to_s
   end
 
   def worldcon_year_after
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) + 1).to_s
+     ((ApplicationHelper.theme_con_year.to_i) + 1).to_s
   end
 
   def site_selection_year
-    ouryear = ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
+     ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
   end
 
   def email_hugo_help
-    ouremail = ApplicationHelper.theme_hugo_help_email
+    ApplicationHelper.theme_hugo_help_email
   end
 
   def mailto_hugo_help
@@ -121,35 +121,27 @@ module ApplicationHelper
   end
 
   def worldcon_basic_greeting
-    ourgreeting = ApplicationHelper.theme_greeting
-    return ourgreeting
+    ApplicationHelper.theme_greeting
   end
 
   def worldcon_greeting_init_caps
-    ourgreeting = ApplicationHelper.theme_greeting.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
-    return ourgreeting
+    ApplicationHelper.theme_greeting.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
   end
 
   def worldcon_greeting_sentence
-    ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat(".")
-    return ourgreeting
+    ApplicationHelper.theme_greeting.capitalize.concat(".")
   end
 
   def worldcon_greeting_sentence_excited
-    ourgreeting = ApplicationHelper.theme_greeting.capitalize.concat("!")
-    return ourgreeting
+    ApplicationHelper.theme_greeting.capitalize.concat("!")
   end
 
   def worldcon_city
-    ourcity = ApplicationHelper.theme_con_city.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
-    binding.pry
-    return ourcity
+    ApplicationHelper.theme_con_city.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
   end
 
   def worldcon_country
-    ourcountry = ApplicationHelper.theme_con_country.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
-    binding.pry
-    return ourcountry
+    ApplicationHelper.theme_con_country
   end
 
   def worldcon_url_tos
