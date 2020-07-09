@@ -18,13 +18,13 @@ require "csv"
 
 class Export::MembershipCsv
   def call
-    return if ConzealandContact.none?
+    return if ChicagoContact.none?
 
     buff = StringIO.new
     csv = CSV.new(buff)
 
     csv << Export::MembershipRow::HEADINGS
-    contacts = ConzealandContact.joins(Export::MembershipRow::JOINS).eager_load(Export::MembershipRow::JOINS)
+    contacts = ChicagoContact.joins(Export::MembershipRow::JOINS).eager_load(Export::MembershipRow::JOINS)
     contacts.merge(Claim.active).find_each do |contact|
       csv << Export::MembershipRow.new(contact).values
     end

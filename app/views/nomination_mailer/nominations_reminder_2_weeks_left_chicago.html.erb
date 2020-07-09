@@ -27,9 +27,7 @@
 <p>
   Hello eligible Hugo nominator! This is just a quick reminder to let you know
   that the end of the Hugo nomination period is fast approaching! The deadline
-  for nominations is 13 March 2020 at 11:59pm Pacific Daylight Time (2:59 am
-  Eastern Daylight Time, 06:59 Irish time, and 8:59 pm 14 March 2020 New Zealand
-  time).
+  for nominations is <%= hugo_nom_deadline %>.
 </p>
 
 <%# TODO: Deal with the number of categories %>
@@ -37,14 +35,14 @@
   As a member of <%= worldcon_public_name %>, you are eligible to nominate in the 17 Hugo ballot
   categories covering the best of the genre in the last year, for the Lodestar
   Award for Best Young Adult Book, the Astounding Award for Best New Writer
-  (formerly known as the John W. Campbell Award), and for the <%= retro_hugo_year %> Retro Hugos,
-  celebrating the genre work of <%= (retro_hugo_year.to_i - 1).to_s %>.
+  (formerly known as the John W. Campbell Award), and for the <%= retro_hugo_75_ago %> Retro Hugos,
+  celebrating the genre work of <%= (retro_hugo_year_75_.to_i - 1).to_s %>.
 </p>
 
 <%# TODO: Deal with the URLs %>
 <p>
   To nominate online, please visit
-  <a href="https://members.conzealand.nz">members.conzealand.nz</a>
+  <a href=<%= member_login_url %>>the members' area</a> and
   enter the email address
   you received this email at, and request a login link. After clicking the link
   and entering the members area, click on My Memberships to access all
@@ -83,11 +81,11 @@
   A printable version of the WSFS Constitution and Hugo Nominating ballot has
   been included in the mailed-out version of Progress Report 2. You may also
   download a printable ballot in
-  <a href="https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf">A4</a>,
+  <a href=<%= hugo_ballot_download_a4 %>>A4</a>,
   or
-  <a href="https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf">US letter</a>
+  <a href=<%= hugo_ballot_download_letter %>>US letter</a>
   sizes. The WSFS Constitution is also available online
-  <a href="http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf">here</a>.
+  <a href=<%= wsfs_constitution_link %>>here</a>.
 </p>
 
 <p>
@@ -97,6 +95,6 @@
 
 <%# deal with organizer names%>
 <p>
-  Tammy Coxen, Nicholas Whyte and Ian Moore<br>
+  <%= organizers_names_for_signature %><br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

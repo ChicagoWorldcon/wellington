@@ -53,9 +53,9 @@ en:
     description: With this membership, you can
 
     attend:
-      description: Attend in 2022
+      description: Attend in 2020
       layman:
-        You get to fully participate in %{worldcon_public_name} in 2022, with things such as panels and
+        You get to fully participate in the interactive virtual CoNZealand in 2020, with things such as panels and
         streaming video to informal hangouts and late-night networking, attend award ceremonies, shop in virtual dealer
         rooms with sci-fi games/books, and much more!
 
@@ -63,7 +63,7 @@ en:
       description: Vote in Site Selection
       layman:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
-        able to help choose where the worldcon will be hosted in 2024.
+        able to help choose where the worldcon will be hosted in 2022.
 
     # Maps onto text from Election#i18n_key
     hugo:
@@ -88,10 +88,11 @@ en:
         ----------------------------------------
 
         You may nominate for the 2020 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
-        for Best New Writer, if, on or before 31 December 20, 11:59 PM PST
+        for Best New Writer, if, on or before 31 December 2019, 11:59 PM PST
 
-        * you are an attending or supporting member of #{convention_public_name} (the 2021 World Science Fiction Convention), or
-        * you were an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention),.
+        * you are an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention), or
+        * you were an attending or supporting member of Dublin 2019: An Irish Worldcon (the 2019 World Science Fiction
+          Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
         one-day memberships and hall passes do not.

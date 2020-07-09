@@ -60,18 +60,15 @@ Rails.application.config.action_mailer.tap do |action_mailer|
   #TODO: POST-BID: Change the defaults on these from New Zealand
 
   $maintainer_email = ENV.fetch(
-    "MAINTAINER_EMAIL",
-    "registrations@conzealand.nz",
+    "MAINTAINER_EMAIL"
   ).downcase
 
   $member_services_email = ENV.fetch(
-    "MEMBER_SERVICES_EMAIL",
-    "registrations@conzealand.nz",
+    "MEMBER_SERVICES_EMAIL"
   ).downcase
 
   $hugo_help_email = ENV.fetch(
-    "HUGO_HELP_EMAIL",
-    "hugohelp@conzealand.nz"
+    "HUGO_HELP_EMAIL"
   ).downcase
 
   if Rails.env.production? && ENV["MEMBER_SERVICES_EMAIL"].nil?
