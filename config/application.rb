@@ -48,6 +48,12 @@ module Conzealand
       config.active_job.queue_adapter = :sidekiq
     end
 
+    @city_folder = ENV["WORLDCON_CITY"].to_s.downcase
+
+    binding.pry
+
+    config.i18n.load_path += Dir[Rails.root.join('config','locales', @city_folder, '*.{rb,yml}')]
+
     # TODO: After ConZealand is over, change these defaults
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
@@ -83,5 +89,8 @@ module Conzealand
 
     config.con_city_previous =
     (ENV["WORLDCON_CITY_PREVIOUS"] || "wellington").downcase
+
+    #config.i18n.default_locale = (ENV["WORLDCON_CITY"] || "en").downcase.to_sym
+    #config.i18n.fallbacks = [:en]
   end
 end

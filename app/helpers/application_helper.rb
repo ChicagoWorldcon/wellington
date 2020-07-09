@@ -121,6 +121,10 @@ module ApplicationHelper
     ouremail = ApplicationHelper.theme_hugo_help_email
   end
 
+  def mailto_hugo_help
+    "mailto:" + ApplicationHelper.theme_hugo_help_email
+  end
+
   def worldcon_basic_greeting
     ourgreeting = ApplicationHelper.theme_greeting
     return ourgreeting
@@ -198,32 +202,4 @@ module ApplicationHelper
     end
     return "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
   end
-
-  def virtual_con_language
-    (ApplicationHelper.theme_con_year == "2020") ? "the interactive virtual" : ""
-  end
-
-  def interpolation_vals
-    ourHash = {
-      :email_hugo_help => email_hugo_help,
-      :hugo_noms_open => hugo_nom_start,
-      :hugo_nom_dl => hugo_nom_deadline,
-      :hugo_vote_dl => hugo_vote_deadline,
-      :hugo_ballot_month => hugo_ballot_pub_month,
-      :virtual_language => virtual_con_lang,
-      :worldcon_country => worldcon_country,
-      :worldcon_greeting_sentence => worldcon_greeting_sentence,
-      :worldcon_greeting_sentence_excited => worldcon_greeting_sentence_excited,
-      :worldcon_hugo_email => email_hugo_help,
-      :worldcon_previous_city => worldcon_previous_city,
-      :worldcon_public_name => worldcon_public_name,
-      :worldcon_year => worldcon_year,
-      :worldcon_year_after => worldcon_year_after,
-      :worldcon_year_before => worldcon_year_before,
-      :retro_hugo_year => retro_hugo_year,
-      :virtual_con_language => virtual_con_language
-    }
-    return ourHash
-  end
-
 end
