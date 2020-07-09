@@ -22,12 +22,12 @@
 </p>
 
 <p>
-  We are very glad to be able to tell you that nominations for the <%= worldcon_year %> Hugo
+  We are very glad to be able to tell you that nominations for the <%= @worldcon_year %> Hugo
   Awards!
 </p>
 
 <p>
-  As a member of <%= worldcon_public_name %>, you are eligible to nominate in the 17 Hugo ballot
+  As a member of <%= @worldcon_public_name %>, you are eligible to nominate in the 17 Hugo ballot
   categories covering the best of the genre in the last year, for the Lodestar
   Award for Best Young Adult Book, the <em>Astounding</em> Award for Best New Writer
   (formerly known as the John W. Campbell Award).
@@ -70,27 +70,27 @@
 </p>
 
 <p>
-  The deadline for nominations is <%= hugo_nom_deadline %>. Although members of <%= previous_worldcon_public_name %> <%= worldcon_year_before %> can nominate, only members of
-  <%= worldcon_public_name %> will be eligible to vote on the final ballot and choose the winners
-  of the <%= worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= retro_hugo_75_ago %> Retro Hugo
+  The deadline for nominations is <%= @hugo_nom_deadline %>. Although members of <%= @previous_worldcon_public_name %> <%= @worldcon_year_before %> can nominate, only members of
+  <%= @worldcon_public_name %> will be eligible to vote on the final ballot and choose the winners
+  of the <%= @worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= @retro_hugo_75_ago %> Retro Hugo
   Awards.
 </p>
 
 <p>
-  We expect to announce the final ballot in early <%= hugo_ballot_pub_month %>, and the awards will be
-  presented at <%= worldcon_public_name %>, which will run from <%= start_day_informal %> to <%= end_day_informal %>, <%= worldcon_year %>.
+  We expect to announce the final ballot in early <%= @hugo_ballot_pub_month %>, and the awards will be
+  presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= @end_day_informal %>, <%= @worldcon_year %>.
 </p>
 
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from  <%= worldcon_year_before %> and  <%= (retro_hugo_75_ago.to_i - 1).to_s %>.
+  were your favorites from  <%= @worldcon_year_before %> and  <%= (@retro_hugo_75_ago.to_i - 1).to_s %>.
 </p>
 
 
 <p>
   Please contact
-  <a href="<%= mailto_hugo_help %>"><%= hugo_help_email %></a>
+  <a href="<%= @mailto_hugo_help %>"><%= @hugo_help_email %></a>
   if you have difficulties accessing the online ballot(s), or you have any
   other questions on the Hugo process.
 </p>
@@ -104,7 +104,7 @@
   <%=
     link_to(
       "A4",
-      hugo_ballot_download_a4,
+      @hugo_ballot_download_a4,
     )
   %>,
 
@@ -112,21 +112,21 @@
   <%=
     link_to(
       "US letter",
-      hugo_ballot_download_letter,
+      @hugo_ballot_download_letter,
     )
   %> sizes.
 
   The WSFS Constitution is also available online
-  <%= link_to("here", wsfs_constitution_link) %>.
+  <%= link_to("here", @wsfs_constitution_link) %>.
 </p>
 
 <p>
-  We look forward to your participation in the <%= worldcon_year %> Hugo Awards and <%= retro_hugo_year %> Retro
-  Hugos, and hope to see you at <%= worldcon_public_name %>!
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro
+  Hugos, and hope to see you at <%= @worldcon_public_name %>!
 </p>
 
 <%# TODO: Deal with organizer names %>
 <p>
-  <%= organizers_names_for_signature %> <br>
+  <%= @organizers_names_for_signature %> <br>
   Administrator and Deputy Hugo Administrators
 </p>
