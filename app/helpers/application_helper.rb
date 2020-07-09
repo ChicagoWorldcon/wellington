@@ -80,12 +80,20 @@ module ApplicationHelper
     ApplicationHelper.theme_con_public_name
   end
 
+  def previous_worldcon_public_name
+    ApplicationHelper.theme_previous_con_public_name
+  end
+
   def worldcon_public_name_spaceless
     ApplicationHelper.theme_con_public_name.remove(" ");
   end
 
   def worldcon_year
     ouryear = ApplicationHelper.theme_con_year
+  end
+
+  def retro_hugo_75_ago
+    ouryear = ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
   end
 
   def worldcon_year_before
@@ -98,19 +106,6 @@ module ApplicationHelper
 
   def site_selection_year
     ouryear = ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
-  end
-
-  def retro_hugo_years
-    #TODO: Make a mechanism to populate this array
-    []
-  end
-
-  def retro_hugo?
-    retro_hugo.length > 0
-  end
-
-  def number_of_retro_hugos
-    retro_hugo_years.length
   end
 
   def email_hugo_help
@@ -182,7 +177,7 @@ module ApplicationHelper
   end
 
   def hugo_nom_deadline
-    $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+    $voting_opens_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
   def hugo_vote_deadline
@@ -198,4 +193,35 @@ module ApplicationHelper
     end
     return "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
   end
+
+  def organizers_names_for_signature
+    ApplicationHelper.theme_organizers_signing
+  end
+
+  def start_day_informal
+    ApplicationHelper.theme_con_start_day_informal
+  end
+
+  def end_day_informal
+    ApplicationHelper.theme_con_end_day_informal
+  end
+
+  def hugo_ballot_download_letter
+    ApplicationHelper.theme_hugo_ballot_download_link_letter
+  end
+
+  def hugo_ballot_download_a4
+    ApplicationHelper.theme_hugo_ballot_download_link_a4
+  end
+
+  def wsfs_constitution_link
+    ApplicationHelper.theme_wsfs_constitution_link
+  end
+
+  def member_login_url
+    ApplicationHelper.theme_con_member_login_url
+  end
+
+
+
 end

@@ -76,6 +76,97 @@ module ThemeConcern
       end
     end
 
+    def theme_con_start_day_informal
+      case Rails.configuration.contact_model
+      when "chicago"
+        "Wednesday, August 31st"
+      when "dc"
+        "Wednesday, August 25"
+      when "conzealand"
+        "Wednesday, July 29th"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
+    def theme_con_end_day_informal
+      case Rails.configuration.contact_model
+      when "chicago"
+        "Monday, September 5th"
+      when "dc"
+        "Sunday, August 29th"
+      when "conzealand"
+        "Sunday, Aug 2nd"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
+    def theme_previous_con_public_name
+      case Rails.configuration.contact_model
+      when "chicago"
+        "Discon III"
+      when "dc"
+        "CoNZealand"
+      when "conzealand"
+        "Dublin"
+      else
+        raise "Unknown ConventionYear: #{Rails.configuration.con_year}"
+      end
+    end
+
+    def theme_organizers_signing
+      case Rails.configuration.contact_model
+      when "chicago"
+        "Helen Montgomery & co-conspirators"
+      when "dc"
+        "Discon III Organizers"
+      when "conzealand"
+        "Tammy Coxen, Nicholas Whyte and Ian Moore"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
+    def theme_hugo_ballot_download_link_a4
+      case Rails.configuration.contact_model
+      when "chicago"
+        "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
+      when "dc"
+        "https://www.si.edu/content/pdf/about/SmithsonianDigitalActionAgenda.pdf"
+      when "conzealand"
+        "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
+    def theme_hugo_ballot_download_link_letter
+      case Rails.configuration.contact_model
+      when "chicago"
+        "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
+      when "dc"
+        "https://www.si.edu/content/pdf/about/SmithsonianDigitalActionAgenda.pdf"
+      when "conzealand"
+        "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
+    def theme_con_member_login_url
+      case Rails.configuration.contact_model
+      when "chicago"
+        "https://members.chicon.org/"
+      when "dc"
+        "https://members.discon3.org/"
+      when "conzealand"
+        "https://members.conzealand.nz"
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
     def theme_hugo_help_email
       Rails.configuration.hugo_help_email
     end
@@ -133,6 +224,10 @@ module ThemeConcern
         raise "Unknown Convention Public Name: #{Rails.configuration.basic_greeting}"
       end
     end
+
+    def theme_wsfs_constitution_link
+      Rails.configuration.wsfs_constitution_link
+    end
   end
 
   # instance methods should also be created to reference the private ones above
@@ -180,5 +275,21 @@ module ThemeConcern
 
   def theme_con_city_previous
     self.class.theme_con_city_previous
+  end
+
+  def theme_previous_con_public_name
+    self.theme_previous_con_public_name
+  end
+
+  def theme_organizers_signing
+    self.theme_organizers_signing
+  end
+
+  def theme_wsfs_constitution_link
+    self.theme_wsfs_constitution_link
+  end
+
+  def theme_con_member_login_url
+    self.theme_con_member_login_url
   end
 end

@@ -15,9 +15,9 @@
 %>
 <p>
   <% if @details.count == 1 %>
-    Kia Ora <%= @details.first %>!
+    <%= worldcon_greeting_init_caps %> <%= @details.first %>!
   <% else %>
-    Kia Ora!
+    <%= worldcon_greeting_init_caps %>
   <% end %>
 </p>
 
@@ -27,13 +27,12 @@
   - sometimes there are hiccups in the login process, and it can take our team
   some time to fix those for you. So if you plan to nominate and have not logged
   in and accessed the nomination form yet, please do so ASAP. The deadline for
-  nominations is 13 March 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern
-  Daylight Time, 06:59 Irish time, and 8:59 pm 14 March 2020 New Zealand time).
+  nominations is <%= hugo_nom_deadline %>.
 </p>
 
 <p>
   To nominate online, please visit
-  <a href="https://members.conzealand.nz">members.conzealand.nz</a>
+  <a href=<%= member_login_url %>>the members' area</a>
   enter the email address
   you received this email at, and request a login link. After clicking the link
   and entering the members area, click on My Memberships to access all
@@ -51,18 +50,18 @@
 </p>
 
 <p>
-  We expect to announce the final ballot in early April, and the awards will be
-  presented at CoNZealand, which will run from July 29 to August 2, 2020.
+  We expect to announce the final ballot in early <%= hugo_ballot_pub_month %>, and the awards will be
+  presented at <%= worldcon_public_name %>, which will run from <%= start_day_informal %> to <%= end_day_informal %>, <%= worldcon_year %>.
 </p>
 
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from 2019 and 1944.
+  were your favorites from <%= worldcon_year_before %> and <%= (retro_hugo_75_ago.to_i - 1).to_s %>
 </p>
 
 <p>
-  Please contact hugohelp@conzealand.nz if you have difficulties accessing the
+  Please contact <%= email_hugo_help %> if you have difficulties accessing the
   online ballot(s), or you have any other questions on the Hugo process.
 </p>
 
@@ -70,19 +69,19 @@
   A printable version of the WSFS Constitution and Hugo Nominating ballot has
   been included in the mailed-out version of Progress Report 2. You may also
   download a printable ballot in
-  <a href="https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf">A4</a>,
+  <a href=<%= hugo_ballot_download_a4 %>>A4</a>,
   or
-  <a href="https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf">US letter</a>
+  <a href=<%= hugo_ballot_download_letter %>>US letter</a>
   sizes. The WSFS Constitution is also available online
-  <a href="http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf">here</a>. 
+  <a href=<%= wsfs_constitution_link %>>here</a>.
 </p>
 
 <p>
-  We look forward to your participation in the 2020 Hugo Awards and 1945 Retro
-  Hugos, and hope to see you at CoNZealand!
+  We look forward to your participation in the <%= worldcon_year %> Hugo Awards and <%= retro_hugo_75_ago %> Retro
+  Hugos, and hope to see you at <%= worldcon_public_name %>!
 </p>
 
 <p>
-  Tammy Coxen, Nicholas Whyte and Ian Moore<br>
+  <%= organizers_names_for_signature %><br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

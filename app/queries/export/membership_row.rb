@@ -24,7 +24,7 @@ class Export::MembershipRow
     ]
   }.freeze
 
-  CONTACT_KEYS = ConzealandContact.new.attributes.keys.freeze
+  CONTACT_KEYS = ChicagoContact.new.attributes.keys.freeze
 
   HEADINGS = [
     "membership_number",

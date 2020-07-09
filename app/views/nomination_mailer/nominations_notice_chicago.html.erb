@@ -75,25 +75,26 @@
   (2:59 am Eastern Daylight Time, 06:59 Irish time, and 8:59 pm 14 March 2020 New
   Zealand time). Although members of Dublin 2019 can nominate, only members of
   <%= worldcon_public_name %> will be eligible to vote on the final ballot and choose the winners
-  of the <%= worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= retro_hugo_year %> Retro Hugo
+  of the <%= worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= retro_hugo_75_ago %> Retro Hugo
   Awards.
 </p>
 
 <%# TODO: Deal with dates %>
 <p>
   We expect to announce the final ballot in early April, and the awards will be
-  presented at <%= worldcon_public_name %>, which will run from July 29 to August 2, 2020.
+  presented at <%= worldcon_public_name %>, which will run from <%= start_day_informal %> to <%= end_day_informal %>, <%= worldcon_year %>.
 </p>
 
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from  <%= (worldcon_year.to_i - 1).to_s %> and  <%= (retro_hugo_year.to_i - 1).to_s %>.
+  were your favorites from  <%= worldcon_year_before %> and  <%= (retro_hugo_75_ago.to_i - 1).to_s %>.
 </p>
+
 
 <p>
   Please contact
-  <a href="mailto:" + <%= hugo_help_email %>><%= hugo_help_email %></a>
+  <a href="<%= mailto_hugo_help %>"><%= hugo_help_email %></a>
   if you have difficulties accessing the online ballot(s), or you have any
   other questions on the Hugo process.
 </p>
@@ -107,7 +108,7 @@
   <%=
     link_to(
       "A4",
-      "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable.pdf",
+      hugo_ballot_download_a4,
     )
   %>,
 
@@ -115,12 +116,12 @@
   <%=
     link_to(
       "US letter",
-      "https://conzealand.nz/wp-content/uploads/2019/12/2020-Hugo-Nominations-Ballot-Printable-US-Letter.pdf",
+      hugo_ballot_download_letter,
     )
   %> sizes.
 
   The WSFS Constitution is also available online
-  <%= link_to("here", "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf") %>.
+  <%= link_to("here", wsfs_constitution_link) %>.
 </p>
 
 <p>
@@ -130,6 +131,6 @@
 
 <%# TODO: Deal with organizer names %>
 <p>
-  Tammy Coxen, Nicholas Whyte and Ian Moore Hugo<br>
+  <%= organizers_names_for_signature %> <br>
   Administrator and Deputy Hugo Administrators
 </p>

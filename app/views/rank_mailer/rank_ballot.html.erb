@@ -13,11 +13,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-<p>Kia ora <%= @detail %></p>
+<p><%=worldcon_greeting.capitalize %> <%= @detail %></p>
 
 <p>
-Thank you for voting in the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em> Award
-  and the 1945 Retro Hugo Awards.
+Thank you for voting in the <%= worldcon_year %> Hugo Awards, Lodestar Award, <em>Astounding</em> Award
+  and the <%= retro_hugo_75_ago %> Retro Hugo Awards.
 </p>
 
 <% if !@ranks.present? %>
@@ -43,8 +43,7 @@ Thank you for voting in the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em
 
 
 <p>
-  The deadline for votes is 22 July 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59
-  Irish time, and 8:59 am 23 July 2020 New Zealand time).
+  The deadline for votes is <%= hugo_vote_deadline %>.
 </p>
 
 <p>
@@ -54,10 +53,10 @@ Thank you for voting in the 2020 Hugo Awards, Lodestar Award, <em>Astounding</em
 </p>
 
 <p>
-  We look forward to your participation in the 2020 Hugo Awards and 1945 Retro Hugos, and hope to see you at CoNZealand!
+  We look forward to your participation in the <%= worldcon_year %> Hugo Awards and <%= retro_hugo_75_ago %> Retro Hugos, and hope to see you at <%= worldcon_public_name %>
 </p>
 
 <p>
-  Tammy Coxen, Nicholas Whyte and Ian Moore</br>
+  <%= organizers_names_for_signature %></br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>
