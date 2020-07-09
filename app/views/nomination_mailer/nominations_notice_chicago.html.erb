@@ -15,7 +15,7 @@
   limitations under the License.
 %>
 <p>
-  <%= worldcon_greeting_sentence_excited %>
+  <%= @worldcon_greeting_sentence_excited %>
   <% if @reservations.count == 1 %>
     <%= @reservations.first.active_claim.contact %>
   <% end %>

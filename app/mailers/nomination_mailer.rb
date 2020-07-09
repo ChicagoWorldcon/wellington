@@ -45,6 +45,24 @@ class NominationMailer < ApplicationMailer
     )
   end
 
+  def nomination_notice_chicago
+    @worldcon_greeting_sentence_excited = worldcon_greeting_sentence_excited
+    @worldcon_public_name = worldcon_public_name
+    @hugo_nom_deadline = hugo_nom_deadline
+    @previous_worldcon_public_name = previous_worldcon_public_name
+    @worldcon_year_before = worldcon_year_before
+    @worldcon_year = worldcon_year
+    @start_day_informal = start_day_informal
+    @end_day_informal = end_day_informal
+    @retro_hugo_75_ago = retro_hugo_75_ago
+    @mailto_hugo_help = mailto_hugo_help
+    @hugo_help_email = email_hugo_help
+    @hugo_ballot_download_a4 = hugo_ballot_download_a4
+    @hugo_ballot_download_letter = hugo_ballot_download_letter
+    @wsfs_constitution_link = @wsfs_constitution_link
+    @organizers_names_for_signature = organizers_names_for_signature
+  end
+
   def nominations_open_dublin(user:)
     @user = user
     @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
@@ -135,6 +153,22 @@ class NominationMailer < ApplicationMailer
 
   # Unlike the other templates the only difference in this is the subject line, hence a single mailer
   def nominations_reminder_3_days_left(email:)
+    @worldcon_greeting_init_caps = worldcon_greeting_init_caps
+    @hugo_nom_deadline = hugo_nom_deadline
+    @member_login_url = member_login_url
+    @hugo_ballot_pub_month = hugo_ballot_pub_month
+    @worldcon_public_name = worldcon_public_name
+    @start_day_informal = start_day_informal
+    @end_day_informal = end_day_informal
+    @worldcon_year = worldcon_year
+    @worldcon_year_before = worldcon_year_before
+    @retro_hugo_75_ago = retro_hugo_75_ago
+    @email_hugo_help = email_hugo_help
+    @hugo_ballot_download_a4 = hugo_ballot_download_a4
+    @hugo_ballot_download_letter = hugo_ballot_download_letter
+    @wsfs_constitution_link = wsfs_constitution_link
+    @organizers_names_for_signature = organizers_names_for_signature
+
     user = User.find_by!(email: email)
 
     if user.reservations.none?
