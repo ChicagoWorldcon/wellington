@@ -1,4 +1,5 @@
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,7 +45,7 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  hello: "Hello Chicago!"
 
   errors:
     offer_unavailable: Sorry, but that offer %{offer} is no longer available
@@ -87,11 +88,11 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 2020 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
+        You may nominate for the 2022 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
         for Best New Writer, if, on or before 31 December 20, 11:59 PM PST
 
-        * you are an attending or supporting member of #{convention_public_name} (the 2021 World Science Fiction Convention), or
-        * you were an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention),.
+        * you are an attending or supporting member of #{convention_public_name} (the 2022 World Science Fiction Convention), or
+        * you were an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
         one-day memberships and hall passes do not.
@@ -99,7 +100,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Friday 13 March 2020, 11:59 PM PDT
+        All ballots must be received by Friday 13 March 2022, 11:59 PM PDT
 
         How to Nominate
         ----------------------------------------
@@ -111,25 +112,25 @@ en:
         “No Award” will appear automatically in every single category on the final ballot – there is no need to include
         that choice on the nomination form.
 
-        If your nominee is not well known, please provide a source where their 2019 work in that category may be
+        If your nominee is not well known, please provide a source where their 2021 work in that category may be
         found. This information makes it easier for us to identify the work you intend to nominate.
 
         If you make nominations for Best Series, it will help us if you also list a volume in the series that was
-        published in 2019.
+        published in 2021.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
+        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
 
         The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
-        by CoNZealand in April 2020. Only members of CoNZealand (including those who join after 31 December 2019) will
-        be eligible to vote on the final ballot.  Please contact hugohelp@conzealand.nz if you have questions.
+        by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}  (including those who join after 31 December 2021) will
+        be eligible to vote on the final ballot.  Please contact %{hugo_help_email} if you have questions.
 
         Eligibility for Nominations
         ----------------------------------------
 
-        Works published in 2019 for the first time anywhere are eligible for the Hugo Awards being awarded in 2020. So
-        are works published for the first time in English translation in 2019, or for the first time in the United
-        States in 2019, unless they have already appeared on a Hugo Award final ballot.
+        Works published in 2021 for the first time anywhere are eligible for the Hugo Awards being awarded in 2022. So
+        are works published for the first time in English translation in 2021, or for the first time in the United
+        States in 2021, unless they have already appeared on a Hugo Award final ballot.
 
         Books are considered to have been published in the year of the publication date, which usually appears with
         the copyright information on the back of the title page. If there is no stated publication date, the copyright
@@ -148,29 +149,30 @@ en:
         description: Nominate for Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2022 and 2023, and
+          vote for the Hugo winners of 2022.
 
       nominate:
         description: Nominate for Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2020 and 2021, and
-          vote for the Hugo winners of 2020.
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2022 and 2023, and
+          vote for the Hugo winners of 2022, and for the Retro Hugos for 1947.
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2020, and for the
-          Retro Hugos for 1945.
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2022, and for the
+          Retro Hugos for 1947.
 
       vote:
         description: Vote in Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2020.
+          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2022, and for the
+          Retro Hugos for 1947.
 
     # Maps onto text from Election#i18n_key
     retro_hugo:
@@ -194,11 +196,10 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 1945 Retro Hugo Awards, if, on or before 31 December 2019, 11:59 PM PST
+        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 December 2021, 11:59 PM PST
 
-        * you are an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention), or
-        * you were an attending or supporting member of Dublin 2019: An Irish Worldcon (the 2019 World Science Fiction
-          Convention).
+        * you are an attending or supporting member of #{worldcon_public_name} (the 2022 World Science Fiction Convention), or
+        * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
         one-day memberships and hall passes do not.
@@ -206,7 +207,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Friday 13 March 2020, 11:59 PM PDT
+        All ballots must be received by Friday 13 March 2022, 11:59 PM PDT
 
         How to Nominate
         ----------------------------------------
@@ -225,20 +226,20 @@ en:
         published in 1944.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
+        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
 
         The Retro Hugo Ballot containing the nominees in each category that qualified for the final ballot will be
-        published by CoNZealand in April 2020. Only members of CoNZealand (including those who join after 31 December
-        2019) will be eligible to vote on the final ballot.  Please contact
-        <a href="mailto:hugohelp@conzealand.nz">hugohelp@conzealand.nz</a>
+        published by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}(including those who join after 31 December
+        2021) will be eligible to vote on the final ballot.  Please contact
+        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
         if you have questions.
 
         Eligibility for Nominations
         ----------------------------------------
 
-        Works published in 1944 for the first time anywhere are eligible for the Retro Hugo Awards being awarded in
-        2020. So are works published for the first time in English translation in 1944, or for the first time in the
-        United States in 1944, unless they have already appeared on a Hugo Award final ballot.
+        Works published in 1946 for the first time anywhere are eligible for the Retro Hugo Awards being awarded in
+        2022. So are works published for the first time in English translation in 1944, or for the first time in the
+        United States in 1946, unless they have already appeared on a Hugo Award final ballot.
 
         Books are considered to have been published in the year of the publication date, which usually appears with the
         copyright information on the back of the title page. If there is no stated publication date, the copyright date
@@ -254,25 +255,25 @@ en:
         description: Nominate for Retro Hugos
         layman:
           The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
-          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
-          and vote for the Retro Hugo winners of 2020.
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023 (if they are awarded),
+          and vote for the Retro Hugo winners of 2022.
 
       nominate:
         description: Nominate for Retro Hugos
         layman:
           The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
-          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020 and 2021 (if they are awarded),
-          and vote for the Retro Hugo winners of 2020.
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023 (if they are awarded),
+          and vote for the Retro Hugo winners of 2022.
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Retro Hugos
         layman:
-          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
-          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2020.
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year which predates the founding of the Hugo awards, or in which there was no
+          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023.
 
       vote:
         description: Vote for Retro Hugos
         layman:
-          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
-          Worldcon. You membership allows you to vote for the Retro Hugo winners of 2020.
+          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year which predates the founding of the Hugo awards, or in which there was no
+          Worldcon. You membership allows you to vote for the Retro Hugo winners of 2022.
