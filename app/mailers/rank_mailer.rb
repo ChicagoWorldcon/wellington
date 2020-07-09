@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Steven Ensslen
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +20,14 @@ class RankMailer < ApplicationMailer
   default from: $member_services_email
 
   def rank_ballot(reservation)
+    @wordcon_basic_greeting = worldcon_basic_greeting
+    @worldcon_year = worldcon_year
+    @retro_hugo_75_ago = retro_hugo_75_ago
+    @hugo_vote_deadline = hugo_vote_deadline
+    @worldcon_year = worldcon_year
+    @worldcon_public_name = worldcon_public_name
+    @organizers_names_for_signature = organizers_names_for_signature
+
     @detail = reservation.active_claim.contact
     nominated_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
 
@@ -106,6 +115,16 @@ class RankMailer < ApplicationMailer
 
   # Unlike the other templates the only difference in this is the subject line, hence a single mailer
   def ranks_reminder_3_days_left(email:)
+
+    @worldcon_greeting_init_caps = worldcon_greeting_init_caps
+    @hugo_vote_deadline = hugo_vote_deadline
+    @email_hugo_help = email_hugo_help
+    @hugo_ballot_download_a4 = hugo_ballot_download_a4
+    @hugo_ballot_download_letter = hugo_ballot_download_letter
+    @wsfs_constitution_link = wsfs_constitution_link
+    @worldcon_year = worldcon_year_after
+    @worldcon_public_name = worldcon_public_name
+
     user = User.find_by!(email: email)
 
     if user.reservations.none?
@@ -127,7 +146,7 @@ class RankMailer < ApplicationMailer
 
     @details = Detail.where(claim_id: user.active_claims)
 
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+    mail(to: user.email, from: "#{email_hugo_help}", subject: subject)
   end
 
   private
