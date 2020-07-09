@@ -22,7 +22,6 @@ class ApplicationRecord < ActiveRecord::Base
   protected
 
   # CoNZealand only thing, this'll do nothing unless configured
-  # TODO figure out of we need to do anything with this for Chicago
   def gloo_sync
     return if Rails.env.test?                                 # guard against trigger background jobs from specs
     return unless ENV["GLOO_BASE_URL"].present?               # guard against sync unless configured

@@ -20,9 +20,7 @@
   <% else %>
     <%= worldcon_greeting_sentence_excited %>
   <% end %>
-</p>
-
-<%# TODO: Deal with date parts %>
+</p>s
 
 <p>
   Hello eligible Hugo nominator! This is just a quick reminder to let you know
@@ -39,7 +37,6 @@
   celebrating the genre work of <%= (retro_hugo_year_75_.to_i - 1).to_s %>.
 </p>
 
-<%# TODO: Deal with the URLs %>
 <p>
   To nominate online, please visit
   <a href=<%= member_login_url %>>the members' area</a> and
@@ -59,10 +56,9 @@
   you stop making changes to it.
 </p>
 
-<%# TODO: Deal with dates %>
 <p>
   We expect to announce the final ballot in early April, and the awards will be
-  presented at <%= worldcon_public_name %>, which will run from July 29 to August 2, 2020.
+  presented at <%= worldcon_public_name %>, which will run from <%= start_day_informal %> to <%= end_day_informal %>, <%= worldcon_year %>.
 </p>
 
 <p>
@@ -76,7 +72,6 @@
   online ballot(s), or you have any other questions on the Hugo process.
 </p>
 
-<%# deal with URLS %>
 <p>
   A printable version of the WSFS Constitution and Hugo Nominating ballot has
   been included in the mailed-out version of Progress Report 2. You may also
@@ -93,7 +88,6 @@
   Hugos, and hope to see you at <%= worldcon_public_name %>!
 </p>
 
-<%# deal with organizer names%>
 <p>
   <%= organizers_names_for_signature %><br>
   Hugo Administrator and Deputy Hugo Administrators

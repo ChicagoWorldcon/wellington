@@ -57,8 +57,6 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
-  #TODO: POST-BID: Change the defaults on these from New Zealand
-
   $maintainer_email = ENV.fetch(
     "MAINTAINER_EMAIL"
   ).downcase
