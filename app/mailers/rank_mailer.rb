@@ -42,12 +42,12 @@ class RankMailer < ApplicationMailer
 
     account_numbers = account_numbers_from(@reservations)
     if account_numbers.count == 1
-      subject = "CoNZealand: Hugo voting is now open for member #{account_numbers.first}"
+      subject = "#{worldcon_public_name}: Hugo voting is now open for member #{account_numbers.first}"
     else
-      subject = "CoNZealand: Hugo voting is now open for members #{account_numbers.to_sentence}"
+      subject = "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
     end
 
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+    mail(to: user.email, from: "#{email_hugo_help}", subject: subject)
   end
 
   def ranks_open_conzealand(user:)

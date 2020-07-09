@@ -13,11 +13,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-<p><%= worldcon_basic_greeting.capitalize => <%= @detail %></p>
+<p><%= @worldcon_basic_greeting.capitalize %> <%= @detail %>,</p>
 
 <p>
-Thank you for your nominations for the <%= worldcon_year %> Hugo Awards, Lodestar Award, <em>Astounding</em> Award
-  and the <%= retro_hugo_year %> Retro Hugo Awards.
+Thank you for your nominations for the <%= @worldcon_year %> Hugo Awards, Lodestar Award, <em>Astounding</em> Award
+  and the <%= @retro_hugo_year %> Retro Hugo Awards.
 </p>
 
 <% if !@nominations_by_category.present? %>
@@ -43,8 +43,8 @@ Thank you for your nominations for the <%= worldcon_year %> Hugo Awards, Lodesta
   The deadline for nominations is 13 March 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern Daylight Time, 06:59
   Irish time, and 8:59 pm 14 March 2020 New Zealand time).
 
-  Although members of <%= previous_worldcon_public_name %>  <%= worldcon_year_before %> can nominate, only members of <%= worldcon_public_name %> will be eligible to vote on the final ballot
-  and choose the winners of the <%= worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= retro_hugo_75_ago %> Retro Hugo Awards.
+  Although members of <%= @previous_worldcon_public_name %>  <%= @worldcon_year_before  %> can nominate, only members of <%= @worldcon_public_name %> will be eligible to vote on the final ballot
+  and choose the winners of the <%= @worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards and the <%= @retro_hugo_75_ago %> Retro Hugo Awards.
 </p>
 
 <p>
@@ -54,10 +54,10 @@ Thank you for your nominations for the <%= worldcon_year %> Hugo Awards, Lodesta
 </p>
 
 <p>
-  We look forward to your participation in the <%= worldcon_year %> Hugo Awards and <%= retro_hugo_75_ago %> Retro Hugos, and hope to see you at <%= worldcon_public_name %>!
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro Hugos, and hope to see you at <%= @worldcon_public_name %>!
 </p>
 
 <p>
-  <%= organizers_names_for_signature %></br>
+  <%= @organizers_names_for_signature %></br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

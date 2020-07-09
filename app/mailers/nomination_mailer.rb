@@ -22,7 +22,13 @@ class NominationMailer < ApplicationMailer
   default from: $member_services_email
 
   def nomination_ballot(reservation)
-    binding.pry
+    @worldcon_basic_greeting = worldcon_basic_greeting
+    @previous_worldcon_public_name = previous_worldcon_public_name
+    @worldcon_year_before = worldcon_year_before
+    @worldcon_public_name = worldcon_public_name
+    @worldcon_year = worldcon_year
+    @retro_hugo_75_ago = retro_hugo_75_ago
+    @organizers_names_for_signature = organizers_names_for_signature
     @detail = reservation.active_claim.contact
     nominated_categories = Category.joins(nominations: :reservation).where(reservations: {id: reservation})
 
@@ -34,7 +40,7 @@ class NominationMailer < ApplicationMailer
     @nominations_by_category = builder.nominations_by_category
 
     mail(
-      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_year} Retro Hugo Nominations Ballot",
+      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_75_ago} Retro Hugo Nominations Ballot",
       to: reservation.user.email,
       from: "Hugo Awards #{worldcon_year} <#{email_hugo_help}>"
     )
@@ -64,6 +70,26 @@ class NominationMailer < ApplicationMailer
     else
       subject = "CoNZealand: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
     end
+
+    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
+  end
+
+  def nominations_reminder_2_weeks_left_conzealand(email:)
+    user = User.find_by!(email: email)
+    reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
+
+    if reservations_that_can_nominate.none?
+      return
+    end
+
+    account_numbers = account_numbers_from(reservations_that_can_nominate)
+    if account_numbers.count == 1
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
+    else
+      subject = "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
+    end
+
+    @details = Detail.where(claim_id: user.active_claims)
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
