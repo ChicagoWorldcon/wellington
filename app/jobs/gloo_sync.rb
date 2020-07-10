@@ -25,8 +25,8 @@ class GlooSync
     end
   end
 
-  # FIXME there are interfaces here that are non existant and non tested
   def perform(email, roles = [])
+    return true # FIXME there are interfaces here that are non existant and non tested
     user = User.find_by!(email: email)
 
     syncable_reservations = Reservation.paid
