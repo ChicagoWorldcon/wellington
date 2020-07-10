@@ -18,6 +18,8 @@ RSpec.describe GlooContact do
   let(:user) { create(:user) }
   let(:reservation) { create(:reservation, :with_order_against_membership, user: user) }
 
+  let(:query) { described_class.new(reservation) }
+
   # Enable Gloo integrations for this test
   # But turn it off after so CI doesn't try reaching out to thefantasy.network
   around do |test|
@@ -102,7 +104,7 @@ RSpec.describe GlooContact do
   end
 
   describe "#remote_state" do
-    subject(:remote_state) { described_class.new(reservation).remote_state }
+    subject(:remote_state) { query.remote_state }
 
     it "is an empty hash when remote user responds 404" do
       expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
@@ -155,7 +157,7 @@ RSpec.describe GlooContact do
   end
 
   describe "#local_state" do
-    subject(:local_state) { described_class.new(reservation).local_state }
+    subject(:local_state) { query.local_state }
 
     context "when no roles on remote" do
       before do
@@ -233,8 +235,38 @@ RSpec.describe GlooContact do
     end
   end
 
+  describe "#discord_roles" do
+    before do
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_roles_response)
+    end
+
+    context "with remote roles" do
+      it "removes those roles when we set to empty" do
+        expect { query.discord_roles = [] }
+          .to change { query.discord_roles }
+          .from(remote_roles).to be_empty
+      end
+    end
+
+    context "when no roles are on remote" do
+      let(:remote_roles) { [] }
+
+      it "adds roles when we set them" do
+        expect { query.discord_roles = ["Discord_PlatMod"] }
+          .to change { query.discord_roles }
+          .from([]).to(["Discord_PlatMod"])
+      end
+
+      it "doesn't let you set roles not defined in GlooContact::DISCORD_ROLES" do
+        expect { query.discord_roles = ["Party_Time"] }
+          .to_not change { query.discord_roles }.from([])
+      end
+    end
+  end
+
   describe "#save!" do
-    subject(:save!) { described_class.new(reservation).save! }
+    subject(:save!) { query.save! }
 
     before do
       expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)

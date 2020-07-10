@@ -82,7 +82,11 @@ class GlooContact
     return @discord_roles unless @discord_roles.nil?
 
     @discord_roles = remote_state[:roles] || []
-    @discord_roles = @discord_roles & DISCORD_ROLES # filter to what we store against remote
+    @discord_roles = @discord_roles & DISCORD_ROLES
+  end
+
+  def discord_roles=(new_roles)
+    @discord_roles = new_roles & DISCORD_ROLES
   end
 
   def state_in_words
