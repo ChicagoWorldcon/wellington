@@ -106,7 +106,7 @@ class GlooContact
   end
 
   def save!
-    post_json("/v1/users/#{email}", local_state)
+    post_json("/v1/users", local_state)
   end
 
   private

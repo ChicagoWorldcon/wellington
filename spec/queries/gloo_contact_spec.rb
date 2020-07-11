@@ -274,18 +274,12 @@ RSpec.describe GlooContact do
     end
 
     it "doesn't raise when successful" do
-      expect(HTTParty).to receive(:post)
-        .with(%r{/v1/users/#{user.email}}, any_args)
-        .and_return(post_success)
-
+      expect(HTTParty).to receive(:post).with(any_args).and_return(post_success)
       save!
     end
 
     it "raises error when server is down" do
-      expect(HTTParty).to receive(:post)
-        .with(%r{/v1/users/#{user.email}}, any_args)
-        .and_return(service_down_response)
-
+      expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
       expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
     end
   end

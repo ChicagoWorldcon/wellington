@@ -26,6 +26,7 @@ class Operator::TheFantasyNetworkRolesController < ApplicationController
   def create
     @gloo_contact.discord_roles = posted_discord_roles
     @gloo_contact.save!
+    redirect_to operator_user_the_fantasy_network_roles_path(@user)
   end
 
   private
