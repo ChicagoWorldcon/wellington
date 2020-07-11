@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe Operator::UsersController, type: :controller do
-  let(:support) { create(:support) }
+  let(:operator) { create(:operator) }
   let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
   let(:user) { reservation.user }
 
@@ -44,10 +44,10 @@ RSpec.describe Operator::UsersController, type: :controller do
 
   describe "#show" do
     subject(:get_show) { get(:show, params: { id: user.id }) }
-    it { is_expected.to redirect_to(new_support_session_path) }
+    it { is_expected.to redirect_to(new_operator_session_path) }
 
-    context "when support signed in" do
-      before { sign_in(support) }
+    context "when operator signed in" do
+      before { sign_in(operator) }
 
       it "renders" do
         expect(GlooContact).to receive(:new).and_return(mock_gloo_contact)

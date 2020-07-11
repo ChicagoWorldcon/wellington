@@ -15,20 +15,17 @@
 # Operator::UsersController is the CoNZealand admin for virtual attendance
 # It integartes with a 3rd party login provider called Gloo
 class Operator::UsersController < ApplicationController
-  before_action :authenticate_support!
+  before_action :authenticate_operator!
+  before_action :lookup_user!, except: :index
+  before_action :lookup_gloo_contact!, except: :index
 
   def index
   end
 
   def show
-    @user = User.find(params[:id])
+  end
 
-    if ENV["GLOO_BASE_URL"].present?
-      @gloo_contact = GlooContact.new(@user.reservations.first)
-      @gloo_contact.remote_state # fetch and cache results
-    end
-  rescue GlooContact::ServiceUnavailable => e
-    @gloo_contact = nil
-    flash[:error] = "Failed to connect to The Fantasy Network: #{e.to_s}"
+  def update
+    @gloo_contact.save!
   end
 end

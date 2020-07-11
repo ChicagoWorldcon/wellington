@@ -33,11 +33,21 @@
         <p>Set roles on this user</p>
 
         <ul class="list-unstyled l-v-spacing">
-          <% @current_roles.each do |(role_name, value)| %>
-            <li>
-              <%= check_box(role_name, value) %>
-              <%= role_name %>
-            </li>
+          <%= form_with(url: operator_user_the_fantasy_network_roles_path, data: { remote: false }) do |f| %>
+            <% @current_roles.each do |(role_name, value)| %>
+              <li>
+                <%= f.check_box(role_name, checked: value) %>
+                <%= role_name %>
+              </li>
+            <% end %>
+
+            <p>
+              <%= f.submit(
+                "Update Roles on TFN",
+                class: "btn btn-primary",
+                data: { disable_with: "One moment caller..." }
+              ) %>
+            </p>
           <% end %>
         </ul>
       </div>

@@ -13,24 +13,26 @@
 # limitations under the License.
 
 class Operator::TheFantasyNetworkRolesController < ApplicationController
-  def index
-    @user = User.find(params[:user_id])
-    @gloo_contact = GlooContact.new(@user.reservations.first)
+  before_action :authenticate_operator!
+  before_action :lookup_user!
+  before_action :lookup_gloo_contact!
 
+  def index
     all_roles = as_hash(GlooContact::DISCORD_ROLES, value: false)
     remote_roles = as_hash(@gloo_contact.discord_roles, value: true)
     @current_roles = all_roles.merge(remote_roles)
-  rescue GlooContact::ServiceUnavailable => e
-    flash[:error] = "Failed to connect to The Fantasy Network: #{e.to_s}"
-    redirect_to operator_user_path(@user)
   end
 
-  # FIXME This should post to TFN through Gloo
   def create
-    raise params
+    @gloo_contact.discord_roles = posted_discord_roles
+    @gloo_contact.save!
   end
 
   private
+
+  def posted_discord_roles
+    GlooContact::DISCORD_ROLES.select { |role| params[role] == "1" }
+  end
 
   def as_hash(list, value:)
     list.zip([value]*list.length).to_h
