@@ -35,6 +35,8 @@ class Operator::TheFantasyNetworkRolesController < ApplicationController
     GlooContact::DISCORD_ROLES.select { |role| params[role] == "1" }
   end
 
+  # converts ["Discord_ConCom", "Discord_Mission_Control"]
+  # to { Discord_ConCom: true, Discord_Mission_Control: true }
   def as_hash(list, value:)
     list.zip([value]*list.length).to_h
   end
