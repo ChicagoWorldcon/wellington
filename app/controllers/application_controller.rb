@@ -67,7 +67,6 @@ class ApplicationController < ActionController::Base
     @user = User.find(params[:user_id] || params[:id])
   end
 
-  # FIXME I'm sure this is going to have to change
   def lookup_gloo_contact!
     if ENV["GLOO_BASE_URL"].present?
       @gloo_contact = GlooContact.new(@user)

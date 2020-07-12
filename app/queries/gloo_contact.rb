@@ -114,9 +114,9 @@ class GlooContact
 
   def conzealand_contact
     if reservation.nil?
-      ConzealandContact.new
+      contact_without_reservation
     else
-      reservation.active_claim.conzealand_contact || ConzealandContact.new
+      reservation.active_claim.conzealand_contact || contact_without_details
     end
   end
 
@@ -129,6 +129,18 @@ class GlooContact
   end
 
   private
+
+  def contact_without_reservation
+    ConzealandContact.new(
+      first_name: "Disabled #{user.email}"
+    )
+  end
+
+  def contact_without_details
+    ConzealandContact.new(
+      first_name: "CoNZealand Super Fan ##{reservation.membership_number}"
+    )
+  end
 
   # get_json hits a url using standard auth headers and parses the response body
   # from json to a ruby hash. If the service is down, raises an error.

@@ -18,8 +18,8 @@ require "rails_helper"
 
 RSpec.describe Operator::UsersController, type: :controller do
   let(:operator) { create(:operator) }
-  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
-  let(:user) { reservation.user }
+  let(:reservation) { create(:reservation, :with_order_against_membership, user: user) }
+  let(:user) { create(:user) }
 
   # Enable Gloo integrations for this test
   # But turn it off after so CI doesn't try reaching out to thefantasy.network
@@ -58,6 +58,43 @@ RSpec.describe Operator::UsersController, type: :controller do
         expect(GlooContact).to receive(:new).and_raise(GlooContact::ServiceUnavailable, "Kaboom!")
         expect(get_show).to have_http_status(:ok)
         expect(flash[:error]).to match(/The Fantasy Network/i)
+      end
+    end
+  end
+
+  describe "#update" do
+    subject(:put_update) { put(:update, params: { id: user.id }) }
+    it { is_expected.to redirect_to(new_operator_session_path) }
+
+    context "when operator signed in" do
+      let(:gloo_contact_mock) do
+        instance_double(GlooContact,
+          :save! => true,
+          :local_state => {},
+          :remote_state => {},
+          :reservation => reservation,
+        )
+      end
+
+      before do
+        sign_in(operator)
+        expect(GlooContact).to receive(:new).and_return(gloo_contact_mock)
+      end
+
+      it "redirects and sets message based on reservation" do
+        expect(put_update).to redirect_to(operator_user_path(user))
+        expect(flash[:notice]).to be_present
+        expect(flash[:notice]).to include(reservation.membership_number.to_s)
+      end
+
+      context "when no reservation available" do
+        let(:reservation) { nil }
+
+        it "redirects and sets message based on reservation" do
+          expect(put_update).to redirect_to(operator_user_path(user))
+          expect(flash[:notice]).to be_present
+          expect(flash[:notice]).to match(/disabled/i)
+        end
       end
     end
   end

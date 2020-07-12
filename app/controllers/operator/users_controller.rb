@@ -27,5 +27,17 @@ class Operator::UsersController < ApplicationController
 
   def update
     @gloo_contact.save!
+    flash[:notice] = just_saved_message
+    redirect_to operator_user_path(@user)
+  end
+
+  private
+
+  def just_saved_message
+    if membership_number = @gloo_contact.reservation&.membership_number
+      "Pushed #{@user.email} to TFN with membership ##{membership_number}"
+    else
+      "Disabled #{@user.email} on TFN"
+    end
   end
 end

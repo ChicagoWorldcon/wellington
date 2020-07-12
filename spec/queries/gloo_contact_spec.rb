@@ -177,10 +177,16 @@ RSpec.describe GlooContact do
         expect(local_state[:display_name]).to eq(ConzealandContact.last.badge_display)
       end
 
-      it "defaults to blank strings when contact is not available" do
+      it "defaults to 'conzealand super fan' when contact is not available" do
         ConzealandContact.where(claim_id: user.claims).destroy_all
-        expect(local_state[:name]).to be_blank
-        expect(local_state[:display_name]).to be_blank
+        expect(local_state[:name]).to match(/CoNZealand Super Fan/i)
+        expect(local_state[:display_name]).to match(/CoNZealand Super Fan/i)
+      end
+
+      it "uses 'disabled user' when reservation not available" do
+        reservation.update!(state: Reservation::DISABLED)
+        expect(local_state[:name]).to match(/disabled/i)
+        expect(local_state[:display_name]).to match(/disabled/i)
       end
 
       describe "roles listed" do
@@ -264,7 +270,7 @@ RSpec.describe GlooContact do
 
         ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
         result = described_class.new(user.reload).local_state
-        expect(result[:display_name]).to be_empty
+        expect(result[:display_name]).to match(/disabled/i)
         expect(result[:roles]).to eq [GlooContact::DISABLED]
       end
 
