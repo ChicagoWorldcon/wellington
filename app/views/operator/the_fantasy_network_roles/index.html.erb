@@ -18,8 +18,10 @@
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-md-6">
-      <%= render("reservation_card", reservation: @gloo_contact.reservation) do %>
-        <p><%= link_to "Review all other memberships for this user", operator_user_path(@user) %></p>
+      <% if @gloo_contact.reservation.present? %>
+        <%= render("reservation_card", reservation: @gloo_contact.reservation) do %>
+          <p><%= link_to "Review all other memberships for this user", operator_user_path(@user) %></p>
+        <% end %>
       <% end %>
     </div>
 
