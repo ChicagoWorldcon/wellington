@@ -18,7 +18,7 @@
 # Reservation is associated with a Membership through Order
 # User is associated with a Membership through Reservation
 # Membership records are displayed for purchase from the MembershipsController when they're 'active'
-# Membership may also be associated to a user on import or when a Support user uses the SetMembership class
+# Membership may also be associated to a user on import or when a Operator user uses the SetMembership class
 # Cycling prices means you may have 4 Adult memberships, but it's likely only 1 will be active at a time
 # Membership holds rights such as attendance, site selection, nomination and voting
 # Membership types that were never available for purchase can be made by setting active_from and active_to to the same time in the past, e.g. dublin_2019

@@ -47,12 +47,12 @@
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
   <%# TODO Style this to flash or something dramatic %>
-  <% if support_signed_in? %>
+  <% if operator_signed_in? %>
     <div class="alert alert-danger show fixed-top" role="alert">
-      NOTICE: You are logged in as support
+      NOTICE: You are logged in as an operator
       <%= button_to(
-        "Logout of Support (#{current_support.email})",
-        destroy_support_session_path,
+        "Logout of Operator account (#{current_operator.email})",
+        destroy_operator_session_path,
         action: :delete, method: :delete, class: "button"
       ) %>
     </div>

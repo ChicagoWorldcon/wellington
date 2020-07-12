@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class RightsController < ApplicationController
-  before_action :authenticate_support!
+class Operator::RightsController < ApplicationController
+  before_action :authenticate_operator!
   before_action :lookup_reservation!
 
   # create modifies the rights on the underlying reservation rather than creating a new one. This bends convention

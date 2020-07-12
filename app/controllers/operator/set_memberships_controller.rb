@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class SetMembershipsController < ApplicationController
-  before_action :authenticate_support!
+class Operator::SetMembershipsController < ApplicationController
+  before_action :authenticate_operator!
   before_action :lookup_reservation!
 
   def index
@@ -25,7 +25,7 @@ class SetMembershipsController < ApplicationController
 
   def update
     membership = Membership.find(params[:id])
-    SetMembership.new(@reservation, to: membership, audit_by: current_support.email).call
+    SetMembership.new(@reservation, to: membership, audit_by: current_operator.email).call
     flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
     redirect_to @reservation
   end

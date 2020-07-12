@@ -471,6 +471,54 @@ ALTER SEQUENCE public.notes_id_seq OWNED BY public.notes.id;
 
 
 --
+-- Name: operators; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.operators (
+    id bigint NOT NULL,
+    email character varying DEFAULT ''::character varying NOT NULL,
+    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
+    reset_password_token character varying,
+    reset_password_sent_at timestamp without time zone,
+    remember_created_at timestamp without time zone,
+    sign_in_count integer DEFAULT 0 NOT NULL,
+    current_sign_in_at timestamp without time zone,
+    last_sign_in_at timestamp without time zone,
+    current_sign_in_ip inet,
+    last_sign_in_ip inet,
+    confirmation_token character varying,
+    confirmed_at timestamp without time zone,
+    confirmation_sent_at timestamp without time zone,
+    unconfirmed_email character varying,
+    failed_attempts integer DEFAULT 0 NOT NULL,
+    unlock_token character varying,
+    locked_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    hugo_admin boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: operators_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.operators_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: operators_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.operators_id_seq OWNED BY public.operators.id;
+
+
+--
 -- Name: orders; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -577,54 +625,6 @@ ALTER SEQUENCE public.reservations_id_seq OWNED BY public.reservations.id;
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
-
-
---
--- Name: supports; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.supports (
-    id bigint NOT NULL,
-    email character varying DEFAULT ''::character varying NOT NULL,
-    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
-    reset_password_token character varying,
-    reset_password_sent_at timestamp without time zone,
-    remember_created_at timestamp without time zone,
-    sign_in_count integer DEFAULT 0 NOT NULL,
-    current_sign_in_at timestamp without time zone,
-    last_sign_in_at timestamp without time zone,
-    current_sign_in_ip inet,
-    last_sign_in_ip inet,
-    confirmation_token character varying,
-    confirmed_at timestamp without time zone,
-    confirmation_sent_at timestamp without time zone,
-    unconfirmed_email character varying,
-    failed_attempts integer DEFAULT 0 NOT NULL,
-    unlock_token character varying,
-    locked_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    hugo_admin boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: supports_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.supports_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: supports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.supports_id_seq OWNED BY public.supports.id;
 
 
 --
@@ -743,6 +743,13 @@ ALTER TABLE ONLY public.notes ALTER COLUMN id SET DEFAULT nextval('public.notes_
 
 
 --
+-- Name: operators id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.operators ALTER COLUMN id SET DEFAULT nextval('public.operators_id_seq'::regclass);
+
+
+--
 -- Name: orders id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -761,13 +768,6 @@ ALTER TABLE ONLY public.ranks ALTER COLUMN id SET DEFAULT nextval('public.ranks_
 --
 
 ALTER TABLE ONLY public.reservations ALTER COLUMN id SET DEFAULT nextval('public.reservations_id_seq'::regclass);
-
-
---
--- Name: supports id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.supports ALTER COLUMN id SET DEFAULT nextval('public.supports_id_seq'::regclass);
 
 
 --
@@ -874,6 +874,14 @@ ALTER TABLE ONLY public.notes
 
 
 --
+-- Name: operators operators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.operators
+    ADD CONSTRAINT operators_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -903,14 +911,6 @@ ALTER TABLE ONLY public.reservations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: supports supports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.supports
-    ADD CONSTRAINT supports_pkey PRIMARY KEY (id);
 
 
 --
@@ -1020,6 +1020,34 @@ CREATE INDEX index_notes_on_user_id ON public.notes USING btree (user_id);
 
 
 --
+-- Name: index_operators_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_operators_on_confirmation_token ON public.operators USING btree (confirmation_token);
+
+
+--
+-- Name: index_operators_on_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_operators_on_email ON public.operators USING btree (email);
+
+
+--
+-- Name: index_operators_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_operators_on_reset_password_token ON public.operators USING btree (reset_password_token);
+
+
+--
+-- Name: index_operators_on_unlock_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_operators_on_unlock_token ON public.operators USING btree (unlock_token);
+
+
+--
 -- Name: index_orders_on_membership_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1052,34 +1080,6 @@ CREATE INDEX index_ranks_on_reservation_id ON public.ranks USING btree (reservat
 --
 
 CREATE UNIQUE INDEX index_reservations_on_membership_number ON public.reservations USING btree (membership_number);
-
-
---
--- Name: index_supports_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_supports_on_confirmation_token ON public.supports USING btree (confirmation_token);
-
-
---
--- Name: index_supports_on_email; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_supports_on_email ON public.supports USING btree (email);
-
-
---
--- Name: index_supports_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_supports_on_reset_password_token ON public.supports USING btree (reset_password_token);
-
-
---
--- Name: index_supports_on_unlock_token; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_supports_on_unlock_token ON public.supports USING btree (unlock_token);
 
 
 --
@@ -1265,6 +1265,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324223914'),
 ('20200324223922'),
 ('20200525204858'),
-('20200629100946');
+('20200629100946'),
+('20200704235959');
 
 

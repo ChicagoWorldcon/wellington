@@ -14,12 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-
-class TransfersController < ApplicationController
+class Operator::TransfersController < ApplicationController
   helper ReservationsHelper
 
-  before_action :authenticate_support!
+  before_action :authenticate_operator!
   before_action :setup_transfer, only: [:show, :update]
 
   def new
@@ -32,18 +30,18 @@ class TransfersController < ApplicationController
 
   def create
     @reservation = Reservation.find(params[:reservation_id])
-    redirect_to reservation_transfer_path(params[:email], reservation_id: @reservation)
+    redirect_to operator_reservation_transfer_path(params[:email], reservation_id: @reservation)
   end
 
   def update
-    current_support.transaction do
+    current_operator.transaction do
       owner_contact = @transfer.copy_contact
 
       service = ApplyTransfer.new(
         @transfer.reservation,
         from: @transfer.from_user,
         to: @transfer.to_user,
-        audit_by: current_support.email,
+        audit_by: current_operator.email,
         copy_contact: @transfer.copy_contact?,
       )
       new_claim = service.call

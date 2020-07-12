@@ -15,7 +15,7 @@
 # limitations under the License.
 
 FactoryBot.define do
-  factory :support do
+  factory :operator do
     email { Faker::Internet.unique.email }
     password { "secret agent man" }
     confirmed_at { 1.day.ago }

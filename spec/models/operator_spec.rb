@@ -16,7 +16,7 @@
 
 require "rails_helper"
 
-RSpec.describe Support, type: :model do
-  subject(:model) { create(:support) }
+RSpec.describe Operator, type: :model do
+  subject(:model) { create(:operator) }
   it { is_expected.to be_valid }
 end
