@@ -21,7 +21,11 @@ class GlooSyncAllUsers
     return unless ENV["GLOO_BASE_URL"].present?
 
     User.find_each do |user|
-      GlooContact.new(user).save!
+      begin
+        GlooContact.new(user).save!
+      rescue
+        puts "Failed to save #{user.email}"
+      end
     end
   end
 end
