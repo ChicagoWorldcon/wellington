@@ -26,19 +26,7 @@ class GlooSync
   end
 
   def perform(email, roles = [])
-    return true # FIXME there are interfaces here that are non existant and non tested
     user = User.find_by!(email: email)
-
-    syncable_reservations = Reservation.paid
-      .joins(:membership, :user)
-      .where(users: {id: user})
-      .merge(Membership.with_rights)
-      .merge(Claim.active)
-
-    earliest_reservation = syncable_reservations.order("reservations.created_at").first
-
-    contact = GlooContact.new(earliest_reservation)
-    contact.set_remote_roles(roles)
-    contact.save!
+    GlooContact.new(user).save!
   end
 end

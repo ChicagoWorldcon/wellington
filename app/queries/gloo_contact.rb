@@ -38,10 +38,10 @@ class GlooContact
     Discord_Treasury
   )
 
-  attr_reader :reservation
+  attr_reader :user
 
-  def initialize(reservation)
-    @reservation = reservation
+  def initialize(user)
+    @user = user
   end
 
   # remote_state hits gloo APIs and returns a representation of the user.
@@ -51,9 +51,9 @@ class GlooContact
   def remote_state
     return @remote_state if @remote_state.present?
 
-    user = get_json("/v1/users/#{email}")
-    roles = get_json("/v1/users/#{email}/roles")
-    @remote_state = user.merge(roles)
+    remote_user = get_json("/v1/users/#{user.email}")
+    remote_roles = get_json("/v1/users/#{user.email}/roles")
+    @remote_state = remote_user.merge(remote_roles)
   rescue SocketError
     raise ServiceUnavailable.new("Gloo isn't accepting connections on #{base_url}")
   end
@@ -64,16 +64,19 @@ class GlooContact
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
     local_roles = discord_roles.dup
-    local_roles << MEMBER_ATTENDING if reservation.can_attend?
-    local_roles << MEMBER_VOTING if reservation.can_vote?
-    local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+
+    if reservation.present?
+      local_roles << MEMBER_ATTENDING if reservation.can_attend?
+      local_roles << MEMBER_VOTING if reservation.can_vote?
+      local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+    end
 
     {
-      id: reservation.user.id.to_s,
-      email: reservation.user.email,
-			expiration: nil,
-      name: preferred_contact.to_s,
-      display_name: preferred_contact.badge_display,
+      id: user.id.to_s,
+      email: user.email,
+      expiration: nil,
+      name: conzealand_contact.to_s,
+      display_name: conzealand_contact.badge_display,
       roles: local_roles,
     }
   end
@@ -101,19 +104,23 @@ class GlooContact
     local_state == remote_state
   end
 
-  def preferred_contact
-    reservation.active_claim.conzealand_contact || ConzealandContact.new
+  def conzealand_contact
+    if reservation.nil?
+      ConzealandContact.new
+    else
+      reservation.active_claim.conzealand_contact || ConzealandContact.new
+    end
   end
 
   def save!
     post_json("/v1/users", local_state)
   end
 
-  private
-
-  def email
-    @email ||= reservation.user.email
+  def reservation
+    @reservation ||= user.reservations.order(:created_at).first
   end
+
+  private
 
   # get_json hits a url using standard auth headers and parses the response body
   # from json to a ruby hash. If the service is down, raises an error.

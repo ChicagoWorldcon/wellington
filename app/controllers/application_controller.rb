@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
   # FIXME I'm sure this is going to have to change
   def lookup_gloo_contact!
     if ENV["GLOO_BASE_URL"].present?
-      @gloo_contact = GlooContact.new(@user.reservations.first)
+      @gloo_contact = GlooContact.new(@user)
       @gloo_contact.remote_state # fetch and cache results
     end
   rescue GlooContact::ServiceUnavailable => exception

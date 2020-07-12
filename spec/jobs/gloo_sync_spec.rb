@@ -29,25 +29,4 @@ RSpec.describe GlooSync, type: :job do
     ENV["GLOO_BASE_URL"] = nil
     ENV["GLOO_AUTHORIZATION_HEADER"] = nil
   end
-
-  xit "cycles memberships on transfer" do
-    last_minute_decision = create(:reservation, user: user, created_at: 1.day.ago, membership: adult)
-    create(:conzealand_contact, first_name: "last minute decision", claim: last_minute_decision.active_claim)
-
-    early_bird_reservation = create(:reservation, user: user, created_at: 365.days.ago, membership: adult)
-    create(:conzealand_contact, first_name: "early bird price", claim: early_bird_reservation.active_claim)
-    result = GlooContact.new(user).call
-    expect(result[:display_name]).to match(/early bird price/)
-    expect(result[:roles]).to include("video")
-
-    ApplyTransfer.new(early_bird_reservation, from: user, to: create(:user), audit_by: "agile squirrel").call
-    result = GlooContact.new(user.reload).call
-    expect(result[:display_name]).to match(/last minute decision/)
-    expect(result[:roles]).to include("video")
-
-    ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
-    result = GlooContact.new(user.reload).call
-    expect(result[:display_name]).to be_empty
-    expect(result[:roles]).to be_empty
-  end
 end

@@ -15,10 +15,9 @@
 require "rails_helper"
 
 RSpec.describe GlooContact do
-  let(:user) { create(:user) }
-  let(:reservation) { create(:reservation, :with_order_against_membership, user: user) }
-
-  let(:query) { described_class.new(reservation) }
+  let(:user) { reservation.user }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:query) { described_class.new(user) }
 
   # Enable Gloo integrations for this test
   # But turn it off after so CI doesn't try reaching out to thefantasy.network
@@ -173,7 +172,13 @@ RSpec.describe GlooContact do
         expect(local_state[:id]).to eq(user.id.to_s)
       end
 
-      it "doesn't give the user a name" do
+      it "uses the local user's name" do
+        expect(local_state[:name]).to eq(ConzealandContact.last.to_s)
+        expect(local_state[:display_name]).to eq(ConzealandContact.last.badge_display)
+      end
+
+      it "defaults to blank strings when contact is not available" do
+        ConzealandContact.where(claim_id: user.claims).destroy_all
         expect(local_state[:name]).to be_blank
         expect(local_state[:display_name]).to be_blank
       end
@@ -188,28 +193,28 @@ RSpec.describe GlooContact do
         let(:community_press_pass) { create(:membership, :community_press_pass) }
 
         context "for adult reservations" do
-          let(:reservation) { create(:reservation, user: user, membership: adult) }
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
           it { is_expected.to include(GlooContact::MEMBER_VOTING) }
           it { is_expected.to include(GlooContact::MEMBER_ATTENDING) }
           it { is_expected.to include(GlooContact::MEMBER_HUGO) }
         end
 
         context "for supporting reservations" do
-          let(:reservation) { create(:reservation, user: user, membership: supporting) }
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: supporting) }
           it { is_expected.to include(GlooContact::MEMBER_VOTING) }
           it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
           it { is_expected.to_not include(GlooContact::MEMBER_HUGO) }
         end
 
         context "for kiwi reservations" do
-          let(:reservation) { create(:reservation, user: user, membership: kiwi) }
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: kiwi) }
           it { is_expected.to_not include(GlooContact::MEMBER_VOTING) }
           it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
           it { is_expected.to_not include(GlooContact::MEMBER_HUGO) }
         end
 
         context "for community sponsor" do
-          let(:reservation) { create(:reservation, user: user, membership: community_sponsor) }
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: community_sponsor) }
           it { is_expected.to_not include(GlooContact::MEMBER_VOTING) }
           it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
           it { is_expected.to include(GlooContact::MEMBER_HUGO) }
@@ -219,7 +224,7 @@ RSpec.describe GlooContact do
 
     context "when adult attending with roles on remote" do
       let(:adult) { create(:membership, :adult) }
-      let(:reservation) { create(:reservation, user: user, membership: adult) }
+      let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
 
       before do
         expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
@@ -232,6 +237,36 @@ RSpec.describe GlooContact do
       it { is_expected.to include(GlooContact::MEMBER_ATTENDING) }
       it { is_expected.to include(remote_roles.last) }
       it { is_expected.to include(remote_roles.first) }
+    end
+
+    context "integration" do
+      before do
+        allow(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        allow(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it "cycles memberships on transfer" do
+        user = create(:user)
+        adult = create(:membership, :adult)
+        last_minute_decision = create(:reservation, user: user, created_at: 1.day.ago, membership: adult)
+        create(:conzealand_contact, first_name: "last minute decision", claim: last_minute_decision.active_claim)
+
+        early_bird_reservation = create(:reservation, user: user, created_at: 365.days.ago, membership: adult)
+        create(:conzealand_contact, first_name: "early bird price", claim: early_bird_reservation.active_claim)
+        result = described_class.new(user).local_state
+        expect(result[:display_name]).to match(/early bird price/)
+        expect(result[:roles]).to include("M_Attending")
+
+        ApplyTransfer.new(early_bird_reservation, from: user, to: create(:user), audit_by: "agile squirrel").call
+        result = described_class.new(user.reload).local_state
+        expect(result[:display_name]).to match(/last minute decision/)
+        expect(result[:roles]).to include("M_Attending")
+
+        ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
+        result = described_class.new(user.reload).local_state
+        expect(result[:display_name]).to be_empty
+        expect(result[:roles]).to be_empty
+      end
     end
   end
 
