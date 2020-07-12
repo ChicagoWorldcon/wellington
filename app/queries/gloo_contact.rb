@@ -117,7 +117,7 @@ class GlooContact
   end
 
   def reservation
-    @reservation ||= user.reservations.order(:created_at).first
+    @reservation ||= user.reservations.paid.order(:created_at).first
   end
 
   private
