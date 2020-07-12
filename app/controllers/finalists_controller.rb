@@ -96,7 +96,6 @@ class FinalistsController < ApplicationController
         name: category.name,
         finalists: finalists,
       }
-
     end
   end
 

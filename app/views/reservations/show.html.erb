@@ -72,6 +72,19 @@
               Change
               <%=
                 link_to(
+                  "Finalist rankings for #{election.i18n_key}",
+                  reservation_finalist_path(reservation_id: @reservation, id: election.i18n_key)
+                )
+                %>
+              (hugo admin only)
+            </p>
+          <% end %>
+
+          <% Election.find_each do |election| %>
+            <p>
+              Change
+              <%=
+                link_to(
                   "Nominations for #{election.i18n_key}",
                   reservation_nomination_path(reservation_id: @reservation, id: election.i18n_key)
                 )
