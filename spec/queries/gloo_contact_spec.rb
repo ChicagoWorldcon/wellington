@@ -265,21 +265,20 @@ RSpec.describe GlooContact do
         ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
         result = described_class.new(user.reload).local_state
         expect(result[:display_name]).to be_empty
-        expect(result[:roles]).to be_empty
+        expect(result[:roles]).to eq [GlooContact::DISABLED]
       end
 
       it "starts picking up on a reservation when it's been paid off" do
         reservation.update!(state: Reservation::INSTALMENT)
         expect { reservation.update!(state: Reservation::PAID) }
           .to change { described_class.new(user).local_state[:roles] }
-          .from([])
           .to include("M_Attending")
       end
 
       it "removes roles when reservation is disabled" do
         expect { reservation.update!(state: Reservation::DISABLED) }
           .to change { described_class.new(user).local_state[:roles] }
-          .to be_empty
+          .to eq [GlooContact::DISABLED]
       end
     end
   end
