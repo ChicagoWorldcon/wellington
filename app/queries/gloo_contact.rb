@@ -109,7 +109,7 @@ class GlooContact
   end
 
   def in_sync?
-    local_state == remote_state
+    local_state.hash == remote_state.hash
   end
 
   def conzealand_contact
