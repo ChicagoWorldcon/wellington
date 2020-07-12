@@ -19,6 +19,17 @@ RSpec.describe GlooSync, type: :job do
   subject(:job) { described_class.new }
   let(:user) { create(:user) }
 
+  # Enable Gloo integrations for this test
+  # But turn it off after so CI doesn't try reaching out to thefantasy.network
+  around do |test|
+    ENV["GLOO_BASE_URL"] = "https://apitemp.thefantasy.network"
+    ENV["GLOO_AUTHORIZATION_HEADER"] = "let_me_in_please"
+    test.run
+    ENV["GLOO_BASE_URL"] = nil
+    ENV["GLOO_AUTHORIZATION_HEADER"] = nil
+  end
+
+
   describe "#perform" do
     it "calls save for the user" do
       expect(GlooContact).to receive(:new).with(user)

@@ -18,6 +18,8 @@ class GlooSync
   include Sidekiq::Worker
 
   def perform(email)
+    return unless ENV["GLOO_BASE_URL"].present?
+
     user = User.find_by!(email: email)
     GlooContact.new(user).save!
   end

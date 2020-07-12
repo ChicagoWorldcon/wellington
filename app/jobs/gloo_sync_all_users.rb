@@ -18,6 +18,8 @@ class GlooSyncAllUsers
   include Sidekiq::Worker
 
   def perform
+    return unless ENV["GLOO_BASE_URL"].present?
+
     User.find_each do |user|
       GlooContact.new(user).save!
     end
