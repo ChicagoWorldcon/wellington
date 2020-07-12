@@ -25,11 +25,13 @@
   </thead>
   <tbody>
     <% claims.eager_load(:user, :contact, reservation: :membership).each do |claim| %>
+      <% reservation_path = reservation_path(claim.reservation) %>
+      <% user_path = operator_user_path(claim.user) %>
       <tr>
-        <td><%= claim.reservation.membership_number %></td>
-        <td><%= link_to(claim.contact&.legal_name, reservation_path(claim.reservation)) %></td>
+        <td><%= link_to(claim.reservation.membership_number, reservation_path) %></td>
+        <td><%= link_to(claim.contact&.legal_name || "Anonymous", reservation_path) %></td>
         <td><%= claim.contact&.preferred_name %></td>
-        <td><%= claim.user.email %></td>
+        <td><%= link_to(claim.user.email, user_path) %></td>
         <td><%= claim.reservation.membership %></td>
       </tr>
     <% end %>
