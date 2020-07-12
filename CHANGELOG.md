@@ -17,9 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   GLOO_BASE_URL=https://api.thefantasy.network
   GLOO_AUTHORIZATION_HEADER=
   ```
-  Full sync with
+  Full sync in /sidekiq with
   ```ruby
-  GlooSync.all_users
+  GlooSyncAllUsers.perform_async
   ```
 - Hugo finalists for 2020 are now available
   [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
