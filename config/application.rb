@@ -60,7 +60,6 @@ module Conzealand
     # that it will serve con-specific text.  Note that this will NOT override
     # the location used by outside gems, which is why devise.en.yml has to be
     # where it is.
-    binding.pry
     @con_city_folder = config.con_city.gsub(/[^a-z-]/i, '').downcase
     config.i18n.load_path += Dir[Rails.root.join('config','locales', @con_city_folder, '*.{rb,yml}')]
     config.convention_details = ConventionDetails::Chicago.new
