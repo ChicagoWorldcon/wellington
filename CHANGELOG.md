@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bin/rake db:seed:conzealand:production_finalist
   bin/rake db:seed:conzealand:production_rename_hugo
   ```
+- Link to site selection from CoNZealand menu
+  [!215](https://gitlab.com/worldcon/wellington/-/merge_requests/215)
 
 ### Changed
 - Adds Hugo voting emails
