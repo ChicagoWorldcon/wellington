@@ -21,7 +21,8 @@ class UsersWhoCanNominateForChicago
   end
 
   def chicago_claims
-    Claim.joins(:chicago_contact, (reservation: (active_orders nominating_memberships) #Should join active orders.
+    # FIXME this query needs to be implemented
+    # Claim.joins(:chicago_contact, (reservation: (active_orders nominating_memberships))) #Should join active orders.
   end
 
   def users_with_nominating_chicago_claims
