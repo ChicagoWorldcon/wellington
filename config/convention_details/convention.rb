@@ -36,9 +36,11 @@ module ConventionDetails
     class_attribute :con_organizers_sigs
     class_attribute :con_url_homepage
     class_attribute :con_url_member_login
+    class_attribute :con_url_privacy
     class_attribute :con_url_tos
     class_attribute :con_url_volunteering
     class_attribute :con_wsfs_constitution_link
+    class_attribute :con_year
 
     def initialize()
       @con_city = (ENV["WORLDCON_CITY"] || "Wellington")

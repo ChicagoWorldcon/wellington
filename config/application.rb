@@ -20,6 +20,7 @@ require_relative "boot"
 require_relative 'convention_details/convention'
 require_relative 'convention_details/chicago'
 require "rails/all"
+require 'pry'
 
 
 # Require the gems listed in Gemfile, including any gems
@@ -52,13 +53,6 @@ module Conzealand
       config.active_job.queue_adapter = :sidekiq
     end
 
-
-
-    # Configure the year of the convention based on WORLDCON_YEAR env var
-    config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
-
-
-
     # Configure the name of the host city
     config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
 
@@ -66,9 +60,12 @@ module Conzealand
     # that it will serve con-specific text.  Note that this will NOT override
     # the location used by outside gems, which is why devise.en.yml has to be
     # where it is.
-    @con_city_folder = config.con_city.delete(" ").downcase
+    binding.pry
+    @con_city_folder = config.con_city.gsub(/[^a-z-]/i, '').downcase
     config.i18n.load_path += Dir[Rails.root.join('config','locales', @con_city_folder, '*.{rb,yml}')]
     config.convention_details = ConventionDetails::Chicago.new
+    #config.i18n.default_locale = (ENV["WORLDCON_CITY"] || "en").downcase.to_sym
+    #config.i18n.fallbacks = [:en]
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
     config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
@@ -78,35 +75,5 @@ module Conzealand
 
 
 
-
-    # Configure the pubic-facing name for the convention based on WORLDCON_PUBLIC_NAME env var
-    config.con_public_name = (ENV["WORLDCON_PUBLIC_NAME"] || "wellington").downcase
-
-
-    # Configure the email for help with Hugo issues
-    config.hugo_help_email = (ENV["HUGO_HELP_EMAIL"] || "hugohelp@conzealand.nz")
-
-    # Configure the default basic greeting
-    config.basic_greeting = (ENV["GREETING"] || "wellington").downcase
-
-
-
-    config.con_country = (ENV["WORLDCON_COUNTRY"] || "new zealand").downcase
-
-    config.worldcon_volunteering_url = (ENV["WORLDCON_VOLUNTEERING_URL"] || "https://conzealand.nz/conzealand-needs").downcase
-
-    config.worldcon_tos_url = (ENV["WORLDCON_TOS_URL"] || "https://conzealand.nz/about-conzealand/policies-and-expectations/" ).downcase
-
-    config.worldcon_privacy_policy_url = (ENV["WORLDCON_PRIVACY_POLICY_URL"] || "https://conzealand.nz/privacy-policy/").downcase
-
-    config.worldcon_homepage_url = (ENV["WORLDCON_HOMEPAGE_URL"] || "https://conzealand.nz/").downcase
-
-    config.con_city_previous =
-    (ENV["WORLDCON_CITY_PREVIOUS"] || "wellington").downcase
-
-    config.wsfs_constitution = (ENV["WSF_CONSTITUTION_LINK"] || "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf")
-
-    #config.i18n.default_locale = (ENV["WORLDCON_CITY"] || "en").downcase.to_sym
-    #config.i18n.fallbacks = [:en]
   end
 end
