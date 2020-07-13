@@ -74,47 +74,6 @@ Membership.create!(
 ########################################################################
 # Actual Memberships
 
-<<<<<<< HEAD
-Membership.create!(
-  name: "adult",
-  price: Money.new(400_00),
-  description: "Full membership for a person who will be physically attending the convention.",
-  can_attend: true,
-  can_nominate: true,
-)
-
-Membership.create!(
-  name: "kid_in_tow",
-  price: Money.new(50_00),
-  description: "Attending membership for a child who will be in the company of their guardian at all times.  Kids-in-tow cannot nominate, vote, or site-select.",
-  can_attend: true,
-  can_nominate: false,
-)
-
-Membership.create!(
-  name: "child",
-  price: Money.new(100_00),
-  description: "Attending membership for a child born after 2007. Child members are allowed to be away from their guardians at times, but cannot nominate, vote, or site-select.",
-  can_attend: true,
-  can_nominate: false,
-)
-
-Membership.create!(
-  name: "young_adult",
-  price: Money.new(250_00),
-  description: "Full, attending membership for a child born after 2002. Young adult members are expected to be on their own at times, and can nominate, vote, and site-select.",
-  can_attend: true,
-  can_nominate: true,
-)
-
-Membership.create!(
-  name: "supporting",
-  price: Money.new(100_00),
-  description: "Voting, nominiating, and site-selecting membership for a person who will not be physically attending the convention.",
-  can_attend: false,
-  can_nominate: true,
-)
-=======
 prices.each do |price_group|
   Membership.create!(
     name: "Supporting",
@@ -188,7 +147,6 @@ prices.each do |price_group|
     can_attend: true,
   )
 end
->>>>>>> 50cdb1af04f80b55f30a705290e074470763d7a1
 
 ########################################
 # Other prod data migrations that happened post deploy

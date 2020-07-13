@@ -15,8 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 require_relative "boot"
+require_relative 'convention_details/convention'
+require_relative 'convention_details/chicago'
 require "rails/all"
+
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -50,18 +54,21 @@ module Conzealand
 
 
 
+    # Configure the year of the convention based on WORLDCON_YEAR env var
+    config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
+
+
+
+    # Configure the name of the host city
+    config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
 
     # Configure the location of the en.yml file used for i18n translation such
     # that it will serve con-specific text.  Note that this will NOT override
     # the location used by outside gems, which is why devise.en.yml has to be
     # where it is.
-    config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
-<<<<<<< HEAD
-    @city_folder = ENV["WORLDCON_CITY"].to_s.downcase
-    config.i18n.load_path += Dir[Rails.root.join('config','locales', @city_folder, '*.{rb,yml}')]
-=======
-    config.i18n.load_path += Dir[Rails.root.join('config','locales', config.con_city, '*.{rb,yml}')]
->>>>>>> 50cdb1af04f80b55f30a705290e074470763d7a1
+    @con_city_folder = config.con_city.delete(" ").downcase
+    config.i18n.load_path += Dir[Rails.root.join('config','locales', @con_city_folder, '*.{rb,yml}')]
+    config.convention_details = ConventionDetails::Chicago.new
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
     config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
@@ -69,14 +76,12 @@ module Conzealand
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = (ENV["WORLDCON_THEME"] || "conzealand").downcase
 
-    # Configure the name of the host city
+
 
 
     # Configure the pubic-facing name for the convention based on WORLDCON_PUBLIC_NAME env var
     config.con_public_name = (ENV["WORLDCON_PUBLIC_NAME"] || "wellington").downcase
 
-    # Configure the year of the convention based on WORLDCON_YEAR env var
-    config.con_year = (ENV["WORLDCON_YEAR"] || "2020")
 
     # Configure the email for help with Hugo issues
     config.hugo_help_email = (ENV["HUGO_HELP_EMAIL"] || "hugohelp@conzealand.nz")

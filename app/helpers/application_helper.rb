@@ -78,7 +78,7 @@ module ApplicationHelper
   end
 
   def worldcon_public_name
-    ApplicationHelper.theme_con_public_name
+    Rails.configuration.convention_details.con_name_public
   end
 
   def previous_worldcon_public_name
@@ -163,10 +163,6 @@ module ApplicationHelper
 
   def finalists_loaded?
     @voting_open ||= Finalist.count > 0
-  end
-
-  def worldcon_public_name
-    ApplicationHelper.theme_con_public_name
   end
 
   def previous_worldcon_public_name
