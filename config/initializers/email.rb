@@ -57,32 +57,29 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     end
   end
 
+  if Rails.env.production?
+    %w(MAINTAINER_EMAIL MEMBER_SERVICES_EMAIL HUGO_HELP_EMAIL).each do |env_var|
+      begin
+        puts "Please set #{env_var} in production"
+        exit 1
+      end unless ENV[env_var].present?
+    end
+  end
+
   $maintainer_email = ENV.fetch(
-    "MAINTAINER_EMAIL"
+    "MAINTAINER_EMAIL",
+    "maintainer@localhost"
   ).downcase
 
   $member_services_email = ENV.fetch(
-    "MEMBER_SERVICES_EMAIL"
+    "MEMBER_SERVICES_EMAIL",
+    "member_services@localhost"
   ).downcase
 
   $hugo_help_email = ENV.fetch(
-    "HUGO_HELP_EMAIL"
+    "HUGO_HELP_EMAIL",
+    "hugo_help@localhost"
   ).downcase
-
-  if Rails.env.production? && ENV["MEMBER_SERVICES_EMAIL"].nil?
-    puts "Please set MEMBER_SERVICES_EMAIL to show where user facing system emails come from"
-    exit 1
-  end
-
-  if Rails.env.production? && ENV["MAINTAINER_EMAIL"].nil?
-    puts "Please set MAINTAINER_EMAIL to allow for reply address on report emails"
-    exit 1
-  end
-
-  if Rails.env.production? && ENV["HUGO_HELP_EMAIL"].nil?
-    puts "Please set HUGO_HELP_EMAIL to allow for reply address on report emails"
-    exit 1
-  end
 
   # If these are not set, they're basically disabled
   $nomination_reports_email = ENV["NOMINATION_REPORTS_EMAIL"]&.downcase
