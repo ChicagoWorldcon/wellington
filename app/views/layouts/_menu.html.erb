@@ -53,7 +53,7 @@
 <nav class="container <%= "collapse" if request.path != root_path %>" id="navbarHeader">
   <div class="row">
     <div class="col-sm-8 col-md-6 py-4">
-      <% if !current_operator.present? %>
+      <% if current_operator.nil? %>
         <ul class="list-unstyled l-v-spacing">
           <li><%= link_to "Purchase Membership", memberships_path %></li>
           <li><%= link_to "My Memberships", reservations_path %></li>
@@ -61,6 +61,7 @@
             <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
           <% end %>
           <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
+          <li><a href="https://sites.grenadine.co/sites/conzealand/en/cnz-siteselection">Site Selection</a>
           <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
         </ul>
       <% end %>
