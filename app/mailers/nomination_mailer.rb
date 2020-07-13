@@ -16,7 +16,6 @@
 # limitations under the License.
 
 class NominationMailer < ApplicationMailer
-
   include ApplicationHelper
 
   default from: $member_services_email

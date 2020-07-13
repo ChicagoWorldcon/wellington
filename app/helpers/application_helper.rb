@@ -4,6 +4,7 @@
 # Copyright 2020 Matthew B. Gray
 # Copyright 2020 Victoria Garcia
 # Copyright 2020 Steven Ensslen
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -74,6 +75,94 @@ module ApplicationHelper
 
   def worldcon_contact_form
     ApplicationHelper.theme_contact_form
+  end
+
+  def worldcon_public_name
+    ApplicationHelper.theme_con_public_name
+  end
+
+  def previous_worldcon_public_name
+    ApplicationHelper.theme_previous_con_public_name
+  end
+
+  def worldcon_public_name_spaceless
+    ApplicationHelper.theme_con_public_name.remove(" ");
+  end
+
+  def worldcon_year
+    ApplicationHelper.theme_con_year
+  end
+
+  def retro_hugo_75_ago
+     ((ApplicationHelper.theme_con_year.to_i) - 75).to_s
+  end
+
+  def worldcon_year_before
+     ((ApplicationHelper.theme_con_year.to_i) - 1).to_s
+  end
+
+  def worldcon_year_after
+     ((ApplicationHelper.theme_con_year.to_i) + 1).to_s
+  end
+
+  def site_selection_year
+     ((ApplicationHelper.theme_con_year.to_i) + 2).to_s
+  end
+
+  def email_hugo_help
+    ApplicationHelper.theme_hugo_help_email
+  end
+
+  def mailto_hugo_help
+    "mailto:" + ApplicationHelper.theme_hugo_help_email
+  end
+
+  def worldcon_basic_greeting
+    ApplicationHelper.theme_greeting
+  end
+
+  def worldcon_greeting_init_caps
+    ApplicationHelper.theme_greeting.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
+  end
+
+  def worldcon_greeting_sentence
+    ApplicationHelper.theme_greeting.capitalize.concat(".")
+  end
+
+  def worldcon_greeting_sentence_excited
+    ApplicationHelper.theme_greeting.capitalize.concat("!")
+  end
+
+  def worldcon_city
+    ApplicationHelper.theme_con_city.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
+  end
+
+  def worldcon_country
+    ApplicationHelper.theme_con_country
+  end
+
+  def worldcon_url_tos
+    ApplicationHelper.theme_con_tos_url
+  end
+
+  def worldcon_url_privacy
+    ApplicationHelper.theme_con_privacy_url
+  end
+
+  def worldcon_url_volunteering
+    ApplicationHelper.theme_con_volunteering_url
+  end
+
+  def worldcon_url_homepage
+    ApplicationHelper.theme_con_homepage_url
+  end
+
+  def worldcon_previous_city
+    ApplicationHelper.theme_con_city_previous
+  end
+
+  def finalists_loaded?
+    @voting_open ||= Finalist.count > 0
   end
 
   def worldcon_public_name

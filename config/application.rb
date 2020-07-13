@@ -56,8 +56,12 @@ module Conzealand
     # the location used by outside gems, which is why devise.en.yml has to be
     # where it is.
     config.con_city = (ENV["WORLDCON_CITY"] || "wellington").downcase
+<<<<<<< HEAD
     @city_folder = ENV["WORLDCON_CITY"].to_s.downcase
     config.i18n.load_path += Dir[Rails.root.join('config','locales', @city_folder, '*.{rb,yml}')]
+=======
+    config.i18n.load_path += Dir[Rails.root.join('config','locales', config.con_city, '*.{rb,yml}')]
+>>>>>>> 50cdb1af04f80b55f30a705290e074470763d7a1
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
     config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase

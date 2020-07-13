@@ -19,7 +19,11 @@ if [[ -z $DB_HOST ]]; then
   DB_HOST="postgres"
 fi
 
-until psql -Atx "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST" -c 'select current_date'; do
+if [[ -z $DB_NAME ]]; then
+    DB_NAME="worldcon_production"
+fi
+
+until psql -Atx "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST/$DB_NAME" -c 'select current_date'; do
   echo "waiting for postgres..."
   sleep 5
 done
