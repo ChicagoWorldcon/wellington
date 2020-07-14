@@ -1,8 +1,6 @@
-<%
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
-# Copyright 2019 Chris Rose
+# Copyright 2020 Steven Ensslen
 # Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-%>
-<%= @worldcon_greeting_sentence_excited %>
 
-You've received this email because <%= @owner_name || "somebody" %> requested to transfer
-membership #<%= @membership_number %> from "<%= @from %>" to "<%= @to %>"
-and this should now be in effect.
+# The name that the Hugo nomination process used is no longer acceptable
+# for Hugo voting.  Keep all the nominations, and change the name
+old_str = "Astounding Award for the best new science fiction writer, sponsored by Dell Magazines (not a Hugo)"
+new_str = "Astounding Award for Best New Writer, sponsored by Dell Magazines (not a Hugo)"
 
-If you have any questions or concerns, please reply to this email.
-
-<%= @worldcon_public_name %> – <%= $member_services_email %>
-<%= @worldcon_homepage_url %>
+hugo = Election.find_or_initialize_by(name: "2020 Hugo")
+astounding = Category.find_or_initialize_by(election_id: hugo.id, name: old_str )
+astounding.update_attributes(:name => new_str)

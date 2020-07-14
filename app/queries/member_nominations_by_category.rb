@@ -22,6 +22,7 @@ class MemberNominationsByCategory
 
   include ActiveModel::Model
   include ActiveModel::Validations
+  include ApplicationHelper
 
   attr_accessor :reservation # Required to instantiate this model
   attr_accessor :categories
@@ -49,7 +50,7 @@ class MemberNominationsByCategory
     end
 
     if reservation.disabled?
-      errors.add(:reservation, "does not have nomination rights, contact hugohelp@conzealand.nz if assistance is needed")
+      errors.add(:reservation, "does not have nomination rights, contact #{hugo_help_email} if assistance is needed")
     end
 
     if !reservation.can_nominate?

@@ -54,7 +54,7 @@ $(document).ready(() => {
     email: config.email,
     currency: config.currency,
     locale: 'auto',
-    name: 'CoNZealand',
+    name: config.name,
     token: (token) => {
       $form.find('input#stripeToken').val(token.id);
       $form.find('input#stripeEmail').val(token.email);

@@ -45,7 +45,7 @@ RSpec.describe Export::MembershipCsv do
       describe "the first row" do
         subject(:first_row) { csv.second }
 
-        it { is_expected.to include(reservation.active_claim.conzealand_contact.first_name) }
+        it { is_expected.to include(reservation.active_claim.chicago_contact.first_name) }
         it { is_expected.to include(reservation.membership_number.to_s) }
 
         it "has a column per heading" do

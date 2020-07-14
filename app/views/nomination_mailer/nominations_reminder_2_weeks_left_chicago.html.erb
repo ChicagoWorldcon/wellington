@@ -1,5 +1,6 @@
 <%#
   Copyright 2020 Matthew B. Gray
+  Copyright 2020 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,24 +16,30 @@
 %>
 <p>
   <% if @details.count == 1 %>
-    <%= @worldcon_greeting_init_caps %> <%= @details.first %>!
+    <%= @worldcon_basic_greeting.capitalize %> <%= @details.first %>!
   <% else %>
-    <%= @worldcon_greeting_init_caps %>
+    <%= @worldcon_greeting_sentence_excited %>
   <% end %>
-</p>
+</p>s
 
 <p>
-  Hello eligible Hugo nominator! The deadline for Hugo nominations is just about
-  3 days away. Please do not wait until the last minute to start your nominations
-  - sometimes there are hiccups in the login process, and it can take our team
-  some time to fix those for you. So if you plan to nominate and have not logged
-  in and accessed the nomination form yet, please do so ASAP. The deadline for
-  nominations is <%= @hugo_nom_deadline %>.
+  Hello eligible Hugo nominator! This is just a quick reminder to let you know
+  that the end of the Hugo nomination period is fast approaching! The deadline
+  for nominations is <%= @hugo_nom_deadline %>.
+</p>
+
+<%# TODO: Deal with the number of categories %>
+<p>
+  As a member of <%= @worldcon_public_name %>, you are eligible to nominate in the 17 Hugo ballot
+  categories covering the best of the genre in the last year, for the Lodestar
+  Award for Best Young Adult Book, the Astounding Award for Best New Writer
+  (formerly known as the John W. Campbell Award), and for the <%= @retro_hugo_75_ago %> Retro Hugos,
+  celebrating the genre work of <%= (@retro_hugo_year_75_.to_i - 1).to_s %>.
 </p>
 
 <p>
   To nominate online, please visit
-  <a href=<%= @member_login_url %>>the members' area</a>
+  <a href=<%= @member_login_url %>>the members' area</a> and
   enter the email address
   you received this email at, and request a login link. After clicking the link
   and entering the members area, click on My Memberships to access all
@@ -50,18 +57,18 @@
 </p>
 
 <p>
-  We expect to announce the final ballot in early <%= @hugo_ballot_pub_month %>, and the awards will be
-  presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= @end_day_informal %>, <%= @worldcon_year %>.
+  We expect to announce the final ballot in early April, and the awards will be
+  presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= end_day_informal %>, <%= @worldcon_year %>.
 </p>
 
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from <%= @worldcon_year_before %> and <%= (@retro_hugo_75_ago.to_i - 1).to_s %>
+  were your favorites from <%= (@worldcon_year.to_i - 1).to_s %> and <%= (@retro_hugo_year.to_i - 1).to_s %>.
 </p>
 
 <p>
-  Please contact <%= @email_hugo_help %> if you have difficulties accessing the
+  Please contact <%= @hugo_help_email %> if you have difficulties accessing the
   online ballot(s), or you have any other questions on the Hugo process.
 </p>
 

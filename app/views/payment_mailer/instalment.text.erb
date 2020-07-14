@@ -2,6 +2,7 @@
   Copyright 2019 AJ Esler
   Copyright 2019 Matthew B. Gray
   Copyright 2019 Chris Rose
+  Copyright 2020 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,16 +16,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-Kia Ora <%= @contact.playful_nickname %>!
+<%= @worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
 
 We've sent you this email to let you know that we've just received an instalment towards your
 <%= @reservation.membership %> membership, which is reserved with the membership number #<%= @reservation.membership_number %>.
 
 You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
-identifier "<%= @charge.stripe_id %>" and will appear to be going out to "CoNZealand".
+identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
 
 You still need to pay <%= @outstanding_amount %> to cover this membership. You can do this anytime by returning to the
 members area and to make further instalments or to pay your membership off completely.
 
-CoNZealand - <%= $member_services_email %>
-https://conzealand.nz/
+<%= @worldcon_public_name %> - <%= $member_services_email %>
+<%= @worldcon_url_homepage %>

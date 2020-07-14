@@ -16,7 +16,7 @@ jobs:
 
       - name: Extract PR number
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }'))"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
         id: extract_name
 
       - name: Configure AWS Credentials
@@ -33,7 +33,7 @@ jobs:
       - name: Define the repository labels
         run: |
             echo '::set-env name=CONTAINER_TEST_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}'
-            echo '::set-env name=CONTAINER_STAGING_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ steps.extract_name.outputs.branch }}'
+            echo '::set-env name=CONTAINER_STAGING_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-pr-${{ steps.extract_name.outputs.branch }}'
 
       - name: Build, tag, and push image to Amazon ECR
         run: |

@@ -1,8 +1,6 @@
-<%
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2019 Chris Rose
 # Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-%>
-<%= @worldcon_greeting_sentence_excited %>
 
-You've received this email because <%= @owner_name || "somebody" %> requested to transfer
-membership #<%= @membership_number %> from "<%= @from %>" to "<%= @to %>"
-and this should now be in effect.
-
-If you have any questions or concerns, please reply to this email.
-
-<%= @worldcon_public_name %> – <%= $member_services_email %>
-<%= @worldcon_homepage_url %>
+dublin_import = "2019-12-01".to_time
+Membership.create!(
+  "name": "dublin_2019",
+  "description": "Attended Dublin in 2019",
+  "active_from": dublin_import,
+  "active_to": dublin_import, # not available to the general public
+  "can_vote": false,
+  "can_nominate": true,
+  "can_site_select": false,
+  "can_attend": false, # can nominate, but can't vote
+  "price": Money.new(0),
+)

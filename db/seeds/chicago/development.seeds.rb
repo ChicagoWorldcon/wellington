@@ -94,3 +94,26 @@ end
 
 # Avoid sending system emails for generated nominations
 Reservation.update_all(ballot_last_mailed_at: Time.now)
+
+puts "Creating finalists..."
+require_relative "./development_finalist.seeds.rb"
+require_relative "./development_rename_hugo.seeds.rb"
+
+puts "Ranking finalists..."
+finalists_by_category = Finalist.all.to_a.group_by(&:category_id)
+reservations_with_voting = Reservation.joins(:membership).merge(Membership.with_voting_rights)
+total = reservations_with_voting.count
+reservations_with_voting.find_each.with_index do |reservation, n|
+  puts "#{n}/#{total} reservations ranked" if n % 10 == 0
+
+  finalists_by_category.each do |(category_id, finalists)|
+    count = rand(0..7)
+    finalists.sample(count).each.with_index(1) do |finalist, position|
+      Rank.create!(
+        finalist: finalist,
+        reservation: reservation,
+        position: position,
+      )
+    end
+  end
+end

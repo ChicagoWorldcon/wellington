@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +17,15 @@
 # limitations under the License.
 
 module ChargesHelper
+
+  include ApplicationHelper
+
   def stripe_config(reservation)
     {
       key: Rails.configuration.stripe[:publishable_key],
-      description: "CoNZealand #{@membership.name} membership",
+      description: "#{worldcon_public_name} #{@membership.name} membership",
       email: reservation.user.email,
+      name: worldcon_public_name_spaceless,
       currency: $currency,
     }.to_json
   end

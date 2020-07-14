@@ -15,9 +15,9 @@
 %>
 <p>
   <% if @details.count == 1 %>
-    Kia Ora <%= @details.first %>!
+    <%= @worldcon_greeting_init_caps %> <%= @details.first %>!
   <% else %>
-    Kia Ora!
+    <%= @worldcon_greeting_init_caps %>!
   <% end %>
 </p>
 
@@ -27,8 +27,7 @@
   - sometimes there are hiccups in the login process, and it can take our team
   some time to fix those for you. So if you plan to vote and have not logged
   in and accessed the voting form yet, please do so ASAP. The deadline for
-  voting is 22 July 2020 at 11:59pm Pacific Daylight Time (2:59 am Eastern
-  Daylight Time, 06:59 am Irish time, and 8:59 am 23 July 2020 New Zealand time).
+  voting is <%= @hugo_vote_deadline %>.
 </p>
 
 <p>
@@ -48,7 +47,7 @@
 </p>
 
 <p>
-  Please contact hugohelp@conzealand.nz if you have difficulties accessing the
+  Please contact <%= @email_hugo_help %>if you have difficulties accessing the
   online ballot(s), or you have any other questions on the Hugo process.
 </p>
 
@@ -59,7 +58,7 @@
   <%=
     link_to(
       "A4",
-      "https://conzealand.nz/wp-content/uploads/2020/06/2020-Hugo-Ballot-A4.pdf",
+      @hugo_ballot_download_a4,
     )
   %>,
 
@@ -67,18 +66,18 @@
   <%=
     link_to(
       "US letter",
-      "https://conzealand.nz/wp-content/uploads/2020/06/2020-Hugo-Ballot-US-Letter.pdf",
+      @hugo_ballot_download_letter,
     )
   %> sizes. The WSFS Constitution is also available online
-  <a href="http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf">here</a>.
+  <a href=<%= @wsfs_constitution_link %>>here</a>.
 </p>
 
 <p>
-  We look forward to your participation in the 2020 Hugo Awards and 1945 Retro
-  Hugos, and hope to see you at CoNZealand!
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro
+  Hugos, and hope to see you at <%= @worldcon_public_name %>!
 </p>
 
 <p>
-  Tammy Coxen, Nicholas Whyte and Ian Moore<br>
+  <%= @organizers_names_for_signature %><br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

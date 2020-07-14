@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
-<p>Kia Ora;</p>
+<p><%= @worldcon_greeting_sentence_excited %></p>
 
 <p>We're emailing you because we've received a request for a login link.</p>
 
@@ -36,6 +36,6 @@
 </p>
 
 <p>
-  CoNZealand – <%= $member_services_email %><br>
-  https://conzealand.nz/
+  <%= @worldcon_public_name %> – <%= $member_services_email %><br>
+  <%= @worldcon_homepage_url %>
 </p>

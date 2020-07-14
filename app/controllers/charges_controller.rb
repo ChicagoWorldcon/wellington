@@ -17,6 +17,7 @@
 
 # Test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
+
   before_action :lookup_reservation!
 
   def new

@@ -29,9 +29,9 @@
       <ul class="list-group list-group-flush mt-3 mb-4">
         <% offer.membership_rights.each do |membership_right| %>
           <li class="list-group-item">
-            <%= t(:description, scope: membership_right) %>
+            <%= t(:description, scope: membership_right ) %>
             <i class="far fa-question-circle"
-              title="<%= t(:layman, scope: membership_right) %>"
+              title="<%= t(:layman, scope: membership_right, worldcon_public_name: worldcon_public_name, hugo_help_email: email_hugo_help, mailto_hugo_help: mailto_hugo_help ) %>"
               data-toggle="tooltip"
               aria-label="More information"
               height="15px"

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Copyright 2010 Chris Rose
+# Copyright 2020 Chris Rose
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -62,7 +63,7 @@ module ThemeConcern
     end
   end
 
-  # instance methods should also be created to reference the private ones aboe
+  # instance methods should also be created to reference the private ones above
   private
 
   def theme_contact_param
