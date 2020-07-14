@@ -42,9 +42,8 @@ module ConventionDetails
     class_attribute :con_url_volunteering
     class_attribute :con_wsfs_constitution_link
     class_attribute :con_year
-
-    def initialize()
-      @con_number = (ENV["WORLDCON_NUMBER"] || "80").strip
-    end
+    class_attribute :contact_model
+    class_attribute :site_theme
+    class_attribute :translation_folder
   end
 end

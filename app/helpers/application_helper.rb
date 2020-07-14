@@ -172,6 +172,7 @@ module ApplicationHelper
   end
 
   def worldcon_number
+    # for example, 'worldcon80'
     Rails.configuration.convention_details.con_number
   end
 

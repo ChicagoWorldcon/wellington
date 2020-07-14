@@ -175,12 +175,11 @@ STRIPE_CURRENCY=NZD
 # Con specific mailer configuration
 MAINTAINER_EMAIL=your.name@conzealand.nz
 
-# Con specific configuration. WORLDCON_CITY is used to designate a con-specific file for I18n text.
+# Con specific configuration.
 MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
-WORLDCON_THEME=chicago
-WORLDCON_CONTACT=chicago
-WORLDCON_CITY=chicago
-WORLDCON_NUMBER=80
+
+# WORLDCON_NUMBER is used to designate a con-specific configuration (the set of available ones can be found in `config/convention_details/*.rb*`)
+WORLDCON_NUMBER=worldcon80
 
 # Reporting, if you don't set these they don't send
 NOMINATION_REPORTS_EMAIL=hugo-help@conzealand.nz

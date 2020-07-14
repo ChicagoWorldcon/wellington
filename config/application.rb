@@ -17,11 +17,9 @@
 
 
 require_relative "boot"
-require_relative 'convention_details/convention'
-require_relative 'convention_details/chicago'
 require "rails/all"
 require 'pry'
-
+require_relative 'convention_details'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -54,28 +52,20 @@ module Conzealand
     end
 
     # Configure the name of the host city
-    config.worldcon_number = (ENV["WORLDCON_NUMBER"] || "80").strip
+    config.convention_details = Wellington::details
+    config.worldcon_number = config.convention_details.con_number
 
     # Configure the location of the en.yml file used for i18n translation such
     # that it will serve con-specific text.  Note that this will NOT override
     # the location used by outside gems, which is why devise.en.yml has to be
     # where it is.
-    @con_translation_folder = "worldcon" + config.worldcon_number
-    config.i18n.load_path += Dir[Rails.root.join('config','locales', @con_translation_folder, '*.{rb,yml}')]
-
-    # Convention-specific details that are not required for the actual
-    # configuration process come in here.
-    config.convention_details = ConventionDetails::Chicago.new
-    #config.i18n.default_locale = (ENV["WORLDCON_CITY"] || "en").downcase.to_sym
-    #config.i18n.fallbacks = [:en]
+    config.i18n.load_path += Dir[Rails.root.join('config','locales', config.convention_details.translation_folder, '*.{rb,yml}')]
 
     # Configure the system model based on WORLDCON_CONTACT env var. This affects the DB.
-    config.contact_model = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
+    config.contact_model = config.convention_details.contact_model
 
     # Configure the site theme based on WORLDCON_THEME env var
-    config.site_theme = (ENV["WORLDCON_THEME"] || "conzealand").downcase
-
-
+    config.site_theme = config.convention_details.site_theme
 
   end
 end
