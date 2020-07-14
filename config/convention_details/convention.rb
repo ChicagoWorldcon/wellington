@@ -33,6 +33,7 @@ module ConventionDetails
     class_attribute :con_hugo_download_letter
     class_attribute :con_name_public
     class_attribute :con_name_public_previous
+    class_attribute :con_number
     class_attribute :con_organizers_sigs
     class_attribute :con_url_homepage
     class_attribute :con_url_member_login
@@ -43,7 +44,7 @@ module ConventionDetails
     class_attribute :con_year
 
     def initialize()
-      @con_city = (ENV["WORLDCON_CITY"] || "Wellington")
+      @con_number = (ENV["WORLDCON_NUMBER"] || "80").strip
     end
   end
 end
