@@ -180,6 +180,7 @@ MEMBER_SERVICES_EMAIL=registrations@conzealand.nz
 WORLDCON_THEME=chicago
 WORLDCON_CONTACT=chicago
 WORLDCON_CITY=chicago
+WORLDCON_NUMBER=80
 
 # Reporting, if you don't set these they don't send
 NOMINATION_REPORTS_EMAIL=hugo-help@conzealand.nz
