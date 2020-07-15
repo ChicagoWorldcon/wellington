@@ -83,9 +83,8 @@ module ApplicationHelper
 
 
   #### Con City Helpers
-  # Will make sure it's properly capitalized for display, no matter how it's entered in .env
   def worldcon_city
-    Rails.configuration.convention_details.con_city.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
+    Rails.configuration.convention_details.con_city
   end
 
   def worldcon_previous_city
@@ -170,6 +169,11 @@ module ApplicationHelper
 
   def previous_worldcon_public_name
     Rails.configuration.convention_details.con_name_public_previous
+  end
+
+  def worldcon_number
+    # for example, 'worldcon80'
+    Rails.configuration.convention_details.con_number
   end
 
   #### Organizer Signature Helpers

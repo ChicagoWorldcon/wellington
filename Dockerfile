@@ -16,6 +16,12 @@
 
 FROM ruby:2.7.1-alpine as base
 
+# we need _a_ worldcon number
+ARG WORLDCON_NUMBER
+
+# and by default that'll be Chicago :)
+ENV WORLDCON_NUMBER ${WORLDCON_NUMBER:-worldcon80}
+
 RUN apk add \
       build-base \
       freetds-dev \
