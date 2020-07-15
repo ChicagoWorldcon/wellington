@@ -15,12 +15,12 @@
 # limitations under the License.
 
 require "rails/all"
-require "pry"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 
 module ConventionDetails
+
   class Convention
     class_attribute :con_city
     class_attribute :con_city_previous

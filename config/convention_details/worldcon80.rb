@@ -38,6 +38,7 @@ module ConventionDetails
       @con_hugo_download_letter = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_name_public = "Tasfic II"
       @con_name_public_previous = "DisCon 3"
+      @con_number = "worldcon80"
       #FIXME: Update @con_organizers_sigs
       @con_organizers_sigs = "Helen Montgomery & co-conspirators"
       #FIXME: Verify ALL Chicon  Urls

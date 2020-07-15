@@ -17,7 +17,7 @@
 # limitations under the License.
 
 # ugh... no idea how to pull concerns in here
-contact_name = (ENV["WORLDCON_CONTACT"] || "conzealand").downcase
+contact_name = (Rails.configuration.convention_details.contact_model || "chicago").downcase
 seed_symbol = "db:seed:#{contact_name}:development"
 
 namespace :dev do
@@ -61,7 +61,7 @@ namespace :dev do
   namespace :reset do
     desc "Sets db/structure.sql to the same as master"
     task :structure do
-      system("git checkout --force origin/master db/structure.sql")
+      system("git checkout --force origin/main db/structure.sql")
       system("git reset db/structure.sql")
     end
   end

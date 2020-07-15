@@ -17,9 +17,9 @@
 
 
 require_relative "boot"
+require_relative 'convention_details/detail_manager'
 require "rails/all"
-require 'pry'
-require_relative 'convention_details'
+
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -51,9 +51,8 @@ module Conzealand
       config.active_job.queue_adapter = :sidekiq
     end
 
-    # Configure the name of the host city
-    config.convention_details = Wellington::details
-    config.worldcon_number = config.convention_details.con_number
+    #Configures all convention-specific info
+    config.convention_details = ConventionDetails::DetailManager.new.details
 
     # Configure the location of the en.yml file used for i18n translation such
     # that it will serve con-specific text.  Note that this will NOT override
@@ -66,6 +65,5 @@ module Conzealand
 
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = config.convention_details.site_theme
-
   end
 end
