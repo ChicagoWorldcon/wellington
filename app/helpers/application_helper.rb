@@ -176,6 +176,10 @@ module ApplicationHelper
     Rails.configuration.convention_details.con_number
   end
 
+  def worldcon_number_digits_only
+    self.worldcon_number.gsub(/[worldcon]/i, '')
+  end
+
   #### Organizer Signature Helpers
   def organizers_names_for_signature
     Rails.configuration.convention_details.con_organizers_sigs
