@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
 # Copyright 2019 Matthew B. Gray
+# # Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@
 # Membership is associated to ChicagoContact through the Reservation on Claim
 # This very tightly coupled to app/views/reservations/_chicago_contact_form.html.erb
 # ChicagoContact is created when a user creates a Reservation against a Membership
+
+require 'time'
+
 class ChicagoContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
@@ -57,7 +60,10 @@ class ChicagoContact < ApplicationRecord
     :interest_selling_at_art_show,
     :interest_exhibiting,
     :interest_performing,
-    :mail_souvenir_book
+    :mail_souvenir_book,
+    :dob_day,
+    :dob_month,
+    :dob_year
   ].freeze
 
   belongs_to :claim, required: false
@@ -77,7 +83,9 @@ class ChicagoContact < ApplicationRecord
   end
 
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
+
   def to_s
+
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}"
     else
@@ -110,9 +118,26 @@ class ChicagoContact < ApplicationRecord
   end
 
   def fun_badge_title?
-    return false if !badge_title.present?                        # if you've set one
-    return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
-    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
+    return false if !badge_title.present?        # if you've set one
+    return false if badge_title.match(/\s/)      # breif, so doesn't have whitespace
+    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred nam
     true
+  end
+
+
+  def dob_string
+    if self.dob_day && self.dob_month && self.dob_year
+      return "#{dob_day}-#{dob_month}-#{dob_year}"
+    else
+      return "No date of birth on file."
+    end
+  end
+
+  def dob_time_object
+    if self.dob_day && self.dob_month && self.dob_year
+      return Time.parse("#{dob_year}-#{dob_month}-#{dob_day}")
+    else
+      return null
+    end
   end
 end

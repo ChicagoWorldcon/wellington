@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +20,9 @@
 # Membership is associated to DcContact through the Reservation on Claim
 # This very tightly coupled to app/views/reservations/_dc_contact_form.html.erb
 # DcContact is created when a user creates a Reservation against a Membership
+
+require 'time'
+
 class DcContact < ApplicationRecord
   # Initially based off https://reg.discon3.org/reg/ <3
 
@@ -58,7 +62,10 @@ class DcContact < ApplicationRecord
     :interest_dealers,
     :interest_selling_at_art_show,
     :interest_exhibiting,
-    :interest_performing
+    :interest_performing,
+    :dob_day,
+    :dob_month,
+    :dob_year
   ].freeze
 
   belongs_to :claim, required: false
@@ -115,5 +122,21 @@ class DcContact < ApplicationRecord
     return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
     return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
+  end
+
+  def dob_string
+    if self.dob_day && self.dob_month && self.dob_year
+      return "#{dob_day}-#{dob_month}-#{dob_year}"
+    else
+      return "No date of birth on file."
+    end
+  end
+
+  def dob_time_object
+    if self.dob_day && self.dob_month && self.dob_year
+      return Time.parse("#{dob_year}-#{dob_month}-#{dob_day}")
+    else
+      return null
+    end
   end
 end
