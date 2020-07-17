@@ -50,4 +50,17 @@ RSpec.describe MembershipOffer do
       expect(subject.last.to_s).to match(/kid/i)
     end
   end
+
+  describe "#dob_required?" do
+    subject(:dob_required?) { model.dob_required? }
+
+    let(:membership) { create(:membership, :adult) }
+    it { is_expected.to equal false }
+
+    context "for child" do
+      let(:membership) { create(:membership, :child) }
+      it { is_expected.to equal true}
+    end
+  end
+
 end

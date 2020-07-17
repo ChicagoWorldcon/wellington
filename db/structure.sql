@@ -381,7 +381,7 @@ CREATE TABLE public.memberships (
     price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
     can_nominate boolean DEFAULT false NOT NULL,
     can_site_select boolean DEFAULT false NOT NULL,
-    dob_required boolean
+    dob_required boolean DEFAULT false NOT NULL
 );
 
 

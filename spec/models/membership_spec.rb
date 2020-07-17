@@ -80,4 +80,30 @@ RSpec.describe Membership, type: :model do
       it { is_expected.to_not include("rights.hugo.vote") }
     end
   end
+
+  describe "#dob_required?" do
+    subject(:dob_required?) { model.dob_required? }
+    it { is_expected.to equal false }
+
+    context "for supporting" do
+      let(:model) { create(:membership, :supporting) }
+      it { is_expected.to equal false}
+    end
+
+    context "for kid-in-tow" do
+      let(:model) { create(:membership, :kid_in_tow) }
+      it { is_expected.to equal true }
+    end
+
+    context "for child" do
+      let(:model) { create(:membership, :child) }
+      it { is_expected.to equal true}
+    end
+
+    context "for young adult" do
+      let(:model) { create(:membership, :young_adult) }
+      it { is_expected.to equal true }
+    end
+
+  end
 end

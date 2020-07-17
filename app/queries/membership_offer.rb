@@ -63,4 +63,8 @@ class MembershipOffer
   def membership_rights
     membership.all_rights
   end
+
+  def dob_required?
+    membership.dob_required?
+  end
 end
