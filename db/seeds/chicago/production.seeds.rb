@@ -71,7 +71,7 @@ Membership.create!(
   can_nominate: false,
   can_site_select: false,
   can_attend: false,
-  dob_required: true,
+  dob_required: false,
 )
 
 ########################################################################

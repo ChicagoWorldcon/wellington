@@ -147,8 +147,8 @@
       <div class="row">
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="date_of_birth">Date of Birth</label>
-            <%= contact_form.date_select(:dob_array, {order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year - 120}, class: "form-control", id: "date_of_birth")  %>
+            <label for="date_of_birth">Date of Birth (required)</label>
+            <%= contact_form.date_select(:dob_array, {order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year - 120}, required: true, class: "form-control", id: "date_of_birth")  %>
           </div>
         </div>
       </div>
@@ -301,7 +301,7 @@
 
     <%# TODO: Deal with city %>
     <p>
-      This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in New Zealand, and use Stripe as our
+      This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in <%= worldcon_country %>, and use Stripe as our
       payment processor.
     </p>
 
