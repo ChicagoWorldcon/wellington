@@ -134,7 +134,8 @@ CREATE TABLE public.chicago_contacts (
     show_in_listings boolean DEFAULT true,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    mail_souvenir_book boolean
+    mail_souvenir_book boolean,
+    date_of_birth date
 );
 
 
@@ -1267,6 +1268,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324223922'),
 ('20200525204858'),
 ('20200629100946'),
-('20200717051724');
+('20200717051724'),
+('20200717081753');
 
 

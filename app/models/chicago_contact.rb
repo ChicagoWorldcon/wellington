@@ -61,14 +61,13 @@ class ChicagoContact < ApplicationRecord
     :interest_exhibiting,
     :interest_performing,
     :mail_souvenir_book,
-    :dob_day,
-    :dob_month,
-    :dob_year
+    :date_of_birth
   ].freeze
 
   belongs_to :claim, required: false
 
   attr_reader :for_import
+  attr_accessor :dob_array
 
   validates :first_name, presence: true, unless: :for_import
   validates :last_name, presence: true, unless: :for_import
@@ -125,19 +124,19 @@ class ChicagoContact < ApplicationRecord
   end
 
 
-  def dob_string
-    if self.dob_day && self.dob_month && self.dob_year
-      return "#{dob_day}-#{dob_month}-#{dob_year}"
-    else
-      return "No date of birth on file."
-    end
-  end
-
-  def dob_time_object
-    if self.dob_day && self.dob_month && self.dob_year
-      return Time.parse("#{dob_year}-#{dob_month}-#{dob_day}")
-    else
-      return null
-    end
-  end
+  # def dob_string
+  #   if self.dob_day && self.dob_month && self.dob_year
+  #     return "#{dob_day}-#{dob_month}-#{dob_year}"
+  #   else
+  #     return "No date of birth on file."
+  #   end
+  # end
+  #
+  # def dob_time_object
+  #   if self.dob_day && self.dob_month && self.dob_year
+  #     return Time.parse("#{dob_year}-#{dob_month}-#{dob_day}")
+  #   else
+  #     return null
+  #   end
+  # end
 end
