@@ -54,10 +54,6 @@ module ConventionDetails
       @contact_model = "chicago"
       @site_theme = "chicago"
       @translation_folder = "chicago"
-      #FIXME verify these cutoff dates:
-      @YA_membership_lower_cutoff_dob = Date.new(1997,8,31)
-      @child_membership_lower_cutoff_dob = Date.new(2006,9,1)
-      @kid_in_tow_membership_lower_cutoff_dob = Date.new(2016,9,1)
     end
   end
 end
