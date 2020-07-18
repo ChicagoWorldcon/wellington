@@ -16,7 +16,7 @@
 
 // Rails defaults
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
-import './conzealand-styles.scss';
+import './chicago-styles.scss';
 import '../channels';
 import '../sprinkles';
 
@@ -24,7 +24,7 @@ import ujs from '@rails/ujs';
 import activeStorage from '@rails/activestorage';
 
 ujs.start();
-activeStorage.start();
+// activeStorage.start();
 
 // eslint-disable-next-line no-console
 console.log('Hello from chicago.js');

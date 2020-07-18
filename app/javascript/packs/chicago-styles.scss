@@ -44,19 +44,22 @@
 // -------------------------------
 
 // Colours
-$black: #000;
-$blue: #034acc;
-$charcoal: #505050;
-$header-dark: #343a40;
-$grey: #ccc;
-$light-blue: #6798f7;
+//// Official Chicago:
+$white: #ffffff;
+$black: #000000;
+$light-blue: #41B6E6;
+$red: #DA291C;
+$dark_blue: #00558C;
+
+// Leftover CoNZealand:
 $light-grey: #e1e1e1;
-$red: #e93f36;
-$white: #fff;
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
-$font-stack: 'Open Sans', sans-serif;
+@import 'chicago_fonts';
+//$font-stack: 'Metropolis', sans-serif;
+
+//@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
+$font-stack: 'Metropolis', sans-serif;
 
 // -------------------------------
 // MIXINS
@@ -84,6 +87,7 @@ html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquot
     font-size: 100%;
     vertical-align: baseline;
     background: transparent;
+    font-family: $font-stack;
 }
 html {
   -webkit-box-sizing: border-box;
@@ -108,7 +112,6 @@ body {
     }
 
     color: $white;
-    font-family: $font-stack;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -166,7 +169,7 @@ h6, .h6-like {
 }
 .btn:hover,
 .btn:focus {
-  background-color: $blue;
+  background-color: $dark_blue;
   color: $white;
   -webkit-transition: background-color .2s ease-in;
   -moz-transition: background-color .2s ease-in;
