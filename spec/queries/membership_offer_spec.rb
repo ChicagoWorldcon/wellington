@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,4 +51,17 @@ RSpec.describe MembershipOffer do
       expect(subject.last.to_s).to match(/kid/i)
     end
   end
+
+  describe "#dob_required?" do
+    subject(:dob_required?) { model.dob_required? }
+
+    let(:membership) { create(:membership, :adult) }
+    it { is_expected.to equal false }
+
+    context "for child" do
+      let(:membership) { create(:membership, :child) }
+      it { is_expected.to equal true}
+    end
+  end
+
 end

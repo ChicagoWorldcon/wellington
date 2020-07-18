@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ FactoryBot.define do
     can_site_select { false }
     can_nominate { false }
     can_attend { false }
+    dob_required { false }
     price_currency { $currency }
 
     trait :adult do
@@ -31,6 +33,7 @@ FactoryBot.define do
       can_site_select { true }
       can_nominate { true }
       can_attend { true }
+      dob_required { false }
     end
 
     trait :young_adult do
@@ -41,6 +44,7 @@ FactoryBot.define do
       can_site_select { true }
       can_nominate { true }
       can_attend { true }
+      dob_required { true }
     end
 
     trait :unwaged do
@@ -51,6 +55,7 @@ FactoryBot.define do
       can_site_select { true }
       can_nominate { true }
       can_attend { true }
+      dob_required { false }
     end
 
     trait :child do
@@ -58,6 +63,7 @@ FactoryBot.define do
       price_cents { 105_00 }
       description { "born in or after 2005" }
       can_attend { true }
+      dob_required { true }
     end
 
     trait :kid_in_tow do
@@ -65,6 +71,7 @@ FactoryBot.define do
       price_cents { 0 }
       description { "born in or after 2015" }
       can_attend { true }
+      dob_required { true }
     end
 
     trait :supporting do
@@ -73,6 +80,7 @@ FactoryBot.define do
       can_vote { true }
       can_site_select { true }
       can_nominate { true }
+      dob_required { false }
     end
 
     # Supporting membership with $50 credit
@@ -83,6 +91,7 @@ FactoryBot.define do
       can_site_select { true }
       can_nominate { true }
       active_to { 1.day.ago }
+      dob_required { false }
     end
 
     trait :press_pass do
@@ -90,6 +99,7 @@ FactoryBot.define do
       price_cents { 0 }
       can_attend { true }
       active_to { 1.day.ago }
+      dob_required { false }
     end
 
     trait :sponsor do
@@ -97,6 +107,7 @@ FactoryBot.define do
       price_cents { 0 }
       can_attend { true }
       active_to { 1.day.ago }
+      dob_required { false }
     end
 
     trait :dealer do
@@ -104,6 +115,7 @@ FactoryBot.define do
       price_cents { 0 }
       can_attend { true }
       active_to { 1.day.ago }
+      dob_required { false }
     end
 
     trait :silver_fern do
@@ -111,6 +123,7 @@ FactoryBot.define do
       price_cents { 370_00 - 50_00 }
       active_to { 1.day.ago }
       description { "Presupport membership" }
+      dob_required { false }
     end
 
     trait :kiwi do
@@ -124,6 +137,7 @@ FactoryBot.define do
       price_cents { 0 }
       active_to { 1.day.ago }
       description { "Presupport membership" }
+      dob_required { false }
     end
 
     trait :pre_oppose do
@@ -131,6 +145,7 @@ FactoryBot.define do
       price_cents { 0 }
       active_to { 1.day.ago }
       description { "Presupport membership" }
+      dob_required { false }
     end
 
     trait :pre_support do
@@ -138,6 +153,7 @@ FactoryBot.define do
       price_cents { 0 }
       active_to { 1.day.ago }
       description { "Presupport membership" }
+      dob_required { false }
     end
 
     trait :dublin_2019 do
@@ -149,24 +165,28 @@ FactoryBot.define do
       can_site_select { false }
       can_nominate { true }
       description { "Attended Dublin in 2019, can Nominate in 2020" }
+      dob_required { false }
     end
 
     trait :chicago_donor do
       name { :donor }
       price_cents { 20_00 }
       description { "With our thanks!" }
+      dob_required { false }
     end
 
     trait :chicago_friend do
       name { :donor }
       price_cents { 150_00 }
       description {  "Will convert to an attending membership automatically if you vote in tion in 2020" }
+      dob_required { false }
     end
 
     trait :chicago_star do
       name { :donor }
       price_cents { 500_00 }
       description { "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and hing cool for you at the convention! (Shhh…it’s a surprise!)" }
+      dob_required { false }
     end
 
     trait :with_order_for_reservation do

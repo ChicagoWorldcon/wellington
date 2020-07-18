@@ -45,6 +45,7 @@ Membership.create!(
   can_nominate: false,
   can_site_select: false,
   can_attend: false,
+  dob_required: false,
 )
 
 Membership.create!(
@@ -57,6 +58,7 @@ Membership.create!(
   can_nominate: false,
   can_site_select: false,
   can_attend: false,
+  dob_required: false,
 )
 
 Membership.create!(
@@ -69,6 +71,7 @@ Membership.create!(
   can_nominate: false,
   can_site_select: false,
   can_attend: false,
+  dob_required: false,
 )
 
 ########################################################################
@@ -85,6 +88,7 @@ prices.each do |price_group|
     can_nominate: true,
     can_site_select: true,
     can_attend: false,
+    dob_required: false,
   )
 
   Membership.create!(
@@ -97,6 +101,7 @@ prices.each do |price_group|
     can_nominate: true,
     can_site_select: true,
     can_attend: true,
+    dob_required: false,
   )
 
   Membership.create!(
@@ -109,6 +114,7 @@ prices.each do |price_group|
     can_nominate: false,
     can_site_select: false,
     can_attend: true,
+    dob_required: true,
   )
 
   Membership.create!(
@@ -121,6 +127,7 @@ prices.each do |price_group|
     can_nominate: true,
     can_site_select: true,
     can_attend: true,
+    dob_required: true,
   )
 
   Membership.create!(
@@ -133,6 +140,7 @@ prices.each do |price_group|
     can_nominate: true,
     can_site_select: true,
     can_attend: true,
+    dob_required: false,
   )
 
   Membership.create!(
@@ -145,6 +153,7 @@ prices.each do |price_group|
     can_nominate: false,
     can_site_select: false,
     can_attend: true,
+    dob_required: true,
   )
 end
 

@@ -135,6 +135,30 @@
       </p>
     </fieldset>
 
+    <%#
+    <%= f.date_select :birthday, {order: [:month, :day, :year], prompt: { day: 'Select day', month: 'Select month', year: 'Select year' }, start_year: Date.today.year - 18, end_year: Date.today.year - 100}, {required: true}
+
+    <%= ff.date_select :certification_to, { :order => [:day, :month, :year],
+          :start_year => Date.current.year + (10), :end_year => 1960,
+          :prompt => {day: 'Day', month: 'Month', year: 'Year'}, :discard_day => true }, class: 'form-control'  %>
+
+    <% if @my_offer.dob_required? %>
+    <fieldset class="l-v-spacing">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="date_of_birth">Date of Birth (required)</label>
+            <%= contact_form.date_select(:dob_array, {order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year - 120}, required: true, class: "form-control", id: "date_of_birth")  %>
+          </div>
+        </div>
+      </div>
+      <p class="form-note form-note-m-group">
+        We are legally required to collect the dates of birth of all minor members of <%= worldcon_public_name %>.
+      </p>
+    </fieldset>
+    <% end %>
+
+
     <fieldset class="l-v-spacing">
       <div class="form-options">
         <%= contact_form.check_box(:share_with_future_worldcons, class: "form-control form-control-m-checkbox", id: "share_with_future_worldcons") %>
@@ -277,7 +301,7 @@
 
     <%# TODO: Deal with city %>
     <p>
-      This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in New Zealand, and use Stripe as our
+      This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in <%= worldcon_country %>, and use Stripe as our
       payment processor.
     </p>
 

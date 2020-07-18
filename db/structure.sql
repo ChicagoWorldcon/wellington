@@ -134,7 +134,8 @@ CREATE TABLE public.chicago_contacts (
     show_in_listings boolean DEFAULT true,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    mail_souvenir_book boolean
+    mail_souvenir_book boolean,
+    date_of_birth date
 );
 
 
@@ -380,7 +381,8 @@ CREATE TABLE public.memberships (
     price_cents integer DEFAULT 0 NOT NULL,
     price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
     can_nominate boolean DEFAULT false NOT NULL,
-    can_site_select boolean DEFAULT false NOT NULL
+    can_site_select boolean DEFAULT false NOT NULL,
+    dob_required boolean DEFAULT false NOT NULL
 );
 
 
@@ -1265,6 +1267,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324223914'),
 ('20200324223922'),
 ('20200525204858'),
-('20200629100946');
+('20200629100946'),
+('20200717051724'),
+('20200717081753');
 
 

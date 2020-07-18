@@ -53,6 +53,9 @@ class ReservationsController < ApplicationController
   def create
     current_user.transaction do
       @contact = contact_model.new(contact_params)
+      if dob_params_present?
+        @contact.date_of_birth = convert_dateselect_params_to_date
+      end
       if !@contact.valid?
         @reservation = Reservation.new
         flash[:error] = @contact.errors.full_messages.to_sentence
@@ -119,5 +122,17 @@ class ReservationsController < ApplicationController
 
   def contact_model
     Claim.contact_strategy
+  end
+
+  def convert_dateselect_params_to_date
+    key1 = "dob_array(1i)"
+    key2 = "dob_array(2i)"
+    key3 = "dob_array(3i)"
+    Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
+  end
+
+  def dob_params_present?
+    dob_key_1 = "dob_array(1i)"
+    return params[theme_contact_param].key?(dob_key_1)
   end
 end

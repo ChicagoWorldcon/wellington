@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,6 +32,9 @@ class Membership < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :name, presence: true
 
+  # Date of Birth is required for child and YA memberships
+  validates_inclusion_of :dob_required, in: [true, false]
+
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
@@ -39,6 +43,8 @@ class Membership < ApplicationRecord
   scope :can_attend, -> { where(can_attend: true) }
   scope :can_site_select, -> { where(can_site_select: true) }
   scope :can_vote, -> { where(can_vote: true) }
+
+  scope :dob_required, -> { where(dob_required: true) }
 
   scope :order_by_price, -> { order(price_cents: :desc) }
   scope :with_attend_rights, -> { where(can_attend: true) }
@@ -67,5 +73,9 @@ class Membership < ApplicationRecord
         rights << "rights.retro_hugo.nominate"
       end
     end
+  end
+
+  def dob_required?
+    dob_required
   end
 end

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require "rails/all"
+require "date"
 require_relative "convention"
 
 # Require the gems listed in Gemfile, including any gems

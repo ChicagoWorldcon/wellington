@@ -2,6 +2,7 @@
 
 # Copyright 2020 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +21,9 @@
 # Membership is associated to ConzealandContact through the Reservation on Claim
 # This very tightly coupled to app/views/reservations/_conzealand_contact_form.html.erb
 # ConzealandContact is created when a user creates a Reservation against a Membership
+
+require 'time'
+
 class ConzealandContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
@@ -57,7 +61,7 @@ class ConzealandContact < ApplicationRecord
     :interest_dealers,
     :interest_selling_at_art_show,
     :interest_exhibiting,
-    :interest_performing
+    :interest_performing,
   ].freeze
 
   belongs_to :claim, required: false

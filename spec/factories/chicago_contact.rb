@@ -22,6 +22,7 @@ FactoryBot.define do
     first_name { Faker::Superhero.name }
     last_name { Faker::Superhero.suffix }
     publication_format { ConzealandContact::PAPERPUBS_ELECTRONIC }
+    date_of_birth { Faker::Date.birthday(min_age: 0, max_age: 25)}
 
     claim { build(:claim, :with_user, :with_reservation) }
 

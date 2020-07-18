@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
 # Copyright 2019 Matthew B. Gray
+# # Copyright 2020 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@
 # Membership is associated to ChicagoContact through the Reservation on Claim
 # This very tightly coupled to app/views/reservations/_chicago_contact_form.html.erb
 # ChicagoContact is created when a user creates a Reservation against a Membership
+
+require 'time'
+
 class ChicagoContact < ApplicationRecord
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
@@ -57,12 +60,14 @@ class ChicagoContact < ApplicationRecord
     :interest_selling_at_art_show,
     :interest_exhibiting,
     :interest_performing,
-    :mail_souvenir_book
+    :mail_souvenir_book,
+    :date_of_birth
   ].freeze
 
   belongs_to :claim, required: false
 
   attr_reader :for_import
+  attr_accessor :dob_array
 
   validates :first_name, presence: true, unless: :for_import
   validates :last_name, presence: true, unless: :for_import
@@ -77,7 +82,9 @@ class ChicagoContact < ApplicationRecord
   end
 
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
+
   def to_s
+
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}"
     else
@@ -110,9 +117,9 @@ class ChicagoContact < ApplicationRecord
   end
 
   def fun_badge_title?
-    return false if !badge_title.present?                        # if you've set one
-    return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
-    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
+    return false if !badge_title.present?        # if you've set one
+    return false if badge_title.match(/\s/)      # breif, so doesn't have whitespace
+    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred nam
     true
   end
 end
