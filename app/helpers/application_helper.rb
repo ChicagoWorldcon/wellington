@@ -177,7 +177,7 @@ module ApplicationHelper
   end
 
   def worldcon_number_digits_only
-    self.worldcon_number.gsub(/[worldcon]/i, '')
+    worldcon_number.gsub(/worldcon/i, '').to_i
   end
 
   #### Organizer Signature Helpers
