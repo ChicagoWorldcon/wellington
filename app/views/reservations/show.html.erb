@@ -31,6 +31,15 @@
         <div class="l-panel operator-pane">
           <h2>Operator Actions</h2>
           <p>
+            <%= link_to "Lookup user records", operator_user_path(@reservation.user) %>
+            <% if ENV["GLOO_BASE_URL"].present? %>
+              and compare to The Fantasy Network
+            <% else %>
+              for <%= @reservation.user.email %>
+            <% end %>
+          </p>
+
+          <p>
             <%= link_to "Transfer membership", new_operator_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>

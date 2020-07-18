@@ -36,7 +36,7 @@ RSpec.describe Operator::UsersController, type: :controller do
       :present? => true,
       :local_state => {},
       :remote_state => {},
-      :state_in_words => "N'Sync",
+      :in_sync? => false,
     )
   end
 

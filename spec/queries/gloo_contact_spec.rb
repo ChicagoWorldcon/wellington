@@ -74,7 +74,7 @@ RSpec.describe GlooContact do
     )
   end
 
-  let(:post_success) do
+  let(:successful_response) do
     instance_double(HTTParty::Response,
       code: 200,
       body: { status: "ok" }.to_json,
@@ -158,6 +158,12 @@ RSpec.describe GlooContact do
   describe "#local_state" do
     subject(:local_state) { query.local_state }
 
+    it "looks pretty empty when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(local_state[:roles]).to be_empty
+      expect(local_state[:display_name]).to be_nil
+    end
+
     context "when no roles on remote" do
       before do
         expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
@@ -181,12 +187,6 @@ RSpec.describe GlooContact do
         ConzealandContact.where(claim_id: user.claims).destroy_all
         expect(local_state[:name]).to match(/CoNZealand Super Fan/i)
         expect(local_state[:display_name]).to match(/CoNZealand Super Fan/i)
-      end
-
-      it "uses 'disabled user' when reservation not available" do
-        reservation.update!(state: Reservation::DISABLED)
-        expect(local_state[:name]).to match(/disabled/i)
-        expect(local_state[:display_name]).to match(/disabled/i)
       end
 
       describe "roles listed" do
@@ -270,8 +270,8 @@ RSpec.describe GlooContact do
 
         ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
         result = described_class.new(user.reload).local_state
-        expect(result[:display_name]).to match(/disabled/i)
-        expect(result[:roles]).to eq [GlooContact::DISABLED]
+        expect(result[:display_name]).to be_nil
+        expect(result[:roles]).to be_empty
       end
 
       it "starts picking up on a reservation when it's been paid off" do
@@ -284,7 +284,7 @@ RSpec.describe GlooContact do
       it "removes roles when reservation is disabled" do
         expect { reservation.update!(state: Reservation::DISABLED) }
           .to change { described_class.new(user).local_state[:roles] }
-          .to eq [GlooContact::DISABLED]
+          .to be_empty
       end
     end
   end
@@ -322,19 +322,46 @@ RSpec.describe GlooContact do
   describe "#save!" do
     subject(:save!) { query.save! }
 
-    before do
-      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
-      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
-    end
-
-    it "doesn't raise when successful" do
-      expect(HTTParty).to receive(:post).with(any_args).and_return(post_success)
+    it "deletes when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
       save!
     end
 
-    it "raises error when server is down" do
-      expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
-      expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+    context "with no memberships" do
+      let(:user) { create(:user) }
+
+      it "deletes on remote when a user has no memberships" do
+        expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+        save!
+      end
+    end
+
+    context "with memberships" do
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it "doesn't raise when successful" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(successful_response)
+        save!
+      end
+
+      it "raises error when server is down" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
+        expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+      end
+
+      context "with presupport memberships" do
+        let(:pre_support) { create(:membership, :pre_support) }
+        let(:reservation) { create(:reservation, :with_claim_from_user, membership: pre_support) }
+
+        it "deletes on remote when a user has no rights or roles" do
+          expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+          save!
+        end
+      end
     end
   end
 end
