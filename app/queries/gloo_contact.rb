@@ -73,6 +73,7 @@ class GlooContact
         roles: local_roles,
       }
     else
+      # stub result which looks like 404 response from TFN
       {
         "roles": []
       }
@@ -164,6 +165,8 @@ class GlooContact
     parse_json(url, resp)
   end
 
+  # delete_json takes a path and calles HTTP delete on it
+  # this is used when we want to make sure a user is removed TFN
   def delete_json(path)
     url = [base_url, path].join
     resp = HTTParty.delete(url, headers: standard_headers)
