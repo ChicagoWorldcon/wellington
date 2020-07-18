@@ -67,16 +67,8 @@ class GlooContact
   # they come back from Gloo Treating REST responses as IO because iwe don't
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
-    local_roles = discord_roles.dup
-
-    if reservation.present?
-      local_roles << MEMBER_ATTENDING if reservation.can_attend?
-      local_roles << MEMBER_VOTING if reservation.can_vote?
-      local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
-    end
-
     if local_roles.none?
-      local_roles << DISABLED
+      @local_roles << DISABLED
     end
 
     {
@@ -87,6 +79,20 @@ class GlooContact
       display_name: conzealand_contact.badge_display,
       roles: local_roles,
     }
+  end
+
+  def local_roles
+    return @local_roles unless @local_roles.nil?
+
+    @local_roles = discord_roles.dup
+
+    if reservation.present?
+      @local_roles << MEMBER_ATTENDING if reservation.can_attend?
+      @local_roles << MEMBER_VOTING if reservation.can_vote?
+      @local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+    end
+
+    @local_roles
   end
 
   def discord_roles
