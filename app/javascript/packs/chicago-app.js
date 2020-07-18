@@ -24,7 +24,7 @@ import ujs from '@rails/ujs';
 import activeStorage from '@rails/activestorage';
 
 ujs.start();
-// activeStorage.start();
+activeStorage.start();
 
 // eslint-disable-next-line no-console
 console.log('Hello from chicago.js');
