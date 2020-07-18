@@ -104,12 +104,7 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("https://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/1446655168/chicago-header-dg1115.jpg") center top / cover no-repeat fixed $black;
-
-    // For that test environment feeling
-    &.api-test-keys {
-      filter: hue-rotate(90deg);
-    }
+    background: url("chicon-bg.jpg") center top / cover no-repeat fixed $dark_blue;
 
     color: $white;
     -webkit-font-smoothing: antialiased;
