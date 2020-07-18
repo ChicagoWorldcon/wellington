@@ -62,9 +62,6 @@ class ConzealandContact < ApplicationRecord
     :interest_selling_at_art_show,
     :interest_exhibiting,
     :interest_performing,
-    :dob_day,
-    :dob_month,
-    :dob_year
   ].freeze
 
   belongs_to :claim, required: false
@@ -130,22 +127,6 @@ class ConzealandContact < ApplicationRecord
     return false if badge_title.match(/\s/)                      # breif, so doesn't have whitespace
     return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
-  end
-
-  def dob_string
-    if self.dob_day && self.dob_month && self.dob_year
-      return "#{dob_day}-#{dob_month}-#{dob_year}"
-    else
-      return "No date of birth on file."
-    end
-  end
-
-  def dob_time_object
-    if self.dob_day && self.dob_month && self.dob_year
-      return Time.parse("#{dob_year}-#{dob_month}-#{dob_day}")
-    else
-      return null
-    end
   end
 
   # Sync when you update your details so we have your current name
