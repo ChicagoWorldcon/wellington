@@ -18,7 +18,7 @@
 # Charge represents some kind of payment either via a type of transfer, i.e. stripe or cash
 # Reservation is associated with Charge to represent what payment went toward
 # User is a ssociated with Charge to represent who owned the charge at the time
-# 'cash' is a cludge which allows a Support login to credit a user if they mail in cheque or put cash into a lunchbox
+# 'cash' is a cludge which allows a Operator login to credit a user if they mail in cheque or put cash into a lunchbox
 # 'stripe' is a state machine which tracks payment via stripe
 # 'stripe transfers' are breifly pending, then either successful or failed
 class Charge < ApplicationRecord

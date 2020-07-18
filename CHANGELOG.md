@@ -11,14 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Emails for Hugo voting
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
+  and [!204](https://gitlab.com/worldcon/wellington/-/merge_requests/204)
   Add this to you env
   ```
-  GLOO_BASE_URL=https://api.thefantasy.network/v1
+  GLOO_BASE_URL=https://api.thefantasy.network
   GLOO_AUTHORIZATION_HEADER=
   ```
-  Full sync with
+  Full sync in /sidekiq with
   ```ruby
-  GlooSync.all_users
+  GlooSyncAllUsers.perform_async
   ```
 - Hugo finalists for 2020 are now available
   [!155](https://gitlab.com/worldcon/wellington/-/merge_requests/155).
@@ -27,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bin/rake db:seed:conzealand:production_finalist
   bin/rake db:seed:conzealand:production_rename_hugo
   ```
+- Link to site selection from CoNZealand menu
+  [!215](https://gitlab.com/worldcon/wellington/-/merge_requests/215)
 
 ### Changed
 - Adds Hugo voting emails
@@ -45,7 +48,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!198](https://gitlab.com/worldcon/wellington/-/merge_requests/198)
 - Update all node modules
   [!202](https://gitlab.com/worldcon/wellington/-/merge_requests/202)
-
+- Support users now renamed to Operator to reduce confusion on roles
+  [!205](https://gitlab.com/worldcon/wellington/-/merge_requests/205)
+- Operator users now have a different menu. Most operator actions are namespaced in Operator::*
+  [!205](https://gitlab.com/worldcon/wellington/-/merge_requests/205)
 
 ### Removed
 - Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu
@@ -56,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Hugo Packet Download now has a counter, if downloaded or nomination rights used there's a message
-  for support users near the "transfer membership" button.
+  for operator users near the "transfer membership" button.
   [!182](https://gitlab.com/worldcon/wellington/-/merge_requests/182)
 
 ### Changed
@@ -219,17 +225,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email).deliver_now
   end;
   ```
-- Setting Hugo Admin flag on Support now allows Admins to change nominations at any time
+- Setting Hugo Admin flag on Operator now allows Admins to change nominations at any time
   with audit notes [!153](https://gitlab.com/worldcon/wellington/-/merge_requests/153).
   Add it to user accounts with...
   ```ruby
-  Support.where(email: %w(
+  Operator.where(email: %w(
     user1@conzealand.nz
     user2@conzealand.nz
     user3@conzealand.nz
   )).update_all(hugo_admin: true)
   ```
-- Support user can now enable/disable membership rights on reservations
+- Operator user can now enable/disable membership rights on reservations
   [!153](https://gitlab.com/worldcon/wellington/-/merge_requests/153).
 
 ### Changed
@@ -241,7 +247,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * Create test mailer for testing SMTP settings
     * Update Hugo text in several areas including account text and in the form
     * Added explicit PM to hugo nominations close time
-    * Stop support users from viewing nominations
+    * Stop operator users from viewing nominations
 - Update node dependencies
   [!146](https://gitlab.com/worldcon/wellington/-/merge_requests/146).
 - Upgrade gem dependencies
@@ -451,7 +457,7 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   bundle exec rake gem:licenses  # check Ruby
   yarn licenses list             # check JavaScript
   ```
-- Seeding a development database creates a support user by default
+- Seeding a development database creates a operator user by default
   [!118](https://gitlab.com/worldcon/wellington/merge_requests/118)
 - New make target to reset database and javascript dependencies quickly
   [!118](https://gitlab.com/worldcon/wellington/merge_requests/118)
@@ -601,9 +607,9 @@ that feels better right out of the box.
   [!85](https://gitlab.com/worldcon/wellington/merge_requests/85)
 - Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
   [!70](https://gitlab.com/worldcon/wellington/merge_requests/70)
-- Support can set membership to any level, including past memberships
+- Operator can set membership to any level, including past memberships
   [!87](https://gitlab.com/worldcon/wellington/merge_requests/87)
-- Support can credit memberships with cash, allows support to create and credit memberships
+- Operator can credit memberships with cash, allows operator to create and credit memberships
   [!87](https://gitlab.com/worldcon/wellington/merge_requests/87)
 - User notes are now exposed on the reservation show screen
   [!87](https://gitlab.com/worldcon/wellington/merge_requests/87)
@@ -620,7 +626,7 @@ that feels better right out of the box.
 - Generated memberships in testing now have charges
   [!84](https://gitlab.com/worldcon/wellington/merge_requests/84)
   and [!86](https://gitlab.com/worldcon/wellington/merge_requests/86)
-- Support can now transfer memberships that are in instalment
+- Operator can now transfer memberships that are in instalment
   [!88](https://gitlab.com/worldcon/wellington/merge_requests/88)
 
 ### Removed
@@ -654,7 +660,7 @@ Upgraded Ruby and Rails, and support function for transferring memberships.
 ### Added
 - Turned on [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
   for the site for security hygiene
-- Support can now transfer memberships between users from a user's detail form
+- Operator can now transfer memberships between users from a user's detail form
 
 ### Changed
 - Moved task `check:models` to `test:models` to keep namespaces tight

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2020 Matthew B. Gray
+# Copyright 2019 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :support do
-    email { Faker::Internet.unique.email }
-    password { "secret agent man" }
-    confirmed_at { 1.day.ago }
-    confirmation_sent_at { 1.day.ago }
+require "rails_helper"
 
-    trait :hugo_admin do
-      hugo_admin { true }
-    end
-  end
+RSpec.describe Operator, type: :model do
+  subject(:model) { create(:operator) }
+  it { is_expected.to be_valid }
 end

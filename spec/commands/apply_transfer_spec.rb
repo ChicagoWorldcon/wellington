@@ -19,7 +19,7 @@ require "rails_helper"
 RSpec.describe ApplyTransfer do
   let(:seller) { create(:user) }
   let(:buyer) { create(:user) }
-  let(:support) { create(:support) }
+  let(:operator) { create(:operator) }
   let(:reservation) { create(:reservation) }
 
   before do
@@ -30,7 +30,7 @@ RSpec.describe ApplyTransfer do
     )
   end
 
-  subject(:command) { described_class.new(reservation, from: seller, to: buyer, audit_by: support.email) }
+  subject(:command) { described_class.new(reservation, from: seller, to: buyer, audit_by: operator.email) }
   let(:soonish) { 1.minute.from_now } # ApplyTransfer is relying on Time.now which is a very small time slice
 
   it "doesn't change the number of memberships overall" do
@@ -47,8 +47,8 @@ RSpec.describe ApplyTransfer do
 
   it "leaves notes on the users" do
     expect { command.call }.to change { Note.count }.by(2)
-    expect(seller.notes.last.content).to include(support.email)
-    expect(buyer.notes.last.content).to include(support.email)
+    expect(seller.notes.last.content).to include(operator.email)
+    expect(buyer.notes.last.content).to include(operator.email)
   end
 
   it "doesn't copy over contact by default" do
@@ -61,7 +61,7 @@ RSpec.describe ApplyTransfer do
       reservation,
       from: seller,
       to: buyer,
-      audit_by: support.email,
+      audit_by: operator.email,
       copy_contact: true,
     ).call
     buyer.reload

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# PlanCredit represents the form logic for creating 'cash' Charge records by a Support login
+# PlanCredit represents the form logic for creating 'cash' Charge records by a Operator login
 # It's useful for form logic, validation and provides everything you'd need to call ApplyCredit
 class PlanCredit
   include ActiveModel::Model

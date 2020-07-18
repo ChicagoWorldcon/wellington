@@ -14,20 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# RightsExhausted takes a Reservation and gives a human readable list of the rights used against it
-# It's used by a Operator login when deciding weather to refund or transfer a membership
-class RightsExhausted
-  attr_reader :reservation
+FactoryBot.define do
+  factory :operator do
+    email { Faker::Internet.unique.email }
+    password { "secret agent man" }
+    confirmed_at { 1.day.ago }
+    confirmation_sent_at { 1.day.ago }
 
-  def initialize(reservation)
-    @reservation = reservation
-  end
-
-  def call
-    [].tap do |result|
-      result << "nominated for hugos" if reservation.nominations.any?
-      result << "voted for hugos" if reservation.ranks.any?
-      result << "downloaded hugo packet" if reservation.user.hugo_download_counter > 0
+    trait :hugo_admin do
+      hugo_admin { true }
     end
   end
 end

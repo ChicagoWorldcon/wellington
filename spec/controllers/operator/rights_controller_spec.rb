@@ -16,9 +16,9 @@
 
 require "rails_helper"
 
-RSpec.describe RightsController, type: :controller do
+RSpec.describe Operator::RightsController, type: :controller do
   let(:reservation) { create(:reservation, :with_user, :with_order_against_membership) }
-  let(:support) { create(:support) }
+  let(:operator) { create(:operator) }
 
   describe "#create" do
     subject(:post_create) do
@@ -40,8 +40,8 @@ RSpec.describe RightsController, type: :controller do
       end
     end
 
-    context "when signed in as support" do
-      before { sign_in support }
+    context "when signed in as operator" do
+      before { sign_in operator }
 
       it { is_expected.to redirect_to(reservation_path(reservation)) }
 

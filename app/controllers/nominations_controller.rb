@@ -41,7 +41,7 @@ class NominationsController < ApplicationController
     if hugo_admin_signed_in?
       @reservation.user.notes.create!(
         content: %{
-          Nomination form updated by hugo admin #{current_support.email}
+          Nomination form updated by hugo admin #{current_operator.email}
           on behalf of member ##{@reservation.membership_number}
         }.strip_heredoc
       )
@@ -72,7 +72,7 @@ class NominationsController < ApplicationController
     errors = []
     errors << "nominations are closed" if !HugoState.new.has_nominations_opened?
     errors << "this membership doesn't have nomination rights" if !@reservation.can_nominate?
-    errors << "unavailable when signed in as support" if support_signed_in?
+    errors << "unavailable when signed in as operator" if operator_signed_in?
 
     if errors.any?
       flash[:notice] = errors.to_sentence

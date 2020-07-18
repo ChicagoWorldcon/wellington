@@ -1,6 +1,5 @@
-# frozen_string_literal: true
-
-# Copyright 2019 Matthew B. Gray
+# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,19 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class SetMembershipsController < ApplicationController
-  before_action :authenticate_support!
-  before_action :lookup_reservation!
+# GlooSyncAllUsers queues up all users so Gluu can stay updated
+class GlooSyncAllUsers
+  include Sidekiq::Worker
 
-  def index
-    @memberships = Membership.all
-    @as_at = Time.now
-  end
+  def perform
+    return unless ENV["GLOO_BASE_URL"].present?
 
-  def update
-    membership = Membership.find(params[:id])
-    SetMembership.new(@reservation, to: membership, audit_by: current_support.email).call
-    flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
-    redirect_to @reservation
+    User.find_each do |user|
+      begin
+        GlooContact.new(user).save!
+      rescue
+        puts "Failed to save #{user.email}"
+      end
+    end
   end
 end

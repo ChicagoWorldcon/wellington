@@ -69,7 +69,7 @@ class FinalistsController < ApplicationController
       if hugo_admin_signed_in?
         @reservation.user.notes.create!(
           content: %{
-            Voting form updated by hugo admin #{current_support.email}
+            Voting form updated by hugo admin #{current_operator.email}
             on behalf of member ##{@reservation.membership_number}
           }.strip_heredoc
         )
@@ -96,7 +96,6 @@ class FinalistsController < ApplicationController
         name: category.name,
         finalists: finalists,
       }
-
     end
   end
 
@@ -116,7 +115,7 @@ class FinalistsController < ApplicationController
 
     errors = []
     errors << "voting is not open" if !HugoState.new.has_voting_opened?
-    errors << "signed in as support" if support_signed_in?
+    errors << "signed in as operator" if operator_signed_in?
     errors << "this membership doesn't have voting rights" if !@reservation.can_vote?
 
     if errors.any?

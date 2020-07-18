@@ -27,7 +27,7 @@ module ReservationsHelper
   end
 
   def update_transfer_path(transfer)
-    reservation_transfer_path(
+    operator_reservation_transfer_path(
       reservation_id: transfer.reservation_id,
       id: transfer.new_owner,
     )
