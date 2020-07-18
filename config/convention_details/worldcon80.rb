@@ -31,8 +31,8 @@ module ConventionDetails
       @con_city_previous = "Washington, D. C."
       @con_country = "The USA"
       @con_country_previous = "The USA"
-      @con_dates_informal_end = "Monday, September 5th"
       @con_dates_informal_start = "Wednesday, August 31st"
+      @con_dates_informal_end = "Monday, September 5th"
       @con_greeting_basic = "greetings"
       #FIXME: Update hugo ballot locations when we have them
       @con_hugo_download_A4 = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
@@ -43,13 +43,13 @@ module ConventionDetails
       #FIXME: Update @con_organizers_sigs
       @con_organizers_sigs = "Helen Montgomery & co-conspirators"
       #FIXME: Verify ALL Chicon  Urls
-      @con_url_homepage = "http://chicon.org/"
+      @con_url_homepage = "https://chicon.org/"
       @con_url_member_login = "https://registration.chicon.org/"
-      @con_url_privacy = "http://chicon.org/privacy.php"
-      @con_url_tos = "http://chicon.org/code-of-conduct.php"
-      @con_url_volunteering = "http://chicon.org/volunteers.php"
+      @con_url_privacy = "https://chicon.org/privacy.php"
+      @con_url_tos = "https://chicon.org/code-of-conduct.php"
+      @con_url_volunteering = "https://chicon.org/volunteers.php"
       #FIXME: After CoNZealand, update WSFS constitution link
-      @con_wsfs_constitution_link = "=http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf"
+      @con_wsfs_constitution_link = "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf"
       @con_year = "2022"
       @contact_model = "chicago"
       @site_theme = "chicago"
