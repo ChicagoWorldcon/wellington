@@ -5,7 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
+## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.6.0...master)
+
+## Added
+- Nothing significant in this release
+
+## Changed
+- Nothing significant in this release
+
+## Removed
+- Nothing significant in this release
+
+
+## [Tag 2.6.0 - 2020-07-18](https://gitlab.com/worldcon/wellington/compare/2.5.1...2.6.0)
 
 ### Added
 - Emails for Hugo voting
