@@ -85,9 +85,10 @@ class GlooContact
     @local_roles = discord_roles.dup
 
     if reservation.present?
+      # Alphabetical, follows what we get back from TFN
       @local_roles << MEMBER_ATTENDING if reservation.can_attend?
-      @local_roles << MEMBER_VOTING if reservation.can_vote?
       @local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+      @local_roles << MEMBER_VOTING if reservation.can_vote?
     end
 
     @local_roles
@@ -104,16 +105,8 @@ class GlooContact
     @discord_roles = new_roles & DISCORD_ROLES
   end
 
-  def state_in_words
-    if in_sync?
-      "LGTM"
-    else
-      "Out of sync"
-    end
-  end
-
   def in_sync?
-    local_state.hash == remote_state.hash
+    local_state == remote_state
   end
 
   def conzealand_contact

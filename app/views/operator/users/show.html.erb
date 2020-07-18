@@ -48,11 +48,24 @@
       <div class="row">
         <div class="col-12">
           <h2>
-            The Fantasy Network - <%= @gloo_contact.state_in_words %>
+            <% if @gloo_contact.in_sync? %>
+              <i class="fa fa-thumbs-up" height="25px"></i>
+              The Fantasy Network is up to date!
+            <% else %>
+              <i class="fa fa-thumbs-down" height="25px"></i>
+              The Fantasy Network is out of sync
+              <i class="fa fa-frown" height="25px"></i>
+            <% end %>
           </h2>
           <ul class="list-unstyled l-v-spacing">
-            <li><%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %></li>
-            <li><%= link_to "Force sync now", operator_user_path(@user), method: :put %></li>
+            <li>
+              <i class="fa fa-bolt" height="15px"></i>
+              <%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %>
+            </li>
+            <li>
+              <i class="fa fa-history" height="15px"></i>
+              <%= link_to "Force sync now", operator_user_path(@user), method: :put %>
+            </li>
           </ul>
         </div>
       </div>
