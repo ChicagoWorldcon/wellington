@@ -74,7 +74,7 @@ RSpec.describe GlooContact do
     )
   end
 
-  let(:post_success) do
+  let(:successful_response) do
     instance_double(HTTParty::Response,
       code: 200,
       body: { status: "ok" }.to_json,
@@ -322,19 +322,46 @@ RSpec.describe GlooContact do
   describe "#save!" do
     subject(:save!) { query.save! }
 
-    before do
-      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
-      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
-    end
-
-    it "doesn't raise when successful" do
-      expect(HTTParty).to receive(:post).with(any_args).and_return(post_success)
+    it "deletes when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
       save!
     end
 
-    it "raises error when server is down" do
-      expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
-      expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+    context "with no memberships" do
+      let(:user) { create(:user) }
+
+      it "deletes on remote when a user has no memberships" do
+        expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+        save!
+      end
+    end
+
+    context "with memberships" do
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it "doesn't raise when successful" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(successful_response)
+        save!
+      end
+
+      it "raises error when server is down" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
+        expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+      end
+
+      context "with presupport memberships" do
+        let(:pre_support) { create(:membership, :pre_support) }
+        let(:reservation) { create(:reservation, :with_claim_from_user, membership: pre_support) }
+
+        it "deletes on remote when a user has no rights or roles" do
+          expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+          save!
+        end
+      end
     end
   end
 end

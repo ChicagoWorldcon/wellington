@@ -119,7 +119,11 @@ class GlooContact
   end
 
   def save!
-    post_json("/v1/users", local_state)
+    if reservation.present? && local_roles.any?
+      post_json("/v1/users", local_state)
+    else
+      delete_json("/v1/users/#{user.email}")
+    end
   end
 
   def reservation
@@ -154,6 +158,12 @@ class GlooContact
   def post_json(path, body)
     url = [base_url, path].join
     resp = HTTParty.post(url, headers: standard_headers, body: body.to_json)
+    parse_json(url, resp)
+  end
+
+  def delete_json(path)
+    url = [base_url, path].join
+    resp = HTTParty.delete(url, headers: standard_headers)
     parse_json(url, resp)
   end
 
