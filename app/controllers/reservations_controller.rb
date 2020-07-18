@@ -55,7 +55,7 @@ class ReservationsController < ApplicationController
   def create
     current_user.transaction do
       @contact = contact_model.new(contact_params)
-      if check_for_dob_params
+      if dob_params_present?
         @contact.date_of_birth = convert_dateselect_params_to_date
       end
       if !@contact.valid?
@@ -133,7 +133,7 @@ class ReservationsController < ApplicationController
     Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
   end
 
-  def check_for_dob_params
+  def dob_params_present?
     dob_key_1 = "dob_array(1i)"
     return params[theme_contact_param].key?(dob_key_1)
   end
