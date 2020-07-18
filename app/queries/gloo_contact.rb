@@ -38,10 +38,6 @@ class GlooContact
     Discord_Treasury
   )
 
-  # Sometimes a user had roles, and now we have to remove these
-  # Workaround for {"errors":["roles is required"],"status":"error"}
-  DISABLED = "Disabled_User"
-
   attr_reader :user
 
   def initialize(user)
@@ -67,10 +63,6 @@ class GlooContact
   # they come back from Gloo Treating REST responses as IO because iwe don't
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
-    if local_roles.none?
-      @local_roles << DISABLED
-    end
-
     {
       id: user.id.to_s,
       email: user.email,
