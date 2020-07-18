@@ -63,14 +63,20 @@ class GlooContact
   # they come back from Gloo Treating REST responses as IO because iwe don't
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
-    {
-      id: user.id.to_s,
-      email: user.email,
-      expiration: nil,
-      name: conzealand_contact.to_s,
-      display_name: conzealand_contact.badge_display,
-      roles: local_roles,
-    }
+    if allow_login?
+      {
+        id: user.id.to_s,
+        email: user.email,
+        expiration: nil,
+        name: conzealand_contact.to_s,
+        display_name: conzealand_contact.badge_display,
+        roles: local_roles,
+      }
+    else
+      {
+        "roles": []
+      }
+    end
   end
 
   def local_roles
@@ -119,7 +125,7 @@ class GlooContact
   end
 
   def save!
-    if reservation.present? && local_roles.any?
+    if allow_login?
       post_json("/v1/users", local_state)
     else
       delete_json("/v1/users/#{user.email}")
@@ -131,6 +137,10 @@ class GlooContact
   end
 
   private
+
+  def allow_login?
+    reservation.present? && local_roles.any?
+  end
 
   def contact_without_reservation
     ConzealandContact.new(

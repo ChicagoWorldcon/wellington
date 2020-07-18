@@ -158,6 +158,12 @@ RSpec.describe GlooContact do
   describe "#local_state" do
     subject(:local_state) { query.local_state }
 
+    it "looks pretty empty when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(local_state[:roles]).to be_empty
+      expect(local_state[:display_name]).to be_nil
+    end
+
     context "when no roles on remote" do
       before do
         expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
@@ -181,12 +187,6 @@ RSpec.describe GlooContact do
         ConzealandContact.where(claim_id: user.claims).destroy_all
         expect(local_state[:name]).to match(/CoNZealand Super Fan/i)
         expect(local_state[:display_name]).to match(/CoNZealand Super Fan/i)
-      end
-
-      it "uses 'disabled user' when reservation not available" do
-        reservation.update!(state: Reservation::DISABLED)
-        expect(local_state[:roles]).to be_empty
-        expect(local_state[:display_name]).to match(/disabled/i)
       end
 
       describe "roles listed" do
@@ -270,7 +270,7 @@ RSpec.describe GlooContact do
 
         ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
         result = described_class.new(user.reload).local_state
-        expect(result[:display_name]).to match(/disabled/i)
+        expect(result[:display_name]).to be_nil
         expect(result[:roles]).to be_empty
       end
 
