@@ -52,7 +52,8 @@ Rails.application.config.action_mailer.tap do |action_mailer|
         user_name:            ENV["SMTP_USER_NAME"],
         password:             ENV["SMTP_PASSWORD"],
         authentication:       "plain",
-        enable_starttls_auto: true
+        enable_starttls_auto: true,
+        ssl:                  ENV["SMTP_PORT"].to_i == 465
       }
     end
   end
