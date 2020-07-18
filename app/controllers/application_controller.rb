@@ -62,4 +62,20 @@ class ApplicationController < ActionController::Base
   def hugo_admin_signed_in?
     operator_signed_in? && current_operator.hugo_admin.present?
   end
+
+  def lookup_user!
+    @user = User.find(params[:user_id] || params[:id])
+  end
+
+  def lookup_gloo_contact!
+    if ENV["GLOO_BASE_URL"].present?
+      @gloo_contact = GlooContact.new(@user)
+      @gloo_contact.remote_state # fetch and cache results
+    end
+  rescue GlooContact::ServiceUnavailable => exception
+    @gloo_contact = nil
+    flash[:error] = "Failed to connect to The Fantasy Network: #{exception.to_s}"
+    user_path = operator_user_path(@user)
+    redirect_to user_path unless request.path == user_path
+  end
 end

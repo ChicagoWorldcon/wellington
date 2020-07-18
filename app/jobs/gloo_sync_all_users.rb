@@ -13,14 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# GlooSync sends user data to Gloo so they can log in for the virtual worldcon in 2020
-class GlooSync
+# GlooSyncAllUsers queues up all users so Gluu can stay updated
+class GlooSyncAllUsers
   include Sidekiq::Worker
 
-  def perform(email)
+  def perform
     return unless ENV["GLOO_BASE_URL"].present?
 
-    user = User.find_by!(email: email)
-    GlooContact.new(user).save!
+    User.find_each do |user|
+      begin
+        GlooContact.new(user).save!
+      rescue
+        puts "Failed to save #{user.email}"
+      end
+    end
   end
 end

@@ -35,10 +35,11 @@ class Membership < ApplicationRecord
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
 
-  scope :can_nominate, -> { where(can_nominate: true) }
   scope :can_attend, -> { where(can_attend: true) }
+  scope :can_nominate, -> { where(can_nominate: true) }
   scope :can_site_select, -> { where(can_site_select: true) }
   scope :can_vote, -> { where(can_vote: true) }
+  scope :with_rights, -> { where("can_attend OR can_nominate OR can_vote") }
 
   scope :order_by_price, -> { order(price_cents: :desc) }
   scope :with_attend_rights, -> { where(can_attend: true) }
@@ -47,6 +48,10 @@ class Membership < ApplicationRecord
 
   def to_s
     name.humanize
+  end
+
+  def community?
+    name.match(/community/)
   end
 
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened

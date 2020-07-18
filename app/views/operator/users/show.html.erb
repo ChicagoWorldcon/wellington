@@ -1,0 +1,77 @@
+<%#
+  Copyright 2020 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<h1>User <%= @user.email %></h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Current memberships</h2>
+        <% if @user.claims.active.none? %>
+          <p>This user has no memberships</p>
+        <% else %>
+          <%= render("operator_claims_table", claims: @user.claims.active) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Previous memberships</h2>
+        <% if @user.claims.inactive.none? %>
+          <p>No previous memberships</p>
+        <% else %>
+          <%= render("operator_claims_table", claims: @user.claims.inactive) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @gloo_contact.present? %>
+    <div class="l-panel">
+      <div class="row">
+        <div class="col-12">
+          <h2>
+            The Fantasy Network - <%= @gloo_contact.state_in_words %>
+          </h2>
+          <ul class="list-unstyled l-v-spacing">
+            <li><%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %></li>
+            <li><%= link_to "Force sync now", operator_user_path(@user), method: :put %></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <p>
+            Local State
+            <%= raw pretty_print(@gloo_contact.local_state) %>
+          </p>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <p>
+            Remote State
+            <%= raw pretty_print(@gloo_contact.remote_state) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</section>
