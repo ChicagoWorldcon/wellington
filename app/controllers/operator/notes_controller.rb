@@ -21,6 +21,7 @@ class Operator::NotesController < ApplicationController
   before_action :lookup_user!
 
   def create
-    require "pry"; binding.pry # FIXME commit = death
+    @user.notes.create!(content: params[:content])
+    redirect_to operator_user_path(@user)
   end
 end
