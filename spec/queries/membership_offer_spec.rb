@@ -30,15 +30,15 @@ RSpec.describe MembershipOffer do
     it { is_expected.to include($currency) }
 
     context "when membership is free" do
-      let(:membership) { create(:membership, :kid_in_tow) }
+      let(:membership) { create(:membership, :kidit) }
       it { is_expected.to match(/free/i) }
     end
   end
 
   describe "#self.options" do
     before do
-      create(:membership, :kid_in_tow)
-      create(:membership, :young_adult)
+      create(:membership, :kidit)
+      create(:membership, :ya)
       create(:membership, :adult)
     end
 

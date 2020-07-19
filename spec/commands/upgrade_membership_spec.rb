@@ -17,7 +17,7 @@
 require "rails_helper"
 
 RSpec.describe UpgradeMembership do
-  let!(:membership) { create(:membership, :young_adult, :with_order_for_reservation) }
+  let!(:membership) { create(:membership, :ya, :with_order_for_reservation) }
   let!(:upgrade_membership) { create(:membership, :adult) }
   let!(:reservation) { membership.reservations.first }
 

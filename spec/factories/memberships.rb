@@ -28,6 +28,7 @@ FactoryBot.define do
 
     trait :adult do
       name { :adult }
+      display_name { "Adult Attending" }
       price_cents { 370_00 }
       can_vote { true }
       can_site_select { true }
@@ -36,8 +37,9 @@ FactoryBot.define do
       dob_required { false }
     end
 
-    trait :young_adult do
-      name { :young_adult }
+    trait :ya do
+      name { :ya }
+      display_name { "YA (16-25)" }
       price_cents { 225_00 }
       description { "born in or after 2000" }
       can_vote { true }
@@ -60,14 +62,16 @@ FactoryBot.define do
 
     trait :child do
       name { :child }
+      display_name { "Child (6-15)" }
       price_cents { 105_00 }
       description { "born in or after 2005" }
       can_attend { true }
       dob_required { true }
     end
 
-    trait :kid_in_tow do
-      name { :kid_in_tow }
+    trait :kidit do
+      name { :kidit }
+      display_name {"Kid-in-Tow"}
       price_cents { 0 }
       description { "born in or after 2015" }
       can_attend { true }
@@ -81,6 +85,17 @@ FactoryBot.define do
       can_site_select { true }
       can_nominate { true }
       dob_required { false }
+    end
+
+    trait :first do
+      name { :first }
+      display_name { "First Worldcon" }
+      price_cents { 110_00}
+      can_vote { true }
+      can_site_select { true }
+      can_nominate { true }
+      can_attend { true }
+      dob_required { true }
     end
 
     # Supporting membership with $50 credit
@@ -170,6 +185,7 @@ FactoryBot.define do
 
     trait :chicago_donor do
       name { :donor }
+      display_name { "Donor" }
       price_cents { 20_00 }
       description { "With our thanks!" }
       dob_required { false }
@@ -177,6 +193,7 @@ FactoryBot.define do
 
     trait :chicago_friend do
       name { :donor }
+      display_name { "Friend" }
       price_cents { 150_00 }
       description {  "Will convert to an attending membership automatically if you vote in tion in 2020" }
       dob_required { false }
@@ -184,6 +201,7 @@ FactoryBot.define do
 
     trait :chicago_star do
       name { :donor }
+      display_name { "Star" }
       price_cents { 500_00 }
       description { "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and hing cool for you at the convention! (Shhh…it’s a surprise!)" }
       dob_required { false }

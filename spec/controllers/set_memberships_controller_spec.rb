@@ -21,9 +21,9 @@ RSpec.describe SetMembershipsController, type: :controller do
 
   let(:user) { create(:user) }
   let(:support) { create(:support) }
-  let(:young_adult) { create(:membership, :young_adult) }
+  let(:ya) { create(:membership, :ya) }
   let(:adult) { create(:membership, :adult) }
-  let(:reservation) { create(:reservation, :with_claim_from_user, membership: young_adult) }
+  let(:reservation) { create(:reservation, :with_claim_from_user, membership: ya) }
 
   describe "#index" do
     subject(:get_index) do
@@ -59,7 +59,7 @@ RSpec.describe SetMembershipsController, type: :controller do
     it "sets membership to whatever you set" do
       expect { put(:update, params: { reservation_id: reservation.id, id: adult.id }) }
         .to change { reservation.reload.membership }
-        .from(young_adult)
+        .from(ya)
         .to(adult)
 
       expect(response).to redirect_to(reservation_path(reservation))

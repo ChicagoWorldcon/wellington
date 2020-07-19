@@ -18,13 +18,12 @@ require "rails_helper"
 
 RSpec.describe UpgradeOffer do
   let!(:adult)       { create(:membership, :adult) }
-  let!(:young_adult) { create(:membership, :young_adult) }
+  let!(:ya)          { create(:membership, :ya) }
   let!(:unwaged)     { create(:membership, :unwaged) }
   let!(:child)       { create(:membership, :child) }
-  let!(:kid_in_tow)  { create(:membership, :kid_in_tow) }
+  let!(:kidit)       { create(:membership, :kidit) }
   let!(:supporting)  { create(:membership, :supporting) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
-  let!(:kiwi)        { create(:membership, :kiwi) }
 
   subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
 
@@ -79,17 +78,17 @@ RSpec.describe UpgradeOffer do
     end
 
     context "when young adult" do
-      let(:current_membership) { young_adult }
+      let(:current_membership) { ya }
       it { is_expected.to include(/adult/i) }
       it { is_expected.to_not include(/unwaged/i) }
-      it { is_expected.to_not include(/kid in tow/i) }
+      it { is_expected.to_not include(/kid-in-tow/i) }
 
       context "when prices change" do
         before do
           adult.update!(active_to: 1.second.ago)
-          young_adult.update!(active_to: 1.second.ago)
+          ya.update!(active_to: 1.second.ago)
           create(:membership, :adult, price: 500_00)
-          create(:membership, :young_adult, price: 450_00)
+          create(:membership, :ya, price: 450_00)
         end
 
         it { is_expected.to include(/adult/i) }

@@ -50,7 +50,7 @@ RSpec.describe ClaimMembership do
     end
 
     context "with a zero cost membership" do
-      let(:membership) { create(:membership, :kid_in_tow) }
+      let(:membership) { create(:membership, :kidit) }
 
       it "sets reservation to paid" do
         command.call

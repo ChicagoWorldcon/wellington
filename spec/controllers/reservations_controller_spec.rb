@@ -23,7 +23,7 @@ RSpec.describe ReservationsController, type: :controller do
   # e.g. conzealand_contact, chicago_contact
   let(:contact_model_key) { Claim.contact_strategy.to_s.underscore.to_sym }
 
-  let!(:kid_in_tow) { create(:membership, :kid_in_tow) }
+  let!(:kidit) { create(:membership, :kidit) }
   let!(:adult) { create(:membership, :adult) }
   let!(:offer) { MembershipOffer.new(adult) }
   let!(:existing_reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
@@ -33,7 +33,7 @@ RSpec.describe ReservationsController, type: :controller do
   let(:support) { create(:support) }
 
   let(:valid_contact_params) do
-    FactoryBot.build(:conzealand_contact).slice(
+    FactoryBot.build(:chicago_contact).slice(
       :first_name,
       :last_name,
       :publication_format,
@@ -172,7 +172,7 @@ RSpec.describe ReservationsController, type: :controller do
           :last_name => "is",
           :address_line_1 => updated_address,
           :country => "valid",
-          :publication_format => ConzealandContact::PAPERPUBS_NONE,
+          :publication_format => ChicagoContact::PAPERPUBS_NONE,
         }
       }
     end
@@ -202,7 +202,7 @@ RSpec.describe ReservationsController, type: :controller do
 
       context "with no contact set" do
         before do
-          ConzealandContact.where(claim_id: original_user.active_claims).destroy_all
+          ChicagoContact.where(claim_id: original_user.active_claims).destroy_all
         end
 
         it "updates when all values present" do
@@ -260,7 +260,7 @@ RSpec.describe ReservationsController, type: :controller do
     end
 
     context "when free offer selected" do
-      let(:offer) { MembershipOffer.new(kid_in_tow) }
+      let(:offer) { MembershipOffer.new(kidit) }
 
       it "redirects to the reservation listing page" do
         post :create, params: {

@@ -62,9 +62,19 @@ RSpec.describe Membership, type: :model do
   end
 
   describe "#to_s" do
-    subject(:to_s) { create(:membership, :kid_in_tow).to_s }
-    it { is_expected.to eq "Kid in tow" }
+    subject(:to_s) { create(:membership, :kidit).to_s }
+    it { is_expected.to eq "Kid-in-tow" }
   end
+
+  # describe "#to_s" do
+  #   subject(:to_s) { create(:membership, :ya).to_s }
+  #   it { is_expected.to eq "YA (16-25)" }
+  # end
+
+  # describe "#to_s" do
+  #   subject(:to_s) { create(:membership, :supporting).to_s }
+  #   it { is_expected.to eq "Supporting" }
+  # end
 
   describe "#all_rights" do
     subject(:all_rights) { model.all_rights }
@@ -92,7 +102,7 @@ RSpec.describe Membership, type: :model do
     end
 
     context "for kid-in-tow" do
-      let(:model) { create(:membership, :kid_in_tow) }
+      let(:model) { create(:membership, :kidit) }
       it { is_expected.to equal true }
     end
 
@@ -102,7 +112,7 @@ RSpec.describe Membership, type: :model do
     end
 
     context "for young adult" do
-      let(:model) { create(:membership, :young_adult) }
+      let(:model) { create(:membership, :ya) }
       it { is_expected.to equal true }
     end
 
