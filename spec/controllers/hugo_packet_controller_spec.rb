@@ -75,6 +75,22 @@ RSpec.describe HugoPacketController, type: :controller do
         expect(get :index).to have_http_status(:ok)
       end
     end
+
+    context "when voting is closed" do
+      let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+      before { sign_in(reservation.user) }
+
+      before do
+        expect(HugoState)
+          .to receive_message_chain(:new, :closed?)
+          .and_return(true)
+      end
+
+      it "redirects with notice" do
+        expect(get :index).to redirect_to(reservations_path)
+        expect(flash[:notice]).to include("voting has closed")
+      end
+    end
   end
 
   describe "#show" do
