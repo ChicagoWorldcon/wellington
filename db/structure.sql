@@ -382,7 +382,8 @@ CREATE TABLE public.memberships (
     price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
     can_nominate boolean DEFAULT false NOT NULL,
     can_site_select boolean DEFAULT false NOT NULL,
-    dob_required boolean DEFAULT false NOT NULL
+    dob_required boolean DEFAULT false NOT NULL,
+    display_name character varying
 );
 
 
@@ -1269,6 +1270,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200525204858'),
 ('20200629100946'),
 ('20200717051724'),
-('20200717081753');
+('20200717081753'),
+('20200719215504');
 
 
