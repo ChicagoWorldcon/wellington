@@ -30,66 +30,72 @@ RSpec.describe HugoPacketController, type: :controller do
   end
 
   describe "#index" do
-    context "when logged out" do
-      it "redirects with error" do
-        expect(get :index).to redirect_to(root_path)
-        expect(flash[:notice]).to match(/please log in/i)
-      end
-    end
-
-    context "when logged in without voting rights" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
-      before { sign_in(reservation.user) }
-
-      it "redirects with error" do
-        expect(get :index).to redirect_to(reservations_path)
-        expect(flash[:notice]).to match(/voting rights/i)
-      end
-    end
-
-    context "when logged with voting rights but not paid" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult) }
-      before { sign_in(reservation.user) }
-
-      it "redirects with error" do
-        expect(get :index).to redirect_to(reservations_path)
-        expect(flash[:notice]).to match(/voting rights/i)
-      end
-    end
-
-    context "when logged with voting rights" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
-      before { sign_in(reservation.user) }
-
-      before do
-        ENV["HUGO_PACKET_BUCKET"] = "stub"
-        ENV["HUGO_PACKET_PREFIX"] = "stub"
-        Aws.config.update(stub_responses: true)
-        Aws::S3::Client.new.stub_data(:list_objects_v2,
-          prefix: "/",
-          contents: [],
-        )
-      end
-
-      it "renders ok" do
-        expect(get :index).to have_http_status(:ok)
-      end
-    end
-
     context "when voting is closed" do
       let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
       before { sign_in(reservation.user) }
 
-      before do
-        expect(HugoState)
-          .to receive_message_chain(:new, :closed?)
-          .and_return(true)
-      end
 
       it "redirects with notice" do
+        expect(HugoState).to receive_message_chain(:new, :closed?)
+          .and_return(true)
         expect(get :index).to redirect_to(reservations_path)
         expect(flash[:notice]).to include("voting has closed")
       end
+    end
+
+    context "when voting is open" do
+      before do
+        expect(HugoState)
+        .to receive_message_chain(:new, :closed?)
+        .and_return(false)
+      end
+
+      context "when logged out" do
+        it "redirects with error" do
+          expect(get :index).to redirect_to(root_path)
+          expect(flash[:notice]).to match(/please log in/i)
+        end
+      end
+
+      context "when logged in without voting rights" do
+        let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+        before { sign_in(reservation.user) }
+
+        it "redirects with error" do
+          expect(get :index).to redirect_to(reservations_path)
+          expect(flash[:notice]).to match(/voting rights/i)
+        end
+      end
+
+      context "when logged with voting rights but not paid" do
+        let(:reservation) { create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult) }
+        before { sign_in(reservation.user) }
+
+        it "redirects with error" do
+          expect(get :index).to redirect_to(reservations_path)
+          expect(flash[:notice]).to match(/voting rights/i)
+        end
+      end
+
+      context "when logged with voting rights" do
+        let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+        before { sign_in(reservation.user) }
+
+        before do
+          ENV["HUGO_PACKET_BUCKET"] = "stub"
+          ENV["HUGO_PACKET_PREFIX"] = "stub"
+          Aws.config.update(stub_responses: true)
+          Aws::S3::Client.new.stub_data(:list_objects_v2,
+            prefix: "/",
+            contents: [],
+          )
+        end
+
+        it "renders ok" do
+          expect(get :index).to have_http_status(:ok)
+        end
+      end
+
     end
   end
 
@@ -98,6 +104,9 @@ RSpec.describe HugoPacketController, type: :controller do
     let(:s3_signed_url) { "https://www.wizardingworld.com/about-the-fan-club" }
 
     before do
+      expect(HugoState)
+      .to receive_message_chain(:new, :closed?)
+      .and_return(false)
       expect(Aws::S3::Object).to receive(:new).and_return(
         instance_double(Aws::S3::Object, presigned_url: s3_signed_url)
       )
