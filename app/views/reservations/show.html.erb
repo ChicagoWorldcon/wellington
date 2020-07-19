@@ -112,7 +112,7 @@
           <% else %>
             <% @notes.eager_load(:user).order(created_at: :desc).each do |note| %>
               <p>
-                <strong><%= note.created_at %> - <%= note.user.email %></strong>
+                <strong><%= fuzzy_time(note.created_at) %> - <%= note.user.email %></strong>
                 <br><%= note.content %>
               </p>
             <% end %>

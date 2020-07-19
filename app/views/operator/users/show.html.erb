@@ -87,4 +87,28 @@
       </div>
     </div>
   <% end %>
+
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Notes</h2>
+
+        <p>
+          <%= form_with(url: operator_user_notes_path(@user), data: { remote: false }) do |f| %>
+          <% end %>
+        </p>
+
+        <% if @user.notes.none? %>
+          <p>No notes for this user</p>
+        <% else %>
+          <%= @user.notes.find_each do |note| %>
+            <p>
+              <strong><%= fuzzy_time(note.created_at) %></strong>
+              <br><%= note.content %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </section>
