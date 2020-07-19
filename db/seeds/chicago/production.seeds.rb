@@ -18,7 +18,7 @@
 
 beginning_of_time = "2000-01-01".to_time
 
-PriceGroup = Struct.new("PriceGroup", :start_time, :end_time, :supporting, :adult_attending, :ya, :child, :first_worldcon, :family_1_discount, :family_2_discount, :family_3_discount)
+PriceGroup = Struct.new("PriceGroup", :start_time, :end_time, :supporting, :adult, :ya, :child, :first_worldcon, :family_1_discount, :family_2_discount, :family_3_discount)
 site_selection = "2020-07-30 18:00:00 CST".to_time
 price_change_1 = "2021-04-30 23:59:00 CST".to_time
 price_change_2 = "2021-11-30 23:59:00 CST".to_time
@@ -36,7 +36,8 @@ prices = [
 ########################################################################
 # Presupport membership types
 Membership.create!(
-  name: "Donor",
+  name: "donor",
+  display_name: "Donor",
   price: Money.new(20_00),
   description: "With our thanks!",
   active_from: beginning_of_time,
@@ -49,7 +50,8 @@ Membership.create!(
 )
 
 Membership.create!(
-  name: "Friend",
+  name: "friend",
+  display_name: "Friend",
   price: Money.new(150_00),
   description: "Will convert to an attending membership automatically if you vote in tion in 2020",
   active_from: beginning_of_time,
@@ -62,7 +64,8 @@ Membership.create!(
 )
 
 Membership.create!(
-  name: "Star",
+  name: "star",
+  display_name: "Star",
   price: Money.new(500_00),
   description: "Will convert to an attending membership automatically if you vote in Site Selection in 2020, and something cool for you at the convention! (Shhh…it’s a surprise!)",
   active_from: beginning_of_time,
@@ -79,7 +82,8 @@ Membership.create!(
 
 prices.each do |price_group|
   Membership.create!(
-    name: "Supporting",
+    name: "supporting",
+    display_name: "Supporting",
     description: "Supporting member of Chicon 8",
     price: price_group.supporting,
     active_from: price_group.start_time,
@@ -92,7 +96,8 @@ prices.each do |price_group|
   )
 
   Membership.create!(
-    name: "Adult Attending",
+    name: "adult",
+    display_name: "Adult Attending",
     description: "Attending adult member of Chicon 8",
     price: price_group.adult_attending,
     active_from: price_group.start_time,
@@ -105,7 +110,8 @@ prices.each do |price_group|
   )
 
   Membership.create!(
-    name: "Child (6-15)",
+    name: "child",
+    display_name: "Child (6-15)",
     description: "Attending child member of Chicon 8 (6-15 at-con)",
     price: price_group.child,
     active_from: price_group.start_time,
@@ -118,7 +124,8 @@ prices.each do |price_group|
   )
 
   Membership.create!(
-    name: "YA (16-25)",
+    name: "ya",
+    display_name: "YA (16-25)",
     description: "Attending YA member of Chicon 8 (16-25 at-con)",
     price: price_group.ya,
     active_from: price_group.start_time,
@@ -131,7 +138,8 @@ prices.each do |price_group|
   )
 
   Membership.create!(
-    name: "First Worldcon",
+    name: "first",
+    display_name: "First Worldcon",
     description: "Attending their first worldcon",
     price: price_group.first_worldcon,
     active_from: price_group.start_time,
@@ -144,7 +152,8 @@ prices.each do |price_group|
   )
 
   Membership.create!(
-    name: "Kid-in-Tow",
+    name: "kidit",
+    display_name: "Kid-in-Tow",
     description: "A child < 6 years old accompanied by an Adult member",
     price: Money.new(0),
     active_from: price_group.start_time,
