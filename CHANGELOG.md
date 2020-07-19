@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing significant in this release
 
 ## Changed
-- Nothing significant in this release
+- [!218](https://gitlab.com/worldcon/wellington/-/merge_requests/218) uses the environment
+variable HUGO_CLOSED_AT for the mailer dates
 
 ## Removed
 - Nothing significant in this release

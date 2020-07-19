@@ -75,10 +75,13 @@
         </p>
 
         <p>
-          Happy reading everyone and remember to finalize your ballot choices by
-          July 15th. (Also, download your packet by then too! When voting closes,
-          the packet disappears into the ether.) If you have any problems with the
-          packet, please contact hugohelp@conzealand.nz.
+          Happy reading everyone, and remember to finalize your ballot choices by
+          <%= localize($hugo_closed_at.in_time_zone("Pacific Time (US & Canada)"), :format => :long) %>.
+          (Also, download your packet by then too! When voting closes,
+          the packet disappears into the ether.)
+        </p>
+        <p>
+        If you have any problems with the packet, please contact hugohelp@conzealand.nz.
         </p>
 
         <ul class="list-group text-dark">
