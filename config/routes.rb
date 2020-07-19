@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   namespace :operator do
     resources :users do
       resources :the_fantasy_network_roles
+      resources :notes
     end
 
     resources :reservations do

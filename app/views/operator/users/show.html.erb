@@ -87,4 +87,34 @@
       </div>
     </div>
   <% end %>
+
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Notes</h2>
+
+        <p>
+          <%= form_with(url: operator_user_notes_path(@user), data: { remote: false }) do |f| %>
+            <%= f.text_area(:content, class:"form-control", rows: 3) %>
+            <%= f.submit(
+                "Save my note",
+                class: "btn btn-primary",
+                data: { disable_with: "One moment caller..." }
+              ) %>
+          <% end %>
+        </p>
+
+        <% if @user.notes.none? %>
+          <p>No notes for this user</p>
+        <% else %>
+          <% @user.notes.order(created_at: :desc).each do |note| %>
+            <p>
+              <strong><%= fuzzy_time(note.created_at) %></strong>
+              <br><%= note.content %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </section>
