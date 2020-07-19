@@ -70,7 +70,7 @@ class ReservationsController < ApplicationController
 
       flash[:notice] = %{
         Congratulations member ##{new_reservation.membership_number}!
-        You've just reserved a #{@my_offer.membership} membership
+        You've just reserved a #{@my_offer.membership} membership. Please go to #{view_context.link_to("the Charges page", new_reservation_charge_path(new_reservation))} to pay.
       }
 
       if new_reservation.membership.price.zero?
