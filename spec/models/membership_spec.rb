@@ -63,7 +63,7 @@ RSpec.describe Membership, type: :model do
 
   describe "#to_s" do
     subject(:to_s) { create(:membership, :kidit).to_s }
-    it { is_expected.to eq "Kid-in-tow" }
+    it { is_expected.to eq "Kid-in-Tow" }
   end
 
   # describe "#to_s" do

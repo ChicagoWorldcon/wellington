@@ -52,7 +52,7 @@ class Membership < ApplicationRecord
   scope :with_voting_rights, -> { where(can_vote: true) }
 
   def to_s
-    name.humanize
+    display_name ? display_name : name.humanize
   end
 
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
