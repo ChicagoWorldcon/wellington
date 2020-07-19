@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.6.0...master)
 
 ## Added
-- Nothing significant in this release
+- Allows operators to write their own notes
+  [!219](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/219),
 
 ## Changed
 - Nothing significant in this release
