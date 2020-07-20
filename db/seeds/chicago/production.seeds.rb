@@ -99,7 +99,7 @@ prices.each do |price_group|
     name: "adult",
     display_name: "Adult Attending",
     description: "Attending adult member of Chicon 8",
-    price: price_group.adult_attending,
+    price: price_group.adult,
     active_from: price_group.start_time,
     active_to: price_group.end_time,
     can_vote: true,

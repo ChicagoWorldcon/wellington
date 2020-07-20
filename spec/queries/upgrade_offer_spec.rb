@@ -24,6 +24,7 @@ RSpec.describe UpgradeOffer do
   let!(:kidit)       { create(:membership, :kidit) }
   let!(:supporting)  { create(:membership, :supporting) }
   let!(:silver_fern) { create(:membership, :silver_fern) }
+  let!(:kiwi)        { create(:membership, :kiwi) }
 
   subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
 
@@ -57,7 +58,8 @@ RSpec.describe UpgradeOffer do
 
   describe "#from" do
     let(:upgrade_offers) { UpgradeOffer.from(current_membership) }
-    subject(:upgrade_offer_strings) { upgrade_offers.map(&:to_s) }
+    subject(:upgrade_offer_strings) {
+      upgrade_offers.map(&:to_s) }
 
     context "when adult" do
       let(:current_membership) { adult }
@@ -99,7 +101,7 @@ RSpec.describe UpgradeOffer do
     context "when kid_in_tow" do
       let(:current_membership) { supporting }
       it { is_expected.to include(/adult/i) }
-      it { is_expected.to include(/young adult/i) }
+      it { is_expected.to include(/ya/i) }
       it { is_expected.to include(/unwaged/i) }
       it { is_expected.to include(/child/i) }
       it { is_expected.to_not include(/silver fern/i) }
@@ -108,14 +110,14 @@ RSpec.describe UpgradeOffer do
     context "when silver_fern" do
       let(:current_membership) { silver_fern }
       it { is_expected.to include(/adult/i) }
-      it { is_expected.to_not include(/young adult/i) }
+      it { is_expected.to_not include(/ya/i) }
     end
 
     context "when kiwi" do
       let(:current_membership) { kiwi }
-      it { is_expected.to include(/adult/i) }
-      it { is_expected.to include(/young adult/i) }
-      it { is_expected.to_not include(/silver fern/i) }
+      it {is_expected.to include(/adult/i) }
+      it {is_expected.to include(/ya/i) }
+      it {is_expected.to_not include(/silver fern/i) }
     end
   end
 end
