@@ -62,19 +62,23 @@ RSpec.describe Membership, type: :model do
   end
 
   describe "#to_s" do
-    subject(:to_s) { create(:membership, :kidit).to_s }
-    it { is_expected.to eq "Kid-in-Tow" }
+    subject(:to_s) { model.to_s }
+
+    context "when kid-in-tow" do
+      let(:model) { create(:membership, :kidit) }
+      it { is_expected.to eq "Kid-in-Tow" }
+    end
+
+    context "when YA" do
+      let(:model) { create(:membership, :ya) }
+      it { is_expected.to eq "YA (16-25)" }
+    end
+
+    context "when supporting" do
+      let(:model) { create(:membership, :supporting) }
+      it { is_expected.to eq "Supporting" }
+    end
   end
-
-  # describe "#to_s" do
-  #   subject(:to_s) { create(:membership, :ya).to_s }
-  #   it { is_expected.to eq "YA (16-25)" }
-  # end
-
-  # describe "#to_s" do
-  #   subject(:to_s) { create(:membership, :supporting).to_s }
-  #   it { is_expected.to eq "Supporting" }
-  # end
 
   describe "#all_rights" do
     subject(:all_rights) { model.all_rights }
