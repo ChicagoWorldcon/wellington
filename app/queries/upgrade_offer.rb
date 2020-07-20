@@ -28,6 +28,7 @@ class UpgradeOffer
     # List options that are higher price
     options = Membership.active.where("price_cents > ?", current_membership.price_cents)
 
+
     # But don't let the name match, i.e. no upgrade adult to adult upgrade option
     options = options.where.not(name: current_membership.name)
 
