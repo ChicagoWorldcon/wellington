@@ -165,10 +165,3 @@ prices.each do |price_group|
     dob_required: true,
   )
 end
-
-########################################
-# Other prod data migrations that happened post deploy
-
-require_relative "development_hugo.seeds.rb"
-require_relative "development_dublin.seeds.rb"
-require_relative "development_hugo_ordering.seeds.rb"
