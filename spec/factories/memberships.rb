@@ -78,6 +78,7 @@ FactoryBot.define do
       dob_required { true }
     end
 
+#   NOTE:  :supporting's display_name is left out intentionally.
     trait :supporting do
       name { :supporting }
       price_cents { 75_00 }
