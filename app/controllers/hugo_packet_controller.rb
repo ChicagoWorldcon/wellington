@@ -67,6 +67,13 @@ class HugoPacketController < ApplicationController
   private
 
   def check_access!
+
+    if HugoState.new.closed?
+      flash[:notice] = "Hugo packet no longer available as voting has closed"
+      redirect_to reservations_path
+      return
+    end
+
     if !user_signed_in?
       flash["notice"] = "Please log in to download the Hugo Packet"
       redirect_to root_path

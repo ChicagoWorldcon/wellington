@@ -38,10 +38,6 @@ class GlooContact
     Discord_Treasury
   )
 
-  # Sometimes a user had roles, and now we have to remove these
-  # Workaround for {"errors":["roles is required"],"status":"error"}
-  DISABLED = "Disabled_User"
-
   attr_reader :user
 
   def initialize(user)
@@ -67,26 +63,36 @@ class GlooContact
   # they come back from Gloo Treating REST responses as IO because iwe don't
   # actually know what these systems are but do need to advise them of their roles.
   def local_state
-    local_roles = discord_roles.dup
+    if allow_login?
+      {
+        id: user.id.to_s,
+        email: user.email,
+        expiration: nil,
+        name: conzealand_contact.to_s,
+        display_name: conzealand_contact.badge_display,
+        roles: local_roles,
+      }
+    else
+      # stub result which looks like 404 response from TFN
+      {
+        "roles": []
+      }
+    end
+  end
+
+  def local_roles
+    return @local_roles unless @local_roles.nil?
+
+    @local_roles = discord_roles.dup
 
     if reservation.present?
-      local_roles << MEMBER_ATTENDING if reservation.can_attend?
-      local_roles << MEMBER_VOTING if reservation.can_vote?
-      local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+      # Alphabetical, follows what we get back from TFN
+      @local_roles << MEMBER_ATTENDING if reservation.can_attend?
+      @local_roles << MEMBER_HUGO if reservation.can_attend? || reservation.membership.community?
+      @local_roles << MEMBER_VOTING if reservation.can_vote?
     end
 
-    if local_roles.none?
-      local_roles << DISABLED
-    end
-
-    {
-      id: user.id.to_s,
-      email: user.email,
-      expiration: nil,
-      name: conzealand_contact.to_s,
-      display_name: conzealand_contact.badge_display,
-      roles: local_roles,
-    }
+    @local_roles
   end
 
   def discord_roles
@@ -100,16 +106,8 @@ class GlooContact
     @discord_roles = new_roles & DISCORD_ROLES
   end
 
-  def state_in_words
-    if in_sync?
-      "LGTM"
-    else
-      "Out of sync"
-    end
-  end
-
   def in_sync?
-    local_state.hash == remote_state.hash
+    local_state == remote_state
   end
 
   def conzealand_contact
@@ -121,7 +119,11 @@ class GlooContact
   end
 
   def save!
-    post_json("/v1/users", local_state)
+    if allow_login?
+      post_json("/v1/users", local_state)
+    else
+      delete_json("/v1/users/#{user.email}")
+    end
   end
 
   def reservation
@@ -129,6 +131,10 @@ class GlooContact
   end
 
   private
+
+  def allow_login?
+    reservation.present? && local_roles.any?
+  end
 
   def contact_without_reservation
     ConzealandContact.new(
@@ -156,6 +162,14 @@ class GlooContact
   def post_json(path, body)
     url = [base_url, path].join
     resp = HTTParty.post(url, headers: standard_headers, body: body.to_json)
+    parse_json(url, resp)
+  end
+
+  # delete_json takes a path and calles HTTP delete on it
+  # this is used when we want to make sure a user is removed TFN
+  def delete_json(path)
+    url = [base_url, path].join
+    resp = HTTParty.delete(url, headers: standard_headers)
     parse_json(url, resp)
   end
 

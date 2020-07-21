@@ -31,6 +31,15 @@
         <div class="l-panel operator-pane">
           <h2>Operator Actions</h2>
           <p>
+            <%= link_to "Lookup user records", operator_user_path(@reservation.user) %>
+            <% if ENV["GLOO_BASE_URL"].present? %>
+              and compare to The Fantasy Network
+            <% else %>
+              for <%= @reservation.user.email %>
+            <% end %>
+          </p>
+
+          <p>
             <%= link_to "Transfer membership", new_operator_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>
@@ -98,12 +107,18 @@
       <div class="col-12 col-md-6">
         <div class="l-panel operator-pane">
           <h2>User Notes</h2>
+          <p>
+            <%= link_to "View user page", operator_user_path(@reservation.user) %>
+            to add a note
+          </p>
           <% if @notes.none? %>
-            No notes for this membership
+            <p>
+              No notes for this membership
+            </p>
           <% else %>
             <% @notes.eager_load(:user).order(created_at: :desc).each do |note| %>
               <p>
-                <strong><%= note.created_at %> - <%= note.user.email %></strong>
+                <strong><%= fuzzy_time(note.created_at) %> - <%= note.user.email %></strong>
                 <br><%= note.content %>
               </p>
             <% end %>

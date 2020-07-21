@@ -5,13 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
+## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.6.0...master)
+
+## Added
+- Allows operators to write their own notes
+  [!219](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/219),
+
+## Changed
+- [!218](https://gitlab.com/worldcon/wellington/-/merge_requests/218) uses the environment
+variable HUGO_CLOSED_AT for the mailer dates
+
+## Removed
+- Nothing significant in this release
+
+
+## [Tag 2.6.0 - 2020-07-18](https://gitlab.com/worldcon/wellington/compare/2.5.1...2.6.0)
 
 ### Added
 - Emails for Hugo voting
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
-  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
-  and [!204](https://gitlab.com/worldcon/wellington/-/merge_requests/204)
+  [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194),
+  [!204](https://gitlab.com/worldcon/wellington/-/merge_requests/204)
+  and [!216](https://gitlab.com/worldcon/wellington/-/merge_requests/216)
   Add this to you env
   ```
   GLOO_BASE_URL=https://api.thefantasy.network
