@@ -21,8 +21,9 @@ FactoryBot.define do
     title { Faker::Superhero.prefix }
     first_name { Faker::Superhero.name }
     last_name { Faker::Superhero.suffix }
-    publication_format { ConzealandContact::PAPERPUBS_ELECTRONIC }
+    publication_format { ChicagoContact::PAPERPUBS_ELECTRONIC }
     date_of_birth { Faker::Date.birthday(min_age: 0, max_age: 25)}
+    email {Faker::Internet.unique.email}
 
     claim { build(:claim, :with_user, :with_reservation) }
 
@@ -33,15 +34,15 @@ FactoryBot.define do
     end
 
     trait :paperpubs_mail do
-      publication_format { ConzealandContact::PAPERPUBS_MAIL }
+      publication_format { ChicagoContact::PAPERPUBS_MAIL }
     end
 
     trait :paperpubs_all do
-      publication_format { ConzealandContact::PAPERPUBS_BOTH }
+      publication_format { ChicagoContact::PAPERPUBS_BOTH }
     end
 
     trait :paperpubs_none do
-      publication_format { ConzealandContact::PAPERPUBS_NONE }
+      publication_format { ChicagoContact::PAPERPUBS_NONE }
     end
   end
 end

@@ -250,7 +250,7 @@
 
       <div class="form-group">
         <label for="email">Email (Optional. Please remove or edit if the membership is for someone other than yourself.)</label>
-        <%= contact_form.text_field(:email, value: current_user.email, class: "form-control", id: "email") %>
+        <%= contact_form.text_field(:email, value: (current_user ? current_user.email : ""), class: "form-control", id: "email") %>
         <% if errors = form_input_errors(@contact, :email) %>
           <p class="form-error"><%= errors %></p>
         <% end %>
