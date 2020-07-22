@@ -39,6 +39,7 @@ RSpec.describe ReservationsController, type: :controller do
       :publication_format,
       :address_line_1,
       :country,
+      :email,
     )
   end
 
