@@ -56,6 +56,10 @@ RSpec.describe ReservationsController, type: :controller do
     end
   end
 
+  describe "#create" do
+
+  end
+
   context "when membership is no longer available" do
     let(:price_change_at) { 1.second.ago }
 
@@ -101,6 +105,8 @@ RSpec.describe ReservationsController, type: :controller do
       end
     end
   end
+
+
 
   describe "#index" do
     it "renders" do
@@ -242,37 +248,124 @@ RSpec.describe ReservationsController, type: :controller do
   describe "#create" do
     before { sign_in(original_user) }
 
-    context "when adult offer selected" do
-      it "redirects to the charges page" do
-        post :create, :params => {
-          contact_model_key => valid_contact_params,
-          :offer => offer.hash,
-        }
-        expect(flash[:error]).to_not be_present
-        expect(response.headers["Location"]).to match(/charges/)
+    context "when user doesn't provide their email" do
+      context "when the user requests epubs" do
+        before do
+          post :create, params: {
+            contact_model_key => {
+              :first_name => "Valid",
+              :last_name => "Validsdottir",
+              :address_line_1 => "Validgaten",
+              :country => "Validlandia",
+              :publication_format => ChicagoContact::PAPERPUBS_ELECTRONIC,
+            },
+            :offer => offer.hash,
+          }
+        end
+
+        it "sets errors mentioning email and publications" do
+          expect(flash[:error]).to be_present
+          expect(flash[:error]).to include("email")
+          expect(flash[:error]).to include("publications")
+        end
+
+        it "re-renders the reservaton page" do
+          expect(response.body).to include("Reserve a New Membership")
+          expect(response).to have_http_status(:ok)
+        end
+      end
+      context "when the user requests printpubs" do
+        before do
+          post :create, params: {
+            contact_model_key => {
+              :first_name => "Validanne",
+              :last_name => "Validbury",
+              :address_line_1 => "Valid-on-Thames",
+              :country => "Validion",
+              :publication_format => ChicagoContact::PAPERPUBS_MAIL},
+            :offer => offer.hash,
+          }
+        end
+
+        it "does not set errors" do
+          expect(flash[:error]).to_not be_present
+        end
+
+        it "redirects to the charges page" do
+          expect(response.headers["Location"]).to match(/charges/)
+          expect(response).to have_http_status(:found)
+        end
       end
 
-      it "renders the form again when form submission fails" do
-        post :create, params: {
-          contact_model_key => valid_contact_params,
-          :offer => offer.hash,
-        }
+      context "when the user requests print and epubs" do
+        before do
+          post :create, params: {
+            contact_model_key => {
+              :first_name => "Validscotch",
+              :last_name => "Sparkle-Valid",
+              :address_line_1 => "Valid Meadows",
+              :country => "The Very Valid Nation of Equestria",
+              :publication_format => ChicagoContact::PAPERPUBS_BOTH},
+            :offer => offer.hash,
+          }
+        end
+
+        it "sets errors mentioning email and publications" do
+          expect(flash[:error]).to be_present
+          expect(flash[:error]).to include("email")
+          expect(flash[:error]).to include("publications")
+        end
+
+        it "re-renders the reservaton page" do
+          expect(response.body).to include("Reserve a New Membership")
+          expect(response).to have_http_status(:ok)
+        end
       end
     end
 
-    context "when free offer selected" do
-      let(:offer) { MembershipOffer.new(kidit) }
 
-      it "redirects to the reservation listing page" do
-        post :create, params: {
-          contact_model_key => {
-            :first_name => "Silly",
-            :last_name => "Billy",
-          },
-          :offer => offer.hash,
-        }
-        expect(response).to have_http_status(:ok)
-        expect(flash[:error]).to be_present
+    context "when user email is provided" do
+      context "when adult offer selected" do
+        before do
+          post :create, params: {
+            contact_model_key => valid_contact_params,
+            :offer => offer.hash,
+          }
+        end
+
+        it "redirects to the charges page" do
+          expect(response.headers["Location"]).to match(/charges/)
+          expect(response).to have_http_status(:found)
+        end
+
+        it "does not set an error flash" do
+          expect(flash[:error]).to_not be_present
+        end
+
+      end
+
+      context "when free offer selected" do
+        before do
+          post :create, params: {
+            contact_model_key => {
+              :first_name => "Silly",
+              :last_name => "Billy",
+              :address_line_1 => "valid",
+              :country => "valid",
+              :publication_format => ChicagoContact::PAPERPUBS_NONE,
+            },
+            :offer => MembershipOffer.new(kidit).hash
+          }
+        end
+
+        it "does not set error flash" do
+          expect(flash[:error]).to_not be_present
+        end
+
+        it "redirects to the reservation page" do
+          expect(response).to have_http_status(:found)
+          expect(response.headers["Location"]).to match(/reservations/)
+        end
       end
     end
   end
