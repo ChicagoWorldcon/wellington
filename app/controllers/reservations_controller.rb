@@ -58,7 +58,7 @@ class ReservationsController < ApplicationController
       end
       if !@contact.valid?
         @reservation = Reservation.new
-        flash[:error] = @contact.errors.full_messages.to_sentence
+        flash[:error] = @contact.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
         render "/reservations/new"
         return
       end

@@ -23,7 +23,7 @@ module ReservationsHelper
 
   def form_input_errors(model, field)
     model_errors = model.errors.messages[field]
-    model_errors.present? && model_errors.to_sentence.humanize
+    model_errors.present? && model_errors.to_sentence.humanize.concat(".")
   end
 
   def update_transfer_path(transfer)
