@@ -37,7 +37,7 @@ module ConventionDetails
       #FIXME: Update hugo ballot locations when we have them
       @con_hugo_download_A4 = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_hugo_download_letter = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
-      @con_name_public = "Tasfic II"
+      @con_name_public = "Chicon 8"
       @con_name_public_previous = "DisCon 3"
       @con_number = "worldcon80"
       #FIXME: Update @con_organizers_sigs
