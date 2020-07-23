@@ -297,14 +297,18 @@
   </fieldset>
 
   <div class="l-v-spacing-both">
-    <div class="form-group">
-      <% if @reservation.persisted? %>
-        <input type="submit" value="Save Details" class="btn btn-m-full-width">
-      <% elsif @my_offer.membership.price > 0  %>
-        <input type="submit" value="Reserve Membership and Pay" class="btn btn-m-full-width">
-      <% else %>
-        <input type="submit" value="Reserve Membership" class="btn btn-m-full-width">
-      <% end %>
+      <div class="form-group">
+          <div class="btn-group w-100">
+              <% if @reservation.persisted? %>
+                  <div class="col"><input type="submit" value="Save Details" class="btn btn-m-full-width"></div>
+              <% elsif @my_offer.membership.price > 0  %>
+                  <div class="col"><input type="submit" name="" value="Reserve Membership and Pay" class="btn"></div>
+                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formaction="<%= add_to_cart_reservations_path %>"></div>
+              <% else %>
+                  <div class="col"><input type="submit" value="Reserve Membership" class="btn"></div>
+                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formaction="<%= add_to_cart_reservations_path %>"></div>
+              <% end %>
+          </div>
     </div>
 
     <%# TODO: Deal with city %>

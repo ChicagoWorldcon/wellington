@@ -67,7 +67,7 @@ $(document).ready(() => {
 
     document.querySelector('#error_explanation').innerHtml = '';
 
-    let amount = document.querySelector('select#amount').value;
+    let amount = document.querySelector('#amount').value;
     amount = amount.replace(/\$/g, '').replace(/,/g, '');
 
     amount = parseInt(amount, 10);

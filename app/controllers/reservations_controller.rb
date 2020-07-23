@@ -19,15 +19,21 @@ class ReservationsController < ApplicationController
   include ThemeConcern
 
   before_action :lookup_reservation!, only: [:show, :update]
-  before_action :lookup_offer, only: [:new, :create]
+  before_action :lookup_offer, only: [:new, :create, :add_to_cart]
   before_action :setup_paperpubs, except: :index
 
   # TODO(issue #24) list all members for people not logged in
   def index
     if user_signed_in?
-      @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
-      @my_purcahses = @my_purcahses.joins(:membership)
-      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :contact)
+      @my_purchases = Reservation.joins(:user).where(users: {id: current_user})
+      @my_purchases = @my_purchases.joins(:membership)
+      @my_purchases = @my_purchases.includes(:charges).includes(active_claim: :contact)
+
+      @unpaid_reservations = @my_purchases.select{ |reservation| reservation.instalment? }
+      @unpaid_sum = @unpaid_reservations.map do |reservation|
+        AmountOwedForReservation.new(reservation).amount_owed
+      end.sum
+      @unpaid_sum = Money.new(0) if @unpaid_sum == 0
     end
   end
 
@@ -51,23 +57,7 @@ class ReservationsController < ApplicationController
   end
 
   def create
-    current_user.transaction do
-      @contact = contact_model.new(contact_params)
-      if dob_params_present?
-        @contact.date_of_birth = convert_dateselect_params_to_date
-      end
-      if !@contact.valid?
-        @reservation = Reservation.new
-        flash[:error] = @contact.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
-        render "/reservations/new"
-        return
-      end
-
-      service = ClaimMembership.new(@my_offer.membership, customer: current_user)
-      new_reservation = service.call
-      @contact.claim = new_reservation.active_claim
-      @contact.save!
-
+    create_and do |new_reservation|
       flash[:notice] = %{
         Congratulations member ##{new_reservation.membership_number}!
         You've just reserved a #{@my_offer.membership} membership
@@ -78,6 +68,17 @@ class ReservationsController < ApplicationController
       else
         redirect_to new_reservation_charge_path(new_reservation)
       end
+    end
+  end
+
+  def add_to_cart
+    create_and do |new_reservation|
+      # FIXME: This actually doesn't render as HTML in the view and I have no idea why
+      flash[:notice] = %{
+        You've just reserved a #{@my_offer.membership} membership. Go to <a href="#{view_context.charges_path}">the Charges page to pay</a>
+      }.html_safe
+
+      redirect_to reservations_path
     end
   end
 
@@ -100,6 +101,30 @@ class ReservationsController < ApplicationController
   end
 
   private
+
+  def create_and
+    new_reservation = current_user.transaction do
+      @contact = contact_model.new(contact_params)
+      if dob_params_present?
+        @contact.date_of_birth = convert_dateselect_params_to_date
+      end
+      if !@contact.valid?
+        @reservation = Reservation.new
+        flash[:error] = @contact.errors.full_messages.to_sentence
+        render "/reservations/new"
+        return
+      end
+
+      service = ClaimMembership.new(@my_offer.membership, customer: current_user)
+      new_reservation = service.call
+      @contact.claim = new_reservation.active_claim
+      @contact.save!
+
+      new_reservation
+    end
+
+    yield new_reservation
+  end
 
   def lookup_offer
     @my_offer = MembershipOffer.options.find do |offer|

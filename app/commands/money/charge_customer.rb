@@ -18,10 +18,10 @@
 # Money::ChargeCustomer creates a charge record against a User for the Stripe integrations
 # Truthy returns mean the charge succeeded, otherwise check #errors for failure details.
 class Money::ChargeCustomer
-  attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
+  attr_reader :reservations, :user, :token, :charge_amount, :charge, :amount_owed
 
-  def initialize(reservation, user, token, amount_owed, charge_amount: nil)
-    @reservation = reservation
+  def initialize(reservations, user, token, amount_owed, charge_amount: nil)
+    @reservations = reservations
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
@@ -31,7 +31,7 @@ class Money::ChargeCustomer
   def call
     @charge = ::Charge.stripe.pending.create!(
       user: user,
-      reservation: reservation,
+      reservations: reservations,
       stripe_id: token,
       amount: charge_amount,
       comment: "Pending stripe payment",
@@ -57,13 +57,13 @@ class Money::ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    reservation.transaction do
+    @charge.transaction do
       @charge.comment = ChargeDescription.new(@charge).for_users
       @charge.save!
       if fully_paid?
-        reservation.update!(state: Reservation::PAID)
+        reservations.each{ |reservation| reservation.update!(state: Reservation::PAID) }
       else
-        reservation.update!(state: Reservation::INSTALMENT)
+        reservations.each{ |reservation| reservation.update!(state: Reservation::INSTALMENT) }
       end
     end
 
@@ -89,6 +89,9 @@ class Money::ChargeCustomer
     end
     if charge_amount > amount_owed
       errors << "refusing to overpay for reservation"
+    end
+    if charge_amount < amount_owed && reservations.count > 1
+      errors << "partial payments are only allowed for a single reservation."
     end
   end
 

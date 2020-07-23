@@ -17,7 +17,6 @@
 # limitations under the License.
 
 module ChargesHelper
-
   include ApplicationHelper
 
   def stripe_config(reservation)

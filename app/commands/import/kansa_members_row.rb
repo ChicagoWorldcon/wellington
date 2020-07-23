@@ -120,7 +120,7 @@ class Import::KansaMembersRow
       if new_reservation.instalment? && cell_for("Charge Amount").to_i > 0
         Charge.stripe.successful.create!(
           user: new_user,
-          reservation: new_reservation,
+          reservations: [new_reservation],
           amount_cents: cell_for("Charge Amount"),
           stripe_id: cell_for("Stripe Payment ID"),
           comment: cell_for("Payment Comment"),

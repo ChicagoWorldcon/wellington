@@ -1,7 +1,5 @@
 <%
-# Copyright 2019 AJ Esler
-# Copyright 2019 Matthew B. Gray
-# Copyright 2019 Jen Zajac (jenofdoom)
+# Copyright 2020 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,41 +15,45 @@
 %>
 
 <h1>
-  Make a Payment towards <%= @pending_charges.size %> memberships.
+  Make a Payment towards #<%= @pending_charge.reservation.membership_number %>
 </h1>
 
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <%= form_tag(charges_path, "id" => "charge-form", "data-stripe" => stripe_config(current_user, @pending_charges)) do %>
+        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config(current_user, [@pending_charge])) do %>
           <article>
             <div id="error_explanation"></div>
 
             <p>
-              You need to pay <%= @outstanding_amount.format(with_currency: true) %> to cover these memberships.
+              You need to pay <%= @pending_charge.outstanding_amount.format(with_currency: true) %> to cover this membership. Please pay
+              the full amount, or choose an instalment from the list.
             </p>
 
+            <label class="amount">
+              <span>Amount:
+                <%= select_tag(:amount, options_for_select(@pending_charge.price_options, selected: @pending_charge.outstanding_amount)) %>
+              </span>
+            </label>
           </article>
 
           <%= hidden_field_tag(:stripeToken) %>
           <%= hidden_field_tag(:stripeEmail) %>
-          <%= hidden_field_tag(:amount, @outstanding_amount * 100) %>
+          <%= hidden_field_tag(:reservation, @pending_charge.reservation.id) %>
           <div class="l-v-spacing-both">
             <div class="form-group">
-              <%= submit_tag("Pay for #{@unpaid_reservations.count} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
+              <%= submit_tag("Pay for #{@pending_charge.membership} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
             </div>
           </div>
         <% end %>
       </div>
     </div>
 
-    <% @unpaid_reservations.each do |reservation| %>
     <div class="col-12 col-lg-4">
       <div class="l-v-spacing">
-        <%= render("reservation_card", reservation: reservation) %>
+        <%= render("reservation_card", reservation: @pending_charge.reservation) %>
       </div>
     </div>
-    <% end %>
   </div>
 </section>

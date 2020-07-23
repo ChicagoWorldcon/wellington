@@ -20,8 +20,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -75,10 +75,10 @@ CREATE TABLE public.charges (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id bigint NOT NULL,
-    reservation_id bigint NOT NULL,
+    reservation_id integer,
     transfer character varying NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'NZD'::character varying NOT NULL
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL
 );
 
 
@@ -99,6 +99,18 @@ CREATE SEQUENCE public.charges_id_seq
 --
 
 ALTER SEQUENCE public.charges_id_seq OWNED BY public.charges.id;
+
+
+--
+-- Name: charges_reservations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.charges_reservations (
+    reservation_id bigint NOT NULL,
+    charge_id bigint NOT NULL,
+    portion_cents integer DEFAULT 0 NOT NULL,
+    portion_currency character varying DEFAULT 'USD'::character varying NOT NULL
+);
 
 
 --
@@ -135,8 +147,7 @@ CREATE TABLE public.chicago_contacts (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     mail_souvenir_book boolean,
-    date_of_birth date,
-    email character varying
+    date_of_birth date
 );
 
 
@@ -380,7 +391,7 @@ CREATE TABLE public.memberships (
     can_vote boolean DEFAULT false NOT NULL,
     can_attend boolean DEFAULT false NOT NULL,
     price_cents integer DEFAULT 0 NOT NULL,
-    price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
+    price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     can_nominate boolean DEFAULT false NOT NULL,
     can_site_select boolean DEFAULT false NOT NULL,
     dob_required boolean DEFAULT false NOT NULL,
@@ -539,6 +550,38 @@ CREATE SEQUENCE public.ranks_id_seq
 --
 
 ALTER SEQUENCE public.ranks_id_seq OWNED BY public.ranks.id;
+
+
+--
+-- Name: reservation_charges; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.reservation_charges (
+    id bigint NOT NULL,
+    reservation_id bigint NOT NULL,
+    charge_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: reservation_charges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.reservation_charges_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: reservation_charges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.reservation_charges_id_seq OWNED BY public.reservation_charges.id;
 
 
 --
@@ -761,6 +804,13 @@ ALTER TABLE ONLY public.ranks ALTER COLUMN id SET DEFAULT nextval('public.ranks_
 
 
 --
+-- Name: reservation_charges id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reservation_charges ALTER COLUMN id SET DEFAULT nextval('public.reservation_charges_id_seq'::regclass);
+
+
+--
 -- Name: reservations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -891,6 +941,14 @@ ALTER TABLE ONLY public.orders
 
 ALTER TABLE ONLY public.ranks
     ADD CONSTRAINT ranks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: reservation_charges reservation_charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reservation_charges
+    ADD CONSTRAINT reservation_charges_pkey PRIMARY KEY (id);
 
 
 --
@@ -1052,6 +1110,20 @@ CREATE INDEX index_ranks_on_reservation_id ON public.ranks USING btree (reservat
 
 
 --
+-- Name: index_reservation_charges_on_charge_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reservation_charges_on_charge_id ON public.reservation_charges USING btree (charge_id);
+
+
+--
+-- Name: index_reservation_charges_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reservation_charges_on_reservation_id ON public.reservation_charges USING btree (reservation_id);
+
+
+--
 -- Name: index_reservations_on_membership_number; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1118,6 +1190,14 @@ ALTER TABLE ONLY public.nominations
 
 
 --
+-- Name: claims fk_rails_35cad80142; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.claims
+    ADD CONSTRAINT fk_rails_35cad80142 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: categories fk_rails_4520a4c84e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1142,19 +1222,19 @@ ALTER TABLE ONLY public.charges
 
 
 --
+-- Name: reservation_charges fk_rails_53fa260c78; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reservation_charges
+    ADD CONSTRAINT fk_rails_53fa260c78 FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
+
+
+--
 -- Name: charges fk_rails_5cd975e78e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
     ADD CONSTRAINT fk_rails_5cd975e78e FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
-
-
---
--- Name: orders fk_rails_69d2ccd863; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT fk_rails_69d2ccd863 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
 
 
 --
@@ -1182,11 +1262,19 @@ ALTER TABLE ONLY public.ranks
 
 
 --
--- Name: claims fk_rails_eea3fccade; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: reservation_charges fk_rails_c9016dc7c3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.claims
-    ADD CONSTRAINT fk_rails_eea3fccade FOREIGN KEY (user_id) REFERENCES public.users(id);
+ALTER TABLE ONLY public.reservation_charges
+    ADD CONSTRAINT fk_rails_c9016dc7c3 FOREIGN KEY (charge_id) REFERENCES public.charges(id);
+
+
+--
+-- Name: orders fk_rails_dfb33b2de0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
 
 
 --
@@ -1270,9 +1358,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324223922'),
 ('20200525204858'),
 ('20200629100946'),
+('20200704214501'),
+('20200704222209'),
 ('20200717051724'),
 ('20200717081753'),
 ('20200719215504'),
-('20200720235919');
+('20200721213114');
 
 

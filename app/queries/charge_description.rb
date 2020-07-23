@@ -28,6 +28,24 @@ class ChargeDescription
   end
 
   def for_users
+    (single_reservation? ? for_users_single_reservation : for_users_multiple_reservation).compact.join(" ")
+  end
+
+  def for_accounts
+    (single_reservation? ? for_accounts_single_reservation : for_accounts_multiple_reservation).compact.join(" ")
+  end
+
+  private
+
+  def single_reservation?
+    charge.reservations.count == 1
+  end
+
+  def single_reservation
+    charge.reservations.first if single_reservation?
+  end
+
+  def for_users_single_reservation
     [
       maybe_charge_state,
       formatted_amount,
@@ -37,10 +55,21 @@ class ChargeDescription
       payment_type,
       "for",
       membership_type,
-    ].compact.join(" ")
+    ]
   end
 
-  def for_accounts
+  def for_users_multiple_reservation
+    [
+      maybe_charge_state,
+      formatted_amount,
+      "with",
+      payment_type,
+      "for",
+      membership_description,
+    ]
+  end
+
+  def for_accounts_single_reservation
     [
       formatted_amount,
       upgrade_maybe,
@@ -49,10 +78,18 @@ class ChargeDescription
       maybe_member_name,
       "as",
       membership_type,
-    ].compact.join(" ")
+    ]
   end
 
-  private
+  def for_accounts_multiple_reservation
+    [
+      formatted_amount,
+      upgrade_maybe,
+      instalment_or_paid,
+      "for",
+      membership_description,
+    ]
+  end
 
   def maybe_charge_state
     if !charge.successful?
@@ -79,19 +116,19 @@ class ChargeDescription
   end
 
   def maybe_member_name
-    claims = charge.reservation.claims
+    claims = single_reservation.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.contact
   end
 
   def membership_type
-    "#{charged_membership} member #{charge.reservation.membership_number}"
+    "#{charged_membership} member #{single_reservation.membership_number}"
   end
 
   def charged_membership
     return @charged_membership if @charged_membership.present?
 
-    orders = charge.reservation.orders
+    orders = single_reservation.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
   end
 
@@ -104,11 +141,11 @@ class ChargeDescription
   end
 
   def orders_so_far
-    charge.reservation.orders.where("created_at <= ?", charge_active_at)
+    single_reservation.orders.where("created_at <= ?", charge_active_at)
   end
 
   def charges_so_far
-    successful = charge.reservation.charges.successful
+    successful = single_reservation.charges.successful
     successful.where.not(id: charge.id).where("created_at < ?", charge_active_at)
   end
 
@@ -121,4 +158,24 @@ class ChargeDescription
   def charge_active_at
     @charge_active_from ||= charge.created_at + 1.second
   end
+
+  def maybe_named_members
+    charge.reservations.map do |reservation|
+      active_claims = reservation.claims.select{ |c| c.active_at?(charge_active_at) }
+      reservations_first_claim = active_claims.first
+      "#{reservations_first_claim.contact} for #{reservation.membership} member #{reservation.membership_number}"
+    end
+      .join(", ")
+  end
+
+  def membership_descriptions
+    charge.reservations.map do |res|
+      "#{res.membership} member #{res.membership_number}"
+    end
+  end
+
+  def membership_description
+    membership_descriptions.join(",")
+  end
+
 end

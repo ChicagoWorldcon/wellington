@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
-
-RSpec.describe Charge, type: :model do
-  subject(:model) { create(:charge) }
-
-  it { is_expected.to be_valid }
-
-  it "can have a reservation" do
-    reservation = create(:reservation)
-    subject.reservations << reservation
-    expect(reservation.charges).to include(subject)
+module RedirectBack
+  def from(url)
+    request.env['HTTP_REFERER'] = url
   end
 end

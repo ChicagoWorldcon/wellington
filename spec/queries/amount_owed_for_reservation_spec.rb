@@ -48,7 +48,7 @@ RSpec.describe AmountOwedForReservation do
 
       context "where some have failed" do
         before do
-          create(:charge, user: user, reservation: claim.reservation, amount: charge_amount, state: Charge::STATE_FAILED)
+          create(:charge, user: user, reservations: [claim.reservation], amount: charge_amount, state: Charge::STATE_FAILED)
         end
 
         it "returns the amount owing" do

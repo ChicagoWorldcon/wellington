@@ -29,15 +29,15 @@
           </h2>
 
           <p>
-            <% if @my_purcahses.count == 1 %>
-              You have 1 membership
-            <% else %>
-              You have <%= @my_purcahses.count %> memberships
+            You have <%= @my_purchases.count %> <%= "membership".pluralize(@my_purchases.count) %>
+            <% if @unpaid_reservations %>
+              of which <%= @unpaid_reservations.count %> are unpaid, totalling <%= @unpaid_sum.format(with_currency: true) %>.
+              <%= link_to "Pay now?", charges_path %>
             <% end %>
           </p>
 
           <div class="card-columns">
-            <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
+            <% @my_purchases.find_each(batch_size: 10) do |reservation| %>
               <%= render("reservation_card", reservation: reservation) do %>
                 <% index_links(reservation).each do |link| %>
                   <p><%= link %></p>

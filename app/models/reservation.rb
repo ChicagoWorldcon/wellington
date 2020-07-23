@@ -24,7 +24,8 @@ class Reservation < ApplicationRecord
   DISABLED = "disabled"
   INSTALMENT = "instalment"
 
-  has_many :charges
+  has_many :reservation_charges, :dependent => :destroy
+  has_many :charges, :through => :reservation_charges
   has_many :claims
   has_many :nominations
   has_many :orders
@@ -110,6 +111,20 @@ class Reservation < ApplicationRecord
 
   def disabled?
     state == DISABLED
+  end
+
+  def charge!(charge, amount_applied_to_this: nil)
+    amount_applied_to_this = charge.amount if amount_applied_to_this.nil?
+    charges_reservations << ChargesReservation.new(portion: amount_applied_to_this)
+    reload
+  end
+
+  def amount_owed
+    (membership.price - amount_charged) if membership.present?
+  end
+
+  def amount_charged
+    charges_reservations.payment_cleared.sum(:portion_cents)
   end
 
   # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off

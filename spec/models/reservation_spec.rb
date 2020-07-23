@@ -178,4 +178,31 @@ RSpec.describe Reservation, type: :model do
       it { is_expected.to_not include("rights.hugo.vote") }
     end
   end
+
+  context "with no charges" do
+    subject(:reservation) { create(:reservation, :with_order_against_membership) }
+    it "owes the full amount of its cost when no charges are applied" do
+      expect(subject.amount_owed).to equal(subject.membership.price)
+    end
+  end
+
+  context "with some charges" do
+    subject(:reservation) { create(:reservation, :with_order_against_membership) }
+    let(:charge_amount) { Money.new(10_00) }
+    let(:partial_charge) { Money.new(5_00) }
+
+    it "owes the full amount less the associated charge" do
+      expect { subject.charge!(create(:charge, amount: charge_amount)) }.
+        to change{ subject.amount_owed }.
+        from(subject.membership.price).
+        to(subject.membership.price - charge_amount)
+    end
+
+    it "owes the full amount less the associated partial charge" do
+      expect { subject.charge!(create(:charge, amount: charge_amount), amount: partial_charge) }.
+        to change{ subject.amount_owed }.
+        from(subject.membership.price).
+        to(subject.membership.price - partial_charge)
+    end
+  end
 end

@@ -29,7 +29,8 @@ class Charge < ApplicationRecord
   TRANSFER_CASH = "cash"
 
   belongs_to :user
-  belongs_to :reservation
+  has_many :reservation_charges
+  has_many :reservations, :through => :reservation_charges
 
   monetize :amount_cents
 

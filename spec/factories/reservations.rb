@@ -47,17 +47,17 @@ FactoryBot.define do
       next unless new_reservation.user.present?
 
       if new_reservation.paid?
-        create(:charge, :generate_description,
+        new_charge = create(:charge, :generate_description,
           user: new_reservation.user,
-          reservation: new_reservation,
           amount: new_reservation.membership.price
         )
+        create(:reservation_charge, reservation: new_reservation, charge: new_charge)
       elsif new_reservation.instalment? && evaluator.instalment_paid > 0
-        create(:charge, :generate_description,
+        new_charge = create(:charge, :generate_description,
           user: new_reservation.user,
-          reservation: new_reservation,
           amount: evaluator.instalment_paid,
         )
+        create(:reservation_charge, reservation: new_reservation, charge: new_charge)
       end
     end
 
@@ -65,6 +65,17 @@ FactoryBot.define do
       after(:build) do |new_reservation, _evaluator|
         create(:order, :with_membership, reservation: new_reservation)
         new_reservation.reload
+      end
+    end
+
+    trait :with_claim_for_user do
+      transient do
+        user { create(:user) }
+      end
+
+      after(:build) do |new_reservation, evaluator|
+        new_claim = build(:claim, :with_contact, reservation: new_reservation, user: evaluator.user)
+        new_reservation.claims << new_claim
       end
     end
 

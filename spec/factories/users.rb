@@ -22,7 +22,7 @@ FactoryBot.define do
       after(:create) do |new_user|
         claim = create(:claim, :with_reservation, user: new_user)
         membership_price = claim.reservation.membership.price
-        charge = create(:charge, user: new_user, reservation: claim.reservation, amount: membership_price)
+        charge = create(:charge, user: new_user, reservations: [claim.reservation], amount: membership_price)
         new_user.claims << claim
         new_user.charges << charge
       end

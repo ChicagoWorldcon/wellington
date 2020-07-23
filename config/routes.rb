@@ -65,11 +65,15 @@ Rails.application.routes.draw do
   resources :hugo_packet, id: /[^\/]+/
 
   resources :reservations do
+    post :add_to_cart, on: :collection
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
+
+  # Charges can be worked on as a group _or_ for a specific reservation
+  resources :charges
 
   # /operator are maintenance routes for support people
   scope :operator do
