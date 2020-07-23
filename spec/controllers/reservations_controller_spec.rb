@@ -249,10 +249,10 @@ RSpec.describe ReservationsController, type: :controller do
         before do
           post :create, params: {
             contact_model_key => {
-              :first_name => "Valid",
-              :last_name => "Validsdottir",
-              :address_line_1 => "Validgaten",
-              :country => "Validlandia",
+              :first_name => "Validscotch",
+              :last_name => "Sparkle-Valid",
+              :address_line_1 => "Valid Meadows",
+              :country => "The Very Valid Nation of Equestria",
               :publication_format => ChicagoContact::PAPERPUBS_ELECTRONIC,
             },
             :offer => offer.hash,
@@ -270,6 +270,7 @@ RSpec.describe ReservationsController, type: :controller do
           expect(response).to have_http_status(:ok)
         end
       end
+      
       context "when the user requests printpubs" do
         before do
           post :create, params: {
@@ -292,33 +293,7 @@ RSpec.describe ReservationsController, type: :controller do
           expect(response).to have_http_status(:found)
         end
       end
-
-      context "when the user requests print and epubs" do
-        before do
-          post :create, params: {
-            contact_model_key => {
-              :first_name => "Validscotch",
-              :last_name => "Sparkle-Valid",
-              :address_line_1 => "Valid Meadows",
-              :country => "The Very Valid Nation of Equestria",
-              :publication_format => ChicagoContact::PAPERPUBS_BOTH},
-            :offer => offer.hash,
-          }
-        end
-
-        it "sets errors mentioning email and publications" do
-          expect(flash[:error]).to be_present
-          expect(flash[:error]).to include("email")
-          expect(flash[:error]).to include("publications")
-        end
-
-        it "re-renders the reservaton page" do
-          expect(response.body).to include("Reserve a New Membership")
-          expect(response).to have_http_status(:ok)
-        end
-      end
     end
-
 
     context "when user email is provided" do
       context "when adult offer selected" do
