@@ -56,10 +56,6 @@ RSpec.describe ReservationsController, type: :controller do
     end
   end
 
-  describe "#create" do
-
-  end
-
   context "when membership is no longer available" do
     let(:price_change_at) { 1.second.ago }
 
@@ -281,7 +277,7 @@ RSpec.describe ReservationsController, type: :controller do
               :first_name => "Validanne",
               :last_name => "Validbury",
               :address_line_1 => "Valid-on-Thames",
-              :country => "Validion",
+              :country => "Valbion",
               :publication_format => ChicagoContact::PAPERPUBS_MAIL},
             :offer => offer.hash,
           }
