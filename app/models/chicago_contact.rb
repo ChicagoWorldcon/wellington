@@ -62,6 +62,7 @@ class ChicagoContact < ApplicationRecord
     :interest_exhibiting,
     :interest_performing,
     :mail_souvenir_book,
+    :installment_wanted,
     :date_of_birth,
     :email
   ].freeze
