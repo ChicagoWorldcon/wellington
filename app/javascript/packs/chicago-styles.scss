@@ -56,9 +56,7 @@ $light-grey: #e1e1e1;
 
 // Fonts
 @import 'chicago_fonts';
-//$font-stack: 'Metropolis', sans-serif;
 
-//@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
 $font-stack: 'Metropolis', sans-serif;
 
 // -------------------------------
@@ -224,7 +222,7 @@ a:focus {
   background: none;
   border-width: 2px;
   border-style: solid;
-  border-color: $light-grey;
+  border-color: $red;
   border-radius: 5px;
   color: $white;
   width: 100%;
