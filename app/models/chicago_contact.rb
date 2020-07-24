@@ -21,6 +21,7 @@
 # ChicagoContact is created when a user creates a Reservation against a Membership
 
 require 'time'
+require_relative '../validators/email_for_pubs_validator'
 
 class ChicagoContact < ApplicationRecord
   # TODO Move this to i18n
@@ -61,7 +62,9 @@ class ChicagoContact < ApplicationRecord
     :interest_exhibiting,
     :interest_performing,
     :mail_souvenir_book,
-    :date_of_birth
+    :installment_wanted,
+    :date_of_birth,
+    :email
   ].freeze
 
   belongs_to :claim, required: false
@@ -75,6 +78,7 @@ class ChicagoContact < ApplicationRecord
   validates :address_line_1, presence: true, unless: :for_import
   validates :country, presence: true, unless: :for_import
   validates :publication_format, inclusion: { in: PAPERPUBS_OPTIONS }
+  validates_with EmailForPubsValidator, fields: [:email, :publication_format]
 
   def as_import
     @for_import = true
@@ -82,9 +86,7 @@ class ChicagoContact < ApplicationRecord
   end
 
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
-
   def to_s
-
     if preferred_first_name.present? || preferred_last_name.present?
       "#{preferred_first_name} #{preferred_last_name}"
     else

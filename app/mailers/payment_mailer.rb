@@ -26,6 +26,8 @@ class PaymentMailer < ApplicationMailer
     @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
     @worldcon_url_homepage = worldcon_url_homepage
+    @worldcon_public_name_spaceless = worldcon_public_name_spaceless
+
     @charge = charge
     @reservation = charge.reservation
     @contact = @reservation.active_claim.contact
@@ -41,7 +43,7 @@ class PaymentMailer < ApplicationMailer
     @worldcon_public_name = worldcon_public_name
     @worldcon_url_homepage = worldcon_url_homepage
     @worldcon_public_name_spaceless = worldcon_public_name_spaceless
-    
+
     @charge = charge
     @reservation = charge.reservation
     @contact = @reservation.active_claim.contact

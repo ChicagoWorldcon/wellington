@@ -175,10 +175,8 @@
         <label for="show_in_listings">List name on the <%= worldcon_public_name %> website and in published directories?</label>
       </div>
 
-      <%# TODO: figure out what this SFCONZ business is %>
-
       <p class="form-note form-note-m-group">
-        SFCONZ and Worldcon 80 want to list your information on our websites.
+        <%= worldcon_public_name %> would like to list your information on our websites.
       </p>
     </fieldset>
   </fieldset>
@@ -244,6 +242,14 @@
         <label for="country">Country (required)</label>
         <%= contact_form.text_field(:country, required: true, class: "form-control", id: "country") %>
         <% if errors = form_input_errors(@contact, :country) %>
+          <p class="form-error"><%= errors %></p>
+        <% end %>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email (Optional. Please remove or edit if the membership is for someone other than yourself.)</label>
+        <%= contact_form.text_field(:email, value: (current_user ? current_user.email : ""), class: "form-control", id: "email") %>
+        <% if errors = form_input_errors(@contact, :email) %>
           <p class="form-error"><%= errors %></p>
         <% end %>
       </div>
