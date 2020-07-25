@@ -20,8 +20,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -78,7 +78,7 @@ CREATE TABLE public.charges (
     reservation_id integer,
     transfer character varying NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL
+    amount_currency character varying DEFAULT 'NZD'::character varying NOT NULL
 );
 
 
@@ -99,18 +99,6 @@ CREATE SEQUENCE public.charges_id_seq
 --
 
 ALTER SEQUENCE public.charges_id_seq OWNED BY public.charges.id;
-
-
---
--- Name: charges_reservations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.charges_reservations (
-    reservation_id bigint NOT NULL,
-    charge_id bigint NOT NULL,
-    portion_cents integer DEFAULT 0 NOT NULL,
-    portion_currency character varying DEFAULT 'USD'::character varying NOT NULL
-);
 
 
 --
@@ -147,7 +135,9 @@ CREATE TABLE public.chicago_contacts (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     mail_souvenir_book boolean,
-    date_of_birth date
+    date_of_birth date,
+    email character varying,
+    installment_wanted boolean DEFAULT false NOT NULL
 );
 
 
@@ -391,7 +381,7 @@ CREATE TABLE public.memberships (
     can_vote boolean DEFAULT false NOT NULL,
     can_attend boolean DEFAULT false NOT NULL,
     price_cents integer DEFAULT 0 NOT NULL,
-    price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    price_currency character varying DEFAULT 'NZD'::character varying NOT NULL,
     can_nominate boolean DEFAULT false NOT NULL,
     can_site_select boolean DEFAULT false NOT NULL,
     dob_required boolean DEFAULT false NOT NULL,
@@ -560,8 +550,9 @@ CREATE TABLE public.reservation_charges (
     id bigint NOT NULL,
     reservation_id bigint NOT NULL,
     charge_id bigint NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    portion integer NOT NULL,
+    portion_cents integer DEFAULT 0 NOT NULL,
+    portion_currency character varying DEFAULT 'USD'::character varying NOT NULL
 );
 
 
@@ -1190,14 +1181,6 @@ ALTER TABLE ONLY public.nominations
 
 
 --
--- Name: claims fk_rails_35cad80142; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.claims
-    ADD CONSTRAINT fk_rails_35cad80142 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: categories fk_rails_4520a4c84e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1238,6 +1221,14 @@ ALTER TABLE ONLY public.charges
 
 
 --
+-- Name: orders fk_rails_69d2ccd863; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_rails_69d2ccd863 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
+
+
+--
 -- Name: notes fk_rails_7f2323ad43; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1270,11 +1261,11 @@ ALTER TABLE ONLY public.reservation_charges
 
 
 --
--- Name: orders fk_rails_dfb33b2de0; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: claims fk_rails_eea3fccade; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
+ALTER TABLE ONLY public.claims
+    ADD CONSTRAINT fk_rails_eea3fccade FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -1363,6 +1354,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200717051724'),
 ('20200717081753'),
 ('20200719215504'),
-('20200721213114');
+('20200720235919'),
+('20200724003813');
 
 
