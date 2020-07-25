@@ -50,3 +50,7 @@ jobs:
           docker pull $CONTAINER_TEST_REPOSITORY
           docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_STAGING_REPOSITORY
           docker push $CONTAINER_STAGING_REPOSITORY
+
+      - name: Clean up the CI testing tag
+        run: |
+          aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
