@@ -67,6 +67,7 @@ group :development do
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
+  gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
