@@ -21,7 +21,7 @@ MoneyRails.configure do |config|
   if ENV["STRIPE_CURRENCY"].present?
     config.default_currency = ENV["STRIPE_CURRENCY"].downcase.to_sym
   else
-    config.default_currency = :nzd
+    config.default_currency = :usd
   end
 
   # Set default bank object
