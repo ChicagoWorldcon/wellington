@@ -34,7 +34,11 @@ module ApplicationHelper
   # see Membership#all_rights
   def membership_right_description(membership_right, reservation)
     description = I18n.t(:description, scope: membership_right)
-    if match = membership_right.match(/rights\.(.*)\.nominate\z/)
+    if membership_right == "rights.attend" && ENV["VIRTUAL_WORLDCON_URL"].present?
+      link_to description, ENV["VIRTUAL_WORLDCON_URL"]
+    elsif membership_right == "rights.site_selection" && ENV["SITE_SELECTION_URL"].present?
+      link_to description, ENV["SITE_SELECTION_URL"]
+    elsif match = membership_right.match(/rights\.(.*)\.nominate\z/)
       election_i18n_key = match[1]
       link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
     elsif match = membership_right.match(/rights\.(.*)\.nominate_only\z/)
