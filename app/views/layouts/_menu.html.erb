@@ -60,8 +60,13 @@
           <% if ENV["HUGO_PACKET_BUCKET"] %>
             <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
           <% end %>
+          <% if ENV["VIRTUAL_WORLDCON_URL"] %>
+            <li><%= link_to "Attend the Virtual Worldcon", ENV["VIRTUAL_WORLDCON_URL"] %></a>
+          <% end %>
+          <% if ENV["SITE_SELECTION_URL"] %>
+            <li><%= link_to "Vote in Site Selection", ENV["SITE_SELECTION_URL"] %></a>
+          <% end %>
           <li><a href="https://conzealand.nz/conzealand-needs">Volunteering</a></li>
-          <li><a href="https://sites.grenadine.co/sites/conzealand/en/cnz-siteselection">Site Selection</a>
           <li><a href="https://conzealand.nz">Back to CoNZealand homepage</a></li>
         </ul>
       <% end %>
