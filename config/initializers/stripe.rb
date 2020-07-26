@@ -23,4 +23,4 @@ Rails.configuration.stripe = {
 Stripe.api_key = Rails.configuration.stripe[:secret_key]
 
 $stripe_test_keys = ENV["STRIPE_PRIVATE_KEY"].present? && !!ENV["STRIPE_PRIVATE_KEY"].match(/^sk_test/)
-$currency = ENV["STRIPE_CURRENCY"]&.upcase
+$currency = Rails.configuration.default_currency.to_s.upcase
