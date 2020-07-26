@@ -12,8 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!219](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/219),
 
 ## Changed
-- [!218](https://gitlab.com/worldcon/wellington/-/merge_requests/218) uses the environment
-variable HUGO_CLOSED_AT for the mailer dates
+- Use the environment variable HUGO_CLOSED_AT for the mailer dates
+  [!218](https://gitlab.com/worldcon/wellington/-/merge_requests/218)
+- Link to site selection and virtual worldcon with env variables.
+  [!221](https://gitlab.com/worldcon/wellington/-/merge_requests/221)
+  Set this in your environment to have links show up in the menu and membership cards:
+  ```
+  VIRTUAL_WORLDCON_URL=https://virtual.conzealand.nz/get-started
+  SITE_SELECTION_URL=https://sites.grenadine.co/sites/conzealand/en/cnz-siteselection
+  ```
 
 ## Removed
 - Nothing significant in this release
