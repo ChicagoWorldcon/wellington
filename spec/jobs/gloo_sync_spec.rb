@@ -130,7 +130,7 @@ RSpec.describe GlooSync, type: :job do
         expect(HTTParty).to receive(:post).with(any_args, hash_including(body: /.*"roles":\[\].*/)).and_return(post_success)
       end
 
-      it "non attending members don't loose moderator access" do
+      it "non attending members don't lose moderator access" do
         expect(HTTParty).to receive(:get).and_return(lookup_user_found)
         expect(HTTParty).to receive(:get).and_return(roles_moderator)
         expect(HTTParty).to receive(:post).with(any_args, hash_including(body: /.*moderator.*/)).and_return(post_success)
