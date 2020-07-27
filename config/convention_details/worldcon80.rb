@@ -23,7 +23,7 @@ require_relative "convention"
 module ConventionDetails
   class Worldcon80 < ConventionDetails::Convention
 
-    attr_reader  :con_city, :con_city_previous, :con_country, :con_country_previous, :con_datews_informal_end, :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter, :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :con_url_homepage, :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering, :con_wsfs_constitution_link, :con_year, :contact_model, :site_theme, :translation_folder
+    attr_reader  :con_city, :con_city_previous, :con_country, :con_country_previous, :con_datews_informal_end, :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter, :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :con_url_homepage, :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering, :con_wsfs_constitution_link, :con_year, :contact_model, :registration_mailing_address, :site_theme, :translation_folder
 
     def initialize
       super
@@ -52,6 +52,12 @@ module ConventionDetails
       @con_wsfs_constitution_link = "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf"
       @con_year = "2022"
       @contact_model = "chicago"
+      @registration_mailing_address = <<~EOF
+        Chicon 8 Member Services
+        2020 N. California, Suite 299
+        Chicago, IL 60647
+        USA
+        EOF
       @site_theme = "chicago"
       @translation_folder = "chicago"
     end

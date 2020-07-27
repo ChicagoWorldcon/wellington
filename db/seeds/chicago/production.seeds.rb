@@ -57,7 +57,7 @@ Membership.create!(
   name: "friend",
   display_name: "Friend",
   price: Money.new(150_00),
-  description: "Will convert to an attending membership automatically if you vote in tion in 2020",
+  description: "Will convert to an attending membership automatically if you vote in Site Selection in 2020",
   active_from: beginning_of_time,
   active_to: site_selection,
   can_vote: false,

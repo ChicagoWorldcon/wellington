@@ -55,4 +55,23 @@ class PaymentMailer < ApplicationMailer
       subject: "#{worldcon_public_name} Payment: Instalment for member ##{@reservation.membership_number}"
     )
   end
+
+  def waiting_for_cheque(user:, reservation:, outstanding_amount:)
+    @worldcon_basic_greeting = worldcon_basic_greeting
+    @worldcon_public_name = worldcon_public_name
+    @worldcon_url_homepage = worldcon_url_homepage
+    @worldcon_public_name_spaceless = worldcon_public_name_spaceless
+    @worldcon_mailing_address = worldcon_registration_mailing_address
+
+    @reservation = reservation
+    @contact = @reservation.active_claim.contact
+    @outstanding_amount = outstanding_amount
+
+    recipients = [user.email, $member_services_email]
+
+    mail(
+      to: recipients.join(","),
+      subject: "#{worldcon_public_name} Payment instructions for member ##{@reservation.membership_number}"
+    )
+  end
 end

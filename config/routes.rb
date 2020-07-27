@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   resources :hugo_packet, id: /[^\/]+/
 
   resources :reservations do
+    post :reserve_with_cheque, on: :collection
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
