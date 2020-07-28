@@ -361,28 +361,38 @@ RSpec.describe ReservationsController, type: :controller do
 
   describe "#add_to_cart" do
     before { sign_in(original_user) }
-    let(:params) {
-      { contact_model_key => valid_contact_params , :offer => offer.hash }
-      binding.pry
-    }
     context "when adult offer is selected" do
-      it "redirects to the reservations page" do
-        post :add_to_cart, params: params
+      before do
+        post :add_to_cart, params: {
+          contact_model_key => valid_contact_params,
+          :offer => MembershipOffer.new(adult).hash
+          }
+      end
+      it "does not set a flash error" do
         expect(flash[:error]).to_not be_present
-        expect(flash[:notice]).to be_present
+      end
+      it "redirects to the reservations page" do
         expect(response).to redirect_to(reservations_path)
+      end
+      it "sets a flash notice" do
+        expect(flash[:notice]).to be_present
       end
     end
 
     context "when free offer is selected" do
-      binding.pry
-      let(:offer) { MembershipOffer.new(kidit) }
-      it "redirects to the reservations page" do
-        binding.pry
-        post :add_to_cart, params: params
-        binding.pry
+      before do
+        post :add_to_cart, params: {
+            contact_model_key => valid_contact_params,
+            :offer => MembershipOffer.new(kidit).hash
+          }
+      end
+      it "sets a flash notice" do
+          expect(flash[:notice]).to be_present
+      end
+      it "does not set a flash error" do
         expect(flash[:error]).to_not be_present
-        expect(flash[:notice]).to be_present
+      end
+      it "redirects to the reservations page" do
         expect(response).to redirect_to(reservations_path)
       end
     end
