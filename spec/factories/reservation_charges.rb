@@ -15,7 +15,7 @@
 # limitations under the License.
 
 FactoryBot.define do
-  factory :reservation_charges do
+  factory :reservation_charge do
     association :charge
     association :reservation
   end

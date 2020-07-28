@@ -31,30 +31,29 @@ membership_distribution_averages = [
 ]
 
 
-# all_memberships = Membership.all.to_a
-# 50.times do |count|
-#   puts "Seeding #{count} of 50 users" if count % 5 == 0
-#   new_user = FactoryBot.create(:user)
-#   memberships_held = membership_distribution_averages.sample # <-- biased random number
-#
-#   all_memberships.sample(memberships_held).each do |rando_membership|
-#     binding.pry
-#     if rando_membership.price == 0
-#       state = Reservation::PAID
-#     else
-#       state = [Reservation::PAID, Reservation::INSTALMENT].sample
-#     end
-#
-#     FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
-#   end
-#
-#   new_user.active_claims.each do |claim|
-#     claim.update!(contact: FactoryBot.create(:chicago_contact, claim: claim))
-#   end
-# end
-#
-# puts "\nFinished creating users, try sign in with"
-# puts "#{User.last.email}"
+all_memberships = Membership.all.to_a
+50.times do |count|
+  puts "Seeding #{count} of 50 users" if count % 5 == 0
+  new_user = FactoryBot.create(:user)
+  memberships_held = membership_distribution_averages.sample # <-- biased random number
+
+  all_memberships.sample(memberships_held).each do |rando_membership|
+    if rando_membership.price == 0
+      state = Reservation::PAID
+    else
+      state = [Reservation::PAID, Reservation::INSTALMENT].sample
+    end
+
+    FactoryBot.create(:reservation, user: new_user, membership: rando_membership, state: state)
+  end
+
+  new_user.active_claims.each do |claim|
+    claim.update!(contact: FactoryBot.create(:chicago_contact, claim: claim))
+  end
+end
+
+puts "\nFinished creating users, try sign in with"
+puts "#{User.last.email}"
 
 support = Support.create(
   email: "support@worldcon.org",
