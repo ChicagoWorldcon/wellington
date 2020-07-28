@@ -182,7 +182,7 @@ RSpec.describe ChargesController, type: :controller do
       let(:service_response) do
         instance_double(Money::ChargeCustomer,
           call: charge_success,
-          charges: [charge],
+          charge: charge,
           error_message: "error"
        )
       end
@@ -234,7 +234,7 @@ RSpec.describe ChargesController, type: :controller do
             (amount_owed - allowed_payment_amounts[0]).cents
           }
           before do
-            create(:charge, amount_cents: allowed_payment_amounts[0].cents, reservation: reservation, user: user)
+            create(:charge, amount_cents: allowed_payment_amounts[0].cents, reservations: [reservation], user: user)
           end
 
           it "redirects to the reservation" do
