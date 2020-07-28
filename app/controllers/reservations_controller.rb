@@ -60,7 +60,7 @@ class ReservationsController < ApplicationController
     create_and do |new_reservation|
       flash[:notice] = %{
         Congratulations member ##{new_reservation.membership_number}!
-        You've just reserved a #{@my_offer.membership} membership
+        You've just reserved a #{@my_offer.membership} membership. . Please go to #{view_context.link_to("the Charges page", new_reservation_charge_path(new_reservation))} to pay.
       }
 
       if new_reservation.membership.price.zero?
@@ -76,8 +76,7 @@ class ReservationsController < ApplicationController
       # FIXME: This actually doesn't render as HTML in the view and I have no idea why
       flash[:notice] = %{
         You've just reserved a #{@my_offer.membership} membership. Go to <a href="#{view_context.charges_path}">the Charges page to pay</a>
-      }.html_safe
-
+      }
       redirect_to reservations_path
     end
   end
