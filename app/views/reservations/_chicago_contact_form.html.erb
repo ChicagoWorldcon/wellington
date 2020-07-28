@@ -303,10 +303,10 @@
                   <div class="col"><input type="submit" value="Save Details" class="btn btn-m-full-width"></div>
               <% elsif @my_offer.membership.price > 0  %>
                   <div class="col"><input type="submit" name="" value="Reserve Membership and Pay" class="btn"></div>
-                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formaction="<%= add_to_cart_reservations_path %>"></div>
+                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formMethod="post" formaction="<%= add_to_cart_reservations_path %>"></div>
               <% else %>
                   <div class="col"><input type="submit" value="Reserve Membership" class="btn"></div>
-                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formaction="<%= add_to_cart_reservations_path %>"></div>
+                  <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formMethod="post" formaction="<%= add_to_cart_reservations_path %>"></div>
               <% end %>
           </div>
     </div>
