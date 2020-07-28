@@ -115,7 +115,7 @@ class Reservation < ApplicationRecord
 
   def charge!(charge, amount_applied_to_this: nil)
     amount_applied_to_this = charge.amount if amount_applied_to_this.nil?
-    charges_reservations << ChargesReservation.new(portion: amount_applied_to_this)
+    reservation_charges << ReservationCharge.new(portion: amount_applied_to_this)
     reload
   end
 
@@ -124,7 +124,7 @@ class Reservation < ApplicationRecord
   end
 
   def amount_charged
-    charges_reservations.payment_cleared.sum(:portion_cents)
+    reservation_charges.payment_cleared.sum(:portion_cents)
   end
 
   # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off
