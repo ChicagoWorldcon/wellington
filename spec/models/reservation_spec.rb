@@ -179,30 +179,106 @@ RSpec.describe Reservation, type: :model do
     end
   end
 
-  context "with no charges" do
-    subject(:reservation) { create(:reservation, :with_order_against_membership) }
-    it "owes the full amount of its cost when no charges are applied" do
-      expect(subject.amount_owed).to equal(subject.membership.price)
+  describe "#amount_owed" do
+    context "with no charges" do
+      subject(:reservation) { create(:reservation, :with_order_against_membership) }
+
+      it "is not negative" do
+        expect(subject.amount_owed.to be >= 0)
+      end
+
+      it "reports the full price of the membership" do
+        expect(subject.amount_owed).to equal(subject.membership.price)
+      end
+    end
+
+    context "with some charges" do
+
+      it "reports the price of the membership less any previous, successful charges" do
+        successful_past_charges = "FIXME"
+        amount_we_owe = membership.price - successful_past_charges;
+        expect (subject.amount_owed.to equal(amount_we_owe) )
+      end
+
+      it "is not negative" do
+        expect(subject.amount_owed.to be >= 0)
+      end
     end
   end
 
-  context "with some charges" do
-    subject(:reservation) { create(:reservation, :with_order_against_membership) }
-    let(:charge_amount) { Money.new(10_00) }
-    let(:partial_charge) { Money.new(5_00) }
+  describe "#amount_charged" do
+    context "when membership is free" do
 
-    it "owes the full amount less the associated charge" do
-      expect { subject.charge!(create(:charge, amount: charge_amount)) }.
-        to change{ subject.amount_owed }.
-        from(subject.membership.price).
-        to(subject.membership.price - charge_amount)
+      it "reports zero" do
+        expect(subject.amount_charged).to equal(0)
+      end
     end
 
-    it "owes the full amount less the associated partial charge" do
-      expect { subject.charge!(create(:charge, amount: charge_amount), amount: partial_charge) }.
-        to change{ subject.amount_owed }.
-        from(subject.membership.price).
-        to(subject.membership.price - partial_charge)
+    context "when membership has a nonzero price" do
+
+      context "when one charge has been made" do
+        it "reports an amount equal to the amount of its sole charge" do
+          sole_charge = "FIXME"
+          expect(subject.amount_charged).to equal(sole_charge)
+        end
+
+        it "is not negative" do
+          expect(subject.amount_charged.to be >= 0)
+        end
+      end
+
+      context "when multiple charges have been made" do
+        it "is not negative" do
+          expect (subject.amount_charged.to be >= 0)
+        end
+
+        it "tallies successful and charges, and only successful charges" do
+          all_attempted_charges = "FIXME"
+          total_successful_charges = "FIXME"
+          expect ( subject.amount_charged.to_not equal(all_attempted_charges) )
+          expect ( subject.amount_charged.to equal(total_successful_charges) )
+        end
+
+        it "does not exceed the cost of the reservation" do
+          expect (subject.amount_charged.to be <= subject.membership.price)
+        end
+      end
+    end
+  end
+
+  describe "#charge!" do
+    it "has no effect without a successful charge" do
+      expect { subject.charge!( create(:charge, amount: charge_amount, state: STATE_FAILED) ) }.to_not change{ subject.amount_owed }
+      expect { subject.charge!( create(:charge, amount: charge_amount, state: STATE_PENDING) ) }.to_not change{ subject.amount_owed }
+    end
+    context "with no prior charges" do
+      it "reduces the amount owing on the reservation by the amount of a current, successful charge" do
+
+      end
+
+      it "does not reduce the amount owing on the reservation by the amount when a charge is unsuccesfful" do
+
+      end
+    end
+
+    context "with some prior charges" do
+      subject(:reservation) { create(:reservation, :with_order_against_membership) }
+      let(:charge_amount) { Money.new(10_00) }
+      let(:partial_charge) { Money.new(5_00) }
+
+      it "owes the full amount less the associated charge" do
+        expect { subject.charge!(create(:charge, amount: charge_amount)) }.
+          to change{ subject.amount_owed }.
+          from(subject.membership.price).
+          to(subject.membership.price - charge_amount)
+      end
+
+      it "owes the full amount less the associated partial charge" do
+        expect { subject.charge!(create(:charge, amount: charge_amount), amount: partial_charge) }.
+          to change{ subject.amount_owed }.
+          from(subject.membership.price).
+          to(subject.membership.price - partial_charge)
+      end
     end
   end
 end
