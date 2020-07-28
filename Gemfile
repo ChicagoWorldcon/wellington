@@ -64,6 +64,8 @@ group :development, :test do
 end
 
 group :development do
+  gem "better_errors"                     # Does what it says on the tin.
+  gem "binding_of_caller"                 # Makes it possible to use "better_errors"'s REPL, local/instance variable inspection, and pretty stack frame names
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
