@@ -288,7 +288,7 @@ RSpec.describe ReservationsController, type: :controller do
           expect(response).to have_http_status(:ok)
         end
       end
-      
+
       context "when the user requests printpubs" do
         before do
           post :create, params: {
@@ -363,6 +363,7 @@ RSpec.describe ReservationsController, type: :controller do
     before { sign_in(original_user) }
     let(:params) {
       { contact_model_key => valid_contact_params , :offer => offer.hash }
+      binding.pry
     }
     context "when adult offer is selected" do
       it "redirects to the reservations page" do
@@ -374,9 +375,12 @@ RSpec.describe ReservationsController, type: :controller do
     end
 
     context "when free offer is selected" do
-      let(:offer) { MembershipOffer.new(kid_in_tow) }
+      binding.pry
+      let(:offer) { MembershipOffer.new(kidit) }
       it "redirects to the reservations page" do
+        binding.pry
         post :add_to_cart, params: params
+        binding.pry
         expect(flash[:error]).to_not be_present
         expect(flash[:notice]).to be_present
         expect(response).to redirect_to(reservations_path)
