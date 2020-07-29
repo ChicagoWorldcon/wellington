@@ -1,6 +1,4 @@
-// Copyright 2018 Rosanna Gray
 // Copyright 2019 Matthew B. Gray
-// Copyright 2019 Jen Zajac (jenofdoom)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,19 +44,20 @@
 // -------------------------------
 
 // Colours
-$black: #000;
-$blue: #034acc;
-$charcoal: #505050;
-$header-dark: #343a40;
-$grey: #ccc;
-$light-blue: #6798f7;
+//// Official Chicago:
+$white: #ffffff;
+$black: #000000;
+$light-blue: #41B6E6;
+$red: #DA291C;
+$dark_blue: #00558C;
+
+// Leftover CoNZealand:
 $light-grey: #e1e1e1;
-$red: #e93f36;
-$white: #fff;
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
-$font-stack: 'Open Sans', sans-serif;
+@import 'chicago_fonts';
+
+$font-stack: 'Metropolis', sans-serif;
 
 // -------------------------------
 // MIXINS
@@ -86,6 +85,7 @@ html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquot
     font-size: 100%;
     vertical-align: baseline;
     background: transparent;
+    font-family: $font-stack;
 }
 html {
   -webkit-box-sizing: border-box;
@@ -102,17 +102,13 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    background: url("../images/backgrounds/chicon-bg.jpg") center top / cover no-repeat fixed $dark_blue;
 
-    // For that test environment feeling
     &.api-test-keys {
-      .logo img {
-        filter: hue-rotate(90deg);
-      }
+        background: url("../images/backgrounds/chicon-testing-bg.jpg") center top / cover no-repeat fixed $dark_blue;
     }
 
     color: $white;
-    font-family: $font-stack;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -155,15 +151,6 @@ h6, .h6-like {
 // COMPONENTS
 // =========================================================================
 
-.hugo-description {
-  ul, ol {
-    margin: 15px;
-  }
-  li {
-    padding: 5px 10px;
-  }
-}
-
 // -------------------------------
 // BUTTONS
 // -------------------------------
@@ -179,7 +166,7 @@ h6, .h6-like {
 }
 .btn:hover,
 .btn:focus {
-  background-color: $blue;
+  background-color: $dark_blue;
   color: $white;
   -webkit-transition: background-color .2s ease-in;
   -moz-transition: background-color .2s ease-in;
@@ -235,7 +222,7 @@ a:focus {
   background: none;
   border-width: 2px;
   border-style: solid;
-  border-color: $light-grey;
+  border-color: $red;
   border-radius: 5px;
   color: $white;
   width: 100%;

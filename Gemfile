@@ -42,6 +42,8 @@ gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
 group :development, :test do
+  gem "better_errors"                                  # Does what it says on the tin.
+  gem "binding_of_caller"                             # Makes it possible to use "better_errors"'s REPL, local/instance variable inspection, and pretty stack frame names
   gem "brakeman"                                      # vulnerability and static analysis
   gem "byebug", platforms: %i[mri mingw x64_mingw]    # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
