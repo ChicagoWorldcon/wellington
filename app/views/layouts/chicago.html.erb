@@ -16,8 +16,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
-%>
+  limitations under the License. %>
 
 <html lang="en">
 <head>
@@ -29,16 +28,8 @@
   <script src="https://checkout.stripe.com/checkout.js"></script>
 
   <%= javascript_pack_tag "chicago-app" %>
-  <%= stylesheet_pack_tag "chicago-styles", media: "all" %>
-  <%= favicon_pack_tag "favicon.ico" %>
-
-  <#%=
-    tag("link", {
-      rel: "shortcut icon",
-      type: "image/x-icon",
-      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
-    })
-  %>
+  <%= stylesheet_pack_tag "chicago-app", media: "all" %>
+  <%= favicon_pack_tag "favicons/Chicon8StandardFavicon.ico" %>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
