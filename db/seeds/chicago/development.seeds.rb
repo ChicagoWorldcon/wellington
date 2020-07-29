@@ -31,8 +31,11 @@ membership_distribution_averages = [
 ]
 
 
+users_to_create = (ENV["SEED_USER_COUNT"] || "50").to_i
+
 all_memberships = Membership.all.to_a
-50.times do |count|
+
+users_to_create.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
   memberships_held = membership_distribution_averages.sample # <-- biased random number
@@ -52,8 +55,10 @@ all_memberships = Membership.all.to_a
   end
 end
 
-puts "\nFinished creating users, try sign in with"
-puts "#{User.last.email}"
+if users_to_create > 0
+  puts "\nFinished creating users, try sign in with"
+  puts "#{User.last.email}"
+end
 
 support = Support.create(
   email: "support@worldcon.org",

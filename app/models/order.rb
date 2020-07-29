@@ -27,7 +27,7 @@ class Order < ApplicationRecord
   # There can't be other active orders against the same reservation
   validates :reservation, presence: true, uniqueness: { conditions: -> { active } }, if: :active?
 
-  # Sync when order changes as upgrades can cause users to loose or gain attending rights
+  # Sync when order changes as upgrades can cause users to lose or gain attending rights
   after_commit :gloo_sync
   def gloo_lookup_user
     reservation&.user
