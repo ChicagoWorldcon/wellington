@@ -30,12 +30,12 @@ import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
 
 
-const backgrounds = require.context('../images/backgrounds', false);
-const design_elems = require.context('../images/design_elements', false);
-const favicons = require.context('../images/favicons', false);
-const icons = require.context('../images/icons', false);
+// const backgrounds = require.context('../images/backgrounds', false);
+// const design_elems = require.context('../images/design_elements', false);
+// const favicons = require.context('../images/favicons', false);
+// const icons = require.context('../images/icons', false);
 const images = require.context('../images', true);
-const logos = require.context('../images/logos', false);
+// const logos = require.context('../images/logos', false);
 
 ujs.start();
 activeStorage.start();
