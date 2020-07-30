@@ -206,6 +206,10 @@ module ApplicationHelper
     Rails.configuration.convention_details.con_url_volunteering
   end
 
+  def worldcon_registration_mailing_address
+    Rails.configuration.convention_details.registration_mailing_address
+  end
+
   def wsfs_constitution_link
     Rails.configuration.convention_details.con_wsfs_constitution_link
   end
