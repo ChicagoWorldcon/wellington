@@ -17,7 +17,7 @@
 // Rails defaults
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
 import ujs from '@rails/ujs';
-import activeStorage from '@rails/activestorage';
+import * as activeStorage from '@rails/activestorage';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
@@ -29,13 +29,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
 
-
-// const backgrounds = require.context('../images/backgrounds', false);
-// const design_elems = require.context('../images/design_elements', false);
-// const favicons = require.context('../images/favicons', false);
-// const icons = require.context('../images/icons', false);
 const images = require.context('../images', true);
-// const logos = require.context('../images/logos', false);
 
 ujs.start();
 activeStorage.start();

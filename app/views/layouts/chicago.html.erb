@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<%#
+<%
+=begin %>
   Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
@@ -16,7 +17,9 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License. %>
+  limitations under the License.
+<%
+=end %>
 
 <html lang="en">
 <head>
@@ -34,8 +37,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="<%= worldcon_public_name %> will be the <%= worldcon_number_digits_only.ordinalize %> World Science Fiction Convention.">
-  <meta name="keywords" content="<%= worldcon_public_name.downcase %>, science fiction, convention, meet up, sci-fi" />
+  <meta name="description" content="<%= worldcon_public_name %>
+  will be the <%= worldcon_number_digits_only.ordinalize %> World Science Fiction Convention.">
+  <meta name="keywords" content="<%= worldcon_public_name.downcase %>,
+   science fiction, convention, meet up, sci-fi" />
 </head>
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
@@ -52,6 +57,34 @@
   <% end %>
 
   <header>
+    <div class="jumbotron jumbotron-fluid" role="banner">
+      <div class="logo-overlay">
+        <div class="banner-inner">
+          <a href="<%= root_path %>">
+            <div class="container" id="bannertext">
+              <h1 class="display-4">Chicon 8</h1>
+              <p class="lead" >The 80th World Science Fiction Convention | Chicago, Illinois USA</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container l-v-spacing" role="banner">
+      <a href="<%= root_path %>" class="logo">
+        <%=
+          image_pack_tag(
+            "media/images/logos/conzealand-logo.svg",
+            alt: "Chicon 8 - The 80th World Science Fiction Convention",
+            class: "img-responsive"
+          )
+        %>
+      </a>
+    </div>
+
+
+
+
     <div class="container">
       <%= render "layouts/alerts" %>
     </div>

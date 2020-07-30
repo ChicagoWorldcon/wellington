@@ -21,6 +21,8 @@ import $ from 'jquery';
 import 'datatables.net-bs4';
 import 'popper.js';
 import 'bootstrap';
+// turbolinks imported on advice of a gorails video. Dunno if I need it.
+// import 'turbolinks';
 
 $(document).ready(() => {
   // DataTable plugin for searchable and sortable tables
@@ -28,6 +30,9 @@ $(document).ready(() => {
 
   // Bootstrap tooltip for more information about elements
   $('[data-toggle=tooltip').tooltip();
+
+  // Bootstrap popovers.
+  //$('[data-toggle=tooltip').popover();
 });
 
 $(document).ready(() => {
