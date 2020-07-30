@@ -37,6 +37,8 @@
 // =========================================================================
 
 // https://getbootstrap.com/docs/4.0/getting-started/webpack/
+//@import "chicago_custom";
+@import 'chicago_fonts';
 @import "~bootstrap/scss/bootstrap";
 
 // -------------------------------
@@ -52,10 +54,9 @@ $red: #DA291C;
 $dark_blue: #00558C;
 
 // Leftover CoNZealand:
-$light-grey: #e1e1e1;
+//$light-grey: #e1e1e1;
 
 // Fonts
-@import 'chicago_fonts';
 
 $font-stack: 'Metropolis', sans-serif;
 
@@ -174,7 +175,7 @@ h6, .h6-like {
   transition: background-color .2s ease-in;
 }
 .btn:focus {
-  outline: 1px dotted $white;
+  outline: 1px dotted $red;
 }
 .btn-m-full-width {
   width: 100%;
@@ -194,7 +195,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: $light-grey;
+  color: $white;
   text-decoration: underline;
 }
 a:focus {
@@ -243,7 +244,7 @@ a:focus {
   margin-bottom: 1.5em;
 }
 .form-note {
-  color: $light-grey;
+  color: $red;
   margin-top: 1em;
   margin-bottom: 1.5em;
 }
@@ -410,4 +411,34 @@ footer {
 
 .card {
   color: $black;
+}
+
+.jumbotron {
+  background: rgb(65,182,230);
+  background: linear-gradient(90deg, rgba(65,182,230,1) 0%, rgba(84,189,233,1) 0%, rgba(128,206,239,1) 0%, rgba(255,255,255,1) 67%, rgba(218,41,28,1) 100%);
+  text-align: right;
+}
+
+#bannertext {
+  color: $black;
+  > .display-4 {
+    font-weight: 900;
+  }
+  > .lead {
+    font-weight: 500;
+  }
+}
+
+.logo-overlay {
+  // position: absolute;
+  // background-image: url("../images/logos/Chicago8LogoH_SimpleVersion_Web800_TransparentBack.png");
+  // background-size: 30%;
+  // background-position: 10% 50%;
+  // background-repeat: no-repeat;
+  // z-index: 1;
+}
+
+.banner-inner {
+  // position: relative;
+  // z-index: 2;
 }
