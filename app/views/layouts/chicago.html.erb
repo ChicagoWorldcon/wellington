@@ -58,32 +58,16 @@
 
   <header>
     <div class="jumbotron jumbotron-fluid" role="banner">
-      <div class="logo-overlay">
-        <div class="banner-inner">
-          <a href="<%= root_path %>">
-            <div class="container" id="bannertext">
-              <h1 class="display-4">Chicon 8</h1>
-              <p class="lead" >The 80th World Science Fiction Convention | Chicago, Illinois USA</p>
-            </div>
-          </a>
-        </div>
+      <div class="logo-overlay"></div>
+      <div class="banner-inner">
+        <a href="<%= root_path %>">
+          <div class="container" id="bannertext">
+            <h1 class="display-4">Chicon 8</h1>
+            <p class="lead" >The 80th World Science Fiction Convention | Chicago, Illinois USA</p>
+          </div>
+        </a>
       </div>
     </div>
-
-    <div class="container l-v-spacing" role="banner">
-      <a href="<%= root_path %>" class="logo">
-        <%=
-          image_pack_tag(
-            "media/images/logos/conzealand-logo.svg",
-            alt: "Chicon 8 - The 80th World Science Fiction Convention",
-            class: "img-responsive"
-          )
-        %>
-      </a>
-    </div>
-
-
-
 
     <div class="container">
       <%= render "layouts/alerts" %>
