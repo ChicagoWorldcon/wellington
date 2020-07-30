@@ -65,10 +65,11 @@ namespace :import do
     as_at = Time.now.iso8601
 
     dump_path = ENV["CHICAGO_BID_DUMP_DIR"] || Dir.pwd
+    voters = CSV.table("#{dump_path}/voters.csv").map(&:to_h)
     members = CSV.table("#{dump_path}/members.csv").map(&:to_h)
     payments = CSV.table("#{dump_path}/payments.csv").map(&:to_h)
 
-    importer = Import::ChicagoBidMembers.new(members, payments, "Chicago Bid Import from #{dump_path} at #{as_at}")
+    importer = Import::ChicagoBidMembers.new(voters, members, payments, "Chicago Bid Import from #{dump_path} at #{as_at}")
     success = importer.call
     if ! success
       puts "Failed with errors:"
