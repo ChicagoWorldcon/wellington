@@ -10,7 +10,9 @@ class Import::ChicagoBidMembers
   def initialize(voter_csv, people_csv, payments_csv, description)
     @description = description
     @errors = []
-    @voters = voter_csv  # Needs headers: Name,Email,CoNZ mship n
+    # add a synthetic member number / key
+    voter_csv.each_with_index { |v, i| v[:conzealand_membership_number] = i }
+    @voters = voter_csv
     @people = people_csv  # must have headers
     @payments = payments_csv # must have headers
   end
@@ -46,11 +48,30 @@ class Import::ChicagoBidMembers
         last_name = ""
       end
 
+      pubs_format = if row[:paper_publications].present? && row[:paper_publications].downcase.strip == "y"
+                      ChicagoContact::PAPERPUBS_BOTH
+                    else
+                      ChicagoContact::PAPERPUBS_ELECTRONIC
+                    end
+
+      publish_name = if row[:publish_name].present? && row[:publish_name].downcase.strip == "n"
+                       false
+                     else
+                       true
+                     end
+
       contact = ChicagoContact.new(
         claim: reservation.active_claim,
         first_name: first_name,
         last_name: last_name,
-        publication_format: ChicagoContact::PAPERPUBS_ELECTRONIC,
+        badge_title: row[:badge_name],
+        show_in_listings: publish_name,
+        address_line_1: row[:purchaser_address],
+        city: row[:purchaser_city],
+        province: row[:purchaser_state],
+        postal: row[:purchaser_postal],
+        country: row[:purchaser_country],
+        publication_format: pubs_format,
         email: user.email,
       )
       contact.as_import.save!
@@ -171,26 +192,39 @@ class Import::ChicagoBidMembers
       last_name = row[:public_last_name]
     end
 
+    pubs_format = if row[:contact_prefs].present? && JSON.parse(row[:contact_prefs])["snailmail"]
+                    ChicagoContact::PAPERPUBS_BOTH
+                  else
+                    ChicagoContact::PAPERPUBS_ELECTRONIC
+                  end
+
+    publish_name = row[:public_first_name].present?
+
     contact.assign_attributes(
       first_name: first_name,
       last_name: last_name,
       preferred_first_name: row[:public_first_name],
       preferred_last_name: row[:public_last_name],
       badge_title: row[:badge_text],
-      share_with_future_worldcons: false,
-      show_in_listings: row[:public_first_name].present?,
+      show_in_listings: publish_name,
+      share_with_future_worldcons: publish_name,
       address_line_1: row[:address],
       city: row[:city],
       province: row[:state],
       country: row[:country],
       postal: row[:postcode],
-      publication_format: ChicagoContact::PAPERPUBS_ELECTRONIC,
+      publication_format: pubs_format,
     )
   end
 
   def create_supporting(row)
-    user = User.find_or_create_by!(email: row[:email])
-    reservation = ClaimMembership.new(nonvoting_friend_membership, customer: user).call
+    begin
+      user = User.find_or_create_by!(email: row[:email])
+      reservation = ClaimMembership.new(nonvoting_friend_membership, customer: user).call
+    rescue
+      p row
+      raise
+    end
     reservation.update!(state: Reservation::PAID)
 
     contact = ChicagoContact.new(
