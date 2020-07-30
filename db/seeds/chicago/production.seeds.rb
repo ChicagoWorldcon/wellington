@@ -19,7 +19,8 @@
 beginning_of_time = "2000-01-01".to_time
 
 PriceGroup = Struct.new("PriceGroup", :start_time, :end_time, :supporting, :adult, :ya, :teen, :child, :first_worldcon, keyword_init: true)
-site_selection = "2020-07-30 18:00:00 CST".to_time
+site_selection = "2020-07-28 18:00:00 CST".to_time
+site_announcement = "2020-07-30 18:00:00 CST".to_time
 price_change_1 = "2021-04-30 23:59:00 CST".to_time
 price_change_2 = "2021-11-30 23:59:00 CST".to_time
 price_change_3 = "2022-04-30 23:59:00 CST".to_time
@@ -27,7 +28,7 @@ at_con = "2022-08-31 23:59:00 CST".to_time
 
 
 launch_pricing = PriceGroup.new(
-  start_time: site_selection - 10.days,
+  start_time: site_announcement - 10.days,
   end_time: price_change_1,
   supporting: Money.new(50_00),
   adult: Money.new(170_00),
