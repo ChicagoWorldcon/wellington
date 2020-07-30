@@ -41,7 +41,7 @@ import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
 
 import ujs from '@rails/ujs';
-
+const images = require.context('../images', true);
 ujs.start();
 
 // ActiveStorage can be used for uploading items to S3 and cloud storage
