@@ -28,8 +28,7 @@ import '@fortawesome/fontawesome-free/js/brands';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
-
-const images = require.context('../images', true);
+require.context('../images', true);
 
 ujs.start();
 activeStorage.start();
