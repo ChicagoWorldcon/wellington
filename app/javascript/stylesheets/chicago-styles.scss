@@ -414,6 +414,7 @@ footer {
 }
 
 .jumbotron {
+  position: relative;
   background: rgb(65,182,230);
   background: linear-gradient(90deg, rgba(65,182,230,1) 0%, rgba(84,189,233,1) 0%, rgba(128,206,239,1) 0%, rgba(255,255,255,1) 67%, rgba(218,41,28,1) 100%);
   text-align: right;
@@ -430,15 +431,24 @@ footer {
 }
 
 .logo-overlay {
-  // position: absolute;
-  // background-image: url("../images/logos/Chicago8LogoH_SimpleVersion_Web800_TransparentBack.png");
-  // background-size: 30%;
-  // background-position: 10% 50%;
-  // background-repeat: no-repeat;
-  // z-index: 1;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background-image: url("../images/logos/Chicago8LogoH_SimpleVersion_Web800_TransparentBack.png");
+  background-size: 20%;
+  background-position: 5% 50%;
+  background-repeat: no-repeat;
+  z-index: 1;
 }
 
 .banner-inner {
-  // position: relative;
-  // z-index: 2;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 50%;
+  z-index: 2;
+  overflow: visible;
 }
