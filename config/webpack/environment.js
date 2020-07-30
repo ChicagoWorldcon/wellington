@@ -26,10 +26,3 @@ module.exports = environment;
 environment.loaders.get('sass').use.splice(-1, 0, {
   loader: 'resolve-url-loader'
 })
-
-// Stuff from a video: Dunno I I need it.
-// environment.plugins.apprend("Provide", new webpack.ProvidePlugin({
-//   $: 'jquery',
-//   jQuery: 'jquery',
-//   Popper:['popper.js', 'default']
-// }))
