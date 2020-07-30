@@ -437,18 +437,15 @@ footer {
   top: 0px;
   bottom: 0px;
   background-image: url("../images/logos/Chicago8LogoH_SimpleVersion_Web800_TransparentBack.png");
-  background-size: 20%;
+  background-size: 15%;
   background-position: 5% 50%;
   background-repeat: no-repeat;
+  align-self: flex-start;
   z-index: 1;
 }
 
 .banner-inner {
-  position: absolute;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  width: 50%;
+  position: relative;
   z-index: 2;
   overflow: visible;
 }
