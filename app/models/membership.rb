@@ -55,6 +55,7 @@ class Membership < ApplicationRecord
     display_name ? display_name : name.humanize
   end
 
+  # TODO FUTUREWORLDCON Make these rights dynamic in the DB for each membership type
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
   # So we created new active Membership records at the same price
   # These match i18n values set in config/locales
@@ -65,12 +66,10 @@ class Membership < ApplicationRecord
 
       if can_vote?
         rights << "rights.hugo.vote"
-        rights << "rights.retro_hugo.vote"
       end
 
       if can_nominate?
         rights << "rights.hugo.nominate"
-        rights << "rights.retro_hugo.nominate"
       end
     end
   end
