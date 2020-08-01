@@ -71,5 +71,9 @@ module Conzealand
 
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = config.convention_details.site_theme
+
+    # GNU Terry Pratchett
+    config.middleware.use Rack::Pratchett
+
   end
 end
