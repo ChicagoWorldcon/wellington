@@ -150,7 +150,7 @@
             <%= contact_form.date_select(:date_of_birth,
                                          include_blank: true,
                                          selected: @contact.date_of_birth || Date.current,
-                                         start_year: "2000-01-01".to_date.year,
+                                         start_year: Date.today.year - 35,
                                          end_year: Date.today.year,
                                          required: true,
                                          class: "form-control",
