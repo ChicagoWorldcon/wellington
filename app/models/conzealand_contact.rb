@@ -80,6 +80,10 @@ class ConzealandContact < ApplicationRecord
     self
   end
 
+  def for_user(user)
+    self
+  end
+
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name
   def to_s
     if preferred_first_name.present? || preferred_last_name.present?

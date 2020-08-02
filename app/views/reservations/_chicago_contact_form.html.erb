@@ -16,7 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-
 <%= fields_for(@contact) do |contact_form| %>
   <%# TODO: Replace EXAMPLE URLs%>
   <p>
@@ -148,7 +147,14 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="date_of_birth">Date of Birth (required)</label>
-            <%= contact_form.date_select(:dob_array, {order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year - 120}, required: true, class: "form-control", id: "date_of_birth")  %>
+            <%= contact_form.date_select(:date_of_birth,
+                                         include_blank: true,
+                                         selected: @contact.date_of_birth || Date.current,
+                                         end_year: Date.today.year,
+                                         required: true,
+                                         class: "form-control",
+            )
+            %>
           </div>
         </div>
       </div>
@@ -248,7 +254,7 @@
 
       <div class="form-group">
         <label for="email">Email (Optional. Please remove or edit if the membership is for someone other than yourself.)</label>
-        <%= contact_form.text_field(:email, value: (current_user ? current_user.email : ""), class: "form-control", id: "email") %>
+        <%= contact_form.text_field(:email, class: "form-control", id: "email") %>
         <% if errors = form_input_errors(@contact, :email) %>
           <p class="form-error"><%= errors %></p>
         <% end %>

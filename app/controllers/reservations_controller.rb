@@ -37,6 +37,7 @@ class ReservationsController < ApplicationController
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
+      @contact = @contact.for_user(current_user)
     else
       session[:return_path] = request.fullpath
     end
