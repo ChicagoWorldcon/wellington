@@ -86,7 +86,7 @@ class ChicagoContact < ApplicationRecord
   end
 
   def for_user(user)
-    @email = user.email
+    write_attribute(:email, user.email)
     self
   end
 
