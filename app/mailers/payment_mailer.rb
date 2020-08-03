@@ -67,9 +67,13 @@ class PaymentMailer < ApplicationMailer
     @contact = @reservation.active_claim.contact
     @outstanding_amount = outstanding_amount
 
-    recipients = [user.email, $member_services_email]
+    # This is to the user email, instead of the contact, for two reasons:
+    # 1. The contact may not have an email, not every con does
+    # 2. The user is responsible for all payments, in our model, so they should get this.
+    recipients = [user.email, $treasurer_email, $member_services_email]
 
     mail(
+      from: $treasurer_email,
       to: recipients.join(","),
       subject: "#{worldcon_public_name} Payment instructions for member ##{@reservation.membership_number}"
     )

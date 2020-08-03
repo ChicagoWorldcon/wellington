@@ -78,6 +78,12 @@ Rails.application.config.action_mailer.tap do |action_mailer|
     "member_services@localhost"
   ).downcase
 
+  # FIXME I know this is a lousy hack. I plan to revisit the emails soon and make a con-config setup for them.
+  $treasurer_email = ENV.fetch(
+    "TREASURER_EMAIL",
+    "treasurer@chicon.org"
+  ).downcase
+
   $hugo_help_email = ENV.fetch(
     "HUGO_HELP_EMAIL",
     "hugo_help@localhost"
