@@ -86,7 +86,7 @@ class ChicagoContact < ApplicationRecord
   end
 
   def for_user(user)
-    write_attribute(:email, user.email)
+    write_attribute(:email, user.email) if user.present?
     self
   end
 
