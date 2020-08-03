@@ -33,11 +33,10 @@ class ReservationsController < ApplicationController
 
   def new
     @reservation = Reservation.new
-    @contact = contact_model.new
+    @contact = contact_model.new.for_user(current_user)
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
-      @contact = @contact.for_user(current_user)
     else
       session[:return_path] = request.fullpath
     end
