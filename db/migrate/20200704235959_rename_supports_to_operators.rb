@@ -1,5 +1,4 @@
 # Copyright 2020 Matthew B. Gray
-# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# GlooSync sends user data to Gloo so they can log in for the virtual worldcon in 2020
-class GlooSync
-  include Sidekiq::Worker
-
-  def perform(email)
-    return unless ENV["GLOO_BASE_URL"].present?
-
-    user = User.find_by!(email: email)
-    GlooContact.new(user).save!
+class RenameSupportsToOperators < ActiveRecord::Migration[6.0]
+  def change
+    rename_table :supports, :operators
   end
 end

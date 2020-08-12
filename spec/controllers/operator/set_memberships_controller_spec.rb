@@ -16,12 +16,12 @@
 
 require "rails_helper"
 
-RSpec.describe SetMembershipsController, type: :controller do
+RSpec.describe Operator::SetMembershipsController, type: :controller do
   render_views
 
   let(:user) { create(:user) }
-  let(:support) { create(:support) }
-  let(:ya) { create(:membership, :ya) }
+  let(:operator) { create(:operator) }
+  let(:ya) { create(:membership, :young_adult) }
   let(:adult) { create(:membership, :adult) }
   let(:reservation) { create(:reservation, :with_claim_from_user, membership: ya) }
 
@@ -32,14 +32,14 @@ RSpec.describe SetMembershipsController, type: :controller do
       }
     end
 
-    it "says no when you're not support" do
+    it "says no when you're not operator" do
       sign_in(user)
       get_index
-      expect(response).to redirect_to(new_support_session_path)
+      expect(response).to redirect_to(new_operator_session_path)
     end
 
-    it "renders when support signed in" do
-      sign_in(support)
+    it "renders when operator signed in" do
+      sign_in(operator)
       get_index
       expect(response).to have_http_status(:ok)
     end
@@ -47,7 +47,7 @@ RSpec.describe SetMembershipsController, type: :controller do
 
   describe "#update" do
     before do
-      sign_in(support)
+      sign_in(operator)
     end
 
     it "raises error when membership can't be found" do

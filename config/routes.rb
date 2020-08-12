@@ -50,7 +50,11 @@ Rails.application.routes.draw do
   # Sets routes for account management actions.
   # This order seems to matter for tests.
   devise_for :users
-  devise_for :supports
+  devise_for :operators
+
+  # Before 2020-07 the Operator model was called Support
+  # This is in place to help migrate people who log in to move to the new model
+  get "/supports/sign_in", to: redirect("/operators/sign_in")
 
   get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
   resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
@@ -73,7 +77,12 @@ Rails.application.routes.draw do
   end
 
   # /operator are maintenance routes for support people
-  scope :operator do
+  namespace :operator do
+    resources :users do
+      resources :the_fantasy_network_roles
+      resources :notes
+    end
+
     resources :reservations do
       resources :credits
       resources :set_memberships

@@ -75,40 +75,18 @@ class RankMailer < ApplicationMailer
 
   def ranks_reminder_2_weeks_left_conzealand(email:)
     user = User.find_by!(email: email)
-    reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
+    @reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
 
-    if reservations_that_can_vote.none?
+    if @reservations_that_can_vote.none?
       return
     end
 
-    account_numbers = account_numbers_from(reservations_that_can_vote)
+    account_numbers = account_numbers_from(@reservations_that_can_vote)
     if account_numbers.count == 1
       subject = "2 weeks to go! Hugo Award Voting Reminder for member #{account_numbers.first}"
     else
       subject = "2 weeks to go! Hugo Award Voting Reminder for members #{account_numbers.to_sentence}"
     end
-
-    @details = Detail.where(claim_id: user.active_claims)
-
-    mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
-  end
-
-  def ranks_reminder_2_weeks_left_dublin(email:)
-    user = User.find_by!(email: email)
-    reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
-
-    if reservations_that_can_vote.none?
-      return
-    end
-
-    account_numbers = account_numbers_from(reservations_that_can_vote)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Voting Reminder for account #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Voting Reminder for accounts #{account_numbers.to_sentence}"
-    end
-
-    @details = Detail.where(claim_id: user.active_claims)
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
@@ -126,22 +104,18 @@ class RankMailer < ApplicationMailer
     @worldcon_public_name = worldcon_public_name
 
     user = User.find_by!(email: email)
+    @reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
 
-    if user.reservations.none?
+    if @reservations_that_can_vote.none?
       return
     end
 
     account_numbers = account_numbers_from(user.reservations)
-    conzealand = conzealand_memberships.where(reservations: {id: user.reservations}).any?
 
-    if account_numbers.count == 1 && conzealand
+    if account_numbers.count == 1
       subject = "Hugo Voting Closes in 3 Days! for member #{account_numbers.first}"
-    elsif conzealand
-      subject = "Hugo Voting Closes in 3 Days! for members #{account_numbers.to_sentence}"
-    elsif account_numbers.count == 1
-      subject = "Hugo Voting Closes in 3 Days! for account #{account_numbers.first}"
     else
-      subject = "Hugo Voting Closes in 3 Days! for accounts #{account_numbers.to_sentence}"
+      subject = "Hugo Voting Closes in 3 Days! for members #{account_numbers.to_sentence}"
     end
 
     @details = Detail.where(claim_id: user.active_claims)

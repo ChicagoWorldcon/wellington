@@ -336,8 +336,8 @@ select {
 }
 
 // Fixed height scrollable panes
-.support-pane {
-  height: 300px;
+.operator-pane {
+  height: 500px;
   overflow-y: scroll;
 }
 
@@ -423,4 +423,9 @@ footer {
 
 .card {
   color: $black;
+}
+
+code {
+  // linebreaks in codeblocks are displayed in html
+  white-space: pre;
 }

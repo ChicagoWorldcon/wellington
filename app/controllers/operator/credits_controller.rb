@@ -15,8 +15,8 @@
 # limitations under the License.
 
 # CreditsController allows us to list and grant account credit to a user
-class CreditsController < ApplicationController
-  before_action :authenticate_support!
+class Operator::CreditsController < ApplicationController
+  before_action :authenticate_operator!
   before_action :lookup_reservation!
 
   def new
@@ -33,7 +33,7 @@ class CreditsController < ApplicationController
       return
     end
 
-    ApplyCredit.new(@reservation, plan.money, audit_by: current_support.email).call
+    ApplyCredit.new(@reservation, plan.money, audit_by: current_operator.email).call
     flash[:notice] = "Credited ##{@reservation.membership_number} with #{plan.money.format}"
     redirect_to @reservation
   end

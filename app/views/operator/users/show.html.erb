@@ -1,0 +1,120 @@
+<%#
+  Copyright 2020 Matthew B. Gray
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+
+<h1>User <%= @user.email %></h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Current memberships</h2>
+        <% if @user.claims.active.none? %>
+          <p>This user has no memberships</p>
+        <% else %>
+          <%= render("operator_claims_table", claims: @user.claims.active) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Previous memberships</h2>
+        <% if @user.claims.inactive.none? %>
+          <p>No previous memberships</p>
+        <% else %>
+          <%= render("operator_claims_table", claims: @user.claims.inactive) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @gloo_contact.present? %>
+    <div class="l-panel">
+      <div class="row">
+        <div class="col-12">
+          <h2>
+            <% if @gloo_contact.in_sync? %>
+              <i class="fa fa-thumbs-up" height="25px"></i>
+              The Fantasy Network is up to date!
+            <% else %>
+              <i class="fa fa-thumbs-down" height="25px"></i>
+              The Fantasy Network is out of sync
+              <i class="fa fa-frown" height="25px"></i>
+            <% end %>
+          </h2>
+          <ul class="list-unstyled l-v-spacing">
+            <li>
+              <i class="fa fa-bolt" height="15px"></i>
+              <%= link_to "Alter roles for user", operator_user_the_fantasy_network_roles_path(@user) %>
+            </li>
+            <li>
+              <i class="fa fa-history" height="15px"></i>
+              <%= link_to "Force sync now", operator_user_path(@user), method: :put %>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <p>
+            Local State
+            <%= raw pretty_print(@gloo_contact.local_state) %>
+          </p>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <p>
+            Remote State
+            <%= raw pretty_print(@gloo_contact.remote_state) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <h2>Notes</h2>
+
+        <p>
+          <%= form_with(url: operator_user_notes_path(@user), data: { remote: false }) do |f| %>
+            <%= f.text_area(:content, class:"form-control", rows: 3) %>
+            <%= f.submit(
+                "Save my note",
+                class: "btn btn-primary",
+                data: { disable_with: "One moment caller..." }
+              ) %>
+          <% end %>
+        </p>
+
+        <% if @user.notes.none? %>
+          <p>No notes for this user</p>
+        <% else %>
+          <% @user.notes.order(created_at: :desc).each do |note| %>
+            <p>
+              <strong><%= fuzzy_time(note.created_at) %></strong>
+              <br><%= note.content %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

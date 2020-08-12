@@ -18,30 +18,39 @@
 
 <h1>Review <%= @my_offer.membership %> membership #<%= @reservation.membership_number %></h1>
 
-<% if support_signed_in? && @rights_exhausted.any? %>
+<% if operator_signed_in? && @rights_exhausted.any? %>
   <div class="alert alert-danger" role="alert">
     Note: User has <%= @rights_exhausted.to_sentence %>
   </div>
 <% end %>
 
 <section class="l-section">
-  <% if support_signed_in? %>
+  <% if operator_signed_in? %>
     <div class="row">
       <div class="col-12 col-md-6">
-        <div class="l-panel support-pane">
-          <h2>Support Actions</h2>
+        <div class="l-panel operator-pane">
+          <h2>Operator Actions</h2>
           <p>
-            <%= link_to "Transfer membership", new_reservation_transfer_path(reservation_id: @reservation) %>
+            <%= link_to "Lookup user records", operator_user_path(@reservation.user) %>
+            <% if ENV["GLOO_BASE_URL"].present? %>
+              and compare to The Fantasy Network
+            <% else %>
+              for <%= @reservation.user.email %>
+            <% end %>
+          </p>
+
+          <p>
+            <%= link_to "Transfer membership", new_operator_reservation_transfer_path(reservation_id: @reservation) %>
             to another user
           </p>
 
           <p>
-            <%= link_to "Set membership", reservation_set_memberships_path(reservation_id: @reservation) %>
+            <%= link_to "Set membership", operator_reservation_set_memberships_path(reservation_id: @reservation) %>
             to any level that's been in our system
           </p>
 
           <p>
-            <%= link_to "Credit account", new_reservation_credit_path(reservation_id: @reservation) %>
+            <%= link_to "Credit account", new_operator_reservation_credit_path(reservation_id: @reservation) %>
             with payment made via cash or cheque
           </p>
 
@@ -50,7 +59,7 @@
               <%=
                 link_to(
                   "Enable Membership Rights",
-                  reservation_rights_path(reservation_id: @reservation),
+                  operator_reservation_rights_path(reservation_id: @reservation),
                   method: :post,
                 )
               %>
@@ -59,13 +68,26 @@
               <%=
                 link_to(
                   "Disable Membership Rights",
-                  reservation_rights_path(reservation_id: @reservation),
+                  operator_reservation_rights_path(reservation_id: @reservation),
                   method: :post,
                 )
               %>
               to suspend rights for nomination, voting and attendance
             <% end %>
           </p>
+
+          <% Election.find_each do |election| %>
+            <p>
+              Change
+              <%=
+                link_to(
+                  "Finalist rankings for #{election.i18n_key}",
+                  reservation_finalist_path(reservation_id: @reservation, id: election.i18n_key)
+                )
+                %>
+              (hugo admin only)
+            </p>
+          <% end %>
 
           <% Election.find_each do |election| %>
             <p>
@@ -83,14 +105,20 @@
       </div>
 
       <div class="col-12 col-md-6">
-        <div class="l-panel support-pane">
+        <div class="l-panel operator-pane">
           <h2>User Notes</h2>
+          <p>
+            <%= link_to "View user page", operator_user_path(@reservation.user) %>
+            to add a note
+          </p>
           <% if @notes.none? %>
-            No notes for this membership
+            <p>
+              No notes for this membership
+            </p>
           <% else %>
             <% @notes.eager_load(:user).order(created_at: :desc).each do |note| %>
               <p>
-                <strong><%= note.created_at %> - <%= note.user.email %></strong>
+                <strong><%= fuzzy_time(note.created_at) %> - <%= note.user.email %></strong>
                 <br><%= note.content %>
               </p>
             <% end %>

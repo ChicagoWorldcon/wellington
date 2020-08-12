@@ -27,6 +27,8 @@ module ActiveScopes
 
     # A transfer of ownership may happen at an instant, and from that moment the the new owner becomes the active party
     base.scope :active, ->() { active_at(Time.now) }
+    base.scope :inactive, ->() { where.not(id: active_at(Time.now)) }
+
     base.scope :active_at, ->(moment) {
       where(
         %{

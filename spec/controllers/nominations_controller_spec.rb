@@ -40,7 +40,7 @@ RSpec.describe NominationsController, type: :controller do
 
     context "when signed in with hugo_admin rights" do
       it "renders ok" do
-        sign_in create(:support, :hugo_admin)
+        sign_in create(:operator, :hugo_admin)
         expect(HugoState).to_not receive(:new)
         expect(get_show).to have_http_status(:ok)
         expect(flash[:notice]).to be_nil
@@ -122,14 +122,14 @@ RSpec.describe NominationsController, type: :controller do
           end
         end
 
-        context "when signed in as support" do
-          let(:support) { create(:support) }
+        context "when signed in as operator" do
+          let(:operator) { create(:operator) }
 
-          before { sign_in support }
+          before { sign_in operator }
 
           it "redirects, doesn't let you look at the nomination" do
             expect(get_show).to have_http_status(:found)
-            expect(flash[:notice]).to match(/signed in as support/i)
+            expect(flash[:notice]).to match(/signed in as operator/i)
           end
         end
 
@@ -203,7 +203,7 @@ RSpec.describe NominationsController, type: :controller do
     end
 
     context "signed in as hugo admin" do
-      let(:hugo_admin) { create(:support, :hugo_admin) }
+      let(:hugo_admin) { create(:operator, :hugo_admin) }
 
       before { sign_in hugo_admin }
 

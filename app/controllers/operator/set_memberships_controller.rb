@@ -14,9 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rails_helper"
+class Operator::SetMembershipsController < ApplicationController
+  before_action :authenticate_operator!
+  before_action :lookup_reservation!
 
-RSpec.describe Support, type: :model do
-  subject(:model) { create(:support) }
-  it { is_expected.to be_valid }
+  def index
+    @memberships = Membership.all
+    @as_at = Time.now
+  end
+
+  def update
+    membership = Membership.find(params[:id])
+    SetMembership.new(@reservation, to: membership, audit_by: current_operator.email).call
+    flash[:notice] = "Set ##{@reservation.membership_number} to #{membership}"
+    redirect_to @reservation
+  end
 end

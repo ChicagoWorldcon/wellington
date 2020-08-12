@@ -21,19 +21,6 @@ class RankMailerPreview < ActionMailer::Preview
     RankMailer.rank_ballot(reservation)
   end
 
-  def ranks_open_conzealand
-    if params[:user]
-      mailer = RankMailer.ranks_open_conzealand(
-        user: User.find_by!(email: params[:user]),
-      )
-      return mailer
-    end
-
-    users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
-    conzealand_users = users.where.not(memberships: {name: :dublin_2019})
-    RankMailer.ranks_open_conzealand(user: conzealand_users.sample)
-  end
-
   def ranks_reminder_2_weeks_left_conzealand
     if params[:user]
       user = User.find_by!(email: params[:user])
@@ -45,7 +32,7 @@ class RankMailerPreview < ActionMailer::Preview
   end
 
   def ranks_reminder_2_weeks_left_conzealand_multi_membership
-    multi_user = User.joins(:reservations).having("count(reservations.id) > 1").group(:id).sample
+    multi_user = User.joins(reservations: :membership).merge(Membership.can_vote).having("count(reservations.id) > 1").group(:id).sample
     RankMailer.ranks_reminder_2_weeks_left_conzealand(email: multi_user.email)
   end
 

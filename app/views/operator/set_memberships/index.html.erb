@@ -34,7 +34,7 @@
                   <%=
                     link_to(
                       description(membership),
-                      reservation_set_membership_path(id: membership.id, reservation_id: @reservation.id),
+                      operator_reservation_set_membership_path(id: membership.id, reservation_id: @reservation.id),
                       method: :patch,
                       data: { confirm: "Change membership from #{@reservation.membership} to #{membership}?" }
                     )

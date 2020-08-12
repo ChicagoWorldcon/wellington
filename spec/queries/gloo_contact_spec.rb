@@ -15,114 +15,353 @@
 require "rails_helper"
 
 RSpec.describe GlooContact do
-  let(:supporting) { create(:membership, :supporting) }
-  let(:adult) { create(:membership, :adult) }
-  let(:user) { create(:user) }
+  let(:user) { reservation.user }
+  let(:reservation) { create(:reservation, :with_order_against_membership, :with_claim_from_user) }
+  let(:query) { described_class.new(user) }
 
-  describe "#call" do
-    subject(:call) { described_class.new(user).call }
+  # Enable Gloo integrations for this test
+  # But turn it off after so CI doesn't try reaching out to thefantasy.network
+  around do |test|
+    ENV["GLOO_BASE_URL"] = "https://apitemp.thefantasy.network"
+    ENV["GLOO_AUTHORIZATION_HEADER"] = "let_me_in_please"
+    test.run
+    ENV["GLOO_BASE_URL"] = nil
+    ENV["GLOO_AUTHORIZATION_HEADER"] = nil
+  end
 
-    it { is_expected.to be_kind_of(Hash) }
+  let(:user_found_response) do
+    instance_double(HTTParty::Response,
+      code: 200,
+      body: {
+        id: "42",
+        email: user.email,
+        name: "Superman",
+        display_name: "Clark Kent",
+        expiration: nil,
+      }.to_json,
+    )
+  end
 
-    it "has the user's id" do
-      expect(call[:id]).to eq(user.id.to_s)
-      expect(call[:id]).to be_kind_of(String) # always be careful with types of IDs
+  let(:user_missing_response) do
+    instance_double(HTTParty::Response,
+      code: 404,
+      body: %{
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>404 Not Found</title>
+        <h1>Not Found</h1>
+        <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+      }.strip_heredoc,
+    )
+  end
+
+  let(:remote_roles) do
+    [
+      "Discord_ServerMod",
+      "Discord_PlatMod",
+      "Discord_Experience_support",
+      "Discord_ConCom",
+      "Discord_Mission_Control",
+      "Discord_Tech_staff",
+      "Discord_Staff",
+      "Discord_Crew",
+    ]
+  end
+
+  let(:user_roles_response) do
+    instance_double(HTTParty::Response,
+      code: 200,
+      body: { roles: remote_roles }.to_json,
+    )
+  end
+
+  let(:successful_response) do
+    instance_double(HTTParty::Response,
+      code: 200,
+      body: { status: "ok" }.to_json,
+    )
+  end
+
+  # This happens a lot
+  # So we we should be able to handle when this happens
+  let(:service_down_response) do
+    instance_double(HTTParty::Response,
+      code: 503,
+      body: %{
+        <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+        <html><head>
+        <title>503 Service Unavailable</title>
+        </head><body>
+        <h1>Service Unavailable</h1>
+        <p>The server is temporarily unable to service your
+        request due to maintenance downtime or capacity
+        problems. Please try again later.</p>
+        <hr>
+        <address>Apache Server at apitemp.thefantasy.network Port 443</address>
+        </body></html>
+      }.strip_heredoc,
+    )
+  end
+
+  describe "#remote_state" do
+    subject(:remote_state) { query.remote_state }
+
+    it "is an empty hash when remote user responds 404" do
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      expect(remote_state).to be_kind_of(Hash)
+      expect(remote_state).to be_empty
     end
 
-    it "doesn't give the user a name" do
-      expect(call[:name]).to be_blank
-      expect(call[:display_name]).to be_blank
-    end
-
-    it "has no roles" do
-      expect(call[:roles]).to be_empty
-    end
-
-    it "doesn't add roles for supporting memberships" do
-      create(:reservation, membership: supporting, user: user)
-      expect(call[:roles]).to be_empty
-    end
-
-    it "doesn't add roles for unpaid attending memberships" do
-      create(:reservation, :instalment, membership: adult, user: user)
-      expect(call[:roles]).to be_empty
-    end
-
-    context "with paid attending membership" do
-      let!(:reservation) { create(:reservation, membership: adult, user: user) }
-
-      it "includes the video role" do
-        expect(call[:roles]).to include("video")
+    context "with service up and user available" do
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_roles_response)
       end
 
-      it "leaves the names blank when contact information is missing" do
-        expect(call[:name]).to be_blank
+      it { is_expected.to be_kind_of(Hash) }
+      it { is_expected.to_not be_empty }
+
+      it "lists remote roles in a single object" do
+        expect(remote_state[:roles]).to_not be_empty
+        expect(remote_state[:roles]).to include(remote_roles.first)
+        expect(remote_state[:roles]).to include(remote_roles.last)
       end
 
-      # This is a CNZ only requirement. Get in touch if you need this integration
-      it "uses the conzealand_contact details on the member" do
-        conzealand_contact = create(:conzealand_contact, claim: reservation.active_claim)
-        expect(call[:name]).to eq(conzealand_contact.to_s)
-        expect(call[:display_name]).to eq(conzealand_contact.badge_display)
-      end
-
-      # This happens when we integrate data from other systems so we just do our best
-      it "leaves the names blank when record is invalid" do
-        conzealand_contact = create(:conzealand_contact, claim: reservation.active_claim)
-        conzealand_contact.update_column(:country, nil)
-        expect(conzealand_contact.reload).to_not be_valid
-        expect(call[:name]).to eq(conzealand_contact.to_s)
-        expect(call[:display_name]).to eq(conzealand_contact.badge_display)
+      it "lists a user's properties on the response" do
+        expect(remote_state).to_not be_empty
+        expect(remote_state[:email]).to eq(user.email)
+        expect(remote_state[:name]).to be_present
+        expect(remote_state[:display_name]).to be_present
       end
     end
 
-    context "with rights from other systems" do
-      subject(:call) { described_class.new(user, remote_user: from_gloo).call }
-
-      let(:from_gloo) do
-        {
-          id: user.id.to_s,
-          email: user.email,
-          name: "Harry Potter",
-          display_name: "Catalonian Fireball slayer",
-          roles: ["moderator"],
-        }
+    context "when service goes down" do
+      after do
+        expect { remote_state }.to raise_error(GlooContact::ServiceUnavailable)
       end
 
-      it "keeps the remote roles" do
-        expect(call[:roles]).to include("moderator")
+      it "raises when user lookup explodes" do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(service_down_response)
       end
 
-      it "doesn't add video without attending membership" do
-        expect(call[:roles]).to_not include("video")
+      it "raises for missing roles" do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(service_down_response)
       end
 
-      it "adds video when attending membership present" do
-        create(:reservation, membership: adult, user: user)
-        expect(call[:roles]).to include("video")
+      it "raises for socket errors" do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_raise(SocketError)
+      end
+    end
+  end
+
+  describe "#local_state" do
+    subject(:local_state) { query.local_state }
+
+    it "looks pretty empty when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(local_state[:roles]).to be_empty
+      expect(local_state[:display_name]).to be_nil
+    end
+
+    context "when no roles on remote" do
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it { is_expected.to be_kind_of(Hash) }
+      it { is_expected.to_not be_empty }
+
+      it "has the local user's id" do
+        expect(local_state[:id]).to be_kind_of(String) # always be careful with types of IDs
+        expect(local_state[:id]).to eq(user.id.to_s)
+      end
+
+      it "uses the local user's name" do
+        expect(local_state[:name]).to eq(ConzealandContact.last.to_s)
+        expect(local_state[:display_name]).to eq(ConzealandContact.last.badge_display)
+      end
+
+      it "defaults to 'conzealand super fan' when contact is not available" do
+        ConzealandContact.where(claim_id: user.claims).destroy_all
+        expect(local_state[:name]).to match(/CoNZealand Super Fan/i)
+        expect(local_state[:display_name]).to match(/CoNZealand Super Fan/i)
+      end
+
+      describe "roles listed" do
+        subject(:roles) { local_state[:roles] }
+
+        let(:adult) { create(:membership, :adult) }
+        let(:supporting) { create(:membership, :supporting) }
+        let(:kiwi) { create(:membership, :kiwi) }
+        let(:community_sponsor) { create(:membership, :community_sponsor) }
+        let(:community_press_pass) { create(:membership, :community_press_pass) }
+
+        context "for adult reservations" do
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
+          it { is_expected.to include(GlooContact::MEMBER_VOTING) }
+          it { is_expected.to include(GlooContact::MEMBER_ATTENDING) }
+          it { is_expected.to include(GlooContact::MEMBER_HUGO) }
+        end
+
+        context "for supporting reservations" do
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: supporting) }
+          it { is_expected.to include(GlooContact::MEMBER_VOTING) }
+          it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
+          it { is_expected.to_not include(GlooContact::MEMBER_HUGO) }
+        end
+
+        context "for kiwi reservations" do
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: kiwi) }
+          it { is_expected.to_not include(GlooContact::MEMBER_VOTING) }
+          it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
+          it { is_expected.to_not include(GlooContact::MEMBER_HUGO) }
+        end
+
+        context "for community sponsor" do
+          let(:reservation) { create(:reservation, :with_claim_from_user, membership: community_sponsor) }
+          it { is_expected.to_not include(GlooContact::MEMBER_VOTING) }
+          it { is_expected.to_not include(GlooContact::MEMBER_ATTENDING) }
+          it { is_expected.to include(GlooContact::MEMBER_HUGO) }
+        end
       end
     end
 
-    it "cycles memberships on transfer" do
-      last_minute_decision = create(:reservation, user: user, created_at: 1.day.ago, membership: adult)
-      create(:conzealand_contact, first_name: "last minute decision", claim: last_minute_decision.active_claim)
+    context "when adult attending with roles on remote" do
+      let(:adult) { create(:membership, :adult) }
+      let(:reservation) { create(:reservation, :with_claim_from_user, membership: adult) }
 
-      early_bird_reservation = create(:reservation, user: user, created_at: 365.days.ago, membership: adult)
-      create(:conzealand_contact, first_name: "early bird price", claim: early_bird_reservation.active_claim)
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_roles_response)
+      end
 
-      result = GlooContact.new(user).call
-      expect(result[:display_name]).to match(/early bird price/)
-      expect(result[:roles]).to include("video")
+      subject(:roles) { local_state[:roles] }
 
-      ApplyTransfer.new(early_bird_reservation, from: user, to: create(:user), audit_by: "agile squirrel").call
-      result = GlooContact.new(user.reload).call
-      expect(result[:display_name]).to match(/last minute decision/)
-      expect(result[:roles]).to include("video")
+      it { is_expected.to_not be_empty }
+      it { is_expected.to include(GlooContact::MEMBER_ATTENDING) }
+      it { is_expected.to include(remote_roles.last) }
+      it { is_expected.to include(remote_roles.first) }
+    end
 
-      ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
-      result = GlooContact.new(user.reload).call
-      expect(result[:display_name]).to be_empty
-      expect(result[:roles]).to be_empty
+    context "integration" do
+      before do
+        allow(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        allow(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it "cycles memberships on transfer" do
+        user = create(:user)
+        adult = create(:membership, :adult)
+        last_minute_decision = create(:reservation, user: user, created_at: 1.day.ago, membership: adult)
+        create(:conzealand_contact, first_name: "last minute decision", claim: last_minute_decision.active_claim)
+
+        early_bird_reservation = create(:reservation, user: user, created_at: 365.days.ago, membership: adult)
+        create(:conzealand_contact, first_name: "early bird price", claim: early_bird_reservation.active_claim)
+        result = described_class.new(user).local_state
+        expect(result[:display_name]).to match(/early bird price/)
+        expect(result[:roles]).to include("M_Attending")
+
+        ApplyTransfer.new(early_bird_reservation, from: user, to: create(:user), audit_by: "agile squirrel").call
+        result = described_class.new(user.reload).local_state
+        expect(result[:display_name]).to match(/last minute decision/)
+        expect(result[:roles]).to include("M_Attending")
+
+        ApplyTransfer.new(last_minute_decision, from: user, to: create(:user), audit_by: "agile squirrel").call
+        result = described_class.new(user.reload).local_state
+        expect(result[:display_name]).to be_nil
+        expect(result[:roles]).to be_empty
+      end
+
+      it "starts picking up on a reservation when it's been paid off" do
+        reservation.update!(state: Reservation::INSTALMENT)
+        expect { reservation.update!(state: Reservation::PAID) }
+          .to change { described_class.new(user).local_state[:roles] }
+          .to include("M_Attending")
+      end
+
+      it "removes roles when reservation is disabled" do
+        expect { reservation.update!(state: Reservation::DISABLED) }
+          .to change { described_class.new(user).local_state[:roles] }
+          .to be_empty
+      end
+    end
+  end
+
+  describe "#discord_roles" do
+    before do
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_found_response)
+      expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_roles_response)
+    end
+
+    context "with remote roles" do
+      it "removes those roles when we set to empty" do
+        expect { query.discord_roles = [] }
+          .to change { query.discord_roles }
+          .from(remote_roles).to be_empty
+      end
+    end
+
+    context "when no roles are on remote" do
+      let(:remote_roles) { [] }
+
+      it "adds roles when we set them" do
+        expect { query.discord_roles = ["Discord_PlatMod"] }
+          .to change { query.discord_roles }
+          .from([]).to(["Discord_PlatMod"])
+      end
+
+      it "doesn't let you set roles not defined in GlooContact::DISCORD_ROLES" do
+        expect { query.discord_roles = ["Party_Time"] }
+          .to_not change { query.discord_roles }.from([])
+      end
+    end
+  end
+
+  describe "#save!" do
+    subject(:save!) { query.save! }
+
+    it "deletes when reservation is disabled" do
+      reservation.update!(state: Reservation::DISABLED)
+      expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+      save!
+    end
+
+    context "with no memberships" do
+      let(:user) { create(:user) }
+
+      it "deletes on remote when a user has no memberships" do
+        expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+        save!
+      end
+    end
+
+    context "with memberships" do
+      before do
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*}, any_args).and_return(user_missing_response)
+        expect(HTTParty).to receive(:get).with(%r{/v1/users/.*/roles}, any_args).and_return(user_missing_response)
+      end
+
+      it "doesn't raise when successful" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(successful_response)
+        save!
+      end
+
+      it "raises error when server is down" do
+        expect(HTTParty).to receive(:post).with(any_args).and_return(service_down_response)
+        expect { save! }.to raise_error(GlooContact::ServiceUnavailable)
+      end
+
+      context "with presupport memberships" do
+        let(:pre_support) { create(:membership, :pre_support) }
+        let(:reservation) { create(:reservation, :with_claim_from_user, membership: pre_support) }
+
+        it "deletes on remote when a user has no rights or roles" do
+          expect(HTTParty).to receive(:delete).with(any_args).and_return(successful_response)
+          save!
+        end
+      end
     end
   end
 end

@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # ApplyCredit takes a reservation and credits a cash amount towards it
-# Used by a Support user who is taking money by cheque or cash at the table of a con
+# Used by a Operator user who is taking money by cheque or cash at the table of a con
 # If this does fail, it's going to 500 and roll back
 class ApplyCredit
   attr_reader :reservation, :amount, :audit_by

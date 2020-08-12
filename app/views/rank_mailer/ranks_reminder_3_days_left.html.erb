@@ -17,17 +17,19 @@
   <% if @details.count == 1 %>
     <%= @worldcon_greeting_init_caps %> <%= @details.first %>!
   <% else %>
-    <%= @worldcon_greeting_init_caps %>!
+    <%= @worldcon_greeting_init_caps %>, eligible Hugo voter!
   <% end %>
 </p>
 
 <p>
-  Hello eligible Hugo voter! The deadline for Hugo voting is just about
-  3 days away. Please do not wait until the last minute to start voting
+  The deadline for Hugo voting is only 3 days away. Please do not wait until the last minute to start voting
   - sometimes there are hiccups in the login process, and it can take our team
   some time to fix those for you. So if you plan to vote and have not logged
   in and accessed the voting form yet, please do so ASAP. The deadline for
-  voting is <%= @hugo_vote_deadline %>.
+  voting is <%= localize($hugo_closed_at.in_time_zone("Pacific Time (US & Canada)"), :format => :long) %> Pacific Daylight Time
+  (<%= localize($hugo_closed_at.in_time_zone("Eastern Time (US & Canada)"), :format => :short) %> Eastern Daylight Time,
+  <%= localize($hugo_closed_at.in_time_zone("Europe/Dublin"), :format => :short) %> Irish time,
+  and <%= localize($hugo_closed_at.in_time_zone("Wellington"), :format => :short) %> New Zealand time).
 </p>
 
 <p>

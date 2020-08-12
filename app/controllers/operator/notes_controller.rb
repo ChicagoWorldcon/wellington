@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2020 Steven Ensslen
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,20 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# RightsExhausted takes a Reservation and gives a human readable list of the rights used against it
-# It's used by a Operator login when deciding weather to refund or transfer a membership
-class RightsExhausted
-  attr_reader :reservation
+# NotesController creates arbitary notes against users. Notes are supposed to be written but never modified.
+class Operator::NotesController < ApplicationController
+  before_action :authenticate_operator!
+  before_action :lookup_user!
 
-  def initialize(reservation)
-    @reservation = reservation
-  end
-
-  def call
-    [].tap do |result|
-      result << "nominated for hugos" if reservation.nominations.any?
-      result << "voted for hugos" if reservation.ranks.any?
-      result << "downloaded hugo packet" if reservation.user.hugo_download_counter > 0
-    end
+  def create
+    @user.notes.create!(content: params[:content])
+    redirect_to operator_user_path(@user)
   end
 end

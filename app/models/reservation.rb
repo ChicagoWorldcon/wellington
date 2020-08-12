@@ -76,6 +76,10 @@ class Reservation < ApplicationRecord
     end
   end
 
+  def can_attend?
+    Membership.can_attend.where(id: orders.select(:membership_id)).exists?
+  end
+
   # You can nominate if any of your order history had this ability
   # Gets around upgrades after nomination rights are no longer available
   def can_nominate?

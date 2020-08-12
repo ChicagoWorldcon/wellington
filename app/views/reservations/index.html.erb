@@ -16,42 +16,45 @@
 
 %>
 
-<h1>Review Memberships</h1>
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-md-12">
-      <div class="l-panel">
-        <% if !user_signed_in? %>
-          <%= render "sign_in_notice" %>
-        <% else %>
-          <h2>
-            My Memberships (<%= current_user.email %>)
-          </h2>
+<% if !operator_signed_in? %>
+  <h1>Review My Memberships</h1>
+  <section class="l-section">
+    <div class="row">
+      <div class="col-12 col-md-12">
+        <div class="l-panel">
+          <% if !user_signed_in? %>
+            <%= render "sign_in_notice" %>
+          <% else %>
+            <h2><%= current_user.email %></h2>
 
-          <p>
-            <% if @my_purcahses.count == 1 %>
-              You have 1 membership
-            <% else %>
-              You have <%= @my_purcahses.count %> memberships
-            <% end %>
-          </p>
+            <p>
+              <% if @my_purcahses.count == 1 %>
+                You have 1 membership
+              <% else %>
+                You have <%= @my_purcahses.count %> memberships
+              <% end %>
+            </p>
 
-          <div class="card-columns">
-            <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
-              <%= render("reservation_card", reservation: reservation) do %>
-                <% index_links(reservation).each do |link| %>
-                  <p><%= link %></p>
+            <div class="card-columns">
+              <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
+                <%= render("reservation_card", reservation: reservation) do %>
+                  <% index_links(reservation).each do |link| %>
+                    <p><%= link %></p>
+                  <% end %>
                 <% end %>
               <% end %>
-            <% end %>
-          </div>
-        <% end %>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+<% end %>
 
-<% if support_signed_in? %>
+<% if operator_signed_in? %>
+  <h1>Review All Memberships</h1>
+  <p>(note, sign out of operator account to see your personal memberships)</p>
+
   <section class="l-section">
     <div class="row">
       <div class="col-12 col-md-12">
@@ -60,26 +63,7 @@
           <p>
             This page is a kind of godmode. Be careful who you show this too, these details are private.
           </p>
-          <table class="js-data-table table table-hover table-striped table-dark table-responsive-lg">
-            <thead>
-              <th>#</th>
-              <th>Legal Name</th>
-              <th>Preferred Name</th>
-              <th>Email</th>
-              <th>Membership</th>
-            </thead>
-            <tbody>
-              <% Claim.active.eager_load(:user, :contact, reservation: :membership).each do |claim| %>
-                <tr>
-                  <td><%= claim.reservation.membership_number %></td>
-                  <td><%= link_to(claim.contact&.legal_name, reservation_path(claim.reservation)) %></td>
-                  <td><%= claim.contact&.preferred_name %></td>
-                  <td><%= claim.user.email %></td>
-                  <td><%= claim.reservation.membership %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+          <%= render("operator_claims_table", claims: Claim.active)  %>
         </div>
       </div>
     </div>

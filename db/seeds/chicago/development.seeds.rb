@@ -60,26 +60,28 @@ if users_to_create > 0
   puts "#{User.last.email}"
 end
 
-support = Support.create(
-  email: "support@worldcon.org",
-  password: 111111,
-  confirmed_at: Time.now,
-)
-puts
-puts "Support user created"
-puts "http://localhost:3000/supports/sign_in"
-puts "user: #{support.email}"
+%w(operator@worldcon.org supportworldcon.org).each do |operator_email|
+  Operator.create(
+    email: operator_email,
+    password: 111111,
+    confirmed_at: Time.now,
+  )
+end
+
+puts "Operator user created"
+puts "http://localhost:3000/operators/sign_in"
+puts "user: operator@worldcon.org"
 puts "pass: 111111"
 puts
 
-hugo_admin = Support.create(
+hugo_admin = Operator.create(
   email: "hugoadmin@worldcon.org",
   password: 111111,
   confirmed_at: Time.now,
   hugo_admin: true,
 )
 puts "Hugo admin created"
-puts "http://localhost:3000/supports/sign_in"
+puts "http://localhost:3000/operators/sign_in"
 puts "user: #{hugo_admin.email}"
 puts "pass: 111111"
 puts

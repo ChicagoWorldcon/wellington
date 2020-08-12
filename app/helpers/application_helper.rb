@@ -37,7 +37,11 @@ module ApplicationHelper
   # see Membership#all_rights
   def membership_right_description(membership_right, reservation)
     description = I18n.t(:description, scope: membership_right)
-    if match = membership_right.match(/rights\.(.*)\.nominate\z/)
+    if membership_right == "rights.attend" && ENV["VIRTUAL_WORLDCON_URL"].present?
+      link_to description, ENV["VIRTUAL_WORLDCON_URL"]
+    elsif membership_right == "rights.site_selection" && ENV["SITE_SELECTION_URL"].present?
+      link_to description, ENV["SITE_SELECTION_URL"]
+    elsif match = membership_right.match(/rights\.(.*)\.nominate\z/)
       election_i18n_key = match[1]
       link_to description, reservation_nomination_path(reservation_id: reservation, id: election_i18n_key)
     elsif match = membership_right.match(/rights\.(.*)\.nominate_only\z/)
@@ -51,10 +55,10 @@ module ApplicationHelper
     end
   end
 
-  def fuzzy_time(as_at)
+  def fuzzy_time(as_at, unset_text: "open ended")
     content_tag(
       :span,
-      fuzzy_time_in_words(as_at),
+      as_at ? fuzzy_time_in_words(as_at) : unset_text,
       title: as_at&.iso8601 || "Time not set",
     )
   end
@@ -67,6 +71,14 @@ module ApplicationHelper
     else
       "#{time_ago_in_words(as_at)} from now"
     end
+  end
+
+  def pretty_print(hash)
+    formattable = [
+      '<code>',
+      JSON.pretty_generate(hash),
+      '</code>',
+    ].join("\n")
   end
 
   def markdown

@@ -19,7 +19,7 @@
 # Reservation is associated with a Membership through Order
 # User is associated with a Membership through Reservation
 # Membership records are displayed for purchase from the MembershipsController when they're 'active'
-# Membership may also be associated to a user on import or when a Support user uses the SetMembership class
+# Membership may also be associated to a user on import or when a Operator user uses the SetMembership class
 # Cycling prices means you may have 4 Adult memberships, but it's likely only 1 will be active at a time
 # Membership holds rights such as attendance, site selection, nomination and voting
 # Membership types that were never available for purchase can be made by setting active_from and active_to to the same time in the past, e.g. dublin_2019
@@ -39,10 +39,11 @@ class Membership < ApplicationRecord
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
 
-  scope :can_nominate, -> { where(can_nominate: true) }
   scope :can_attend, -> { where(can_attend: true) }
+  scope :can_nominate, -> { where(can_nominate: true) }
   scope :can_site_select, -> { where(can_site_select: true) }
   scope :can_vote, -> { where(can_vote: true) }
+  scope :with_rights, -> { where("can_attend OR can_nominate OR can_vote") }
 
   scope :dob_required, -> { where(dob_required: true) }
 
@@ -56,6 +57,10 @@ class Membership < ApplicationRecord
   end
 
   # TODO FUTUREWORLDCON Make these rights dynamic in the DB for each membership type
+  def community?
+    name.match(/community/)
+  end
+
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
   # So we created new active Membership records at the same price
   # These match i18n values set in config/locales

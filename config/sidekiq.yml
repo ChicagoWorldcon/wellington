@@ -20,6 +20,10 @@ schedule:
     cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: NominationsTdsSync
 
+  full_sync_to_gloo:
+    cron: "0 */4 * * * Pacific/Auckland" # Every 4 hours, however most things are instant
+    class: GlooSyncAllUsers
+
   email_nomination_reports:
     cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: SendNominationReports
