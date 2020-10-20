@@ -34,14 +34,14 @@
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
 import '../channels';
 import '../sprinkles';
-import './conzealand-styles.scss';
+import '../stylesheets/conzealand-styles.scss';
 import '@fortawesome/fontawesome-free/js/brands';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
 
 import ujs from '@rails/ujs';
-
+const images = require.context('../images', true);
 ujs.start();
 
 // ActiveStorage can be used for uploading items to S3 and cloud storage

@@ -26,6 +26,8 @@ class PaymentMailer < ApplicationMailer
     @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
     @worldcon_url_homepage = worldcon_url_homepage
+    @worldcon_public_name_spaceless = worldcon_public_name_spaceless
+
     @charge = charge
     @reservation = charge.reservation
     @contact = @reservation.active_claim.contact
@@ -62,6 +64,29 @@ class PaymentMailer < ApplicationMailer
     mail(
       to: user.email,
       subject: "#{worldcon_public_name} Payment: Instalment for member ##{@reservation.membership_number}"
+    )
+  end
+
+  def waiting_for_cheque(user:, reservation:, outstanding_amount:)
+    @worldcon_basic_greeting = worldcon_basic_greeting
+    @worldcon_public_name = worldcon_public_name
+    @worldcon_url_homepage = worldcon_url_homepage
+    @worldcon_public_name_spaceless = worldcon_public_name_spaceless
+    @worldcon_mailing_address = worldcon_registration_mailing_address
+
+    @reservation = reservation
+    @contact = @reservation.active_claim.contact
+    @outstanding_amount = outstanding_amount
+
+    # This is to the user email, instead of the contact, for two reasons:
+    # 1. The contact may not have an email, not every con does
+    # 2. The user is responsible for all payments, in our model, so they should get this.
+    recipients = [user.email, $treasurer_email]
+
+    mail(
+      from: $treasurer_email,
+      to: recipients.join(","),
+      subject: "#{worldcon_public_name} Payment instructions for member ##{@reservation.membership_number}"
     )
   end
 end

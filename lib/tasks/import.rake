@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'csv'
+
 namespace :import do
   DEFAULT_KANSA_CSV = "kansa-export.csv"
   DEFAULT_PRESUPPORT_SRC = "CoNZealand master members list - combining PreSupports, Site Selection and at W76 Memberships V02 - Test Setup for Data Import to Membership System.csv"
@@ -54,6 +56,25 @@ namespace :import do
       puts "Failed with errros"
       importer.errors.each do |error|
         puts " * #{error}"
+      end
+    end
+  end
+
+  desc "Imports chicago bid data"
+  task chicago: :environment do
+    as_at = Time.now.iso8601
+
+    dump_path = ENV["CHICAGO_BID_DUMP_DIR"] || Dir.pwd
+    voters = CSV.table("#{dump_path}/voters.csv").map(&:to_h)
+    members = CSV.table("#{dump_path}/members.csv").map(&:to_h)
+    payments = CSV.table("#{dump_path}/payments.csv").map(&:to_h)
+
+    importer = Import::ChicagoBidMembers.new(voters, members, payments, "Chicago Bid Import from #{dump_path} at #{as_at}")
+    success = importer.call
+    if ! success
+      puts "Failed with errors:"
+      importer.errors.each do |error|
+        puts" :: #{error}"
       end
     end
   end

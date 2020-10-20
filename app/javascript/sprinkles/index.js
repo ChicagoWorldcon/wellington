@@ -28,6 +28,9 @@ $(document).ready(() => {
 
   // Bootstrap tooltip for more information about elements
   $('[data-toggle=tooltip').tooltip();
+
+  // Bootstrap popovers.
+  //$('[data-toggle=tooltip').popover();
 });
 
 $(document).ready(() => {

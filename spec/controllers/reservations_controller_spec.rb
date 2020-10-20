@@ -359,6 +359,7 @@ RSpec.describe ReservationsController, type: :controller do
     end
   end
 
+<<<<<<< HEAD
   describe "#add_to_cart" do
     before { sign_in(original_user) }
     context "when adult offer is selected" do
@@ -395,6 +396,38 @@ RSpec.describe ReservationsController, type: :controller do
       it "redirects to the reservations page" do
         expect(response).to redirect_to(reservations_path)
       end
+=======
+  describe "#reserve_with_cheque" do
+    let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: nil) }
+    before { sign_in(original_user) }
+
+    let(:params) {
+      {
+        contact_model_key => {
+        :first_name => "Validanne",
+        :last_name => "Validbury",
+        :address_line_1 => "Valid-on-Thames",
+        :country => "Valbion",
+        :publication_format => ChicagoContact::PAPERPUBS_NONE},
+      :offer => offer.hash,
+      }
+    }
+
+    it "notifies about the email" do
+      post :reserve_with_cheque, params: params
+      expect(flash[:notice]).to be_present
+    end
+
+    it "emails the user" do
+      expect(PaymentMailer).to receive_message_chain(:waiting_for_cheque, :deliver_later).and_return(true)
+      post :reserve_with_cheque, params: params
+    end
+
+    it "redirects to the reservation page" do
+      post :reserve_with_cheque, params: params
+      expect(response).to have_http_status(:found)
+      expect(response.headers["Location"]).to match(/reservations/)
+>>>>>>> staging
     end
   end
 end

@@ -52,7 +52,8 @@ Rails.application.config.action_mailer.tap do |action_mailer|
         user_name:            ENV["SMTP_USER_NAME"],
         password:             ENV["SMTP_PASSWORD"],
         authentication:       "plain",
-        enable_starttls_auto: true
+        enable_starttls_auto: true,
+        ssl:                  ENV["SMTP_PORT"].to_i == 465
       }
     end
   end
@@ -75,6 +76,12 @@ Rails.application.config.action_mailer.tap do |action_mailer|
   $member_services_email = ENV.fetch(
     "MEMBER_SERVICES_EMAIL",
     "member_services@localhost"
+  ).downcase
+
+  # FIXME I know this is a lousy hack. I plan to revisit the emails soon and make a con-config setup for them.
+  $treasurer_email = ENV.fetch(
+    "TREASURER_EMAIL",
+    "treasurer@chicon.org"
   ).downcase
 
   $hugo_help_email = ENV.fetch(

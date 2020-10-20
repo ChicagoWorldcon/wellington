@@ -1221,6 +1221,7 @@ ALTER TABLE ONLY public.reservation_charges
 
 
 --
+<<<<<<< HEAD
 -- Name: charges fk_rails_5cd975e78e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1229,6 +1230,8 @@ ALTER TABLE ONLY public.charges
 
 
 --
+=======
+>>>>>>> staging
 -- Name: notes fk_rails_7f2323ad43; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1253,6 +1256,7 @@ ALTER TABLE ONLY public.ranks
 
 
 --
+<<<<<<< HEAD
 -- Name: reservation_charges fk_rails_c9016dc7c3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1264,6 +1268,11 @@ ALTER TABLE ONLY public.reservation_charges
 -- Name: orders fk_rails_dfb33b2de0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
+=======
+-- Name: orders fk_rails_dfb33b2de0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+>>>>>>> staging
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
 
@@ -1355,7 +1364,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200717081753'),
 ('20200719215504'),
 ('20200720235919'),
+<<<<<<< HEAD
 ('20200724003813'),
 ('20200728025245');
+=======
+('20200724003813');
+>>>>>>> staging
 
 

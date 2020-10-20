@@ -23,7 +23,7 @@ We've sent you this email to let you know that you've just finished paying for y
 and that your membership number is #<%= @reservation.membership_number %>.
 
 You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
-identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= worldcon_public_name_spaceless %>".
+identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
 
 You can update your detals and access our services any time by returning to the members area.
 

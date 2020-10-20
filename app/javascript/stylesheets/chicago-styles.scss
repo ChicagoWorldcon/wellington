@@ -37,6 +37,8 @@
 // =========================================================================
 
 // https://getbootstrap.com/docs/4.0/getting-started/webpack/
+
+@import 'chicago_fonts';
 @import "~bootstrap/scss/bootstrap";
 
 // -------------------------------
@@ -52,13 +54,10 @@ $red: #DA291C;
 $dark_blue: #00558C;
 
 // Leftover CoNZealand:
-$light-grey: #e1e1e1;
+//$light-grey: #e1e1e1;
 
 // Fonts
-@import 'chicago_fonts';
-//$font-stack: 'Metropolis', sans-serif;
 
-//@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
 $font-stack: 'Metropolis', sans-serif;
 
 // -------------------------------
@@ -104,10 +103,10 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("chicon-bg.jpg") center top / cover no-repeat fixed $dark_blue;
+    background: url("../images/backgrounds/chicon-bg.jpg") center top / cover no-repeat fixed $dark_blue;
 
     &.api-test-keys {
-        background: url("chicon-testing-bg.jpg") center top / cover no-repeat fixed $dark_blue;
+        background: url("../images/backgrounds/chicon-testing-bg.jpg") center top / cover no-repeat fixed $dark_blue;
     }
 
     color: $white;
@@ -176,7 +175,7 @@ h6, .h6-like {
   transition: background-color .2s ease-in;
 }
 .btn:focus {
-  outline: 1px dotted $white;
+  outline: 1px dotted $red;
 }
 .btn-m-full-width {
   width: 100%;
@@ -196,7 +195,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: $light-grey;
+  color: $white;
   text-decoration: underline;
 }
 a:focus {
@@ -208,7 +207,7 @@ a:focus {
 // -------------------------------
 
 .logo img {
-  max-width: 700px;
+  // max-width: 700px;
 }
 
 // =========================================================================
@@ -224,7 +223,7 @@ a:focus {
   background: none;
   border-width: 2px;
   border-style: solid;
-  border-color: $light-grey;
+  border-color: $light-blue;
   border-radius: 5px;
   color: $white;
   width: 100%;
@@ -245,7 +244,7 @@ a:focus {
   margin-bottom: 1.5em;
 }
 .form-note {
-  color: $light-grey;
+  color: $red;
   margin-top: 1em;
   margin-bottom: 1.5em;
 }

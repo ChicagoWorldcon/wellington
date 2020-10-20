@@ -16,7 +16,14 @@
 # limitations under the License.
 
 class PaymentMailerPreview < ActionMailer::Preview
-  StubReservation = Struct.new(:name, :number, :instalment?, :paid?)
+  include ThemeConcern
+
+  StubReservation = Struct.new(:name, :number, :active_claim, :instalment?, :paid?, :membership) do
+    def membership_number
+      number
+    end
+  end
+  StubClaim = Struct.new(:contact)
   StubUser = Struct.new(:email, :login_url)
   StubCharge = Struct.new(:id, :amount)
 
@@ -31,6 +38,14 @@ class PaymentMailerPreview < ActionMailer::Preview
     PaymentMailer.instalment(
       user: Charge.last.user,
       charge: Charge.last,
+      outstanding_amount: 42_00,
+    )
+  end
+
+  def waiting_for_cheque
+    PaymentMailer.waiting_for_cheque(
+      user: Charge.last.user,
+      reservation: StubReservation.new("stub", 41, StubClaim.new(theme_contact_class.last)),
       outstanding_amount: 42_00,
     )
   end

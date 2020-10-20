@@ -16,7 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-
 <%= fields_for(@contact) do |contact_form| %>
   <%# TODO: Replace EXAMPLE URLs%>
   <p>
@@ -148,7 +147,15 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="date_of_birth">Date of Birth (required)</label>
-            <%= contact_form.date_select(:dob_array, {order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year - 120}, required: true, class: "form-control", id: "date_of_birth")  %>
+            <%= contact_form.date_select(:date_of_birth,
+                                         include_blank: true,
+                                         selected: @contact.date_of_birth || Date.current,
+                                         start_year: Date.today.year - 35,
+                                         end_year: Date.today.year,
+                                         required: true,
+                                         class: "form-control",
+            )
+            %>
           </div>
         </div>
       </div>
@@ -175,10 +182,8 @@
         <label for="show_in_listings">List name on the <%= worldcon_public_name %> website and in published directories?</label>
       </div>
 
-      <%# TODO: figure out what this SFCONZ business is %>
-
       <p class="form-note form-note-m-group">
-        SFCONZ and Worldcon 80 want to list your information on our websites.
+        <%= worldcon_public_name %> would like to list your information on our websites.
       </p>
     </fieldset>
   </fieldset>
@@ -250,7 +255,7 @@
 
       <div class="form-group">
         <label for="email">Email (Optional. Please remove or edit if the membership is for someone other than yourself.)</label>
-        <%= contact_form.text_field(:email, value: (current_user ? current_user.email : ""), class: "form-control", id: "email") %>
+        <%= contact_form.text_field(:email, class: "form-control", id: "email") %>
         <% if errors = form_input_errors(@contact, :email) %>
           <p class="form-error"><%= errors %></p>
         <% end %>
@@ -297,6 +302,7 @@
   </fieldset>
 
   <div class="l-v-spacing-both">
+<<<<<<< HEAD
       <div class="form-group">
           <div class="btn-group w-100">
               <% if @reservation.persisted? %>
@@ -309,6 +315,19 @@
                   <div class="col"><input type="submit" value="Add Membership to Cart" class="btn" formMethod="post" formaction="<%= add_to_cart_reservations_path %>"></div>
               <% end %>
           </div>
+=======
+    <div class="form-group">
+      <div class="btn-group w-100">
+        <% if @reservation.persisted? %>
+          <div class="col"><input type="submit" value="Save Details" class="btn btn-m-full-width"></div>
+        <% elsif @my_offer.membership.price > 0  %>
+          <div class="col"><input type="submit" name="" value="Reserve Membership and Pay" class="btn"></div>
+          <div class="col"><input type="submit" value="Pay with Cheque" class="btn" formaction="<%= reserve_with_cheque_reservations_path %>"></div>
+        <% else %>
+          <div class="col"><input type="submit" value="Reserve Membership" class="btn"></div>
+        <% end %>
+      </div>
+>>>>>>> staging
     </div>
 
     <%# TODO: Deal with city %>

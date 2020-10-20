@@ -62,6 +62,7 @@ class ChicagoContact < ApplicationRecord
     :interest_exhibiting,
     :interest_performing,
     :mail_souvenir_book,
+    :installment_wanted,
     :date_of_birth,
     :email
   ].freeze
@@ -81,6 +82,11 @@ class ChicagoContact < ApplicationRecord
 
   def as_import
     @for_import = true
+    self
+  end
+
+  def for_user(user)
+    write_attribute(:email, user.email) if user.present?
     self
   end
 

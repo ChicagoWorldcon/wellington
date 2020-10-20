@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<%#
+<%
+=begin %>
   Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
@@ -17,11 +18,12 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-%>
+<%
+=end %>
 
 <html lang="en">
 <head>
-  <title>Chicago</title>
+  <title><%= worldcon_public_name %> Registration</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
@@ -29,21 +31,16 @@
   <script src="https://checkout.stripe.com/checkout.js"></script>
 
   <%= javascript_pack_tag "chicago-app" %>
-  <%= stylesheet_pack_tag "chicago-styles", media: "all" %>
-
-  <%=
-    tag("link", {
-      rel: "shortcut icon",
-      type: "image/x-icon",
-      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
-    })
-  %>
+  <%= stylesheet_pack_tag "chicago-app", media: "all" %>
+  <%= favicon_pack_tag "favicons/Chicon8StandardFavicon.ico" %>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="<%= worldcon_public_name %> is a convention for science fiction enthusiasts.">
-  <meta name="keywords" content="<%= worldcon_public_name.downcase %>, science fiction, convention, meet up, sci-fi" />
+  <meta name="description" content="<%= worldcon_public_name %>
+  will be the <%= worldcon_number_digits_only.ordinalize %> World Science Fiction Convention.">
+  <meta name="keywords" content="<%= worldcon_public_name.downcase %>,
+   science fiction, convention, meet up, sci-fi" />
 </head>
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
@@ -60,6 +57,18 @@
   <% end %>
 
   <header>
+    <div class="container l-v-spacing" role="banner">
+      <a href="<%= root_path %>" class="logo">
+        <%=
+          image_pack_tag(
+            "media/images/banners/WebHeaderTextTop2x.svg",
+            alt: "Chicon 8 - The 80th World Science Fiction Convention",
+            class: "img-responsive"
+          )
+        %>
+      </a>
+    </div>
+
     <div class="container">
       <%= render "layouts/alerts" %>
     </div>
@@ -75,9 +84,10 @@
 
   <footer role="contentinfo">
     <div class="container l-wrapper">
+      <p>Copyright (C) 2020 <%= worldcon_public_name %>. All rights reserved.</p>
+      <p>"World Science Fiction Society", "WSFS", "World Science Fiction Convention", "Worldcon", "NASFiC", "Hugo Award", the Hugo Award Logo, and the distinctive design of the Hugo Award Trophy Rocket are service marks of the World Science Fiction Society, an unincorporated literary society.</p>
       <p>
-        Just example content for the Chicago 2022 &lt;3
-        Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %>
+        Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %> for help with registration and this site.
       </p>
     </div>
   </footer>

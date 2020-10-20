@@ -31,8 +31,11 @@ membership_distribution_averages = [
 ]
 
 
+users_to_create = (ENV["SEED_USER_COUNT"] || "50").to_i
+
 all_memberships = Membership.all.to_a
-50.times do |count|
+
+users_to_create.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
   new_user = FactoryBot.create(:user)
   memberships_held = membership_distribution_averages.sample # <-- biased random number
@@ -52,8 +55,10 @@ all_memberships = Membership.all.to_a
   end
 end
 
-puts "\nFinished creating users, try sign in with"
-puts "#{User.last.email}"
+if users_to_create > 0
+  puts "\nFinished creating users, try sign in with"
+  puts "#{User.last.email}"
+end
 
 support = Support.create(
   email: "support@worldcon.org",
@@ -93,7 +98,14 @@ nominators.each.with_index(1) do |reservation, count|
 end
 
 # Avoid sending system emails for generated nominations
+<<<<<<< HEAD
 # Reservation.update_all(ballot_last_mailed_at: Time.now)
+=======
+Reservation.update_all(ballot_last_mailed_at: Time.now)
+
+# FIXME:  The rest of tihs process is commented out pending figuring out why
+# ./development_finalist.seeds.rb is causing failures.
+>>>>>>> staging
 #
 # puts "Creating finalists..."
 # require_relative "./development_finalist.seeds.rb"

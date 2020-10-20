@@ -19,7 +19,11 @@ class ReservationsController < ApplicationController
   include ThemeConcern
 
   before_action :lookup_reservation!, only: [:show, :update]
+<<<<<<< HEAD
   before_action :lookup_offer, only: [:new, :create, :add_to_cart]
+=======
+  before_action :lookup_offer, only: [:new, :create, :reserve_with_cheque]
+>>>>>>> staging
   before_action :setup_paperpubs, except: :index
 
   # TODO(issue #24) list all members for people not logged in
@@ -39,7 +43,7 @@ class ReservationsController < ApplicationController
 
   def new
     @reservation = Reservation.new
-    @contact = contact_model.new
+    @contact = contact_model.new.for_user(current_user)
     @offers = MembershipOffer.options
     if user_signed_in?
       @current_memberships = MembershipsHeldSummary.new(current_user).to_s
@@ -59,8 +63,13 @@ class ReservationsController < ApplicationController
   def create
     create_and do |new_reservation|
       flash[:notice] = %{
+<<<<<<< HEAD
         Congratulations member ##{new_reservation.membership_number}!
         You've just reserved a #{@my_offer.membership} membership. . Please go to #{view_context.link_to("the Charges page", new_reservation_charge_path(new_reservation))} to pay.
+=======
+        Congratulations member #{new_reservation.membership_number}!
+        You've just reserved a #{@my_offer.membership} membership
+>>>>>>> staging
       }
 
       if new_reservation.membership.price.zero?
@@ -71,16 +80,37 @@ class ReservationsController < ApplicationController
     end
   end
 
+<<<<<<< HEAD
   def add_to_cart
     create_and do |new_reservation|
       # FIXME: This actually doesn't render as HTML in the view and I have no idea why
       flash[:notice] = %{
         You've just reserved a #{@my_offer.membership} membership. Go to <a href="#{view_context.charges_path}">the Charges page to pay</a>
       }
+=======
+  def reserve_with_cheque
+    create_and do |new_reservation|
+      flash[:notice] = %{
+        You've just reserved a #{@my_offer.membership} membership. See your email for instructions on payment by cheque.
+      }
+
+      PaymentMailer.waiting_for_cheque(
+        user: current_user,
+        reservation: new_reservation,
+        outstanding_amount: AmountOwedForReservation.new(new_reservation).amount_owed.format(with_currency: true)
+      ).deliver_later
+
+      new_reservation.state = Reservation::INSTALMENT
+
+>>>>>>> staging
       redirect_to reservations_path
     end
   end
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> staging
   def update
     @reservation.transaction do
       current_contact = @reservation.active_claim.contact
@@ -109,7 +139,11 @@ class ReservationsController < ApplicationController
       end
       if !@contact.valid?
         @reservation = Reservation.new
+<<<<<<< HEAD
         flash[:error] = @contact.errors.full_messages.to_sentence
+=======
+        flash[:error] = @contact.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
+>>>>>>> staging
         render "/reservations/new"
         return
       end

@@ -177,7 +177,7 @@ module ApplicationHelper
   end
 
   def worldcon_number_digits_only
-    self.worldcon_number.gsub(/[worldcon]/i, '')
+    worldcon_number.gsub(/worldcon/i, '').to_i
   end
 
   #### Organizer Signature Helpers
@@ -204,6 +204,10 @@ module ApplicationHelper
 
   def worldcon_url_volunteering
     Rails.configuration.convention_details.con_url_volunteering
+  end
+
+  def worldcon_registration_mailing_address
+    Rails.configuration.convention_details.registration_mailing_address
   end
 
   def wsfs_constitution_link

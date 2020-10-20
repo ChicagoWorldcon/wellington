@@ -102,7 +102,7 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    background: url("../images/backgrounds/conzealand-bg.jpg") center top / cover no-repeat fixed $black;
 
     // For that test environment feeling
     &.api-test-keys {

@@ -54,6 +54,12 @@ module Conzealand
     #Configures all convention-specific info
     config.convention_details = ConventionDetails::DetailManager.new.details
 
+    if ENV["STRIPE_CURRENCY"].present?
+      config.default_currency = ENV["STRIPE_CURRENCY"].downcase.to_sym
+    else
+      config.default_currency = :usd
+    end
+
     # Configure the location of the en.yml file used for i18n translation such
     # that it will serve con-specific text.  Note that this will NOT override
     # the location used by outside gems, which is why devise.en.yml has to be
@@ -65,5 +71,9 @@ module Conzealand
 
     # Configure the site theme based on WORLDCON_THEME env var
     config.site_theme = config.convention_details.site_theme
+
+    # GNU Terry Pratchett
+    config.middleware.use Rack::Pratchett
+
   end
 end

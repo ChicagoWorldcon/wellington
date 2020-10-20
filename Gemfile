@@ -32,6 +32,7 @@ gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
 gem "puma"                 # http server for rack
+gem 'rack-pratchett'       # say his name
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
@@ -42,6 +43,8 @@ gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
 group :development, :test do
+  gem "better_errors"                                  # Does what it says on the tin.
+  gem "binding_of_caller"                             # Makes it possible to use "better_errors"'s REPL, local/instance variable inspection, and pretty stack frame names
   gem "brakeman"                                      # vulnerability and static analysis
   gem "byebug", platforms: %i[mri mingw x64_mingw]    # Call "byebug" anywhere in the code for interactive debugging
   gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
@@ -70,6 +73,7 @@ group :development do
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
+  gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
