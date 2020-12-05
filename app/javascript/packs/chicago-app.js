@@ -24,10 +24,13 @@ import 'regenerator-runtime/runtime';
 import '../stylesheets/chicago-styles.scss';
 import '../channels';
 import '../sprinkles';
+import 'bootstrap'
+import '@fortawesome/fontawesome-free/js/all'
 import '@fortawesome/fontawesome-free/js/brands';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
+
 require.context('../images', true);
 
 ujs.start();
