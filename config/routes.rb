@@ -57,10 +57,12 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  patch '/cart/place_order', to: 'cart#update_to_paid', as: 'update_to_paid'
+
   get '/cart', to: 'cart#access_cart', as: "cart"
   delete '/cart/:id/remove_single_item', to:'cart#remove_single_item', as: "remove_single_item"
   delete '/cart/delete', to:'cart#destroy', as: "cart_destroy"
+  patch '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
+  patch '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
 
   resources :cart_items
   resources :credits
@@ -72,6 +74,7 @@ Rails.application.routes.draw do
 
   resources :reservations do
     post :reserve_with_cheque, on: :collection
+    post :add_to_cart, on: :collection, to: 'cart#add_to_cart', as: 'add_to_cart'
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
