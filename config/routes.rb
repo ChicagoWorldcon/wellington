@@ -57,6 +57,8 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
+  resources :cart_items
+  resources :carts
   resources :credits
   resources :landing
   resources :memberships
