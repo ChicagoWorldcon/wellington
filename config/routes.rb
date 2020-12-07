@@ -57,8 +57,12 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
+  patch '/cart/place_order', to: 'cart#update_to_paid', as: 'update_to_paid'
+  get '/cart', to: 'cart#access_cart', as: "cart"
+  delete '/cart/:id/remove_single_item', to:'cart#remove_single_item', as: "remove_single_item"
+  delete '/cart/delete', to:'cart#destroy', as: "cart_destroy"
+
   resources :cart_items
-  resources :carts
   resources :credits
   resources :landing
   resources :memberships
