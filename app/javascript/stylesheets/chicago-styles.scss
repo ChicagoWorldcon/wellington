@@ -64,7 +64,6 @@ $orange: #F26522;
 //$light-grey: #e1e1e1;
 
 // Fonts
-
 $font-stack: 'Metropolis', sans-serif;
 
 // -------------------------------
@@ -202,7 +201,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: $white;
+  color: $mid-grey;
   text-decoration: underline;
 }
 a:focus {
