@@ -34,8 +34,8 @@ jobs:
 
       - name: Define the repository labels
         run: |
-            echo '::set-env name=CONTAINER_TEST_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}'
-            echo '::set-env name=CONTAINER_STAGING_REPOSITORY::${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}'
+          echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}" >> $GITHUB_ENV
+          echo "CONTAINER_STAGING_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
