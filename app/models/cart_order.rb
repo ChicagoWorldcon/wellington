@@ -1,0 +1,2 @@
+class CartOrder < ApplicationRecord
+end

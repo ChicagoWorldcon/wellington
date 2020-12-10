@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   patch '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
 
   resources :cart_items
+  resources :cart_orders
   resources :credits
   resources :landing
   resources :memberships

@@ -1,0 +1,2 @@
+class CartSession < ApplicationRecord
+end
