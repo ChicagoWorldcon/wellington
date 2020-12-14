@@ -1,2 +1,0 @@
-class CartSession < ApplicationRecord
-end
