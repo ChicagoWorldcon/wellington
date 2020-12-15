@@ -1,19 +1,3 @@
-/*
- * Copyright 2019 Matthew B. Gray
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 module.exports = function(api) {
   var validEnv = ['development', 'test', 'production']
   var currentEnv = api.env()
@@ -34,7 +18,7 @@ module.exports = function(api) {
   return {
     presets: [
       isTestEnv && [
-        require('@babel/preset-env').default,
+        '@babel/preset-env',
         {
           targets: {
             node: 'current'
@@ -42,7 +26,7 @@ module.exports = function(api) {
         }
       ],
       (isProductionEnv || isDevelopmentEnv) && [
-        require('@babel/preset-env').default,
+        '@babel/preset-env',
         {
           forceAllTransforms: true,
           useBuiltIns: 'entry',
@@ -53,32 +37,30 @@ module.exports = function(api) {
       ]
     ].filter(Boolean),
     plugins: [
-      require('babel-plugin-macros'),
-      require('@babel/plugin-syntax-dynamic-import').default,
-      isTestEnv && require('babel-plugin-dynamic-import-node'),
-      require('@babel/plugin-transform-destructuring').default,
+      'babel-plugin-macros',
+      '@babel/plugin-syntax-dynamic-import',
+      isTestEnv && 'babel-plugin-dynamic-import-node',
+      '@babel/plugin-transform-destructuring',
       [
-        require('@babel/plugin-proposal-class-properties').default,
+        '@babel/plugin-proposal-class-properties',
         {
           loose: true
         }
       ],
       [
-        require('@babel/plugin-proposal-object-rest-spread').default,
+        '@babel/plugin-proposal-object-rest-spread',
         {
           useBuiltIns: true
         }
       ],
       [
-        require('@babel/plugin-transform-runtime').default,
+        '@babel/plugin-transform-runtime',
         {
-          helpers: false,
-          regenerator: true,
-          corejs: false
+          helpers: false
         }
       ],
       [
-        require('@babel/plugin-transform-regenerator').default,
+        '@babel/plugin-transform-regenerator',
         {
           async: false
         }
