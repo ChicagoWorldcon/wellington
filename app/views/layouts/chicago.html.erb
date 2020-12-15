@@ -69,7 +69,11 @@
       </a>
     </div>
     <div class="container">
-      <i class="fas fa-shopping-cart fa-sm"></i>
+      <%= link_to cart_path, method: :get do %>
+        <button style="font-size:24px; background-color:lime; color:tomato;">
+          <i class="fas fa-shopping-cart fa-2x"></i>
+        </button>
+      <% end %>
     </div>
 
     <div class="container">

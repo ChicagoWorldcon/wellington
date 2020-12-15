@@ -15,16 +15,16 @@
 
 %>
 
-<h1>Shopping Cart</h1>
-<section class="l-section">
+<h1 style="background-color:purple; color:crimson">Shopping Cart</h1>
+<section style="background-color:violet; color:aquamarine" class="l-section">
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
         <% if !user_signed_in? %>
-          <%= render "sign_in_notice" %>
+          <%= render "reservations/sign_in_notice" %>
         <% end %>
       </div>
-      <h3>[This is where the stuff in the cart will go]</h3>
+      <h3 style="color:olive">[This is where the stuff in the cart will go]</h3>
     </div>
   </div>
 </section>
