@@ -57,15 +57,16 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
+  resources :cart, only: [:show, :create, :edit, :update] do
+    resources :cart_items
+  end
 
-  get '/cart', to: 'cart#access_cart', as: "cart"
-  delete '/cart/:id/remove_single_item', to:'cart#remove_single_item', as: "remove_single_item"
-  delete '/cart/delete', to:'cart#destroy', as: "cart_destroy"
-  patch '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
-  patch '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
+  get '/cart/purchase_preview', to: 'cart#purchase_preview', as: 'purchase_preview'
+  post '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
+  post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
+  put '/cart/verify', to: 'cart#verify_contents', as: "cart_verify"
+  delete '/cart/clear', to: 'cart#destroy', as: "clear_cart"
 
-  resources :cart_items
-  resources :cart_orders
   resources :credits
   resources :landing
   resources :memberships
@@ -75,7 +76,7 @@ Rails.application.routes.draw do
 
   resources :reservations do
     post :reserve_with_cheque, on: :collection
-    post :add_to_cart, on: :collection, to: 'cart#add_to_cart', as: 'add_to_cart'
+    post :add_to_cart, on: :collection, to: 'cart_items#create', as: 'add_to_cart'
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/

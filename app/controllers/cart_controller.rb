@@ -17,6 +17,8 @@
 class CartController < ApplicationController
 
   def access_cart
+      # TODO: This needs a mechanism for checking to see if the things in the cart
+      # have changed price, are still available, etc.
       render "reservations/cart"
   end
 
@@ -33,16 +35,16 @@ class CartController < ApplicationController
     # [TODO] Find the cart order and then update
     # stuff from the params (presumably).
     # Then:
-    if @cart.save
-      flash[:status] = :success
-      flash[:result_text] = "Your order information has been successfully updated!"
-      redirect_to cart_path and return
-    else
-      flash[:status] = :failure
-      flash[:result_text] = "We were unable to update your order information."
-      flash[:messages] = @cart.errors.messages
-      redirect_to cart_path and return
-    end
+    # if @cart.save
+    #   flash[:status] = :success
+    #   flash[:result_text] = "Your order information has been successfully updated!"
+    #   redirect_to cart_path and return
+    # else
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "We were unable to update your order information."
+    #   flash[:messages] = @cart.errors.messages
+    #   redirect_to cart_path and return
+    # end
   end
 
   def submit_online_payment
@@ -53,47 +55,47 @@ class CartController < ApplicationController
 
   def destroy
     # First, find the cart-order
-    @cart = Order.find_by(id: session[:cart_order_id])
-    if @cart.nil?
-      flash[:status] = :failure
-      flash[:result_text] = "Unable to remove the items from your cart."
-      redirect_to cart_path and return
-    end
-    if @cart.cart_items.count > 0
-      @cart.cart_items.each do |cart_item|
-        cart_item.destroy
-      end
-    else
-      flash[:status] = :failure
-      flash[:result_text] = "Your cart was already empty!"
-    end
-    redirect_to cart_path
+    # @cart = Order.find_by(id: session[:cart_order_id])
+    # if @cart.nil?
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "Unable to remove the items from your cart."
+    #   redirect_to cart_path and return
+    # end
+    # if @cart.cart_items.count > 0
+    #   @cart.cart_items.each do |cart_item|
+    #     cart_item.destroy
+    #   end
+    # else
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "Your cart was already empty!"
+    # end
+    # redirect_to cart_path
   end
 
   def remove_single_item
     # First, find the cart contents by whatever means
-    @cart_item = CartItem.find_by(id: params[:id])
-    if @cart_item && @cart && (@ocart_item.order_id == @cart.id)
-      @cart_item_name = @cart_item.name
-      @cart_item.destroy
-      flash[:status] = :success
-      flash[:result_text] = "#{@cart_item_name} removed from your cart!"
-    else
-      flash[:status] = :failure
-      flash[:result_text] = "Unable to remove the items from your cart."
-      if @cart
-        flash[:errors] = @cart.errors.messages
-      end
-      if @cart_item
-        flash[:errors] = @cart_item.errors.messages
-      end
-      redirect_to cart_path and return
-    end
-    if !(@cart.cart_items.count > 0)
-      render :empty_cart and return
-    else
-      redirect_to cart_path
-    end
+    # @cart_item = CartItem.find_by(id: params[:id])
+    # if @cart_item && @cart && (@ocart_item.order_id == @cart.id)
+    #   @cart_item_name = @cart_item.name
+    #   @cart_item.destroy
+    #   flash[:status] = :success
+    #   flash[:result_text] = "#{@cart_item_name} removed from your cart!"
+    # else
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "Unable to remove the items from your cart."
+    #   if @cart
+    #     flash[:errors] = @cart.errors.messages
+    #   end
+    #   if @cart_item
+    #     flash[:errors] = @cart_item.errors.messages
+    #   end
+    #   redirect_to cart_path and return
+    # end
+    # if !(@cart.cart_items.count > 0)
+    #   render :empty_cart and return
+    # else
+    #   redirect_to cart_path
+    # end
   end
 
   def edit_single_item
@@ -109,18 +111,23 @@ class CartController < ApplicationController
     @cart = Cart.new
   end
 
-  def create
-    @cart = Cart.new(cart_params)
+  def create_cart
 
-    respond_to do |format|
-      if @cart.save
-        format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
-        format.json { render :show, status: :created, location: @cart }
-      else
-        format.html { render :new }
-        format.json { render json: @cart.errors, status: :unprocessable_entity }
-      end
-    end
+
+
+    # VEG note: Not sure if we need the Pending thing, but it's what we did
+    # on Betsy.  TODO: see if `status: pending` actually gets used for anything.
+    # @cart = CartOrder.new status: "pending"
+    #
+    # respond_to do |format|
+    #   if @cart.save
+    #     format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
+    #     format.json { render :show, status: :created, location: @cart }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @cart.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   def update
@@ -146,23 +153,32 @@ class CartController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def create_cart
-      @cart = Order.new status: "pending"
-      session[:cart_order_id] = @cart.id
-      if @cart.save
-        flash[:status] = :success
-        flash[:result_text] = "I don't know if we need this but welcome to Chicon 8!"
-      else
-        flash[:status] = :failure
-        flash[:result_text] = "We weren't able to create your shopping cart."
-        flash[:messages] = @cart.errors.messages
-      end
-      return @cart
+  # Use callbacks to share common setup or constraints between actions.
+  def create_cart
+    # Status "pending" keeps downstream validations from rejecting the
+    # CartOrder for not having payment info, etc.
+    @cartContents = CartOrder.new status: "pending"
+    # current_user is a Devise helper.
+    session[:cart_order_id] = current_user.id
+    if @cartOrder.save
+      flash[:status] = :success
+      flash[:result_text] = "I don't know if we need this but welcome to Chicon 8!"
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "We weren't able to create your shopping cart."
+      flash[:messages] = @cartOrder.errors.messages
     end
+    return @cartOrder
+  end
 
     # Only allow a list of trusted parameters through.
-    def cart_params
-      params.fetch(:cart, {})
-    end
+  def cart_params
+    params.fetch(:cart, {})
+  end
+
+  #Initalize Cart Session
+  # def initialize_cart_session
+  #   @session = session
+  #   @session[:cart] ||= {}
+  # end
 end

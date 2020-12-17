@@ -51,6 +51,7 @@ group :development, :test do
   gem "factory_bot_rails"                             # reusable model construction for tests
   gem "faker"                                         # fun common strings fro testing
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
+  #gem 'meta_request'                                  # allows you to use the 'rails panel' browser extension
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
   gem "rspec-rails"                                   # testing framework

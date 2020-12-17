@@ -1,2 +1,0 @@
-class CartOrder < ApplicationRecord
-end
