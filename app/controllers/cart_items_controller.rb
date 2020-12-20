@@ -10,6 +10,10 @@ class CartItemsController < ApplicationController
     @cart_items = CartItem.all
   end
 
+  def index_current_cart_items(our_cart_id)
+    @cart_items = CartItem.find_by(cart_id: our_cart_id)
+  end
+
   # GET /cart_items/1
   # GET /cart_items/1.json
   def show

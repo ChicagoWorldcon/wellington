@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  get '/cart', to: 'cart#show', as: 'cart_path'
+  get '/cart', to: 'cart#show', as: 'cart'
   get '/cart/purchase_preview', to: 'cart#purchase_preview', as: 'purchase_preview'
   post '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
   post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
