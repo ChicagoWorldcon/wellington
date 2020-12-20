@@ -26,36 +26,6 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
--- Name: cart_orders; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.cart_orders (
-    id bigint NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: cart_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.cart_orders_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: cart_orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.cart_orders_id_seq OWNED BY public.cart_orders.id;
-
-
---
 -- Name: categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -701,13 +671,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: cart_orders id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cart_orders ALTER COLUMN id SET DEFAULT nextval('public.cart_orders_id_seq'::regclass);
-
-
---
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -825,14 +788,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
-
-
---
--- Name: cart_orders cart_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cart_orders
-    ADD CONSTRAINT cart_orders_pkey PRIMARY KEY (id);
 
 
 --
@@ -1320,7 +1275,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200717081753'),
 ('20200719215504'),
 ('20200720235919'),
-('20200724003813'),
-('20201210085729');
+('20200724003813');
 
 

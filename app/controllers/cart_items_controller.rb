@@ -1,6 +1,9 @@
 class CartItemsController < ApplicationController
-  before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
+  # before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
 
+  MEMBERSHIP = "membership"
+  DONATION = "donation"
+  UPGRADE = "upgrade"
   # GET /cart_items
   # GET /cart_items.json
   def index

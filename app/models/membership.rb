@@ -35,6 +35,7 @@ class Membership < ApplicationRecord
   # Date of Birth is required for child and YA memberships
   validates_inclusion_of :dob_required, in: [true, false]
 
+  has_many :cart_items
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
@@ -53,6 +54,14 @@ class Membership < ApplicationRecord
 
   def to_s
     display_name ? display_name : name.humanize
+  end
+
+  def price_for_cart
+    self.price.format(with_currency: true)
+  end
+
+  def name_for_cart
+    self.to_s
   end
 
   # TODO FUTUREWORLDCON Make these rights dynamic in the DB for each membership type

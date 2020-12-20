@@ -68,6 +68,7 @@ class ChicagoContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items
 
   attr_reader :for_import
   attr_accessor :dob_array
@@ -117,6 +118,10 @@ class ChicagoContact < ApplicationRecord
     else
       nickname
     end
+  end
+
+  def name_for_cart
+    self.to_s
   end
 
   def nickname

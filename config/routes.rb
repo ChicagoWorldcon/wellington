@@ -57,15 +57,16 @@ Rails.application.routes.draw do
     get :logout, on: :collection
   end
 
-  resources :cart, only: [:show, :create, :edit, :update] do
-    resources :cart_items
-  end
-
+  get '/cart', to: 'cart#show', as: 'cart_path'
   get '/cart/purchase_preview', to: 'cart#purchase_preview', as: 'purchase_preview'
   post '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
   post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
-  put '/cart/verify', to: 'cart#verify_contents', as: "cart_verify"
-  delete '/cart/clear', to: 'cart#destroy', as: "clear_cart"
+  put '/cart/verify', to: 'cart#verify_availability', as: 'cart_verify'
+  delete '/cart/clear', to: 'cart#destroy', as: 'clear_cart'
+
+  scope :cart, only: [:show, :create, :edit, :update] do
+    resources :cart_items, only: [:index, :show, :edit, :update, :destroy]
+  end
 
   resources :credits
   resources :landing

@@ -16,10 +16,13 @@
 
 class CartController < ApplicationController
 
-  def access_cart
+  def show
+    if @cart_contents.nil?
+      @cart_contents = create_cart
+    end
       # TODO: This needs a mechanism for checking to see if the things in the cart
       # have changed price, are still available, etc.
-      render "reservations/cart"
+    redirect_to cart_path
   end
 
   def add_to_cart
@@ -145,7 +148,7 @@ class CartController < ApplicationController
   # DELETE /carts/1
   # DELETE /carts/1.json
   def destroy
-    @cart.destroy
+    @cart_contents.destroy
     respond_to do |format|
       format.html { redirect_to carts_url, notice: 'Cart was successfully destroyed.' }
       format.json { head :no_content }
@@ -157,28 +160,22 @@ class CartController < ApplicationController
   def create_cart
     # Status "pending" keeps downstream validations from rejecting the
     # CartOrder for not having payment info, etc.
-    @cartContents = CartOrder.new status: "pending"
+    @cart_contents = Cart.new status: "pending"
     # current_user is a Devise helper.
-    session[:cart_order_id] = current_user.id
-    if @cartOrder.save
+    @cart_contents.user_id = session[:cart_id] = current_user.id
+    if @cart_contents.save
       flash[:status] = :success
-      flash[:result_text] = "I don't know if we need this but welcome to Chicon 8!"
+      flash[:result_text] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
     else
       flash[:status] = :failure
       flash[:result_text] = "We weren't able to create your shopping cart."
-      flash[:messages] = @cartOrder.errors.messages
+      flash[:messages] = @cart_contents.errors.messages
     end
-    return @cartOrder
+    return @cart_contents
   end
 
     # Only allow a list of trusted parameters through.
   def cart_params
     params.fetch(:cart, {})
   end
-
-  #Initalize Cart Session
-  # def initialize_cart_session
-  #   @session = session
-  #   @session[:cart] ||= {}
-  # end
 end
