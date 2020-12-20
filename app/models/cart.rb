@@ -10,6 +10,7 @@ class Cart < ApplicationRecord
   belongs_to :user
   has_many :cart_items
 
-  def subtotal 
+  def subtotal
+    # TODO.  Might need a query object. 
   end
 end

@@ -16,9 +16,6 @@ class CartItemsController < ApplicationController
   end
 
   # GET /cart_items/new
-  def new
-    @cart_item = CartItem.new
-  end
 
   # GET /cart_items/1/edit
   def edit

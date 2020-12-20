@@ -56,14 +56,6 @@ class Membership < ApplicationRecord
     display_name ? display_name : name.humanize
   end
 
-  def price_for_cart
-    self.price.format(with_currency: true)
-  end
-
-  def name_for_cart
-    self.to_s
-  end
-
   # TODO FUTUREWORLDCON Make these rights dynamic in the DB for each membership type
   # n.b. Nomination in 2020 became unavailable to new members once Nomination opened
   # So we created new active Membership records at the same price
@@ -85,5 +77,17 @@ class Membership < ApplicationRecord
 
   def dob_required?
     dob_required
+  end
+
+  def display_price_for_cart
+    self.price.format(with_currency: true)
+  end
+
+  def monetized_price_for_cart
+    self.price_cents
+  end
+
+  def name_for_cart
+    self.to_s
   end
 end

@@ -19,7 +19,7 @@
 # payment.
 class CartItem < ApplicationRecord
   # Support for donations and upgrades is coming later.  This is just
-  # meant as a hint about how to make that happen.
+  # meant as a hint for the future about how to make that happen.
   MEMBERSHIP = "membership"
   # DONATION = "donation"
   # UPGRADE = "upgrade"
@@ -37,7 +37,6 @@ class CartItem < ApplicationRecord
   # and in the database.
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
-  monetize :price_cents
   validates :subject, inclusion: { in: SUBJECT_OPTIONS }
 
   def item_name
@@ -48,11 +47,26 @@ class CartItem < ApplicationRecord
 
   def item_display_price
     if self.subject == MEMBERSHIP
-      return membership_price
+      return membership_display_price
+    end
+  end
+
+  def item_monetized_price
+    if self.subject == MEMBERSHIP
+      return membership_monetized_price
     end
   end
 
   def recipient_name
+    if self.subject == MEMBERSHIP
+      return membership_recipient_name
+    end
+  end
+
+  def confirm_item_details
+    # TODO Make a copy of self by duplication, then look everything up in
+    # the database afresh, and then compare.  Dispatch appropriate
+    # flash messages. Return type should be boolean.
   end
 
   private

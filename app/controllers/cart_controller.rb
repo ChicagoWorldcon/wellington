@@ -15,26 +15,30 @@
 # limitations under the License.
 
 class CartController < ApplicationController
+  include ThemeConcern
+  PENDING = "pending"
 
   def show
-    if @cart_contents.nil?
-      @cart_contents = create_cart
-    end
-      # TODO: This needs a mechanism for checking to see if the things in the cart
-      # have changed price, are still available, etc.
-    redirect_to cart_path
+    if signed_in?
+      @cart = locate_cart
+
+        # TODO: This needs a mechanism for checking to see if the things in the cart
+        # have changed price, are still available, etc.
+      render :cart
+    else
+      # SOME KIND OF RENDER SIGN-IN situation
   end
 
   def add_to_cart
-    if @cart.nil?
-      @cart = create_cart
-    end
+    @cart = locate_cart
+
     # then put in the actual adding stuff
     # make sure that 'cart_path' is actually right.
     redirect_to cart_path
   end
 
   def update_cart_info
+    @cart = locate_cart
     # [TODO] Find the cart order and then update
     # stuff from the params (presumably).
     # Then:
@@ -51,12 +55,15 @@ class CartController < ApplicationController
   end
 
   def submit_online_payment
+    @cart = locate_cart
   end
 
   def submit_check_payment
+    @cart = locate_cart
   end
 
   def destroy
+    @cart = locate_cart
     # First, find the cart-order
     # @cart = Order.find_by(id: session[:cart_order_id])
     # if @cart.nil?
@@ -105,34 +112,6 @@ class CartController < ApplicationController
     # This will be for going into the reservation data
   end
 
-
-
-
-
-  # GET /carts/new
-  def new
-    @cart = Cart.new
-  end
-
-  def create_cart
-
-
-
-    # VEG note: Not sure if we need the Pending thing, but it's what we did
-    # on Betsy.  TODO: see if `status: pending` actually gets used for anything.
-    # @cart = CartOrder.new status: "pending"
-    #
-    # respond_to do |format|
-    #   if @cart.save
-    #     format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
-    #     format.json { render :show, status: :created, location: @cart }
-    #   else
-    #     format.html { render :new }
-    #     format.json { render json: @cart.errors, status: :unprocessable_entity }
-    #   end
-    # end
-  end
-
   def update
     respond_to do |format|
       if @cart.update(cart_params)
@@ -147,31 +126,36 @@ class CartController < ApplicationController
 
   # DELETE /carts/1
   # DELETE /carts/1.json
-  def destroy
-    @cart_contents.destroy
-    respond_to do |format|
-      format.html { redirect_to carts_url, notice: 'Cart was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
+  # def destroy
+  #   @cart_contents.destroy
+  #   respond_to do |format|
+  #     format.html { redirect_to carts_url, notice: 'Cart was successfully destroyed.' }
+  #     format.json { head :no_content }
+  #   end
+  # end
 
   private
+
+  def locate_cart
+    @cart =|| Cart.find_by(user_id: current_user.id) || create_cart
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def create_cart
     # Status "pending" keeps downstream validations from rejecting the
-    # CartOrder for not having payment info, etc.
-    @cart_contents = Cart.new status: "pending"
+    # cart for not having payment info, etc.
+    @cart = Cart.new status: "pending"
     # current_user is a Devise helper.
-    @cart_contents.user_id = session[:cart_id] = current_user.id
-    if @cart_contents.save
+    @cart.user_id = User.find(current_user.id)
+    if @cart.save
       flash[:status] = :success
       flash[:result_text] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
     else
       flash[:status] = :failure
-      flash[:result_text] = "We weren't able to create your shopping cart."
-      flash[:messages] = @cart_contents.errors.messages
+      flash[:result_text] = "We weren't able to create your shopping cart, so everything is now doomed."
+      flash[:messages] = @cart.errors.messages
     end
-    return @cart_contents
+    return @cart
   end
 
     # Only allow a list of trusted parameters through.
