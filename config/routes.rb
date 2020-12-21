@@ -61,11 +61,21 @@ Rails.application.routes.draw do
   get '/cart/purchase_preview', to: 'cart#purchase_preview', as: 'purchase_preview'
   post '/cart/pay_online', to: 'cart#pay_online', as: 'pay_online'
   post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'pay_with_cheque'
-  put '/cart/verify', to: 'cart#verify_availability', as: 'cart_verify'
-  delete '/cart/clear', to: 'cart#destroy', as: 'clear_cart'
+  put '/cart/verify', to: 'cart#verify_availability', as: 'verify_all'
+  delete '/cart/clear', to: 'cart#destroy', as: 'clear_all'
 
   scope :cart, only: [:show, :create, :edit, :update] do
-    resources :cart_items, only: [:index, :show, :edit, :update, :destroy]
+    resources :cart_items, only: [:index, :show, :edit, :update] do
+      get 'index_current_cart_items', :on => :collection, as: 'current_cart_items'
+      get 'edit_membership', :on => :member
+      get 'edit_recipient', :on => :member
+      put 'update_membership', :on => :member
+      put 'update_recipient', :on => :member
+      patch 'verify_single_item_availablility', :on => :member, to: 'cart#verify_single_item_availability', as: 'verify_single'
+      delete 'remove_single_item', :on => :member, to: 'cart#remove_single_item', as: 'remove_single'
+      patch 'save_item_for_later', :on => :member, to: 'cart#save_item_for_later', as: 'save_single'
+      patch 'move_item_to_cart', :on => :member, to: 'cart#move_item_to_cart', as: 'move_single'
+    end
   end
 
   resources :credits

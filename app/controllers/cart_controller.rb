@@ -19,14 +19,13 @@ class CartController < ApplicationController
   PENDING = "pending"
 
   def show
-    if signed_in?
+    if user_signed_in? && !support_signed_in?
       @cart = locate_cart
-
-        # TODO: This needs a mechanism for checking to see if the things in the cart
-        # have changed price, are still available, etc.
       render :cart
     else
-      # SOME KIND OF RENDER SIGN-IN situation
+      flash[:alert] = "You must be signed in to access the cart."
+      redirect_to root_path
+    end
   end
 
   def add_to_cart
@@ -108,6 +107,15 @@ class CartController < ApplicationController
     # end
   end
 
+  def save_item_for_later
+  end
+
+  def move_item_to_cart
+  end
+
+  def verify_single_item_availability
+  end
+
   def edit_single_item
     # This will be for going into the reservation data
   end
@@ -124,6 +132,14 @@ class CartController < ApplicationController
     end
   end
 
+  def verify_cart_contents
+    @cart = locate_cart
+  end
+
+  def subtotal_cart
+    @cart = locate_cart
+  end
+
   # DELETE /carts/1
   # DELETE /carts/1.json
   # def destroy
@@ -137,29 +153,39 @@ class CartController < ApplicationController
   private
 
   def locate_cart
-    @cart =|| Cart.find_by(user_id: current_user.id) || create_cart
+    @cart ||= Cart.find_by(user_id: current_user.id)
+    return @cart ||= create_cart
   end
 
   # Use callbacks to share common setup or constraints between actions.
   def create_cart
     # Status "pending" keeps downstream validations from rejecting the
-    # cart for not having payment info, etc.
-    @cart = Cart.new status: "pending"
-    # current_user is a Devise helper.
-    @cart.user_id = User.find(current_user.id)
-    if @cart.save
-      flash[:status] = :success
-      flash[:result_text] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
+    # cart for not having payment info, etc. Not sure if I'm going to have
+    # those yet, but this preserves the option for now.
+    if user_signed_in? && !support_signed_in?
+      @cart = Cart.new status: PENDING
+      # current_user is a Devise helper.
+      binding.pry
+      @cart.user_id = User.find_by(id: current_user.id).id
+      if @cart.save
+        binding.pry
+        flash[:status] = :success
+        flash[:notice] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
+      else
+        binding.pry
+        flash[:status] = :failure
+        flash[:notice] = "We weren't able to create your shopping cart, so everything is now doomed."
+        flash[:messages] = @cart.errors.messages
+      end
+      binding.pry
+      return @cart
     else
-      flash[:status] = :failure
-      flash[:result_text] = "We weren't able to create your shopping cart, so everything is now doomed."
-      flash[:messages] = @cart.errors.messages
+      return
     end
-    return @cart
   end
 
     # Only allow a list of trusted parameters through.
-  def cart_params
-    params.fetch(:cart, {})
-  end
+  # def cart_params
+  #   params.fetch(:cart, {})
+  # end
 end

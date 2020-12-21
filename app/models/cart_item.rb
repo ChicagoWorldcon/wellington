@@ -24,7 +24,7 @@ class CartItem < ApplicationRecord
   # DONATION = "donation"
   # UPGRADE = "upgrade"
 
-  SUBJECT_OPTIONS = [
+  TYPE_OPTIONS = [
     MEMBERSHIP
     #DONATION,
     #UPGRADE
@@ -32,33 +32,34 @@ class CartItem < ApplicationRecord
 
 
   belongs_to :cart
-  # Once there are subject options other than membership, the 'required'
+  # Once there are type options other than membership, the 'required'
   # values of :membership and :chicago_contact will change, both here
   # and in the database.
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
-  validates :subject, inclusion: { in: SUBJECT_OPTIONS }
+  validates :type, inclusion: { in: TYPE_OPTIONS }
+  validates :later, required: true
 
   def item_name
-    if self.subject == MEMBERSHIP
+    if self.type == MEMBERSHIP
       return membership_name
     end
   end
 
   def item_display_price
-    if self.subject == MEMBERSHIP
+    if self.type == MEMBERSHIP
       return membership_display_price
     end
   end
 
   def item_monetized_price
-    if self.subject == MEMBERSHIP
+    if self.type == MEMBERSHIP
       return membership_monetized_price
     end
   end
 
   def recipient_name
-    if self.subject == MEMBERSHIP
+    if self.type == MEMBERSHIP
       return membership_recipient_name
     end
   end

@@ -22,6 +22,85 @@
       <div class="l-panel">
       </div>
       <h3 style="color:olive">[This is where the stuff in the cart will go]</h3>
+
+
+      <% if @cart.cart_items.count > 0 %>
+        <div class="cart-contents">
+          <ul class="cart-items">
+            <% @cart.cart_items.each do |cart_item| %>
+              <li>
+                <div class="item-details">
+
+
+<%#
+
+            THIS LIST-GROUP WILL HAVE LINKS TO THE SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH
+            IN TURN WILL HAVE EDITING PAGES.
+%>
+
+
+
+
+                  <div class="list-group list-group-horizontal item-details-list">
+                    <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient %></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
+                  </div>
+                  <div class="btn-group" role="group">
+                    <%= button_to "Save for Later", {:action =>"save_item_for_later", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Remove from Cart", {:action =>"remove_single_item", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-info" %>
+                    <%= button_to "Check Availability", {:action =>"verify_single_item_availability", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
+                  </div>
+                </div>
+
+
+
+
+
+                  <div class="quantity-container">
+                    <%= form_for order_item do |f| %>
+                    <div class="quantity-box">
+                      <%= f.select :quantity, (1..order_item.product.stock).to_a,  :prompt => "#{order_item.quantity}" %>
+                    </div>
+                    <div class="quantity-button">
+                      <%= f.submit "Update", class: "button" %>
+                    </div>
+                    <% end %>
+                  </div>
+                  <div class="subtotal-remove-container">
+                    <p><strong>Subtotal:</strong> $<%= price_in_dollar(order_item.subtotal) %></p>
+                    <%= button_to "Remove", {:action =>"remove_single_item", :controller => "cart", id: order_item.id }, method: :delete, class: "button" %>
+                  </div>
+                </div>
+              </li>
+              <% end %>
+            </ul>
+
+
+        </div>
+      <% else %>
+        <h4> Your cart is empty! </h4>
+      <% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   </div>
 </section>

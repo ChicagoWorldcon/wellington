@@ -2,8 +2,9 @@ class CartItemsController < ApplicationController
   # before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
 
   MEMBERSHIP = "membership"
-  DONATION = "donation"
-  UPGRADE = "upgrade"
+  # DONATION = "donation"
+  # UPGRADE = "upgrade"
+
   # GET /cart_items
   # GET /cart_items.json
   def index
@@ -19,10 +20,29 @@ class CartItemsController < ApplicationController
   def show
   end
 
-  # GET /cart_items/new
-
   # GET /cart_items/1/edit
   def edit
+  end
+
+  def edit_item_membership
+  end
+
+  def edit_item_recipient
+  end
+
+  def update_item_membership
+  end
+
+  def update_item_recipient
+  end
+
+  def save_for_later
+  end
+
+  def move_to_cart
+  end
+
+  def verify_availability
   end
 
   # POST /cart_items
