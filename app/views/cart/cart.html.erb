@@ -26,80 +26,73 @@
 
       <% if @cart.cart_items.count > 0 %>
         <div class="cart-contents">
-          <ul class="cart-items">
+          <ul class="cart-items-now">
+            <%# TODO: NEED TO QUERY OUT SAVED-FOR-LATERS and REGULAR CART ITEMS %>
+            <%# TODO:  Make this something like  <% @cart.cart_items.not_saved.each do |cart_item| %>
             <% @cart.cart_items.each do |cart_item| %>
               <li>
-                <div class="item-details">
+                <div class="now-item-details">
+                  <%#
 
-
-<%#
-
-            THIS LIST-GROUP WILL HAVE LINKS TO THE SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH
-            IN TURN WILL HAVE EDITING PAGES.
-%>
-
-
-
-
-                  <div class="list-group list-group-horizontal item-details-list">
+                      THIS LIST-GROUP WILL HAVE LINKS TO THE SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH
+                      IN TURN WILL HAVE EDITING PAGES
+                  %>
+                  <div class="list-group list-group-horizontal now-details-list">
                     <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
                   </div>
-                  <div class="btn-group" role="group">
+                  <div class="btn-group now-buttons" role="group">
                     <%= button_to "Save for Later", {:action =>"save_item_for_later", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
                     <%= button_to "Remove from Cart", {:action =>"remove_single_item", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-info" %>
                     <%= button_to "Check Availability", {:action =>"verify_single_item_availability", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
                   </div>
                 </div>
+              </li>
+            <% end %>
+          </ul>
+          <div class="subtotal-container">
+            <div class="btn-group payment-buttons" role="group">
+              <%= button_to "Pay Online Now", {:action =>"submit_online_payment", :controller => "cart", id: cart_item.id }, method: :post, class: "btn btn-outline-primary" %>
+              <%= button_to "Pay with Check", {:action =>"submit_check_payment", :controller => "cart", id: cart_item.id }, method: :post, class: "btn btn-outline-primary" %>
+              <%= button_to "Save All Items for Later", {:action =>"save_all_items_for_later", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-warning" %>
+              <%= button_to "Clear All Active Items", {:action =>"clear_all_active_items", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-warning" %>
+            </div>
+          </div>
+          <ul class "cart-items-later">
+            <%# TODO:  Make this something like  <% @cart.cart_items.later.each do |cart_item| %>
+            <li>
+                <div class="later-item-details">
+                  <%#
 
-
-
-
-
-                  <div class="quantity-container">
-                    <%= form_for order_item do |f| %>
-                    <div class="quantity-box">
-                      <%= f.select :quantity, (1..order_item.product.stock).to_a,  :prompt => "#{order_item.quantity}" %>
-                    </div>
-                    <div class="quantity-button">
-                      <%= f.submit "Update", class: "button" %>
-                    </div>
-                    <% end %>
+                      AS WITH ITS COUNTERPART ABOVE, THIS LIST-GROUP WILL HAVE LINKS TO THE
+                      SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH IN TURN WILL HAVE EDITING PAGES
+                  %>
+                  <div class="list-group list-group-horizontal later-item-details-list">
+                    <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient%></li>
+                    <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
                   </div>
-                  <div class="subtotal-remove-container">
-                    <p><strong>Subtotal:</strong> $<%= price_in_dollar(order_item.subtotal) %></p>
-                    <%= button_to "Remove", {:action =>"remove_single_item", :controller => "cart", id: order_item.id }, method: :delete, class: "button" %>
+                  <div class="btn-group later-buttons" role="group">
+                    <%= button_to "Move to Cart", {:action =>"move-item-to-cart", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Delete", {:action =>"remove_single_item", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-info" %>
+                    <%= button_to "Check Availability", {:action =>"verify_single_item_availability", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
                   </div>
                 </div>
               </li>
-              <% end %>
-            </ul>
-
-
-        </div>
+          </ul>
+          <div class="saved-admin-container">
+            <div class="btn-group later-buttons" role="group">
+              <%= button_to "Move All Items to Cart", {:action =>"move_all_saved_items_to_cart", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-warning" %>
+              <%= button_to "Delete All Saved Items", {:action =>"remove_all_active_items", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-warning" %>
+            </div>
+          </div>
+      </div>
       <% else %>
         <h4> Your cart is empty! </h4>
       <% end %>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     </div>
   </div>
