@@ -38,7 +38,7 @@ class CartItem < ApplicationRecord
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
   validates :type, inclusion: { in: TYPE_OPTIONS }
-  validates :later, required: true
+  validates :later, presence: true
 
   def item_name
     if self.type == MEMBERSHIP

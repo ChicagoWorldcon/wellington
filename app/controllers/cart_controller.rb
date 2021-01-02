@@ -61,6 +61,14 @@ class CartController < ApplicationController
     @cart = locate_cart
   end
 
+  def clear_all_active_items
+    @cart = locate_cart
+  end
+
+  def clear_all_saved_items
+    @cart = locate_cart
+  end
+
   def destroy
     @cart = locate_cart
     # First, find the cart-order
@@ -107,11 +115,21 @@ class CartController < ApplicationController
     # end
   end
 
+  def remove_all_saved_items
+  end
+
   def save_item_for_later
+  end
+
+  def save_all_items_for_later
   end
 
   def move_item_to_cart
   end
+
+  def move_all_saved_items_to_cart
+  end
+
 
   def verify_single_item_availability
   end
@@ -167,6 +185,7 @@ class CartController < ApplicationController
       # current_user is a Devise helper.
       binding.pry
       @cart.user_id = User.find_by(id: current_user.id).id
+      @cart.cart_items = [];
       if @cart.save
         binding.pry
         flash[:status] = :success

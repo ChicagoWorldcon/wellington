@@ -29,13 +29,15 @@
           <ul class="cart-items-now">
             <%# TODO: NEED TO QUERY OUT SAVED-FOR-LATERS and REGULAR CART ITEMS %>
             <%# TODO:  Make this something like  <% @cart.cart_items.not_saved.each do |cart_item| %>
-            <% @cart.cart_items.each do |cart_item| %>
+            <% @cart.cart_items.each_with_index do |i, cart_item| %>
               <li>
                 <div class="now-item-details">
                   <%#
 
                       THIS LIST-GROUP WILL HAVE LINKS TO THE SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH
                       IN TURN WILL HAVE EDITING PAGES
+
+                      THINKING I'M GOING TO TRY AND MAKE THE EDITING PAGES WORK AS COLLAPSIBLE ELEMENTS. 
                   %>
                   <div class="list-group list-group-horizontal now-details-list">
                     <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>

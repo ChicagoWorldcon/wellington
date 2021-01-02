@@ -21,8 +21,8 @@ class CreateCartItems < ActiveRecord::Migration[6.1]
       t.references :membership, index: true, null: false, foreign_key: true
       t.references :chicago_contact, index: true, null: false, foreign_key: true
       t.string :type, null:false
-      t.boolean :later, null:false
-      t.boolean :unavailable, null:true
+      t.boolean :later, default:false, null:false
+      t.boolean :unavailable, default:false, null:false
       t.timestamps
     end
   end
