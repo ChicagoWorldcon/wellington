@@ -12,7 +12,7 @@ module ConventionDetails
       @con_country_previous = "New Zealand"
       @con_dates_informal_end = "Sunday, August 29th"
       @con_dates_informal_start = "Wednesday, August 25"
-      @con_greeting_basic = "hi there"
+      @con_greeting_basic = "greetings"
       @con_hugo_download_A4 = "https://www.si.edu/content/pdf/about/SmithsonianDigitalActionAgenda.pdf"
       @con_hugo_download_letter = "https://www.si.edu/content/pdf/about/SmithsonianDigitalActionAgenda.pdf"
       @con_name_public = "Discon III"

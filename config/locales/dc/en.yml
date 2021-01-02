@@ -1,0 +1,278 @@
+# Copyright 2020 Matthew B. Gray
+# Copyright 2020 Victoria Garcia
+# Copyright 20201 Fred Bauer
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "Hello DC!"
+
+  errors:
+    offer_unavailable: Sorry, but that offer %{offer} is no longer available
+
+  rights:
+    description: With this membership, you can
+
+    attend:
+      description: Attend in 2021
+      layman:
+        You get to attend %{worldcon_public_name} in 2021,with things such as autographing sessions, literary beer/coffee meetups,
+        awards ceremonies, costuming, dancing, a dealers room with sci-fi games/books, film festival, gaming,
+        socialising and much more!
+
+    site_selection:
+      description: Vote in Site Selection
+      layman:
+        Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
+        able to help choose where the worldcon will be hosted in 2023.
+
+    # Maps onto text from Election#i18n_key
+    hugo:
+      voting: |
+        How to vote:
+        ----------------------------------------
+
+        * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
+        * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
+        * A lower preference is considered only if all the candidates ranked higher have been eliminated.
+        * You are not required to rank all the finalists in any category.
+        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all.
+        * If you decide not to vote in any given category, leave it blank.
+        * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
+        * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
+        * When the ballots are counted, all the first place votes will be tabulated.
+        * If no finalist receives more than half of the votes, the finalist with the fewest first place votes is eliminated, and their votes are transferred to the finalists with the next preferences on those ballots.
+        * This process of elimination of the last-placed finalist and redistribution of their votes to the next available preference continues until one finalist has more than half of all remaining votes, at which point that finalist becomes the winner (except under specific conditions described in Sections 3.6 and 3.12 of the [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf)).
+
+      nominations: |
+        Eligibility to Nominate
+        ----------------------------------------
+
+        You may nominate for the 2021 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
+        for Best New Writer, if, on or before December 31, 2020, 11:59 PM EST
+
+        * you are an attending or supporting member of #{convention_public_name} (the 2021 World Science Fiction Convention), or
+        * you were an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention).
+
+        Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
+        one-day memberships and hall passes do not.
+
+        Deadline
+        ----------------------------------------
+
+        All ballots must be received by March 15, 2021, 11:59 PM EDT
+
+        How to Nominate
+        ----------------------------------------
+
+        You may nominate up to five persons or works in each category. However, if you are not familiar with the works
+        that fall into that category, you are permitted (and encouraged) to make fewer nominations or none at all. Your
+        nominations are equally weighted – the order in which you list them has no effect on the outcome.
+
+        “No Award” will appear automatically in every single category on the final ballot – there is no need to include
+        that choice on the nomination form.
+
+        If your nominee is not well known, please provide a source where their 2021 work in that category may be
+        found. This information makes it easier for us to identify the work you intend to nominate.
+
+        If you make nominations for Best Series, it will help us if you also list a volume in the series that was
+        published in 2020.
+
+        If you have any questions about the process or need assistance with nominating, please contact us at
+        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
+
+        The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
+        by %{worldcon_public_name} in April 2021. Only members of %{worldcon_public_name}  (including those who join after 31 December 2021) will
+        be eligible to vote on the final ballot.  Please contact %{hugo_help_email} if you have questions.
+
+        Eligibility for Nominations
+        ----------------------------------------
+
+        Works published in 2020 for the first time anywhere are eligible for the Hugo Awards being awarded in 2021. So
+        are works published for the first time in English translation in 2020, or for the first time in the United
+        States in 2020, unless they have already appeared on a Hugo Award final ballot.
+
+        Books are considered to have been published in the year of the publication date, which usually appears with
+        the copyright information on the back of the title page. If there is no stated publication date, the copyright
+        date will be used instead.  A dated periodical is considered to have been published on the cover date,
+        regardless of when it was placed on sale or copyrighted.  Serialized stories or dramatic presentations are
+        eligible in the year in which the last installment appears.
+
+        Nominations may be relocated to a different category by the Hugo administrator if they are within 20% of the
+        category boundary (such as in the case of Novel/Novella, Novella/Novelette, Novelette/Short Story, and
+        Dramatic Presentation, Long Form/Dramatic Presentation, Short Form).
+
+        For full eligibility rules, please see the
+        [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf).
+
+      nominate_soon:
+        description: Nominate for Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2021 and 2022, and
+          vote for the Hugo winners of 2021.
+
+      nominate:
+        description: Nominate for Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2021 and 2022, and
+          vote for the Hugo winners of 2021, and for the Retro Hugos for 1947.
+
+      # Dublin imports cannot vote, they get special text to nod to this
+      nominate_only:
+        description: Nominate for Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2021.
+
+      vote:
+        description: Vote in Hugo Awards
+        layman:
+          The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
+          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2021.
+
+    # Maps onto text from Election#i18n_key
+  #  retro_hugo:
+  #    voting: |
+  #      How to vote:
+  #      ----------------------------------------#
+#
+#        * This ballot uses a modified version of the Single Transferable Vote for a single winner, sometimes known as the Alternative Vote or Instant Runoff Ballot.
+#        * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
+#        * A lower preference is considered only if all the candidates ranked higher have been eliminated.
+#        * You are not required to rank all the finalists in any category.
+#        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all.
+#        * If you decide not to vote in any given category, leave it blank.
+#        * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
+#        * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
+#        * When the ballots are counted, all the first place votes will be tabulated.
+#        * If no finalist receives more than half of the votes, the finalist with the fewest first place votes is eliminated, and their votes are transferred to the finalists with the next preferences on those ballots.
+#        * This process of elimination of the last-placed finalist and redistribution of their votes to the next available preference continues until one finalist has more than half of all remaining votes, at which point that finalist becomes the winner (except under specific conditions described in Sections 3.6 and 3.12 of the [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf)).
+#
+#      nominations: |
+#        Eligibility to Nominate
+#        ----------------------------------------
+#
+#        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 December 2021, 11:59 PM PST
+#
+#        * you are an attending or supporting member of #{worldcon_public_name} (the 2022 World Science Fiction Convention), or
+#        * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).
+#
+#        Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
+#        one-day memberships and hall passes do not.
+#
+#        Deadline
+#        ----------------------------------------
+#
+#        All ballots must be received by Friday 13 March 2022, 11:59 PM PDT
+#
+#        How to Nominate
+#        ----------------------------------------
+#
+#        You may nominate up to five persons or works in each category. However, if you are not familiar with the works
+#        that fall into that category, you are permitted (and encouraged) to make fewer nominations or none at all. Your
+#        nominations are equally weighted – the order in which you list them has no effect on the outcome.
+#
+#        “No Award” will appear automatically in every single category on the final ballot – there is no need to include
+#        that choice on the nomination form.
+#
+#        If your nominee is not well known, please provide a source where their 1944 work in that category may be found.
+#        This information makes it easier for us to identify the work you intend to nominate.
+#
+#        If you make nominations for Best Series, it will help us if you also list a volume in the series that was
+#        published in 1944.
+#
+#        If you have any questions about the process or need assistance with nominating, please contact us at
+#        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
+#
+#        The Retro Hugo Ballot containing the nominees in each category that qualified for the final ballot will be
+#        published by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}(including those who join after 31 December
+#        2021) will be eligible to vote on the final ballot.  Please contact
+#        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
+#        if you have questions.
+#
+#        Eligibility for Nominations
+#        ----------------------------------------
+#
+#        Works published in 1946 for the first time anywhere are eligible for the Retro Hugo Awards being awarded in
+#        2022. So are works published for the first time in English translation in 1944, or for the first time in the
+#        United States in 1946, unless they have already appeared on a Hugo Award final ballot.
+#
+#        Books are considered to have been published in the year of the publication date, which usually appears with the
+#        copyright information on the back of the title page. If there is no stated publication date, the copyright date
+#        will be used instead.  A dated periodical is considered to have been published on the cover date, regardless of
+#        when it was placed on sale or copyrighted.  Serialized stories or dramatic presentations are eligible in the
+#        year in which the last installment appears.
+#
+#        Nominations may be relocated to a different category by the Hugo administrator if they are within 20% of the
+#        category boundary (such as in the case of Novel/Novella, Novella/Novelette, Novelette/Short Story, and Dramatic
+#        Presentation, Long Form/Dramatic Presentation, Short Form).
+#
+#      nominate_soon:
+#        description: Nominate for Retro Hugos
+#        layman:
+#          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+#          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023 (if they are awarded),
+#          and vote for the Retro Hugo winners of 2022.
+#
+#      nominate:
+#        description: Nominate for Retro Hugos
+#        layman:
+#          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year in which there was no
+#          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023 (if they are awarded),
+#          and vote for the Retro Hugo winners of 2022.
+#
+#      # Dublin imports cannot vote, they get special text to nod to this
+#      nominate_only:
+#        description: Nominate for Retro Hugos
+#        layman:
+#          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year which predates the founding of the Hugo awards, or in which there was no
+#          Worldcon. You membership allows you to nominate Retro Hugo finalists in 2022 and 2023.
+#
+#      vote:
+#        description: Vote for Retro Hugos
+#        layman:
+#          The Retro Hugo Awards may be awarded on the 25th, 50th or 75th anniversaries of a year which predates the founding of the Hugo awards, or in which there was no
+#          Worldcon. You membership allows you to vote for the Retro Hugo winners of 2022.
