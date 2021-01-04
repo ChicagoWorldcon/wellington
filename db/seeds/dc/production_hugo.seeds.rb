@@ -45,54 +45,51 @@ hugo.categories.create!(
 hugo.categories.create!(
   name: "Best Series",
   description: %{
-    A multi-volume science fiction or fantasy story, unified by elements such as plot, characters, setting, and
-    presentation, which has appeared in at least three (3) volumes consisting of a total of at least 240,000 words
-    by the close of the calendar year 2020, at least one of which was published in 2020, and which has not
-    previously won under §3.3.5 of the WSFS Constitution.
+    A multi-volume science fiction or fantasy story, unified by elements such as plot, characters, setting, and presentation,
+    which has appeared in at least three (3) volumes consisting of a total of at least 240,000 words by the close of the
+    calendar year 2020, at least one of which was published in 2020, and which has not previously won under §3.3.5 of the WSFS Constitution.
 
-    Previous losing finalists in the Best Series category shall be eligible only upon the publication of at least
-    two (2) additional installments consisting in total of at least 240,000 words after they qualified for their
-    last appearance on the final ballot and by the close of 2020.
-
-    If any series and a subset series thereof both receive sufficient nominations to appear on the final ballot,
-    only the version which received more nominations shall appear.
-
+    Previous losing finalists in the Best Series category shall be eligible only upon the publication of at least two (2) additional
+    installments consisting in total of at least 240,000 words after they qualified for their last appearance on the final ballot and
+    by the close of 2020.
+    
+    If any series and a subset series thereof both receive sufficient nominations to appear on the final ballot, only the version
+    which received more nominations shall appear.
+    
     **Note regarding 2021 Best Series eligibility**
-
+    
     Previous winners of the Hugo for Best Series are **not** eligible in the Best Series category. They are:
-
-    * The Vorkosigan Saga, by Lois McMaster Bujold
-    * The World of the Five Gods, by Lois McMaster Bujold
-    * Wayfarers, by Becky Chambers
-
-    The following finalists for the Hugo Award for Best Series in 2017 are **not** eligible in 2021 **unless** they have
-    published at least two (2) additional installments consisting in total of at least 240,000 words between 1 January
-    2019 and 31 December 2020:
-
-    * The Craft Sequence, by Max Gladstone
-    * The Expanse, by James S. A. Corey
-    * The Peter Grant / Rivers of London series, by Ben Aaronovitch
-    * The Temeraire series, by Naomi Novik
-
-    The following finalists for the Hugo Award for Best Series in 2020 are **not** eligible in 2021 **unless** they have
-    published at least two (2) additional installments consisting in total of at least 240,000 words between 1 January
-    2020 and 31 December 2020:
-
-    * The Books of the Raksura, by Martha Wells
-    * The Divine Cities, by Robert Jackson Bennett
-    * InCryptid, by Seanan McGuire
+    
+        * The Vorkosigan Saga, by Lois McMaster Bujold
+        * The World of the Five Gods, by Lois McMaster Bujold
+        * Wayfarers, by Becky Chambers
+    
+    The following finalists for the Hugo Award for Best Series in 2018 are **not** eligible in 2021 **unless** they have published at
+    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2018 and 31 December 2020:
+    
     * The Memoirs of Lady Trent, by Marie Brennan
-    * The Stormlight Archive, Brandon Sanderson
-
-    The following finalists for the Hugo Award for Best Series in 2021 are **not** eligible in 2021 **unless** they have
-    published at least two (2) additional installments consisting in total of at least 240,000 words between 1 January
-    2020 and 31 December 2020:
-
-    * The Centenal Cycle, by Malka Older
-    * The Laundry Files, by Charles Stross
-    * Machineries of Empire, by Yoon Ha Lee
-    * The October Daye Series, by Seanan McGuire
-    * The Universe of Xuya, by Aliette de Bodard
+    * The Books of the Raksura, by Martha Wells
+    * The Stormlight Archive, by Brandon Sanderson
+    * The Divine Cities, by Robert Jackson Bennett
+    
+    The following finalists for the Hugo Award for Best Series in 2019 are **not** eligible in 2021 **unless** they have published at
+    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2019 and 31 December 2020:
+    
+        * The Centenal Cycle, by Malka Older
+        * The Laundry Files, by Charles Stross
+        * Machineries of Empire, by Yoon Ha Lee
+        * The October Daye Series, by Seanan McGuire
+        * The Universe of Xuya, by Aliette de Bodard
+    
+    The following finalists for the Hugo Award for Best Series in 2020 are **not** eligible in 2021 **unless** they have published at
+    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2020 and 31 December 2020:
+    
+    * InCryptid, by Seanan McGuire
+    * Planetfall series, by Emma Newman
+    * Winternight Trilogy, by Katherine Arden
+    * The Wormwood Trilogy, by Tade Thompson
+    * Luna, by Ian McDonald
+    
   }.strip_heredoc,
   field_1: "Series Name",
   field_2: "Author",
@@ -247,15 +244,14 @@ hugo.categories.create!(
 hugo.categories.create!(
   name: "Best Video Game",
   description: %{
-    An eligible work for the 2021 special Hugo award is any game or substantial
-    modification of a game first released to the public on a major gaming platform in 2020,
-    in the fields of science fiction, fantasy, or related subjects.
+    Any game* or substantial modification of a game first released to the public on a major gaming platform** in the
+    previous calendar year in the fields of science fiction, fantasy, or related subjects.
 
-    For these purposes, a game is defined as a work wherein player choice, interaction, or
-    participation significantly impacts the narrative, play, meaning, or experience. A major
-    gaming platform means that the game is available on personal computers such as
-    Windows, Mac, or Linux computers (including, but not limited to, via Steam, Epic, itch.io,
-    browser, or direct download), iOS, Android, Switch, PlayStation, and/or Xbox systems.
+    * Game - A work wherein player choice, interaction, or participation significantly impacts the narrative, play,
+    meaning, or experience. 
+    ** Major Gaming Platform - A major gaming platform means that the game is available on personal computers such as
+    Windows, Mac, or Linux computers (including, but not limited to, via Steam, Epic,itch.io, browser, or direct download),
+    iOS, Android, Switch, PlayStation, and/or Xbox systems.
   }.strip_heredoc,
 
   field_1: "Artist/Illustrator",
