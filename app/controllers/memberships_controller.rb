@@ -16,6 +16,7 @@
 
 class MembershipsController < ApplicationController
   def index
+    binding.pry
     @offers = MembershipOffer.options
   end
 end

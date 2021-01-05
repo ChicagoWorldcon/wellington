@@ -34,7 +34,7 @@ CREATE TABLE public.cart_items (
     cart_id bigint NOT NULL,
     membership_id bigint NOT NULL,
     chicago_contact_id bigint NOT NULL,
-    type character varying NOT NULL,
+    kind character varying NOT NULL,
     later boolean DEFAULT false NOT NULL,
     unavailable boolean DEFAULT false NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,

@@ -12,7 +12,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
 %>
 
 <h1 style="background-color:purple; color:crimson">Shopping Cart</h1>
@@ -38,7 +37,7 @@
                       THINKING I'M GOING TO TRY AND MAKE THE EDITING PAGES WORK AS COLLAPSIBLE ELEMENTS.
                   %>
                   <div class="list-group list-group-horizontal now-details-list">
-                    <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>
+                    <li class="list-group-item list-group-item-action"><%=cart_item.kind %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
@@ -60,8 +59,10 @@
               <%= button_to "Clear All Active Items", {:action =>"clear_all_active_items", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-warning" %>
             </div>
           </div>
+
+
           <ul class "cart-items-later">
-            <% cart_items_for_now(@cart).each_with_index do |i, cart_item| %>
+            <% cart_items_for_later(@cart).each_with_index do |i, cart_item|  %>
             <li>
                 <div class="later-item-details">
                   <%#
@@ -71,7 +72,7 @@
                       SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH IN TURN WILL HAVE EDITING PAGES
                   %>
                   <div class="list-group list-group-horizontal later-item-details-list">
-                    <li class="list-group-item list-group-item-action"><%=cart_item.type %></li>
+                    <li class="list-group-item list-group-item-action"><%=cart_item.kind %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient%></li>
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
@@ -83,8 +84,14 @@
                   </div>
                 </div>
               </li>
-            <%= end %>
+            <% end %>
           </ul>
+
+
+
+
+
+
           <div class="saved-admin-container">
             <div class="btn-group later-buttons" role="group">
               <%= button_to "Move All Items to Cart", {:action =>"move_all_saved_items_to_cart", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-warning" %>

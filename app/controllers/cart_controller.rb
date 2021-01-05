@@ -39,9 +39,9 @@ class CartController < ApplicationController
     validate_beneficiary
     binding.pry
     if (our_offer.present? && @our_beneficiary.present?)
-      @our_cart_item = CartItem.create membership_id: our_offer.id, cart_id: @cart.id,
+      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, cart_id: @cart.id,
       chicago_contact_id: @our_beneficiary.id,
-      type: MEMBERBSHIP,
+      kind: MEMBERSHIP,
       later: false
       flash[:status] = :success
       flash[:notice] = "Membership successfully added to cart."
@@ -225,7 +225,7 @@ class CartController < ApplicationController
   def process_beneficiary_dob
     binding.pry
     if dob_params_present?
-      @our_contact_paramsbeneficiary.date_of_birth = convert_dateselect_params_to_date
+      @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
     end
   end
 

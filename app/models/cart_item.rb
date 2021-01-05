@@ -24,7 +24,7 @@ class CartItem < ApplicationRecord
   # DONATION = "donation"
   # UPGRADE = "upgrade"
 
-  TYPE_OPTIONS = [
+  KIND_OPTIONS = [
     MEMBERSHIP
     #DONATION,
     #UPGRADE
@@ -37,11 +37,11 @@ class CartItem < ApplicationRecord
   # and in the database.
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
-  validates :type, inclusion: { in: TYPE_OPTIONS }
+  validates :kind, inclusion: { in: KIND_OPTIONS }
   validates :later, presence: true
 
   def item_name
-    if self.type == MEMBERSHIP
+    if self.kind == MEMBERSHIP
       return membership_name
     end
   end
