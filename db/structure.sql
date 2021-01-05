@@ -175,7 +175,7 @@ ALTER SEQUENCE public.charges_id_seq OWNED BY public.charges.id;
 
 CREATE TABLE public.chicago_contacts (
     id bigint NOT NULL,
-    claim_id bigint NOT NULL,
+    claim_id bigint,
     import_key character varying,
     title character varying,
     first_name character varying,
@@ -1435,6 +1435,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200720235919'),
 ('20200724003813'),
 ('20201218101337'),
-('20201218101654');
+('20201218101654'),
+('20210105055602');
 
 
