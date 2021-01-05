@@ -30,7 +30,7 @@ module CartItemsHelper
     CartItemsHelper.locate_offer(offer_params)
   end
 
-  def cart_items_for_now(cart)
+  def self.cart_items_for_now(cart)
     binding.pry
     now_items = []
     cart.cart_items.each {|item|
@@ -41,7 +41,11 @@ module CartItemsHelper
     now_items
   end
 
-  def cart_items_for_later(cart)
+  def cart_items_for_now(cart)
+    CartItemsHelper.cart_items_for_now(cart)
+  end
+
+  def self.cart_items_for_later(cart)
     binding.pry
     later_items = []
     cart.cart_items.each {|item|
@@ -50,6 +54,10 @@ module CartItemsHelper
       end
     }
     later_items
+  end
+
+  def cart_items_for_later(cart)
+    CartItemsHelper.cart_items_for_later(cart)
   end
 
 end

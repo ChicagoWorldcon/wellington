@@ -128,31 +128,27 @@ class CartController < ApplicationController
   end
 
   def remove_single_item
+    binding.pry
     @cart = locate_cart
-
-    # First, find the cart contents by whatever means
-    # @cart_item = CartItem.find_by(id: params[:id])
-    # if @cart_item && @cart && (@ocart_item.order_id == @cart.id)
-    #   @cart_item_name = @cart_item.name
-    #   @cart_item.destroy
-    #   flash[:status] = :success
-    #   flash[:result_text] = "#{@cart_item_name} removed from your cart!"
-    # else
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "Unable to remove the items from your cart."
-    #   if @cart
-    #     flash[:errors] = @cart.errors.messages
-    #   end
-    #   if @cart_item
-    #     flash[:errors] = @cart_item.errors.messages
-    #   end
-    #   redirect_to cart_path and return
-    # end
-    # if !(@cart.cart_items.count > 0)
-    #   render :empty_cart and return
-    # else
-    #   redirect_to cart_path
-    # end
+    @target_item = CartItem.find(params[:id])
+    if @target_item && @cart && (@target_item.cart_id == @cart.id)
+      @target_item_name = @target_item.item_name
+      @target_item_kind = @target_item.kind
+      @target_item.destroy
+      flash[:status] = :success
+      flash[:notice] = "#{@target_item_name} #{@target_item_kind} successfully deleted"
+      binding.pry
+    else
+      flash[:status] = :failure
+      flash[:notice] = "This item could not be removed from your cart."
+      if @cart
+        flash[:errors] = @cart.errors.messages
+      end
+      if @target_item
+        flash[:errors] = @target_item.errors.messages
+      end
+    end
+    redirect_to cart_path
   end
 
   def save_item_for_later

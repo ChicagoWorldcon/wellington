@@ -54,13 +54,17 @@
               </li>
             <% end %>
           </ul>
-          <div class="subtotal-container">
+          <div class="active-admin-container">
             <h4 style="color:orangered">[This is where the control buttons for the whole active cart go]</h4>
             <div class="btn-group payment-buttons" role="group">
               <%= button_to "Pay Online Now", cart_pay_online_path, method: :post, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
               <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
               <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
+            </div>
+            <div class "subtotal-container" style="background-color:violet; color:aquamarine">
+              <h5 style="color:aquamarine"> Monetized: <%= @cart.subtotal_monetized %></h5>
+              <h5 style="color:yellow"> Display: <%= @cart.subtotal_display %></h5>
             </div>
           </div>
 
