@@ -26,7 +26,9 @@
       <% if @cart.cart_items.count > 0 %>
         <div class="cart-contents">
           <ul class="cart-items-now">
-            <% cart_items_for_now(@cart).each_with_index do |i, cart_item| %>
+            <% binding.pry %>
+            <% cart_items_for_now(@cart).each do |cart_item| %>
+              <% binding.pry %>
               <li>
                 <div class="now-item-details">
                   <%#
@@ -43,9 +45,9 @@
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group now-buttons" role="group">
-                    <%= button_to "Save for Later", {:action =>"save_item_for_later", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
-                    <%= button_to "Remove from Cart", {:action =>"remove_single_item", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-info" %>
-                    <%= button_to "Check Availability", {:action =>"verify_single_item_availability", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Save for Later", save_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Remove from Cart", remove_single_cart_item_path(@cart, cart_item), method: :delete, class: "btn btn-outline-info" %>
+                    <%= button_to "Check Availability", verify_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
                   </div>
                 </div>
               </li>
@@ -53,16 +55,16 @@
           </ul>
           <div class="subtotal-container">
             <div class="btn-group payment-buttons" role="group">
-              <%= button_to "Pay Online Now", {:action =>"submit_online_payment", :controller => "cart", id: cart_item.id }, method: :post, class: "btn btn-outline-primary" %>
-              <%= button_to "Pay with Check", {:action =>"submit_check_payment", :controller => "cart", id: cart_item.id }, method: :post, class: "btn btn-outline-primary" %>
-              <%= button_to "Save All Items for Later", {:action =>"save_all_items_for_later", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-warning" %>
-              <%= button_to "Clear All Active Items", {:action =>"clear_all_active_items", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-warning" %>
+              <%= button_to "Pay Online Now", cart_pay_online_path, method: :post, class: "btn btn-outline-primary" %>
+              <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
+              <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
+              <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
             </div>
           </div>
 
 
           <ul class "cart-items-later">
-            <% cart_items_for_later(@cart).each_with_index do |i, cart_item|  %>
+            <% cart_items_for_later(@cart).each do |cart_item|  %>
             <li>
                 <div class="later-item-details">
                   <%#
@@ -78,24 +80,19 @@
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group later-buttons" role="group">
-                    <%= button_to "Move to Cart", {:action =>"move-item-to-cart", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
-                    <%= button_to "Delete", {:action =>"remove_single_item", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-info" %>
-                    <%= button_to "Check Availability", {:action =>"verify_single_item_availability", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-info" %>
+                    <% binding.pry %>
+                    <%= button_to "Move to Cart", move_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Delete", remove_single_cart_item_path(@cart, cart_item), method: :delete, class: "btn btn-outline-info" %>
+                    <%= button_to "Check Availability", verify_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
                   </div>
                 </div>
               </li>
             <% end %>
           </ul>
-
-
-
-
-
-
           <div class="saved-admin-container">
             <div class="btn-group later-buttons" role="group">
-              <%= button_to "Move All Items to Cart", {:action =>"move_all_saved_items_to_cart", :controller => "cart", id: cart_item.id }, method: :patch, class: "btn btn-outline-warning" %>
-              <%= button_to "Delete All Saved Items", {:action =>"remove_all_active_items", :controller => "cart", id: cart_item.id }, method: :delete, class: "btn btn-outline-warning" %>
+              <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
+              <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
             </div>
           </div>
       </div>

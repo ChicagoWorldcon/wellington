@@ -88,6 +88,7 @@ class Membership < ApplicationRecord
   end
 
   def name_for_cart
+    binding.pry
     self.to_s
   end
 end

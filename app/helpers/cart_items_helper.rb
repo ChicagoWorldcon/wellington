@@ -31,6 +31,7 @@ module CartItemsHelper
   end
 
   def cart_items_for_now(cart)
+    binding.pry
     now_items = []
     cart.cart_items.each {|item|
       if item.later == false
@@ -41,6 +42,7 @@ module CartItemsHelper
   end
 
   def cart_items_for_later(cart)
+    binding.pry
     later_items = []
     cart.cart_items.each {|item|
       if item.later == true

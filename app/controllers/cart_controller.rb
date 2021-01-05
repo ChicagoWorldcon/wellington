@@ -39,20 +39,23 @@ class CartController < ApplicationController
     validate_beneficiary
     binding.pry
     if (our_offer.present? && @our_beneficiary.present?)
+      binding.pry
       @our_cart_item = CartItem.create membership_id: our_offer.membership.id, cart_id: @cart.id,
       chicago_contact_id: @our_beneficiary.id,
       kind: MEMBERSHIP,
       later: false
-      flash[:status] = :success
-      flash[:notice] = "Membership successfully added to cart."
-    else
-      flash[:status] = :failure
-      flash[:notice] = "This membership could not be added to your cart."
-      flash[:messages] = @cart.errors.messages
-      render "/reservations/new" and return
+      if @our_cart_item.save
+        flash[:status] = :success
+        flash[:notice] = "Membership successfully added to cart."
+        binding.pry
+        redirect_to cart_path and return
+      end
     end
+    flash[:status] = :failure
+    flash[:notice] = "This membership could not be added to your cart."
+    flash[:messages] = @cart.errors.messages
     binding.pry
-    redirect_to cart_path
+    redirect_to new_reservation_path
   end
 
   def update_cart_info
@@ -76,15 +79,7 @@ class CartController < ApplicationController
     @cart = locate_cart
   end
 
-  def submit_check_payment
-    @cart = locate_cart
-  end
-
-  def clear_all_active_items
-    @cart = locate_cart
-  end
-
-  def clear_all_saved_items
+  def pay_with_cheque
     @cart = locate_cart
   end
 
@@ -106,6 +101,30 @@ class CartController < ApplicationController
     #   flash[:result_text] = "Your cart was already empty!"
     # end
     # redirect_to cart_path
+  end
+
+  def destroy_active
+    @cart = locate_cart
+    # First, find the cart-order
+    # @cart = Order.find_by(id: session[:cart_order_id])
+    # if @cart.nil?
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "Unable to remove the items from your cart."
+    #   redirect_to cart_path and return
+    # end
+    # if @cart.cart_items.count > 0
+    #   @cart.cart_items.each do |cart_item|
+    #     cart_item.destroy
+    #   end
+    # else
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "Your cart was already empty!"
+    # end
+    # redirect_to cart_path
+  end
+
+  def destroy_saved
+    @cart = locate_cart
   end
 
   def remove_single_item
@@ -132,9 +151,6 @@ class CartController < ApplicationController
     # else
     #   redirect_to cart_path
     # end
-  end
-
-  def remove_all_saved_items
   end
 
   def save_item_for_later

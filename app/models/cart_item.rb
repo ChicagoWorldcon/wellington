@@ -38,7 +38,6 @@ class CartItem < ApplicationRecord
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
   validates :kind, inclusion: { in: KIND_OPTIONS }
-  validates :later, presence: true
 
   def item_name
     if self.kind == MEMBERSHIP
@@ -47,19 +46,19 @@ class CartItem < ApplicationRecord
   end
 
   def item_display_price
-    if self.type == MEMBERSHIP
+    if self.kind == MEMBERSHIP
       return membership_display_price
     end
   end
 
   def item_monetized_price
-    if self.type == MEMBERSHIP
+    if self.kind == MEMBERSHIP
       return membership_monetized_price
     end
   end
 
-  def recipient_name
-    if self.type == MEMBERSHIP
+  def item_recipient
+    if self.kind == MEMBERSHIP
       return membership_recipient_name
     end
   end
@@ -74,16 +73,18 @@ class CartItem < ApplicationRecord
 
   def membership_name
     @item_membership ||= find_membership
+    binding.pry
     @item_membership.name_for_cart
   end
 
   def membership_display_price
     @item_membership ||= find_membership
-    @item_membership.price_for_cart
+    @item_membership.display_price_for_cart
   end
 
   def membership_monetized_price
     @item_membership ||= find_membership
+    @item_membership.monetized_price_for_cart
   end
 
   def membership_recipient_name
@@ -92,10 +93,14 @@ class CartItem < ApplicationRecord
   end
 
   def find_membership
-    @item_membership = Membership.find_by(id: :membership_id)
+    binding.pry
+    @item_membership = Membership.find(membership_id)
   end
 
+  # TODO: Make this con-agnostic so that this doesn't have to be changed
+  # in hard-code every year.
   def find_recipient
-    @item_recipient = ChicagoContact.find_by(id: :chicago_contact_id)
+    binding.pry
+    @item_recipient = ChicagoContact.find(chicago_contact_id)
   end
 end
