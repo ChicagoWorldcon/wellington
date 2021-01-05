@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   put '/cart/verify', to: 'cart#verify_availability', as: 'verify_all'
   delete '/cart/clear', to: 'cart#destroy', as: 'clear_all'
 
+
   scope :cart, only: [:show, :create, :edit, :update] do
     resources :cart_items, only: [:index, :show, :edit, :update] do
       get 'index_current_cart_items', :on => :collection, as: 'current_cart_items'
@@ -78,6 +79,7 @@ Rails.application.routes.draw do
     end
   end
 
+  match 'cart_items/create' => 'cart_items#create', via: :post, :as => 'create_item'
   resources :credits
   resources :landing
   resources :memberships
@@ -85,14 +87,17 @@ Rails.application.routes.draw do
   resources :upgrades
   resources :hugo_packet, id: /[^\/]+/
 
+
   resources :reservations do
     post :reserve_with_cheque, on: :collection
-    post :add_to_cart, on: :collection, to: 'cart_items#create', as: 'add_to_cart'
+    post :add_reservation_to_cart, on: :collection, to: 'cart#add_reservation_to_cart', as: 'add_to_cart'
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
+
+
 
   # /operator are maintenance routes for support people
   scope :operator do

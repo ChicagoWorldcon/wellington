@@ -1,4 +1,24 @@
+# frozen_string_literal: true
+#
+# Copyright 2020 Victoria Garcia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 class CartItemsController < ApplicationController
+  include ThemeConcern
+  before_action :lookup_offer, only: [:create_reservation_item]
+  before_action :reservation_item_recipient, only: [:create_reservation_item]
   # before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
 
   MEMBERSHIP = "membership"
@@ -45,6 +65,26 @@ class CartItemsController < ApplicationController
   def verify_availability
   end
 
+  #TODO:  This duplicates some of the
+  def create_reservation_item
+    @cart_item = CartItem.new
+    @cart_item.type = MEMBERSHIP
+    if !@contact.valid?
+      flash[:error] = @contact.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
+      #TODO:  Rethink what you want to render here.
+      render "/reservations/new"
+      return
+    end
+    @cart_item.chicago_contact = @contact
+    @cart_item. membership = @my_offer
+
+
+
+
+
+    redirect_to cart_path
+  end
+
   # POST /cart_items
   # POST /cart_items.json
   def create
@@ -86,13 +126,55 @@ class CartItemsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_cart_item
-      @cart_item = CartItem.find(params[:id])
+  # Use callbacks to share common setup or constraints between actions.
+  def reservation_item_recipient
+    @contact = contact_model.new(contact_params)
+    if dob_params_present?
+      @contact.date_of_birth = convert_dateselect_params_to_date
+    end
+    @contact
+  end
+
+  def set_cart_item
+    @cart_item = CartItem.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def cart_item_params
+    # Thinking: Item-type, Item-id, hrrrm.
+    params.fetch(:cart_item, {})
+  end
+
+  #TODO:  **ALL** of the stuff below is duplicated from the Reservation controller.  This stuff needs to be extracted to a helper or a concern or something, because THIS IS NOT OKAY.  (I know I'm the one who put it here, but it's meant to be temporary. If there's a PR and this is still here, then something has gone wrong. --VEG)
+
+  def contact_params
+    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
+  end
+
+  def contact_model
+    Claim.contact_strategy
+  end
+
+  def convert_dateselect_params_to_date
+    key1 = "dob_array(1i)"
+    key2 = "dob_array(2i)"
+    key3 = "dob_array(3i)"
+    Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
+  end
+
+  def dob_params_present?
+    dob_key_1 = "dob_array(1i)"
+    return params[theme_contact_param].key?(dob_key_1)
+  end
+
+  def lookup_offer
+    @my_offer = MembershipOffer.options.find do |offer|
+      offer.hash == params[:offer]
     end
 
-    # Only allow a list of trusted parameters through.
-    def cart_item_params
-      params.fetch(:cart_item, {})
+    if !@my_offer.present?
+      flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
+      redirect_to memberships_path
     end
+  end
 end

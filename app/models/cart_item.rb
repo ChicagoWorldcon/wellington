@@ -33,7 +33,7 @@ class CartItem < ApplicationRecord
 
   belongs_to :cart
   # Once there are type options other than membership, the 'required'
-  # values of :membership and :chicago_contact will change, both here
+  # values of :membership and :chicago_contact will need to change, both here
   # and in the database.
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true

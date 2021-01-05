@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
-# Copyright 2020 Victoria Garcia
+#
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 class CartController < ApplicationController
   include ThemeConcern
   PENDING = "pending"
+  MEMBERSHIP = "membership"
 
   def show
     if user_signed_in? && !support_signed_in?
@@ -28,11 +29,29 @@ class CartController < ApplicationController
     end
   end
 
-  def add_to_cart
+  def add_reservation_to_cart
     @cart = locate_cart
-
-    # then put in the actual adding stuff
-    # make sure that 'cart_path' is actually right.
+    binding.pry
+    our_offer = CartItemsHelper.locate_offer(params[:offer])
+    binding.pry
+    @our_beneficiary = Claim.contact_strategy.new(our_contact_params)
+    process_beneficiary_dob
+    validate_beneficiary
+    binding.pry
+    if (our_offer.present? && @our_beneficiary.present?)
+      @our_cart_item = CartItem.create membership_id: our_offer.id, cart_id: @cart.id,
+      chicago_contact_id: @our_beneficiary.id,
+      type: MEMBERBSHIP,
+      later: false
+      flash[:status] = :success
+      flash[:notice] = "Membership successfully added to cart."
+    else
+      flash[:status] = :failure
+      flash[:notice] = "This membership could not be added to your cart."
+      flash[:messages] = @cart.errors.messages
+      render "/reservations/new" and return
+    end
+    binding.pry
     redirect_to cart_path
   end
 
@@ -183,20 +202,15 @@ class CartController < ApplicationController
     if user_signed_in? && !support_signed_in?
       @cart = Cart.new status: PENDING
       # current_user is a Devise helper.
-      binding.pry
       @cart.user_id = User.find_by(id: current_user.id).id
-      @cart.cart_items = [];
       if @cart.save
-        binding.pry
         flash[:status] = :success
         flash[:notice] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
       else
-        binding.pry
         flash[:status] = :failure
         flash[:notice] = "We weren't able to create your shopping cart, so everything is now doomed."
         flash[:messages] = @cart.errors.messages
       end
-      binding.pry
       return @cart
     else
       return
@@ -207,4 +221,39 @@ class CartController < ApplicationController
   # def cart_params
   #   params.fetch(:cart, {})
   # end
+
+  def process_beneficiary_dob
+    binding.pry
+    if dob_params_present?
+      @our_contact_paramsbeneficiary.date_of_birth = convert_dateselect_params_to_date
+    end
+  end
+
+  def validate_beneficiary
+    if !@our_beneficiary.valid?
+      flash[:error] = @our_beneficiary.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
+      # TODO: Make sure this is what you want to render.
+      render "/reservations/new"
+      return
+    else
+      @our_beneficiary.save
+    end
+  end
+
+  # THE FOLLOWING THREE METHODS DUPLICATE METHODS IN RESERVATION CONTROLLER
+  def our_contact_params
+    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
+  end
+
+  def convert_dateselect_params_to_date
+    key1 = "dob_array(1i)"
+    key2 = "dob_array(2i)"
+    key3 = "dob_array(3i)"
+    Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
+  end
+
+  def dob_params_present?
+    dob_key_1 = "dob_array(1i)"
+    return params[theme_contact_param].key?(dob_key_1)
+  end
 end
