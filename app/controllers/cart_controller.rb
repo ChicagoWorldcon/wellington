@@ -128,6 +128,8 @@ class CartController < ApplicationController
   end
 
   def remove_single_item
+    @cart = locate_cart
+
     # First, find the cart contents by whatever means
     # @cart_item = CartItem.find_by(id: params[:id])
     # if @cart_item && @cart && (@ocart_item.order_id == @cart.id)
@@ -154,12 +156,46 @@ class CartController < ApplicationController
   end
 
   def save_item_for_later
+    binding.pry
+    @cart = locate_cart
+    target_item = CartItem.find(params[:id])
+    target_item.later = true
+    if target_item.save
+      flash[:status] = :success
+      flash[:notice] = "Item successfully saved for later."
+      binding.pry
+    else
+      #TODO: See if we actually need to have the cat location doubled like this.
+      flash[:status] = :failure
+      flash[:notice] = "This item could not be saved for later."
+      flash[:messages] = @cart.errors.messages
+      binding.pry
+    end
+    binding.pry
+    redirect_to cart_path
   end
 
   def save_all_items_for_later
   end
 
   def move_item_to_cart
+    binding.pry
+    @cart = locate_cart
+    target_item = CartItem.find(params[:id])
+    target_item.later = false
+    if target_item.save
+      flash[:status] = :success
+      flash[:notice] = "Item successfully moved to cart."
+      binding.pry
+    else
+      #TODO: See if we actually need to have the cat location doubled like this.
+      flash[:status] = :failure
+      flash[:notice] = "This item could not be moved to the cart."
+      flash[:messages] = @cart.errors.messages
+      binding.pry
+    end
+    binding.pry
+    redirect_to cart_path
   end
 
   def move_all_saved_items_to_cart

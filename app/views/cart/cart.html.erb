@@ -26,6 +26,7 @@
       <% if @cart.cart_items.count > 0 %>
         <div class="cart-contents">
           <ul class="cart-items-now">
+            <h4 style="color:cyan">[This is where the ACTIVE cart-items are.]</h4>
             <% binding.pry %>
             <% cart_items_for_now(@cart).each do |cart_item| %>
               <% binding.pry %>
@@ -45,15 +46,16 @@
                     <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group now-buttons" role="group">
-                    <%= button_to "Save for Later", save_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
-                    <%= button_to "Remove from Cart", remove_single_cart_item_path(@cart, cart_item), method: :delete, class: "btn btn-outline-info" %>
-                    <%= button_to "Check Availability", verify_single_cart_item_path(@cart, cart_item), method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Save for Later", save_single_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
+                    <%= button_to "Remove from Cart", remove_single_cart_item_path(cart_item), method: :delete, class: "btn btn-outline-info" %>
+                    <%= button_to "Check Availability", verify_single_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
                   </div>
                 </div>
               </li>
             <% end %>
           </ul>
           <div class="subtotal-container">
+            <h4 style="color:orangered">[This is where the control buttons for the whole active cart go]</h4>
             <div class="btn-group payment-buttons" role="group">
               <%= button_to "Pay Online Now", cart_pay_online_path, method: :post, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
@@ -64,6 +66,7 @@
 
 
           <ul class "cart-items-later">
+            <h4 style="color:yellowgreen">[This is where the SAVED-FOR-LATER cart-items are.]</h4>
             <% cart_items_for_later(@cart).each do |cart_item|  %>
             <li>
                 <div class="later-item-details">
@@ -90,6 +93,7 @@
             <% end %>
           </ul>
           <div class="saved-admin-container">
+            <h4 style="color:indigo">[This is where the admin buttons for the saved stuff go.]</h4>
             <div class="btn-group later-buttons" role="group">
               <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
               <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
