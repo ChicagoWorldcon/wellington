@@ -16,15 +16,24 @@
 
 // Rails defaults
 // Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
+import ujs from '@rails/ujs';
+import * as activeStorage from '@rails/activestorage';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 import '../stylesheets/conzealand-styles.scss';
 import '../channels';
 import '../sprinkles';
-
-import ujs from '@rails/ujs';
-import activeStorage from '@rails/activestorage';
+import '@fortawesome/fontawesome-free/js/brands';
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/solid';
+require.context('../images', true);
 
 ujs.start();
 activeStorage.start();
 
 // eslint-disable-next-line no-console
-console.log('Hello from chicago.js');
+console.log('Hello from DC.js');
+
+

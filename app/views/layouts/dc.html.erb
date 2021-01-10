@@ -28,13 +28,13 @@
   <script src="https://checkout.stripe.com/checkout.js"></script>
 
   <%= javascript_pack_tag "dc-app" %>
-  <%= stylesheet_pack_tag "dc-styles", media: "all" %>
+  <%= stylesheet_pack_tag "dc-app", media: "all" %>
 
   <%=
     tag("link", {
       rel: "shortcut icon",
       type: "image/x-icon",
-      href: resolve_path_to_image("media/packs/conzealand-favicon.ico"),
+      href: resolve_path_to_image("media/images/favicons/dc-favicon.ico"),
     })
   %>
 

@@ -65,7 +65,7 @@ hugo.categories.create!(
         * Wayfarers, by Becky Chambers
     
     The following finalists for the Hugo Award for Best Series in 2018 are **not** eligible in 2021 **unless** they have published at
-    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2018 and 31 December 2020:
+    least two (2) additional installments consisting in total of at least 240,000 words between January 1, 2018 and December 31, 2020:
     
     * The Memoirs of Lady Trent, by Marie Brennan
     * The Books of the Raksura, by Martha Wells
@@ -73,7 +73,7 @@ hugo.categories.create!(
     * The Divine Cities, by Robert Jackson Bennett
     
     The following finalists for the Hugo Award for Best Series in 2019 are **not** eligible in 2021 **unless** they have published at
-    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2019 and 31 December 2020:
+    least two (2) additional installments consisting in total of at least 240,000 words between January 1, 2019 and December 31, 2020:
     
         * The Centenal Cycle, by Malka Older
         * The Laundry Files, by Charles Stross
@@ -82,7 +82,7 @@ hugo.categories.create!(
         * The Universe of Xuya, by Aliette de Bodard
     
     The following finalists for the Hugo Award for Best Series in 2020 are **not** eligible in 2021 **unless** they have published at
-    least two (2) additional installments consisting in total of at least 240,000 words between 1 January 2020 and 31 December 2020:
+    least two (2) additional installments consisting in total of at least 240,000 words between January 1, 2020 and December 31, 2020:
     
     * InCryptid, by Seanan McGuire
     * Planetfall series, by Emma Newman
@@ -254,9 +254,9 @@ hugo.categories.create!(
     iOS, Android, Switch, PlayStation, and/or Xbox systems.
   }.strip_heredoc,
 
-  field_1: "Artist/Illustrator",
-  field_2: "Example",
-  field_3: nil,
+  field_1: "Name",
+  field_2: "Publisher",
+  field_3: "Platform(s)",
 )
 hugo.categories.create!(
   name: "Lodestar Award for Best Young Adult Book (not a Hugo)",
