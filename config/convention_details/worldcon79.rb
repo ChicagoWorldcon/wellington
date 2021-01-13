@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Victoria Garcia
-# (c) 2021 Fred Bauer
+# Copyright 2021 Fred Bauer - Worldcon 79/DisCon III 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 
@@ -31,9 +31,7 @@ module ConventionDetails
       @con_name_public = "DisCon III"
       @con_name_public_previous = "CoNZealand"
       @con_number = "worldcon79"
-      #FIXME: Update @con_organizers_sigs
       @con_organizers_sigs = "Discon III Organizers"
-      #FIXME: Verify ALL Chicon  Urls
       @con_url_homepage = "https://discon3.org/"
       @con_url_member_login = "https://members.discon3.org/"
       @con_url_privacy = "https://discon3.org/about/coc/"
