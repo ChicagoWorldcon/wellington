@@ -92,8 +92,8 @@ en:
         You may nominate for the 2021 Hugo Awards, the Lodestar Award for Best Young Adult Book,and the Astounding Award
         for Best New Writer, if, on or before December 31, 2020, 11:59 PM EST
 
-        * you are an attending or supporting member of #{convention_public_name} (the 2021 World Science Fiction Convention), or
-        * you were an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention).
+        * you are an attending or supporting member of #{convention_public_name} (the #{con_year} World Science Fiction Convention), or
+        * you were an attending or supporting member of #{con_name_public_previous} (the 2020 World Science Fiction Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
         one-day memberships and hall passes do not.
@@ -101,7 +101,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Saturday, March 13, 2021, 11:59 PM EDT
+        All ballots must be received by Saturday, March 13, 2021, 11:59 PM PST **** Verify *****
 
         How to Nominate
         ----------------------------------------
@@ -158,7 +158,7 @@ en:
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2021 and 2022, and
-          vote for the Hugo winners of 2021, and for the Retro Hugos for 1947.
+          vote for the Hugo winners of 2021.
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:

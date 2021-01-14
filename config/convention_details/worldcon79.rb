@@ -39,6 +39,7 @@ module ConventionDetails
       @con_url_volunteering = "https://discon3.org/get-involved/volunteer/volunteering-opportunities/"
       @con_wsfs_constitution_link = "http://www.wsfs.org/wp-content/uploads/2020/08/WSFS-Constitution-as-of-August-1-2020.pdf"
       @con_year = "2021"
+      @worldcon_year_before = "2020"
       @contact_model = "dc"
       #FIXME: need mailing address
       @registration_mailing_address = <<~EOF
