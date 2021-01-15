@@ -92,8 +92,8 @@ en:
         You may nominate for the 2021 Hugo Awards, the Lodestar Award for Best Young Adult Book,and the Astounding Award
         for Best New Writer, if, on or before December 31, 2020, 11:59 PM EST
 
-        * you are an attending or supporting member of #{convention_public_name} (the #{con_year} World Science Fiction Convention), or
-        * you were an attending or supporting member of #{con_name_public_previous} (the 2020 World Science Fiction Convention).
+        * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention), or
+        * you were an attending or supporting member of CoNZealand (the 2020 World Science Fiction Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
         one-day memberships and hall passes do not.
@@ -101,7 +101,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Saturday, March 13, 2021, 11:59 PM PST **** Verify *****
+        All ballots must be received by Saturday, March 13, 2021, 11:59 PM EST
 
         How to Nominate
         ----------------------------------------
@@ -120,11 +120,11 @@ en:
         published in 2020.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
+        <a href="mailto:hugohelp@discon3.org">hugohelp@discon3.org</a>
 
         The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
-        by %{worldcon_public_name} in April 2021. Only members of %{worldcon_public_name}  (including those who join after 31 December 2021) will
-        be eligible to vote on the final ballot.  Please contact %{hugo_help_email} if you have questions.
+        by DisCon III in April 2021. Only members of DisCon III (including those who join after 31 December 2020) will
+        be eligible to vote on the final ballot.  Please contact hugohelp@discon3.org if you have questions.
 
         Eligibility for Nominations
         ----------------------------------------
@@ -160,7 +160,7 @@ en:
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2021 and 2022, and
           vote for the Hugo winners of 2021.
 
-      # Dublin imports cannot vote, they get special text to nod to this
+      # CoNZealand imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Hugo Awards
         layman:

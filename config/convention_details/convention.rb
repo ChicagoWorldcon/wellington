@@ -42,6 +42,7 @@ module ConventionDetails
     class_attribute :con_url_volunteering
     class_attribute :con_wsfs_constitution_link
     class_attribute :con_year
+    class_attribute :con_year_before
     class_attribute :contact_model
     class_attribute :registration_mailing_address
     class_attribute :site_theme
