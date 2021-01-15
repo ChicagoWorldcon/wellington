@@ -1,5 +1,6 @@
 # Copyright 2020 Matthew B.
 # Copyright 2020 Steven Ensslen
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+:queues:
+  - mailers
 
 # Schedule format is in cron
 # more information can be found at https://crontab.guru/
