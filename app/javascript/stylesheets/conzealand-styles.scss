@@ -102,7 +102,8 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("../images/backgrounds/conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    //background: url("../images/backgrounds/conzealand-bg.jpg") center top / cover no-repeat fixed $black;
+    background:  #c71d38; //grey b9b9b9 darkest banner c71d38 dark red 660f1e lightest banner f42444
 
     // For that test environment feeling
     &.api-test-keys {
