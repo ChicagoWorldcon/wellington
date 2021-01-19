@@ -50,6 +50,18 @@
   <% end %>
 
   <header>
+    <div class="container l-v-spacing" role="banner">
+      <a href="<%= root_path %>" class="logo">
+        <%=
+          image_pack_tag(
+            "media/packs/discon3-header.jpg",
+            alt: "DisCon III - The 79th World Science Fiction Convention",
+            class: "img-responsive"
+          )
+        %>
+      </a>
+    </div>
+
     <div class="container">
       <%= render "layouts/alerts" %>
     </div>
