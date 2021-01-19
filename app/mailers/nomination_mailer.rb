@@ -2,6 +2,7 @@
 
 # Copyright 2020 Matthew B. Gray
 # Copyright 2020 Victoria Garcia
+# Copyright 2021 Fred Bauer - Hard-coded for no retros
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,7 +40,8 @@ class NominationMailer < ApplicationMailer
     @nominations_by_category = builder.nominations_by_category
 
     mail(
-      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_75_ago} Retro Hugo Nominations Ballot",
+#      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_75_ago} Retro Hugo Nominations Ballot",
+      subject: "Your #{worldcon_year} Hugo Nominations Ballot", #for DC
       to: reservation.user.email,
       from: "Hugo Awards #{worldcon_year} <#{email_hugo_help}>"
     )
@@ -152,6 +154,7 @@ class NominationMailer < ApplicationMailer
   end
 
   # Unlike the other templates the only difference in this is the subject line, hence a single mailer
+  # NOTE THIS IS NOT TRUE.  The mailer has Retro Hugos hard-coded, which may not apply to all conventions.  *****FIX THIS*****
   def nominations_reminder_3_days_left(email:)
     @worldcon_greeting_init_caps = worldcon_greeting_init_caps
     @hugo_nom_deadline = hugo_nom_deadline

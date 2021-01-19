@@ -19,8 +19,8 @@ FROM ruby:2.7.1-alpine as base
 # we need _a_ worldcon number
 ARG WORLDCON_NUMBER
 
-# and by default that'll be Chicago :)
-ENV WORLDCON_NUMBER ${WORLDCON_NUMBER:-worldcon80}
+# and by default that'll be Chicago/xxxxxxxx DC :)
+ENV WORLDCON_NUMBER ${WORLDCON_NUMBER:-worldcon79}
 
 RUN apk add \
       build-base \
@@ -36,7 +36,7 @@ RUN apk add \
       tzdata \
     && rm -rf /var/cache/apk/* \
     && npm install -g yarn \
-    && gem install bundler mailcatcher
+#    && gem install bundler mailcatcher
 
 # n.b, MailCatcher is incompatible with other gems in bundle
 
