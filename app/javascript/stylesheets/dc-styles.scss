@@ -1,4 +1,6 @@
-// Copyright 2020 Matthew B. Gray
+// Copyright 2018 Rosanna Gray
+// Copyright 2019 Matthew B. Gray
+// Copyright 2019 Jen Zajac (jenofdoom)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -100,11 +102,14 @@ html, body {
     font-size: 15px;
 }
 body {
-    background: url("https://www.americanholidays.com/app/uploads/2017/02/Washington-DC-Gallery-capitol-hill-sunset.jpg") center top / cover no-repeat fixed $black;
+    //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //background test
+    background:  #c71d38; //grey b9b9b9 darkest banner c71d38 dark red 660f1e lightest banner f42444
 
     // For that test environment feeling
     &.api-test-keys {
-      filter: hue-rotate(90deg);
+      .logo img {
+        filter: hue-rotate(90deg);
+      }
     }
 
     color: $white;
@@ -150,6 +155,15 @@ h6, .h6-like {
 // =========================================================================
 // COMPONENTS
 // =========================================================================
+
+.hugo-description {
+  ul, ol {
+    margin: 15px;
+  }
+  li {
+    padding: 5px 10px;
+  }
+}
 
 // -------------------------------
 // BUTTONS
@@ -410,4 +424,8 @@ footer {
 
 .card {
   color: $black;
+}
+
+.card.bg-dark svg.octicon {
+  fill: #fff;
 }
