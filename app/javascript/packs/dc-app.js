@@ -21,7 +21,7 @@ import * as activeStorage from '@rails/activestorage';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import '../stylesheets/conzealand-styles.scss';
+import '../stylesheets/dc-styles.scss';
 import '../channels';
 import '../sprinkles';
 import '@fortawesome/fontawesome-free/js/brands';
