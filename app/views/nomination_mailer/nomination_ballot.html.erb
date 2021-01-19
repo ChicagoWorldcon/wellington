@@ -1,5 +1,6 @@
 <%#
   Copyright 2020 Matthew B. Gray
+  Copyright 2021 Fred Bauer
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -12,11 +13,14 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+  NOTE: There is only one version of this, there is currently no localized version based on convention.  
+  ******EDIT THIS FILE FOR LOCAL REQUOREMENTS (such as no retro hugos)**************************************************
 %>
 <p><%= @worldcon_basic_greeting.capitalize %> <%= @detail %>,</p>
 
 <p>
-Thank you for your nominations for the <%= @worldcon_year %> Hugo Awards, Lodestar Award, and <em>Astounding</em> Award.
+Thank you for your nominations for the <%= @worldcon_year %> Hugo Awards, Lodestar Award, and <i>Astounding</i> Award.
 </p>
 
 <% if !@nominations_by_category.present? %>
@@ -39,7 +43,7 @@ Thank you for your nominations for the <%= @worldcon_year %> Hugo Awards, Lodest
 <% end %>
 
 <p>
-  The deadline for nominations is Friday, March 19, 2021, 11:59 PM PDT (2:59 AM EDT / 0659 GMT on March 20).
+  The deadline for nominations is Friday, March 19, 2021, 11:59 PM PDT (2:59 AM EDT / 0659 GMT on March 20.)
 </p>
 
 <p>
@@ -58,6 +62,5 @@ Thank you for your nominations for the <%= @worldcon_year %> Hugo Awards, Lodest
 </p>
 
 <p>
-  <%= @organizers_names_for_signature %><br>
-  Hugo Administrator and Deputy Hugo Administrators
+  Kathy Bond, 2021 Hugo Administrator
 </p>

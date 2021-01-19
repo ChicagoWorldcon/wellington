@@ -89,7 +89,7 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 2021 Hugo Awards, the Lodestar Award for Best Young Adult Book,and the Astounding Award
+        You may nominate for the 2021 Hugo Awards, the Lodestar Award for Best Young Adult Book, and the <i>Astounding</i> Award
         for Best New Writer, if, on or before December 31, 2020, 11:59 PM EST
 
         * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention), or
@@ -145,6 +145,13 @@ en:
 
         For full eligibility rules, please see the
         [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2020/08/WSFS-Constitution-as-of-August-1-2020.pdf).
+
+        Form Details
+        ----------------------------------------        
+
+        Unlike in previous years, we are not asking voters to supply details of the place of publlication of written fiction or non-fiction,
+        or of the studio responsible for a dramatic presentation.  These details **will** be included on the final ballot, but this year the
+        Administrators will establish them by direct research.
 
       nominate_soon:
         description: Nominate for Hugo Awards

@@ -36,7 +36,7 @@ RUN apk add \
       tzdata \
     && rm -rf /var/cache/apk/* \
     && npm install -g yarn \
-#    && gem install bundler mailcatcher
+    && gem install bundler mailcatcher
 
 # n.b, MailCatcher is incompatible with other gems in bundle
 
