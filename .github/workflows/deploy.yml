@@ -67,3 +67,9 @@ jobs:
       - name: Clean up the CI testing tag
         run: |
           aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
+
+      - id: deploy
+        name: Deploy to the staging host
+        if: ${{ startsWith(github.ref, 'refs/heads/staging') }}
+        run: |
+          ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.branch }}" --description "@${{ github.actor }} deployed ${{ steps.extract_name.outputs.branch }} to dev from the deploy action"
