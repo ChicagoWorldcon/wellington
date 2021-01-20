@@ -56,7 +56,8 @@
     <div class="col-sm-8 col-md-6 py-4">
       <ul class="list-unstyled l-v-spacing">
         <li><%= link_to "Purchase Membership", memberships_path %></li>
-        <li><%= link_to "My Memberships", reservations_path %></li>
+        <li><%= link_to "My Memberships and Ballots", reservations_path %></li>
+        <%#<li class="ml-2">(Access Hugo Ballots)</li>%>
         <% if ENV["HUGO_PACKET_BUCKET"] %>
           <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
         <% end %>
