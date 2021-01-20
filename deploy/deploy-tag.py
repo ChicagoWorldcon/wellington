@@ -44,7 +44,13 @@ def main():
     ]
 
     res = subprocess.run(command, cwd="./deploy", capture_output=True)
-    res.check_returncode()
+    if res.returncode != 0:
+        print(f"{' '.join(res.args)}:")
+        print("--- STDOUT --")
+        print(res.stdout)
+        print("--- STDERR --")
+        print(res.stderr)
+        sys.exit(res.returncode)
 
     lines = [_.decode("utf-8") for _ in res.stdout.splitlines()]
     deploy_command_line = [_ for _ in lines if "aws deploy create-deployment" in _][0]
