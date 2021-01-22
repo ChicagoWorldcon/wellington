@@ -2,7 +2,7 @@
 
 # Copyright 2020 Matthew B. Gray
 # Copyright 2020 Victoria Garcia
-# Copyright 2021 Fred Bauer - Hard-coded for no retros
+# Copyright 2021 Fred Bauer - Hard-coded for no retros, because there's no localization for this.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

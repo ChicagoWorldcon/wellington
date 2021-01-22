@@ -79,10 +79,10 @@
         </p>
 
         <p class="hugo-show-form-thanks" hidden>
-          Note that this form does not autosave. You will need to click the
+          <b>Note that this form does not autosave.</b> You will need to click the
           save buttons at the bottom of each section, or "save nominations for
-          all categories" at the bottom of the form. Note that clicking "save
-          nominations for all categories" will close the form.
+          all categories" at the bottom of the form. Clicking "save
+          nominations for all categories" will close the form after saving.
         </p>
       </div>
     </div>
@@ -135,7 +135,7 @@
 
                   <div class="card-body">
                     <div class="form-note-m-group hugo-description">
-                      <%= raw markdown.render(category.description) %>
+                      <%= raw markdown.render(category.description) %> 
                     </div>
 
                     <hr>
