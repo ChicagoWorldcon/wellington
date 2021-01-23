@@ -78,29 +78,32 @@ daemon: start-support-daemons
 stop-daemon:
 	script/stop-server-in-tmux.sh
 
+sidekiq:
+	bundle exec sidekiq -q mailers -q default
+
 # Workflows speicifc to conzealand
 # Gives you a full environment, seeded database
 # Reset database by setting NAPALM=true in your .env
-conzealand-start: conzealand-stop
+dc-start: conzealand-stop
 	docker-compose -f docker-compose-with-rails.yml up # Create and start containers
 
 # stops application containers
-conzealand-stop:
+dc-stop:
 	docker-compose -f docker-compose-with-rails.yml stop
 
 # stops and removes all docker assets used by this application
-conzealand-clean: stop
+dc-clean: stop
 	docker-compose -f docker-compose-with-rails.yml down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
 
 # opens up a REPL that lets you run code in the project
-conzealand-console:
+dc-console:
 	docker-compose -f docker-compose-with-rails.yml exec web bundle exec rails console
 
 # open a databaes console so you can run SQL queries
 # e.g. SELECT * FROM users;
-conzealand-sql:
+dc-sql:
 	docker-compose -f docker-compose-with-rails.yml exec postgres psql -U postgres worldcon_development
 
 # lets you cd around and have a look at the project
-conzealand-bash:
+dc-bash:
 	docker-compose -f docker-compose-with-rails.yml exec web sh

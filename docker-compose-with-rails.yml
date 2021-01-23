@@ -1,6 +1,7 @@
 # Copyright 2019 James Polley
 # Copyright 2019 Steven C Hartley
 # Copyright 2020 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,7 +40,7 @@ services:
   web:
     entrypoint: "script/docker_web_entry.sh"
     working_dir: /hack
-    image: registry.gitlab.com/worldcon/wellington:latest
+    image: wellington-dc:latest
     depends_on:
       - postgres
       - redis
@@ -57,7 +58,7 @@ services:
   worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
     working_dir: /hack
-    image: registry.gitlab.com/worldcon/wellington:latest
+    image: wellington-dc:latest
     depends_on:
       - web
       - postgres
