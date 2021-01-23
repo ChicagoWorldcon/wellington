@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ namespace :import do
   DEFAULT_KANSA_CSV = "kansa-export.csv"
   DEFAULT_PRESUPPORT_SRC = "CoNZealand master members list - combining PreSupports, Site Selection and at W76 Memberships V02 - Test Setup for Data Import to Membership System.csv"
   DEFAULT_DUBLIN_SRC = "unduplicated members-Table 1.csv"
+  DEFAULT_NOMINATOR_SRC = "dedup-previous-memebrs.csv"
 
   desc "Imports from conzealand Kansa spreadsheet export. Override file location by setting KANSA_SRC env var"
   task kansa: :environment do
@@ -51,6 +53,22 @@ namespace :import do
     dublin_csv = File.open(ENV["DUBLIN_SRC"] || DEFAULT_PRESUPPORT_SRC)
     file_name = dublin_csv.path.split("/").last
     importer = Import::DublinMembers.new(dublin_csv, "Dublin Import from #{file_name} at #{as_at}")
+    success = importer.call
+    if !success
+      puts "Failed with errros"
+      importer.errors.each do |error|
+        puts " * #{error}"
+      end
+    end
+  end
+
+  desc "Imports deduplicated previous year's members For nominations"
+  # Requires a membership name of "nominating" to exist
+  task nominate: :environment do
+    as_at = Time.now.iso8601
+    nominate_csv = File.open(ENV["NOMINATE_SRC"] || DEFAULT_PRESUPPORT_SRC)
+    file_name = nominate_csv.path.split("/").last
+    importer = Import::NominateMembers.new(nominate_csv, "Nominators Import from #{file_name} at #{as_at}")
     success = importer.call
     if !success
       puts "Failed with errros"
