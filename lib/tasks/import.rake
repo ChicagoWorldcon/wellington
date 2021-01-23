@@ -66,7 +66,7 @@ namespace :import do
   # Requires a membership name of "nominating" to exist
   task nominate: :environment do
     as_at = Time.now.iso8601
-    nominate_csv = File.open(ENV["NOMINATE_SRC"] || DEFAULT_PRESUPPORT_SRC)
+    nominate_csv = File.open(ENV["NOMINATE_SRC"] || DEFAULT_NOMINATOR_SRC)
     file_name = nominate_csv.path.split("/").last
     importer = Import::NominateMembers.new(nominate_csv, "Nominators Import from #{file_name} at #{as_at}")
     success = importer.call
