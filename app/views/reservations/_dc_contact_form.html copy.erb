@@ -1,8 +1,7 @@
 <%#
   Copyright 2018 Rosanna Gray
-  Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
-  Copyright 2021 Fred Bauer
+  Copyright 2020 Matthew B. Gray
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,22 +19,22 @@
 <%= fields_for(@contact) do |contact_form| %>
   <p>
     For more information about how we handle and use your personal information, please read our
-    <a href="https://discon3.org/CoC#privacy/" target="_blank" rel="noopener">Privacy Policy</a> and our
-    <a href="https://discon3.org/CoC" target="_blank" rel="noopener">Code of Conduct</a>.
+    <a href="https://conzealand.nz/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a> and our
+    <a href="https://conzealand.nz/about-conzealand/policies-and-expectations/" target="_blank" rel="noopener">Terms of Service</a>.
   </p>
 
   <% if !@reservation.persisted? && @current_memberships.present? %>
     <fieldset class="l-v-spacing">
       <legend>Review Your Memberships</legend>
       <p>
-        You also have <%= @current_memberships %>. If you'd rather upgrade, pay for or change those contacts, head over
+        You also have <%= @current_memberships %>. If you'd rather upgrade, pay for or change those details, head over
         to the <%= link_to "My Memberships", reservations_path %> section.
       </p>
     </fieldset>
   <% end %>
 
   <fieldset class="l-v-spacing">
-    <legend>Membership contacts</legend>
+    <legend>Membership Details</legend>
 
     <%= hidden_field_tag(:offer, @my_offer.hash) %>
 
@@ -73,7 +72,7 @@
       </div>
 
       <p class="form-note form-note-m-group">
-        This is the name that appears on your official ID. You will need to present your ID to receive a badge at registration.
+        This is the name that appears on your official ID. We will need to check your ID at registration.
       </p>
     </fieldset>
 
@@ -81,7 +80,7 @@
       <div class="row">
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="preferred_first_name">Preferred First Name</span></label>
+            <label for="preferred_first_name">Public First Name</span></label>
             <%= contact_form.text_field(:preferred_first_name, class: "form-control", id: "preferred_first_name") %>
             <% if errors = form_input_errors(@contact, :preferred_last_name) %>
               <p class="form-error"><%= errors %></p>
@@ -90,7 +89,7 @@
         </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="preferred_last_name">Preferred Last Name</label>
+            <label for="preferred_last_name">Public Last Name</label>
             <%= contact_form.text_field(:preferred_last_name, class: "form-control", id: "preferred_last_name") %>
             <% if errors = form_input_errors(@contact, :preferred_last_name) %>
               <p class="form-error"><%= errors %></p>
@@ -126,7 +125,7 @@
         </div>
       </div>
       <p class="form-note form-note-m-group">
-        This is the text we will print on your badge. It will default to your preferred pame and City and
+        This is the text we will print on your badge. It will default to Your preferred name and City and
         Country from your address. Both fields are modifiable.
       </p>
       <p class="form-note form-note-m-group">
@@ -141,16 +140,18 @@
       </div>
 
       <p class="form-note form-note-m-group">
-        Sharing your information with future Worldcons gives you the Hugo nominating rights that come 
-        with your membership at the 2022 Worldcon (Chicon 8.) If you answer no, you will not be able 
-        to exercise those rights.
+        Sharing your information with future Worldcons gives you the Hugo nominating rights for Worldcons other than
+        2020 that come with your membership. If you answer no, you will not be able to exercise those rights.
       </p>
 
       <div class="form-options">
         <%= contact_form.check_box(:show_in_listings, class: "form-control form-control-m-checkbox", id: "show_in_listings") %>
-        <label for="show_in_listings">List you (by Badge Name) on the DisCon III website and in published directories?</label>
+        <label for="show_in_listings">List name on the CoNZealand website and in published directories?</label>
       </div>
 
+      <p class="form-note form-note-m-group">
+        SFCONZ and Worldcon 78 want to list your information on our websites.
+      </p>
     </fieldset>
   </fieldset>
 
@@ -201,7 +202,7 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <div class="form-group">
-              <label for="postal">Zip / Post code</label>
+              <label for="postal">Post code</label>
               <%= contact_form.text_field(:postal, class: "form-control", id: "postal") %>
               <% if errors = form_input_errors(@contact, :postal) %>
                 <p class="form-error"><%= errors %></p>
@@ -232,12 +233,9 @@
     </div>
 
     <p class="form-note form-note-m-group">
-      Our primary means of communication are electronic, including for registration and
-      progress updates. If you prefer to receive paper versions of our publications, please 
-      select 'Send me paper pubs.' Please note, if you select this option, you may still 
-      receive certain emails from us with special updates. If you prefer to not receive any 
-      email, please select 'Send me no email'; this will auto-enroll you to receive paper 
-      versions of our publications
+      Our primary means of communication are electronic, in particular our registration system. Opting out of
+      electronic publications does not mean that you will receive zero emails from us. It does mean that we
+      will not attempt to send progress reports, etc., to your email address.
     </p>
   </fieldset>
 
@@ -245,7 +243,7 @@
     <legend>Accessibility Services</legend>
     <div class="form-options">
       <%= contact_form.check_box(:interest_accessibility_services, class: "form-control form-control-m-checkbox", id: "interest_accessibility_services") %>
-      <label for="interest_accessibility_services">I would like information on accessibility services at DisCon III</label>
+      <label for="interest_accessibility_services">I would like information on disability or accessibility services at CoNZealand</label>
     </div>
 
     <legend>Additional Options</legend>
@@ -279,12 +277,16 @@
       <label for="interest_exhibiting">I am interested in exhibiting at the convention</label>
     </div>
 
-   </fieldset>
+    <div class="form-options">
+      <%= contact_form.check_box(:interest_performing, class: "form-control form-control-m-checkbox", id: "interest_performing") %>
+      <label for="interest_performing">I am interested in performing at the convention</label>
+    </div>
+  </fieldset>
 
   <div class="l-v-spacing-both">
     <div class="form-group">
       <% if @reservation.persisted? %>
-        <input type="submit" value="Save contacts" class="btn btn-m-full-width">
+        <input type="submit" value="Save Details" class="btn btn-m-full-width">
       <% elsif @my_offer.membership.price > 0  %>
         <input type="submit" value="Reserve Membership and Pay" class="btn btn-m-full-width">
       <% else %>
@@ -293,7 +295,7 @@
     </div>
 
     <p>
-      This charge will show as being from 'DisCon III'. We are based in the United States, and use Stripe as our
+      This charge will show as being from 'CoNZealand'. We are based in New Zealand, and use Stripe as our
       payment processor.
     </p>
 
