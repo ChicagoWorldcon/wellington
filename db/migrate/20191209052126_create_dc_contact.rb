@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Modified for DC because we can't create dc_contacts since it already exists.
+# More working through bad automation design.
+
 # Based initially off https://reg.discon3.org/reg/
 class CreateDcContact < ActiveRecord::Migration[6.0]
   def change
     # Initial model based on Conzealand contact form, can be modified
-    create_table :dc_contacts, force: :cascade do |t|
+    create_table :unused_contacts, force: :cascade do |t|
       t.references :claim, null: false, index: true
 
       t.string "import_key"

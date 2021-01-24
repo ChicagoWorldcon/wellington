@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Chaged to rename details to DC, NOT CoNZealand.
+# Highlighting the dangers of automated migrations without thinking through implications
+
 class RenameDetailsToConzealandContacts < ActiveRecord::Migration[6.0]
   def change
-    rename_table :details, :conzealand_contacts
+    rename_table :details, :dc_contacts
   end
 end
