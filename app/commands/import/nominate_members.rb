@@ -21,11 +21,13 @@ require "csv"
 # used to allow the last year's members to nominate for the Hugos.  Note that manual de-duplication is required, to make that an individual
 # is not allowed two nominating votes.  Some members use unique email addresses for each convention, so an automated comparison is difficult. 
 # Future updates could help with this process.
+#
+# Will need xxxContact updated for specific convention name
 
 class Import::NominateMembers
   HEADINGS = [
     "PREVIOUS#",
-    "Class Type",
+    "PREVIOUSTYPE",
     "FNAME",
     "LNAME",
     "EMAIL",
@@ -61,10 +63,11 @@ class Import::NominateMembers
       # Only import dublin members, skip everyone else
       # next if row["eligibility"] != "dublin"
 
-      import_email = row["EMAIL"].downcase.strip
+      import_email = row["EMAIL"].to_s.downcase.strip.presence || "missing@email"
       import_user = User.find_or_create_by!(email: import_email)
       reservation = ClaimMembership.new(nominating_membership, customer: import_user).call
-      contact = ConzealandContact.new(
+      #binding.pry
+      contact = DcContact.new(
         claim: reservation.active_claim,
         first_name: row["FNAME"],
         last_name: row["LNAME"],
@@ -73,7 +76,7 @@ class Import::NominateMembers
         country: row["COUNTRY"],
         show_in_listings: false,
         share_with_future_worldcons: false,
-        publication_format: DCContact::PAPERPUBS_ELECTRONIC,
+        publication_format: DcContact::PAPERPUBS_ELECTRONIC,
       )
       contact.as_import.save!
       import_user.notes.create!(content: "Nominating membership #{row["PREVIOUS#"]}")
@@ -94,6 +97,6 @@ class Import::NominateMembers
   end
 
   def nominating_membership
-    @nominating_membership ||= Membership.find_by!(name: :nominating)
+    @nominating_membership ||= Membership.find_by!(name: :nominate)
   end
 end

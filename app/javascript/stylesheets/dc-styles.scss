@@ -1,6 +1,7 @@
 // Copyright 2018 Rosanna Gray
 // Copyright 2019 Matthew B. Gray
 // Copyright 2019 Jen Zajac (jenofdoom)
+// Copyright 2021 Fred Bauer
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -102,8 +103,8 @@ html, body {
     font-size: 15px;
 }
 body {
-    //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //background test
-    background:  #c71d38; //grey b9b9b9 darkest banner c71d38 dark red 660f1e lightest banner f42444
+    //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //For pretty background
+    background:  #c71d38; //Matches darkest banner color. Solid background
 
     // For that test environment feeling
     &.api-test-keys {

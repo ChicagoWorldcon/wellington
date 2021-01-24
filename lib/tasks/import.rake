@@ -55,7 +55,7 @@ namespace :import do
     importer = Import::DublinMembers.new(dublin_csv, "Dublin Import from #{file_name} at #{as_at}")
     success = importer.call
     if !success
-      puts "Failed with errros"
+      puts "Failed with errors"
       importer.errors.each do |error|
         puts " * #{error}"
       end
