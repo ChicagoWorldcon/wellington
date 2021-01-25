@@ -28,7 +28,7 @@ Category.transaction do
     "Best Fan Artist",
     "Best Video Game",
     "Lodestar Award for Best Young Adult Book (not a Hugo)",
-    "Astounding Award for the best new science fiction writer, sponsored by Dell Magazines (not a Hugo)",
+    "Astounding Award for the Best New Writer, sponsored by Dell Magazines (not a Hugo)",
   ]
 
   ordered_categories.each.with_index(1) do |category_name, n|
