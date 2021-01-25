@@ -22,7 +22,7 @@ require "csv"
 # is not allowed two nominating votes.  Some members use unique email addresses for each convention, so an automated comparison is difficult. 
 # Future updates could help with this process.
 #
-# Will need xxxContact updated for specific convention name
+# Will need xxxContact updated for specific convention name [todo] Fix this?
 
 class Import::NominateMembers
   HEADINGS = [
