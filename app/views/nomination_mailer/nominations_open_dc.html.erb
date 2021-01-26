@@ -1,0 +1,53 @@
+<%#
+  Copyright 2020 Matthew B. Gray
+  Copyright 2020 Victoria Garcia
+  Copyright 2021 Fred Bauer
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+<p>
+  <%#= @worldcon_greeting_sentence_excited %>Greetings
+  <% if @reservations.count == 1 %>
+    <%= @reservations.first.active_claim.contact %>
+  <% end %>
+</p>
+<p>
+Nominations for the 2021 Hugo Awards are now open and will remain open until 11:59 p.m.  Pacific Time (PDT) on March 19, 2021.  
+Nominations for the Lodestar Award for Best Young Adult Book and the Astounding Award for Best New Writer are also open.
+</p>
+<p>
+All CoNZealand members and DisCon III members who registered before 11:59 p.m. Pacific Time (PST) December 31, 2020, are eligible to nominate. 
+</p>
+<p>
+To access the nomination portal, please visit <a href="discon3.org">discon3.org</a> and select ‘Members Area’ under ‘Membership.’ Then, follow these steps: 
+<ol>
+<li>Enter the address this email was sent to and request sending a login link to you.
+<li>Click your login link in the email just sent and enter the Members’ Area. 
+<li>Select ‘My Memberships and Ballots’ to access all memberships linked with that email address.
+<li>Then, select ‘Nominate for Hugo Awards’ under the appropriate membership. 
+<li>You will then see instructions for completing the nomination ballot. You must agree to the terms by typing the full name associated with the membership into a confirmation box before you can begin entering your nominations.
+</ol>
+<p>
+If you prefer a printable paper form, you can download one in US letter or A4 sizes from the Hugo nomination portal of DisCon III’s website.  
+</p>
+<p>
+For more information about nominating, please visit <a href="https://discon3.org/whats-on/hugo-awards-wsfs/hugo-awards/">https://discon3.org/whats-on/hugo-awards-wsfs/hugo-awards/</a>
+ or email <a href="mailto:hugohelp@discon3.org">hugohelp@discon3.org</a>.
+</p>
+<p>
+We look forward to your participation in the 2021 Hugo Awards and hope to see you at DisCon III!
+</p>
+<p>
+Kathy Bond, DisCon III Hugo Administrator
+</p>
+

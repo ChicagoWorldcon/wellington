@@ -93,6 +93,20 @@ class NominationMailer < ApplicationMailer
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
 
+  def nominations_open_dc(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
+
+    account_numbers = account_numbers_from(@reservations)
+    if account_numbers.count == 1
+      subject = "DisCon III: Hugo Nominations are now open for member #{account_numbers.first}"
+    else
+      subject = "DisCOn III: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
+    end
+
+    mail(to: user.email, from: "hugohelp@discon3.org", subject: subject)
+  end
+
   def nominations_reminder_2_weeks_left_conzealand(email:)
     user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)

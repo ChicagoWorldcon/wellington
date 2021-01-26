@@ -46,6 +46,20 @@ class NominationMailerPreview < ActionMailer::Preview
     NominationMailer.nominations_open_conzealand(user: conzealand_users.sample)
   end
 
+  def nominations_open_dc
+    if params[:user]
+      mailer = NominationMailer.nominations_open_dc(
+        user: User.find_by!(email: params[:user]),
+      )
+      return mailer
+    end
+
+    users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
+    conzealand_users = users.where.not(memberships: {name: :dublin_2019})
+    NominationMailer.nominations_open_dc(user: conzealand_users.sample)
+  end
+
+
   def nominations_open_chicago
     # TODO- MAKE SURE THIS WORKS
     if params[:user]
