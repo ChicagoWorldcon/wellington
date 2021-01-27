@@ -179,7 +179,9 @@ class CartController < ApplicationController
     @cart = locate_cart
     target_item = CartItem.find(params[:id])
     target_item.later = false
+    binding.pry
     if target_item.save
+      binding.pry
       flash[:status] = :success
       flash[:notice] = "Item successfully moved to cart."
       binding.pry
