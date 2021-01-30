@@ -40,7 +40,7 @@ class CartController < ApplicationController
     binding.pry
     if (our_offer.present? && @our_beneficiary.present?)
       binding.pry
-      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, cart_id: @cart.id,
+      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, membership_name: our_offer.membership.name, price_cents: our_offer.membership.price_cents, our_offer.membership.cart_id: @cart.id,
       chicago_contact_id: @our_beneficiary.id,
       kind: MEMBERSHIP,
       later: false
@@ -60,6 +60,9 @@ class CartController < ApplicationController
 
   def update_cart_info
     @cart = locate_cart
+    # IF I ACTUALLY USE THIS it will be for shipping and billing-type stuff.
+
+
     # [TODO] Find the cart order and then update
     # stuff from the params (presumably).
     # Then:
@@ -77,16 +80,19 @@ class CartController < ApplicationController
 
   def submit_online_payment
     @cart = locate_cart
+    #TODO
   end
 
   def pay_with_cheque
     @cart = locate_cart
+    #TODO
   end
 
   def destroy
     @cart = locate_cart
-    # First, find the cart-order
-    # @cart = Order.find_by(id: session[:cart_order_id])
+    #TODO: Figure out if we actually need this.
+    #
+    # Find the cart-order, then:
     # if @cart.nil?
     #   flash[:status] = :failure
     #   flash[:result_text] = "Unable to remove the items from your cart."
@@ -105,26 +111,62 @@ class CartController < ApplicationController
 
   def destroy_active
     @cart = locate_cart
-    # First, find the cart-order
-    # @cart = Order.find_by(id: session[:cart_order_id])
-    # if @cart.nil?
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "Unable to remove the items from your cart."
-    #   redirect_to cart_path and return
-    # end
-    # if @cart.cart_items.count > 0
-    #   @cart.cart_items.each do |cart_item|
-    #     cart_item.destroy
-    #   end
-    # else
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "Your cart was already empty!"
-    # end
-    # redirect_to cart_path
+    binding.pry
+    if @cart.nil?
+      binding.pry
+      flash[:status] = :failure
+      flash[:result_text] = "Unable to find cart."
+      redirect_to cart_path and return
+    end
+    now_items = CartItemsHelper.cart_items_for_now(@cart)
+    binding.pry
+    if now_items.count > 0
+      binding.pry
+      now_items.each do |now_item|
+        now_item.destroy
+      end
+    end
+    if CartItemsHelper.cart_items_for_now(@cart).count == 0
+      binding.pry
+      flash[:status] = :success
+      flash[:notice] = "Active cart successfully emptied!"
+    else
+      binding.pry
+      flash[:status] = :failure
+      flash[:result_text] = "One or more items could not be deleted."
+    end
+    binding.pry
+    redirect_to cart_path
   end
 
   def destroy_saved
     @cart = locate_cart
+    binding.pry
+    if @cart.nil?
+      binding.pry
+      flash[:status] = :failure
+      flash[:result_text] = "Unable to find cart."
+      redirect_to cart_path and return
+    end
+    later_items = CartItemsHelper.cart_items_for_later(@cart)
+    binding.pry
+    if later_items.count > 0
+      binding.pry
+      later_items.each do |later_item|
+        later_item.destroy
+      end
+    end
+    if CartItemsHelper.cart_items_for_later(@cart).count == 0
+      binding.pry
+      flash[:status] = :success
+      flash[:notice] = "Saved items successfully cleared!"
+    else
+      binding.pry
+      flash[:status] = :failure
+      flash[:result_text] = "One or more items could not be deleted."
+    end
+    binding.pry
+    redirect_to cart_path
   end
 
   def remove_single_item
@@ -172,6 +214,15 @@ class CartController < ApplicationController
   end
 
   def save_all_items_for_later
+    binding.pry
+    @cart = locate_cart
+    now_items = CartItemsHelper.cart_items_for_now(@cart)
+    now_items.each do |item|
+      item.now = false;
+      item.save
+      # TODO: Add appropriate flash messages
+    end
+    redirect_to cart_path
   end
 
   def move_item_to_cart
@@ -197,14 +248,28 @@ class CartController < ApplicationController
   end
 
   def move_all_saved_items_to_cart
+    binding.pry
+    @cart = locate_cart
+    later_items = CartItemsHelper.cart_items_for_later(@cart)
+    later_items.each do |item|
+      item.later = false;
+      item.save
+      # TODO: Add appropriate flash messages
+    end
+    redirect_to cart_path
   end
 
 
   def verify_single_item_availability
+    binding.pry
+    target_item = CartItem.find(params[:id])
+    target_item.confirm_item_availability
+    redirect_to cart_path
   end
 
   def edit_single_item
-    # This will be for going into the reservation data
+    # This will be for going into the reservation data, in theory
+    # TODO: figure out if we need this. 
   end
 
   def update
@@ -221,10 +286,7 @@ class CartController < ApplicationController
 
   def verify_cart_contents
     @cart = locate_cart
-  end
 
-  def subtotal_cart
-    @cart = locate_cart
   end
 
   # DELETE /carts/1
@@ -242,6 +304,15 @@ class CartController < ApplicationController
   def locate_cart
     @cart ||= Cart.find_by(user_id: current_user.id)
     return @cart ||= create_cart
+  end
+
+  def cart_item_membership_id
+    target_item = CartItem.find(params[:id])
+    if target_item.present?
+      target_item.membership_id
+    else
+      -1
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.

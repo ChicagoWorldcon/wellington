@@ -18,8 +18,11 @@
 # the reg site might sell in the future) that is being held in the cart pending
 # payment.
 class CartItem < ApplicationRecord
+
+  monetize :item_price_cents
   # Support for donations and upgrades is coming later.  This is just
   # meant as a hint for the future about how to make that happen.
+
   MEMBERSHIP = "membership"
   # DONATION = "donation"
   # UPGRADE = "upgrade"
@@ -38,10 +41,15 @@ class CartItem < ApplicationRecord
   belongs_to :membership, required: true
   belongs_to :chicago_contact, required: true
   validates :kind, inclusion: { in: KIND_OPTIONS }
+  validates :item_name, presence: true
+  validates :item_price_cents, presence: true
+  validates :available, presence: true
 
-  def item_name
+  # TODO: Figure out how these should interact with the
+  # availability confirmation scheme.
+  def item_display_name
     if self.kind == MEMBERSHIP
-      return membership_name
+      return membership_display_name
     end
   end
 
@@ -63,15 +71,27 @@ class CartItem < ApplicationRecord
     end
   end
 
-  def confirm_item_details
-    # TODO Make a copy of self by duplication, then look everything up in
-    # the database afresh, and then compare.  Dispatch appropriate
-    # flash messages. Return type should be boolean.
+  def confirm_item_availability
+    # Written with this conditional to allow for later
+    # addition of cart-items that aren't memberships.
+    binding.pry
+    if self.kind == MEMBERSHIP
+      binding.pry
+      active_membership = Membership.active.where(id: self.membership_id, name: self.item_name, price_cents: self.item_price_cents)
+      binding.pry
+      self.available = active_membership.present? && active_membership.count == 1 ? true : false
+      self.save
+    end
+    binding.pry
+    return self.available
   end
 
   private
 
-  def membership_name
+  # TODO: Go through all this display stuff and make sure it still makes sense,
+  # given that we're going to save the membership name and price
+
+  def membership_display_name
     @item_membership ||= find_membership
     binding.pry
     @item_membership.name_for_cart

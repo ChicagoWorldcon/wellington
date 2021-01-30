@@ -59,5 +59,4 @@ module CartItemsHelper
   def cart_items_for_later(cart)
     CartItemsHelper.cart_items_for_later(cart)
   end
-
 end

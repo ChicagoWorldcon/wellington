@@ -12,6 +12,8 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+  TODO: figure out if we need to disable some or all buttons for  unavailable items.
 %>
 
 <h1 style="background-color:purple; color:crimson">Shopping Cart</h1>
@@ -40,10 +42,10 @@
                       THINKING I'M GOING TO TRY AND MAKE THE EDITING PAGES WORK AS COLLAPSIBLE ELEMENTS.
                   %>
                   <div class="list-group list-group-horizontal now-details-list">
-                    <li class="list-group-item list-group-item-action"><%=cart_item.kind %></li>
-                    <li class="list-group-item list-group-item-action"><%= cart_item.item_name %></li>
-                    <li class="list-group-item list-group-item-action"><%= cart_item.item_recipient %></li>
-                    <li class="list-group-item list-group-item-action"><%= cart_item.item_display_price %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=cart_item.kind %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_name %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_recipient %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group now-buttons" role="group">
                     <%= button_to "Save for Later", save_single_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
@@ -75,16 +77,15 @@
                 <div class="later-item-details">
                   <%#
                       TODO:
-
                       AS WITH ITS COUNTERPART ABOVE, THIS LIST-GROUP WILL HAVE LINKS TO THE
                       SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH IN TURN WILL HAVE EDITING PAGES
                   %>
                   <div class="list-group list-group-horizontal later-item-details-list">
                     <% binding.pry %>
-                    <li class="list-group-item list-group-item-action"><%=later_item.kind %></li>
-                    <li class="list-group-item list-group-item-action"><%= later_item.item_name %></li>
-                    <li class="list-group-item list-group-item-action"><%= later_item.item_recipient%></li>
-                    <li class="list-group-item list-group-item-action"><%= later_item.item_display_price %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=later_item.kind %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_name %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_recipient%></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_display_price %></li>
                   </div>
                   <div class="btn-group later-buttons" role="group">
                     <% binding.pry %>

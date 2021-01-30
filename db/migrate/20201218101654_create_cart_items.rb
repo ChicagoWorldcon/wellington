@@ -19,10 +19,12 @@ class CreateCartItems < ActiveRecord::Migration[6.1]
     create_table :cart_items do |t|
       t.references :cart, index: true, null: false, foreign_key: true
       t.references :membership, index: true, null: false, foreign_key: true
+      t.string :item_name, null:false
+      t.integer :item_price_cents, default:0, null:false
       t.references :chicago_contact, index: true, null: false, foreign_key: true
       t.string :kind, null:false
       t.boolean :later, default:false, null:false
-      t.boolean :unavailable, default:false, null:false
+      t.boolean :available, default:true, null:false
       t.timestamps
     end
   end

@@ -22,7 +22,6 @@
 # see also SetMembership
 class MembershipOffer
   attr_reader :membership
-
   delegate :description, to: :membership
 
   def self.options
