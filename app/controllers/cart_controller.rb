@@ -40,7 +40,7 @@ class CartController < ApplicationController
     binding.pry
     if (our_offer.present? && @our_beneficiary.present?)
       binding.pry
-      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, membership_name: our_offer.membership.name, price_cents: our_offer.membership.price_cents, our_offer.membership.cart_id: @cart.id,
+      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, item_name: our_offer.membership.name, item_price_cents: our_offer.membership.price_cents, cart_id: @cart.id,
       chicago_contact_id: @our_beneficiary.id,
       kind: MEMBERSHIP,
       later: false
@@ -89,24 +89,26 @@ class CartController < ApplicationController
   end
 
   def destroy
+    # This empties the cart of all items, both active and saved.
     @cart = locate_cart
-    #TODO: Figure out if we actually need this.
-    #
-    # Find the cart-order, then:
-    # if @cart.nil?
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "Unable to remove the items from your cart."
-    #   redirect_to cart_path and return
-    # end
-    # if @cart.cart_items.count > 0
-    #   @cart.cart_items.each do |cart_item|
-    #     cart_item.destroy
-    #   end
-    # else
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "Your cart was already empty!"
-    # end
-    # redirect_to cart_path
+    if @cart.nil?
+      flash[:status] = :failure
+      flash[:result_text] = "Unable to remove the items from your cart."
+      redirect_to cart_path and return
+    end
+    if @cart.cart_items.count > 0
+      @cart.cart_items.each do |cart_item|
+        cart_item.destroy
+      end
+    end
+    if @cart.cart_items.count == 0
+      flash[:status] = :success
+      flash[:notice] = "Your cart has been emptied."
+    else
+      flash[:status] = :failure
+      flash[:notice] = "Your cart could not be fully emptied."
+    end
+    redirect_to cart_path
   end
 
   def destroy_active
@@ -115,7 +117,7 @@ class CartController < ApplicationController
     if @cart.nil?
       binding.pry
       flash[:status] = :failure
-      flash[:result_text] = "Unable to find cart."
+      flash[:notice] = "Unable to find cart."
       redirect_to cart_path and return
     end
     now_items = CartItemsHelper.cart_items_for_now(@cart)
@@ -133,7 +135,7 @@ class CartController < ApplicationController
     else
       binding.pry
       flash[:status] = :failure
-      flash[:result_text] = "One or more items could not be deleted."
+      flash[:notice] = "One or more items could not be deleted."
     end
     binding.pry
     redirect_to cart_path
@@ -203,7 +205,6 @@ class CartController < ApplicationController
       flash[:notice] = "Item successfully saved for later."
       binding.pry
     else
-      #TODO: See if we actually need to have the cat location doubled like this.
       flash[:status] = :failure
       flash[:notice] = "This item could not be saved for later."
       flash[:messages] = @cart.errors.messages
@@ -264,15 +265,29 @@ class CartController < ApplicationController
     binding.pry
     target_item = CartItem.find(params[:id])
     target_item.confirm_item_availability
+    if !target_item.confirm_item_availability
+      flash[:notice] = "#{target_item.item_name} is no longer available."
+    else
+      flash[:notice] = "Good news! #{target_item.item_name} is still available."
+    end
+    redirect_to cart_path
+  end
+
+  def verify_all_items_availability
+    @cart = locate_cart
+    if !CartItemsHelper.verify_availability_of_cart_contents(@cart)
+      flash[:notice] = "One or more of your items is no longer available."
+    end
     redirect_to cart_path
   end
 
   def edit_single_item
     # This will be for going into the reservation data, in theory
-    # TODO: figure out if we need this. 
+    # TODO: figure out if we need this.
   end
 
   def update
+    # TODO: Figure out if this, or some form of this, is actually necessary.
     respond_to do |format|
       if @cart.update(cart_params)
         format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
@@ -284,10 +299,7 @@ class CartController < ApplicationController
     end
   end
 
-  def verify_cart_contents
-    @cart = locate_cart
 
-  end
 
   # DELETE /carts/1
   # DELETE /carts/1.json

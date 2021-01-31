@@ -79,7 +79,7 @@ class CartItem < ApplicationRecord
       binding.pry
       active_membership = Membership.active.where(id: self.membership_id, name: self.item_name, price_cents: self.item_price_cents)
       binding.pry
-      self.available = active_membership.present? && active_membership.count == 1 ? true : false
+      self.available = active_membership.present? && active_membership.count == 1
       self.save
     end
     binding.pry

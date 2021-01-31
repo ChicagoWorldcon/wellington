@@ -59,4 +59,17 @@ module CartItemsHelper
   def cart_items_for_later(cart)
     CartItemsHelper.cart_items_for_later(cart)
   end
+
+  def self.verify_availability_of_cart_contents(cart)
+    binding.pry
+    all_contents_available = true;
+    cart.cart_items.each {|item|
+      all_contents_available = all_contents_available && item.confirm_item_availability
+    }
+    return all_contents_available
+  end
+
+  def verify_availability_of_cart_contents(cart)
+    CartItemsHelper.verify_availability_of_cart_contents(cart)
+  end
 end

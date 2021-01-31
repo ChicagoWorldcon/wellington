@@ -58,10 +58,11 @@ Rails.application.routes.draw do
   end
 
   get '/cart', to: 'cart#show', as: 'cart'
+  delete '/cart/empty', to: 'cart#destroy', as: 'cart_empty'
   get '/cart/purchase_preview', to: 'cart#purchase_preview', as: 'cart_purchase_preview'
   post '/cart/pay_online', to: 'cart#submit_online_payment', as: 'cart_pay_online'
   post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'cart_pay_with_cheque'
-  put '/cart/verify', to: 'cart#verify_availability', as: 'cart_verify_all'
+  patch '/cart/verify', to: 'cart#verify_all_items_availability', as: 'cart_verify_all'
   delete '/cart/clear_all_active', to: 'cart#destroy_active', as: 'cart_clear_all_active'
   patch 'cart/save_all_for_later', to: 'cart#save_all_items_for_later', as: 'cart_save_all'
   patch 'cart/activate_all_saved', to: 'cart#move_all_saved_items_to_cart', as: 'cart_activate_all'

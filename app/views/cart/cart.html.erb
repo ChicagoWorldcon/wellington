@@ -104,6 +104,17 @@
               <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
             </div>
           </div>
+          <div class="general-admin-container">
+            <h4 style="color:indigo">[This is where the admin buttons for the whole cart will go.]</h4>
+            <div class="btn-group overall-buttons" role="group">
+
+
+
+
+              <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-warning" %>
+              <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-warning" %>
+            </div>
+          </div>
       </div>
       <% else %>
         <h4> Your cart is empty! </h4>
