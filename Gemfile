@@ -77,7 +77,7 @@ end
 
 group :test do
   gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
-  gem 'database_cleaner-redis'          # See above.
+  #gem 'database_cleaner-redis'          # See above.
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
