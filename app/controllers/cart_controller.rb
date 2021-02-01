@@ -176,7 +176,7 @@ class CartController < ApplicationController
     @cart = locate_cart
     @target_item = CartItem.find(params[:id])
     if @target_item && @cart && (@target_item.cart_id == @cart.id)
-      @target_item_name = @target_item.item_name
+      @target_item_name = @target_item.item_display_name
       @target_item_kind = @target_item.kind
       @target_item.destroy
       flash[:status] = :success
