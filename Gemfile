@@ -5,6 +5,7 @@
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 Chris Rose
 # Copyright 2020 Matthew B. Gray
+# Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,6 +73,11 @@ group :development do
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
   gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
+end
+
+group :test do
+  gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
+  gem 'database_cleaner-redis'          # See above.
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
