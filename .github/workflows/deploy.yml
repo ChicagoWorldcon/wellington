@@ -35,7 +35,7 @@ jobs:
       - name: Define the repository labels
         run: |
           echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}" >> $GITHUB_ENV
-          echo "CONTAINER_STAGING_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
+          echo "CONTAINER_DEPLOY_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
@@ -61,15 +61,15 @@ jobs:
       - name: Publish to the branch tag
         run: |
           docker pull $CONTAINER_TEST_REPOSITORY
-          docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_STAGING_REPOSITORY
-          docker push $CONTAINER_STAGING_REPOSITORY
+          docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_DEPLOY_REPOSITORY
+          docker push $CONTAINER_DEPLOY_REPOSITORY
 
       - name: Clean up the CI testing tag
         run: |
           aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
 
       - id: deploy
-        name: Deploy to the staging host
+        name: Deploy to the target host
         if: ${{ startsWith(github.ref, 'refs/heads/staging') }}
         run: |
-          ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.branch }}" --description "@${{ github.actor }} deployed ${{ steps.extract_name.outputs.branch }} to dev from the deploy action"
+          ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.branch }}" --description "@${{ github.actor }} deployed ${{ steps.extract_name.outputs.branch }} to staging from the deploy action"
