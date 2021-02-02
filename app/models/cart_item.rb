@@ -43,7 +43,7 @@ class CartItem < ApplicationRecord
   validates :kind, inclusion: { in: KIND_OPTIONS }
   validates :item_name, presence: true
   validates :item_price_cents, presence: true
-  validates :available, presence: true
+  validates :available, inclusion: { in: [true, false]}
 
   # TODO: Figure out how these should interact with the
   # availability confirmation scheme.

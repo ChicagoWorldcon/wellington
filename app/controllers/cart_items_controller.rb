@@ -76,7 +76,7 @@ class CartItemsController < ApplicationController
       return
     end
     @cart_item.chicago_contact = @contact
-    @cart_item. membership = @my_offer
+    @cart_item.membership = @my_offer
 
 
 
