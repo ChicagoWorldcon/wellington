@@ -16,50 +16,56 @@
 
 class CartController < ApplicationController
   include ThemeConcern
+
+  before_action :require_nonsupport_login
+
+  before_action :locate_cart
+  before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
+
+  before_action :locate_all_cart_items, only: []
+  before_action :locate_all_active_cart_items, only: [:destroy_active, :save_all_items_for_later]
+  before_action :locate_all_cart_items_for_later, only: [:destroy_saved, :move_all_saved_items_to_cart]
+
+  before_action :verify_all_items_availability, only: []
+
+  before_action :locate_our_membership_offer, only: [:add_reservation_to_cart]
+  before_action :locate_our_membership_beneficiary, only: [:add_reservation_to_cart]
+
   PENDING = "pending"
   MEMBERSHIP = "membership"
 
   def show
-    if user_signed_in? && !support_signed_in?
-      @cart = locate_cart
-      render :cart
-    else
-      flash[:alert] = "You must be signed in to access the cart."
-      redirect_to root_path
-    end
+    render :cart
   end
 
   def add_reservation_to_cart
-    @cart = locate_cart
-    binding.pry
-    our_offer = CartItemsHelper.locate_offer(params[:offer])
-    binding.pry
-    @our_beneficiary = Claim.contact_strategy.new(our_contact_params)
     process_beneficiary_dob
     validate_beneficiary
-    binding.pry
-    if (our_offer.present? && @our_beneficiary.present?)
-      binding.pry
-      @our_cart_item = CartItem.create membership_id: our_offer.membership.id, item_name: our_offer.membership.name, item_price_cents: our_offer.membership.price_cents, cart_id: @cart.id,
-      chicago_contact_id: @our_beneficiary.id,
-      kind: MEMBERSHIP,
-      later: false
+    if (@our_offer.present? && @our_beneficiary.present?)
+      @our_cart_item = CartItem.create(
+        membership_id: @our_offer.membership.id,
+        item_name: @our_offer.membership.name,
+        item_price_cents: @our_offer.membership.price_cents,
+        cart_id: @cart.id,
+        #TODO: Get rid of the con-specific hard coding.
+        chicago_contact_id: @our_beneficiary.id,
+        kind: MEMBERSHIP,
+        later: false
+      )
       if @our_cart_item.save
         flash[:status] = :success
         flash[:notice] = "Membership successfully added to cart."
-        binding.pry
         redirect_to cart_path and return
       end
     end
     flash[:status] = :failure
     flash[:notice] = "This membership could not be added to your cart."
     flash[:messages] = @cart.errors.messages
-    binding.pry
+    #TODO: Confirm this routing
     redirect_to new_reservation_path
   end
 
   def update_cart_info
-    @cart = locate_cart
     # IF I ACTUALLY USE THIS it will be for shipping and billing-type stuff.
 
 
@@ -79,31 +85,23 @@ class CartController < ApplicationController
   end
 
   def submit_online_payment
-    @cart = locate_cart
     #TODO
   end
 
   def pay_with_cheque
-    @cart = locate_cart
     #TODO
   end
 
   def destroy
     # This empties the cart of all items, both active and saved.
-    @cart = locate_cart
-    if @cart.nil?
-      flash[:status] = :failure
-      flash[:result_text] = "Unable to remove the items from your cart."
-      redirect_to cart_path and return
-    end
-    if @cart.cart_items.count > 0
-      @cart.cart_items.each do |cart_item|
+    if @all_cart_items && @all_cart_items.count > 0
+      @all_cart_items.each do |cart_item|
         cart_item.destroy
       end
     end
     if @cart.cart_items.count == 0
       flash[:status] = :success
-      flash[:notice] = "Your cart has been emptied."
+      flash[:notice] = "Your cart is now empty."
     else
       flash[:status] = :failure
       flash[:notice] = "Your cart could not be fully emptied."
@@ -112,76 +110,44 @@ class CartController < ApplicationController
   end
 
   def destroy_active
-    @cart = locate_cart
-    binding.pry
-    if @cart.nil?
-      binding.pry
-      flash[:status] = :failure
-      flash[:notice] = "Unable to find cart."
-      redirect_to cart_path and return
-    end
-    now_items = CartItemsHelper.cart_items_for_now(@cart)
-    binding.pry
-    if now_items.count > 0
-      binding.pry
-      now_items.each do |now_item|
+    if @active_cart_items && @active_cart_items.count > 0
+      @active_cart_items.each do |now_item|
         now_item.destroy
       end
     end
     if CartItemsHelper.cart_items_for_now(@cart).count == 0
-      binding.pry
       flash[:status] = :success
       flash[:notice] = "Active cart successfully emptied!"
     else
-      binding.pry
       flash[:status] = :failure
       flash[:notice] = "One or more items could not be deleted."
     end
-    binding.pry
     redirect_to cart_path
   end
 
   def destroy_saved
-    @cart = locate_cart
-    binding.pry
-    if @cart.nil?
-      binding.pry
-      flash[:status] = :failure
-      flash[:result_text] = "Unable to find cart."
-      redirect_to cart_path and return
-    end
-    later_items = CartItemsHelper.cart_items_for_later(@cart)
-    binding.pry
-    if later_items.count > 0
-      binding.pry
-      later_items.each do |later_item|
+    if @later_cart_items && @later_cart_items.count > 0
+      @later_cart_items.each do |later_item|
         later_item.destroy
       end
     end
     if CartItemsHelper.cart_items_for_later(@cart).count == 0
-      binding.pry
       flash[:status] = :success
       flash[:notice] = "Saved items successfully cleared!"
     else
-      binding.pry
       flash[:status] = :failure
       flash[:result_text] = "One or more items could not be deleted."
     end
-    binding.pry
     redirect_to cart_path
   end
 
   def remove_single_item
-    binding.pry
-    @cart = locate_cart
-    @target_item = CartItem.find(params[:id])
-    if @target_item && @cart && (@target_item.cart_id == @cart.id)
-      @target_item_name = @target_item.item_display_name
+    if @target_item
+      target_item_name = @target_item.item_display_name
       @target_item_kind = @target_item.kind
       @target_item.destroy
       flash[:status] = :success
-      flash[:notice] = "#{@target_item_name} #{@target_item_kind} successfully deleted"
-      binding.pry
+      flash[:notice] = "#{@target_item_name} #{@target_item_kind} was successfully deleted"
     else
       flash[:status] = :failure
       flash[:notice] = "This item could not be removed from your cart."
@@ -196,61 +162,52 @@ class CartController < ApplicationController
   end
 
   def save_item_for_later
-    binding.pry
-    @cart = locate_cart
-    target_item = CartItem.find(params[:id])
-    target_item.later = true
-    if target_item.save
-      flash[:status] = :success
-      flash[:notice] = "Item successfully saved for later."
-      binding.pry
+    if @target_item
+      @target_item.later = true
+      if target_item.save
+        flash[:status] = :success
+        flash[:notice] = "Item successfully saved for later."
+      end
     else
       flash[:status] = :failure
       flash[:notice] = "This item could not be saved for later."
       flash[:messages] = @cart.errors.messages
-      binding.pry
     end
-    binding.pry
     redirect_to cart_path
   end
 
   def save_all_items_for_later
-    binding.pry
-    @cart = locate_cart
-    now_items = CartItemsHelper.cart_items_for_now(@cart)
-    now_items.each do |item|
-      item.now = false;
-      item.save
-      # TODO: Add appropriate flash messages
+    if @active_cart_items && @active_cart_items.count > 0
+      @active_cart_items.each do |item|
+        item.now = false;
+        unless item.save
+          flash[:status] = :failure
+          flash[:notice] = "Unable to save item for later."
+          flash[:messages] = @cart.errors.messages
+        end
+      end
+      if CartItemsHelper.cart_items_for_now(@cart).count == 0 && CartItemsHelper.cart_items_for_later(@cart).count > 0
+        flash[:status] = :success
+        flash[:notice] = "All active items have now been saved for later."
+      end
     end
     redirect_to cart_path
   end
 
   def move_item_to_cart
-    binding.pry
-    @cart = locate_cart
-    target_item = CartItem.find(params[:id])
-    target_item.later = false
-    binding.pry
+    @target_item.later = false
     if target_item.save
-      binding.pry
       flash[:status] = :success
       flash[:notice] = "Item successfully moved to cart."
-      binding.pry
     else
-      #TODO: See if we actually need to have the cat location doubled like this.
       flash[:status] = :failure
       flash[:notice] = "This item could not be moved to the cart."
-      flash[:messages] = @cart.errors.messages
-      binding.pry
+      flash[:messages] = @target_item.errors.messages
     end
-    binding.pry
     redirect_to cart_path
   end
 
   def move_all_saved_items_to_cart
-    binding.pry
-    @cart = locate_cart
     later_items = CartItemsHelper.cart_items_for_later(@cart)
     later_items.each do |item|
       item.later = false;
@@ -262,7 +219,6 @@ class CartController < ApplicationController
 
 
   def verify_single_item_availability
-    binding.pry
     target_item = CartItem.find(params[:id])
     target_item.confirm_item_availability
     if !target_item.confirm_item_availability
@@ -274,7 +230,6 @@ class CartController < ApplicationController
   end
 
   def verify_all_items_availability
-    @cart = locate_cart
     if !CartItemsHelper.verify_availability_of_cart_contents(@cart)
       flash[:notice] = "One or more of your items is no longer available."
     end
@@ -313,18 +268,64 @@ class CartController < ApplicationController
 
   private
 
+  def require_nonsupport_login
+    unless user_signed_in? && !support_signed_in?
+      flash[:alert] = "You must be signed in to access the cart.  If you are a support user attempting to make personal purchases, please log in to your personal (nonsupport) account."
+      redirect_to root_path
+    end
+  end
+
   def locate_cart
     @cart ||= Cart.find_by(user_id: current_user.id)
-    return @cart ||= create_cart
+    @cart ||= create_cart
+    if @cart.nil?
+      flash[:status] = :failure
+      flash[:notice] = "We were unable to find or create your shopping cart."
+
+      redirect_to memberships_path
+    end
+  end
+
+  def locate_target_item
+    @target_item = CartItem.find(params[:id])
+    if @target_item.blank?
+      flash[:status] = :failure
+      flash[:notice] = "Unable to recognize this item."
+      flash[:messages] = @target_item.errors.messages
+      redirect_to cart_path
+    end
+  end
+
+  def locate_all_active_cart_items
+    @active_cart_items = CartItemsHelper.cart_items_for_now(@cart)
+  end
+
+  def locate_all_cart_items_for_later
+    @later_cart_items = CartItemsHelper.cart_items_for_later(@cart)
+  end
+
+  def locate_all_cart_items
+    @all_cart_items = @cart.cart_items
   end
 
   def cart_item_membership_id
-    target_item = CartItem.find(params[:id])
+    target_item = CartItem.where(id: params[:id])
     if target_item.present?
       target_item.membership_id
     else
       -1
     end
+  end
+
+  def locate_our_membership_offer
+    @our_offer = CartItemsHelper.locate_offer(params[:offer])
+  end
+
+  def locate_our_membership_beneficiary
+    @our_beneficiary = Claim.contact_strategy.new(our_contact_params)
+  end
+
+  def verify_all_items_availability
   end
 
   # Use callbacks to share common setup or constraints between actions.
@@ -345,8 +346,6 @@ class CartController < ApplicationController
         flash[:messages] = @cart.errors.messages
       end
       return @cart
-    else
-      return
     end
   end
 
@@ -355,12 +354,7 @@ class CartController < ApplicationController
   #   params.fetch(:cart, {})
   # end
 
-  def process_beneficiary_dob
-    binding.pry
-    if dob_params_present?
-      @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
-    end
-  end
+
 
   def validate_beneficiary
     if !@our_beneficiary.valid?
@@ -373,7 +367,18 @@ class CartController < ApplicationController
     end
   end
 
+
+
+
+  def process_beneficiary_dob
+    binding.pry
+    if dob_params_present?
+      @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
+    end
+  end
+
   # THE FOLLOWING THREE METHODS DUPLICATE METHODS IN RESERVATION CONTROLLER
+  # TODO:  Make a date-of-birth helper in application helper
   def our_contact_params
     return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
   end

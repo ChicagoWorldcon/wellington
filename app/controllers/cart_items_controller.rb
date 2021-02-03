@@ -56,9 +56,6 @@ class CartItemsController < ApplicationController
   def update_item_recipient
   end
 
-  def save_for_later
-  end
-
   def move_to_cart
   end
 
@@ -77,11 +74,6 @@ class CartItemsController < ApplicationController
     end
     @cart_item.chicago_contact = @contact
     @cart_item.membership = @my_offer
-
-
-
-
-
     redirect_to cart_path
   end
 

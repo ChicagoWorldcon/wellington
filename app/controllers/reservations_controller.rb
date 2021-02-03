@@ -129,14 +129,9 @@ class ReservationsController < ApplicationController
   end
 
   def lookup_offer
-    binding.pry
     @my_offer = MembershipOffer.options.find do |offer|
-      binding.pry
       offer.hash == params[:offer]
-      binding.pry
-      kittens = "kittens"
     end
-
     if !@my_offer.present?
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
       redirect_to memberships_path

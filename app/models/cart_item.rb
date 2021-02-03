@@ -113,14 +113,12 @@ class CartItem < ApplicationRecord
   end
 
   def find_membership
-    binding.pry
     @item_membership = Membership.find(membership_id)
   end
 
   # TODO: Make this con-agnostic so that this doesn't have to be changed
   # in hard-code every year.
   def find_recipient
-    binding.pry
     @item_recipient = ChicagoContact.find(chicago_contact_id)
   end
 end
