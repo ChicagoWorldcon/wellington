@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
-# Copyright 2020 Victoria Garcia
+#
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 # the reg site might sell in the future) that is being held in the cart pending
 # payment.
 class CartItem < ApplicationRecord
+  include ThemeConcern
 
   monetize :item_price_cents
   # Support for donations and upgrades is coming later.  This is just
@@ -32,6 +33,10 @@ class CartItem < ApplicationRecord
     #DONATION,
     #UPGRADE
   ].freeze
+
+  has_one :chicago_contact
+  has_one :dc_contact
+  has_one :beneficiary, class_name: theme_contact_class.to_s
 
 
   belongs_to :cart

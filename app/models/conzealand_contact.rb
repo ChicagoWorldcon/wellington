@@ -25,6 +25,8 @@
 require 'time'
 
 class ConzealandContact < ApplicationRecord
+
+  include Benefitable
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"

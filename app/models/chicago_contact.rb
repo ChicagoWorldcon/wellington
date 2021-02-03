@@ -24,6 +24,7 @@ require 'time'
 require_relative '../validators/email_for_pubs_validator'
 
 class ChicagoContact < ApplicationRecord
+  include Benefitable
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"
@@ -68,7 +69,6 @@ class ChicagoContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
-  has_many :cart_items
 
   attr_reader :for_import
   attr_accessor :dob_array

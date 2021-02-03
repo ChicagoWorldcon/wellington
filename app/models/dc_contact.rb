@@ -24,6 +24,7 @@
 require 'time'
 
 class DcContact < ApplicationRecord
+  include Benefitable
   # Initially based off https://reg.discon3.org/reg/ <3
 
   # TODO Move this to i18n
