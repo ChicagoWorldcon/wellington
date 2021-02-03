@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Chris Rose
-# Copyright 2020 Victoria Garcia
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -58,6 +58,19 @@ module ThemeConcern
       end
     end
 
+    def theme_contact_foreign_key
+      case Rails.configuration.contact_model
+      when "chicago"
+        'chicago_contact_id'
+      when "conzealand"
+        'conzealand_contact_id'
+      when "dc"
+        'dc_contact_id'
+      else
+        raise "Unknown contact type: #{Rails.configuration.contact_model}"
+      end
+    end
+
     def theme_layout
       Rails.configuration.site_theme
     end
@@ -76,5 +89,9 @@ module ThemeConcern
 
   def theme_contact_form
     self.class.theme_contact_form
+  end
+
+  def theme_contact_foreign_key
+    self.class.theme_contact_foreign_key
   end
 end
