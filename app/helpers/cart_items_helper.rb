@@ -64,7 +64,7 @@ module CartItemsHelper
     binding.pry
     all_contents_available = true;
     cart.cart_items.each {|item|
-      all_contents_available = all_contents_available && item.confirm_item_availability
+      all_contents_available = all_contents_available && item.item_is_available?
     }
     return all_contents_available
   end

@@ -165,6 +165,7 @@ class CartItemsController < ApplicationController
     end
 
     if !@my_offer.present?
+      #TODO:  Do something better than what happens below.
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
       redirect_to memberships_path
     end

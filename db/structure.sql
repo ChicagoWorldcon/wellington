@@ -35,10 +35,13 @@ CREATE TABLE public.cart_items (
     membership_id bigint NOT NULL,
     item_name character varying NOT NULL,
     item_price_cents integer DEFAULT 0 NOT NULL,
-    chicago_contact_id bigint NOT NULL,
     kind character varying NOT NULL,
     later boolean DEFAULT false NOT NULL,
     available boolean DEFAULT true NOT NULL,
+    acquirable_type character varying,
+    acquirable_id bigint,
+    benefitable_type character varying,
+    benefitable_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1027,17 +1030,24 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: index_cart_items_on_acquirable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_acquirable ON public.cart_items USING btree (acquirable_type, acquirable_id);
+
+
+--
+-- Name: index_cart_items_on_benefitable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_benefitable ON public.cart_items USING btree (benefitable_type, benefitable_id);
+
+
+--
 -- Name: index_cart_items_on_cart_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_id);
-
-
---
--- Name: index_cart_items_on_chicago_contact_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_cart_items_on_chicago_contact_id ON public.cart_items USING btree (chicago_contact_id);
 
 
 --
@@ -1316,14 +1326,6 @@ ALTER TABLE ONLY public.finalists
 
 ALTER TABLE ONLY public.ranks
     ADD CONSTRAINT fk_rails_c35ad96879 FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
-
-
---
--- Name: cart_items fk_rails_d33d0b520e; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cart_items
-    ADD CONSTRAINT fk_rails_d33d0b520e FOREIGN KEY (chicago_contact_id) REFERENCES public.chicago_contacts(id);
 
 
 --

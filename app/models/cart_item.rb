@@ -19,11 +19,12 @@
 # payment.
 class CartItem < ApplicationRecord
   include ThemeConcern
+  include ActiveScopes
 
   monetize :item_price_cents
+
   # Support for donations and upgrades is coming later.  This is just
   # meant as a hint for the future about how to make that happen.
-
   MEMBERSHIP = "membership"
   # DONATION = "donation"
   # UPGRADE = "upgrade"
@@ -34,21 +35,36 @@ class CartItem < ApplicationRecord
     #UPGRADE
   ].freeze
 
-  has_one :chicago_contact
-  has_one :dc_contact
-  has_one :beneficiary, class_name: theme_contact_class.to_s
-
-
   belongs_to :cart
-  # Once there are type options other than membership, the 'required'
-  # values of :membership and :chicago_contact will need to change, both here
-  # and in the database.
-  belongs_to :membership, required: true
-  belongs_to :chicago_contact, required: true
-  validates :kind, inclusion: { in: KIND_OPTIONS }
+
+  # :benefitable, here, is a polymorphic association
+  # with the theme_contact_class. It represents
+  # the person whose name will be on the membership. (So,
+  # it's distinct from the :user who owns the :cart and
+  # will be making the purchase.  (It's also meant to be
+  # distinct from any shipping-related stuff we may have
+  # in the future.)
+  #     Note that we're allowing it to be optional because
+  # only memberships (and upgrades) will need this
+  # attribute. T-shirts, etc., will not. Note also that it
+  # has a special, funky validator below to prevent that choice
+  # from ushering in the reign of chaos. 
+  belongs_to :benefitable, :polymorphic => true, required: false
+
+  # :acquirable, here, is a polymorphic association
+  # with whatever the item that's being bought is.
+  # At the moment, the only acquirable a membership,
+  # but we expect that eventually there may be t-shirts and the
+  # like.
+  belongs_to :acquirable, :polymorphic => true, required: true
+
+  attribute :available, :boolean, default: true
+  attribute :later, :boolean, default: true
+
   validates :item_name, presence: true
   validates :item_price_cents, presence: true
-  validates :available, inclusion: { in: [true, false]}
+  validates :kind, inclusion: { in: KIND_OPTIONS }
+  validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
 
   # TODO: Figure out how these should interact with the
   # availability confirmation scheme.
@@ -70,25 +86,33 @@ class CartItem < ApplicationRecord
     end
   end
 
-  def item_recipient
+  def item_beneficiary
     if self.kind == MEMBERSHIP
-      return membership_recipient_name
+      return membership_beneficiary_name
     end
   end
 
-  def confirm_item_availability
+  def item_is_availabile?
+    confirmed = self.available
     # Written with this conditional to allow for later
     # addition of cart-items that aren't memberships.
-    binding.pry
+
+    # TODO: See if this can be better accomplished
+    # with the ActiveScopes concern. NB-- right now,
+    # I feel like it's kind of good the way it is.
     if self.kind == MEMBERSHIP
-      binding.pry
-      active_membership = Membership.active.where(id: self.membership_id, name: self.item_name, price_cents: self.item_price_cents)
-      binding.pry
-      self.available = active_membership.present? && active_membership.count == 1
-      self.save
+      confirmed = (
+        confirmed &&
+        self.acquirable.active? &&
+        Membership.active.where(
+          id: self.acquirable_id,
+          name: self.item_name,
+          price_cents: self.item_price_cents).present?
+        )
     end
-    binding.pry
-    return self.available
+    self.available = confirmed
+    self.save
+    self.available
   end
 
   private
@@ -97,33 +121,55 @@ class CartItem < ApplicationRecord
   # given that we're going to save the membership name and price
 
   def membership_display_name
+
     @item_membership ||= find_membership
+    if @item_membership.present? then @item_membership.name_for_cart end
+
     binding.pry
-    @item_membership.name_for_cart
+
+    self.acquirable.name_for_cart
   end
 
   def membership_display_price
     @item_membership ||= find_membership
-    @item_membership.display_price_for_cart
+    if @item_membership.present? then  @item_membership.display_price_for_cart end
+
+    binding.pry
+
+    self.acquirable.display_price_for_cart
   end
 
   def membership_monetized_price
     @item_membership ||= find_membership
-    @item_membership.monetized_price_for_cart
+    if @item_membership.present? then item_membership.monetized_price_for_cart end
+
+    binding.pry
+
+    self.acquirable.display_price_for_cart
   end
 
-  def membership_recipient_name
-    @item_recipient ||= find_recipient
-    @item_recipient.name_for_cart
+  def membership_beneficiary_name
+    @item_beneficiary ||= find_beneficiary
+    if @item_beneficiary.present? then @item_beneficiary.name_for_cart end
+
+    binding.pry
+
+    self.benefitable.name_for_cart
   end
 
   def find_membership
-    @item_membership = Membership.find(membership_id)
+    @item_membership = Membership.where(id: self.acquirable_id) if self.kind == MEMBERSHIP
+
+    binding.pry
+
+    self.acquirable
   end
 
-  # TODO: Make this con-agnostic so that this doesn't have to be changed
-  # in hard-code every year.
-  def find_recipient
-    @item_recipient = ChicagoContact.find(chicago_contact_id)
+  def find_beneficiary
+    @item_beneficiary = theme_contact_class.where(id: self.benefitable_id)
+
+    binding.pry
+
+    self.benefitable
   end
 end

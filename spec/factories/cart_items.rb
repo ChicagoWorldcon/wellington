@@ -1,75 +1,110 @@
+# frozen_string_literal: true
+#
+# Copyright 2021 Victoria Garcia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# NOTE: :benefitable and :acquirable are polymorphic
+# associations.  This strategy is being employed for the
+# cart to: (a) Make the cart as Con-agnostic as possible,
+# and (b) Pave the way for items other than prospective
+# reservations to be put in the cart.
+
+#     At present, we are only making objects for the forms of the
+# polymorphisms that are currently in play.  However in the future, when more
+# forms of the polymorphisms come into being, we will need to expand on what
+# we're doing here.
+#     A few different options for accomplishing that are discussed below:
+#     1.   Multiple factory approach:
+#          http://markcharlesdesign.blogspot.com/2013/06/factorygirl-with-polymorphic.html
+#     2.   Trait-based approach:
+#          https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#polymorphic-associations
+#     3.   Inheritence-based approach:
+#          https://stackoverflow.com/questions/59730495/how-to-test-a-polymorphic-association-with-factorybot-on-rails-5-2
+
 FactoryBot.define do
   factory :cart_item do
     kind {"membership"}
-    later {false}
-    available {true}
-    association :chicago_contact
     association :cart
+    association :benefitable, :factory => :chicago_contact
+    association :acquirable, :factory => :membership
 
     transient do
-      membership { create(:membership, :adult)}
+      acquirable { create(:membership, :adult)}
+      benefitable { create(:chicago_contact)}
     end
 
     after(:build) do |cart_item, evaluator|
-      cart_item.membership = evaluator.membership
-    end
-    item_name { membership.name }
-    item_price_cents {membership.price_cents}
+      cart_item.acquirable = evaluator.acquirable
+      cart_item.benefitable = evaluator.benefitable
 
+    end
+    item_name { acquirable.name }
+    item_price_cents {acquirable.price_cents}
 
     trait :with_kidit do
       transient do
-        membership { create(:membership, :kidit)}
+        acquirable { create(:membership, :kidit)}
       end
       after(:build) do |cart_item, evaluator|
-        cart_item.membership = evaluator.membership
+        cart_item.acquirable = evaluator.acquirable
       end
-      item_name { membership.name }
-      item_price_cents {membership.price_cents}
+      item_name { acquirable.name }
+      item_price_cents {acquirable.price_cents}
     end
 
     trait :with_ya do
       transient do
-        membership { create(:membership, :ya)}
+        acquirable { create(:membership, :ya)}
       end
       after(:build) do |cart_item, evaluator|
-        cart_item.membership = evaluator.membership
+        cart_item.acquirable = evaluator.acquirable
       end
-      item_name { membership.name }
-      item_price_cents { membership.price_cents }
+      item_name { acquirable.name }
+      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_supporting do
       transient do
-        membership { create(:membership, :supporting)}
+        acquirable { create(:membership, :supporting)}
       end
       after(:build) do |cart_item, evaluator|
-        cart_item.membership = evaluator.membership
+        cart_item.acquirable = evaluator.acquirable
       end
-      item_name { membership.name }
-      item_price_cents { membership.price_cents }
+      item_name { acquirable.name }
+      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_expired_membership_tuatara do
       transient do
-        membership { create(:membership, :tuatara)}
+        acquirable { create(:membership, :tuatara)}
       end
       after(:build) do |cart_item, evaluator|
-        cart_item.membership = evaluator.membership
+        cart_item.acquirable = evaluator.acquirable
       end
-      item_name { membership.name }
-      item_price_cents { membership.price_cents }
+      item_name { acquirable.name }
+      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_expired_membership_silver_f do
       transient do
-        membership { create(:membership, :silver_fern)}
+        acquirable { create(:membership, :silver_fern)}
       end
       after(:build) do |cart_item, evaluator|
-        cart_item.membership = evaluator.membership
+        cart_item.acquirable = evaluator.acquirable
       end
-      item_name { membership.name }
-      item_price_cents { membership.price_cents }
+      item_name { acquirable.name }
+      item_price_cents { acquirable.price_cents }
     end
 
     trait :saved_for_later do

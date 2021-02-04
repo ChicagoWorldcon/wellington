@@ -22,14 +22,14 @@ class CartController < ApplicationController
   before_action :locate_cart
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 
-  before_action :locate_all_cart_items, only: []
+  before_action :locate_all_cart_items, only: [:destroy]
   before_action :locate_all_active_cart_items, only: [:destroy_active, :save_all_items_for_later]
   before_action :locate_all_cart_items_for_later, only: [:destroy_saved, :move_all_saved_items_to_cart]
 
-  before_action :verify_all_items_availability, only: []
+  before_action :verify_all_items_availability, only: [:show, :submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart, :save_all_items_for_later]
 
-  before_action :locate_our_membership_offer, only: [:add_reservation_to_cart]
-  before_action :locate_our_membership_beneficiary, only: [:add_reservation_to_cart]
+  before_action :locate_our_membership_offer_in_params, only: [:add_reservation_to_cart]
+  before_action :assemble_our_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
 
   PENDING = "pending"
   MEMBERSHIP = "membership"
@@ -39,18 +39,16 @@ class CartController < ApplicationController
   end
 
   def add_reservation_to_cart
-    process_beneficiary_dob
-    validate_beneficiary
     if (@our_offer.present? && @our_beneficiary.present?)
       @our_cart_item = CartItem.create(
-        membership_id: @our_offer.membership.id,
-        item_name: @our_offer.membership.name,
-        item_price_cents: @our_offer.membership.price_cents,
-        cart_id: @cart.id,
-        #TODO: Get rid of the con-specific hard coding.
-        chicago_contact_id: @our_beneficiary.id,
-        kind: MEMBERSHIP,
-        later: false
+        :acquirable => @our_offer.membership,
+        :item_name => @our_offer.membership.name,
+        :item_price_cents => @our_offer.membership.price_cents,
+        :cart_id => @cart.id,
+        :benefitable => @our_beneficiary,
+        #TODO:  Maybe eliminate :kind, and just read from the :acquirable_type field
+        :kind => MEMBERSHIP,
+        :later => false
       )
       if @our_cart_item.save
         flash[:status] = :success
@@ -60,7 +58,7 @@ class CartController < ApplicationController
     end
     flash[:status] = :failure
     flash[:notice] = "This membership could not be added to your cart."
-    flash[:messages] = @cart.errors.messages
+    flash[:messages] = @our_cart_item.errors.messages
     #TODO: Confirm this routing
     redirect_to new_reservation_path
   end
@@ -317,12 +315,18 @@ class CartController < ApplicationController
     end
   end
 
-  def locate_our_membership_offer
+  def locate_our_membership_offer_in_params
     @our_offer = CartItemsHelper.locate_offer(params[:offer])
+    #TODO:  Make this fail back to the reservation page.
   end
 
-  def locate_our_membership_beneficiary
-    @our_beneficiary = Claim.contact_strategy.new(our_contact_params)
+  def assemble_our_membership_beneficiary_from_params
+    #This is how you make this all Con-agnostic.
+    @our_beneficiary = theme_contact_class.new(our_contact_params)
+    if @our_beneficiary.present?
+      process_beneficiary_dob
+      validate_beneficiary
+    end
   end
 
   def verify_all_items_availability
@@ -339,7 +343,6 @@ class CartController < ApplicationController
       @cart.user_id = User.find_by(id: current_user.id).id
       if @cart.save
         flash[:status] = :success
-        flash[:notice] = "I don't know if we need this but welcome to your Chicon 8 shopping cart!"
       else
         flash[:status] = :failure
         flash[:notice] = "We weren't able to create your shopping cart, so everything is now doomed."
@@ -371,7 +374,6 @@ class CartController < ApplicationController
 
 
   def process_beneficiary_dob
-    binding.pry
     if dob_params_present?
       @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
     end
