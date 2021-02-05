@@ -36,8 +36,8 @@ FactoryBot.define do
   factory :cart_item do
     kind {"membership"}
     association :cart
-    association :benefitable, :factory => :chicago_contact
-    association :acquirable, :factory => :membership
+    # association :benefitable, :factory => :chicago_contact
+    # association :acquirable, :factory => :membership
 
     transient do
       acquirable { create(:membership, :adult)}
@@ -47,8 +47,8 @@ FactoryBot.define do
     after(:build) do |cart_item, evaluator|
       cart_item.acquirable = evaluator.acquirable
       cart_item.benefitable = evaluator.benefitable
-
     end
+
     item_name { acquirable.name }
     item_price_cents {acquirable.price_cents}
 

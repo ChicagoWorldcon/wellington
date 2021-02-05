@@ -371,7 +371,6 @@ class CartController < ApplicationController
     return params[theme_contact_param].key?(dob_key_1)
   end
 
-
   def process_beneficiary_dob
     if dob_params_present?
       @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
