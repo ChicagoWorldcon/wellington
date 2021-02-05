@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# Copyright 2020 Victoria Garcia
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ class CreateCartItems < ActiveRecord::Migration[6.1]
   def change
     create_table :cart_items do |t|
       t.references :cart, index: true, null: false, foreign_key: true
-      t.references :membership, index: true, null: false, foreign_key: true
       t.string :item_name, null:false
       t.integer :item_price_cents, default:0, null:false
       t.string :kind, null:false

@@ -16,6 +16,8 @@
 
 module CartItemsHelper
 
+  # TODO: Figure out a better way to do this. This
+  # is unweildy and I'm pretty sure we can do this more directly.
   def self.locate_offer(offer_params)
     target_offer = MembershipOffer.options.find do |offer|
       offer.hash == offer_params
@@ -31,7 +33,6 @@ module CartItemsHelper
   end
 
   def self.cart_items_for_now(cart)
-    binding.pry
     now_items = []
     cart.cart_items.each {|item|
       if item.later == false
@@ -46,7 +47,6 @@ module CartItemsHelper
   end
 
   def self.cart_items_for_later(cart)
-    binding.pry
     later_items = []
     cart.cart_items.each {|item|
       if item.later == true
@@ -64,7 +64,7 @@ module CartItemsHelper
     binding.pry
     all_contents_available = true;
     cart.cart_items.each {|item|
-      all_contents_available = all_contents_available && item.item_is_available?
+      all_contents_available = all_contents_available && item.item_still_available?
     }
     return all_contents_available
   end

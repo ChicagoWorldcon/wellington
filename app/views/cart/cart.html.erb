@@ -29,9 +29,7 @@
         <div class="cart-contents">
           <ul class="cart-items-now">
             <h4 style="color:cyan">[This is where the ACTIVE cart-items are.]</h4>
-            <% binding.pry %>
             <% cart_items_for_now(@cart).each do |cart_item| %>
-              <% binding.pry %>
               <li>
                 <div class="now-item-details">
                   <%#
@@ -44,7 +42,7 @@
                   <div class="list-group list-group-horizontal now-details-list">
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=cart_item.kind %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_recipient %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_beneficiary %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group now-buttons" role="group">
@@ -81,14 +79,12 @@
                       SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH IN TURN WILL HAVE EDITING PAGES
                   %>
                   <div class="list-group list-group-horizontal later-item-details-list">
-                    <% binding.pry %>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=later_item.kind %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_recipient%></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= later_item.item_display_price %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%=later_item.kind %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_name %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_beneficiary%></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_price %></li>
                   </div>
                   <div class="btn-group later-buttons" role="group">
-                    <% binding.pry %>
                     <%= button_to "Move to Cart", move_single_cart_item_path(later_item), method: :patch, class: "btn btn-outline-info" %>
                     <%= button_to "Delete", remove_single_cart_item_path(later_item), method: :delete, class: "btn btn-outline-info" %>
                     <%= button_to "Check Availability", verify_single_cart_item_path(later_item), method: :patch, class: "btn btn-outline-info" %>

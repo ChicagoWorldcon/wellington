@@ -33,7 +33,7 @@ class Cart < ApplicationRecord
 
   def subtotal_monetized
     monetized = 0
-    talliables = self.active_items_count
+    talliables = self.items_for_now
     if talliables.count > 0
       talliables.each do |item|
         monetized += item.item_monetized_price

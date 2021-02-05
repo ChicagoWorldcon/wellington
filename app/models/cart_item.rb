@@ -19,7 +19,6 @@
 # payment.
 class CartItem < ApplicationRecord
   include ThemeConcern
-  include ActiveScopes
 
   monetize :item_price_cents
 
@@ -48,7 +47,7 @@ class CartItem < ApplicationRecord
   # only memberships (and upgrades) will need this
   # attribute. T-shirts, etc., will not. Note also that it
   # has a special, funky validator below to prevent that choice
-  # from ushering in the reign of chaos. 
+  # from ushering in the reign of chaos.
   belongs_to :benefitable, :polymorphic => true, required: false
 
   # :acquirable, here, is a polymorphic association
@@ -92,7 +91,7 @@ class CartItem < ApplicationRecord
     end
   end
 
-  def item_is_availabile?
+  def item_still_available?
     confirmed = self.available
     # Written with this conditional to allow for later
     # addition of cart-items that aren't memberships.
@@ -117,59 +116,29 @@ class CartItem < ApplicationRecord
 
   private
 
-  # TODO: Go through all this display stuff and make sure it still makes sense,
-  # given that we're going to save the membership name and price
+  # TODO: Go through all this display stuff and make sure it still makes sense.
 
   def membership_display_name
-
-    @item_membership ||= find_membership
-    if @item_membership.present? then @item_membership.name_for_cart end
-
-    binding.pry
-
-    self.acquirable.name_for_cart
+    self.acquirable.name_for_cart if self.kind == MEMBERSHIP
   end
 
   def membership_display_price
-    @item_membership ||= find_membership
-    if @item_membership.present? then  @item_membership.display_price_for_cart end
-
-    binding.pry
-
-    self.acquirable.display_price_for_cart
+    self.acquirable.display_price_for_cart if self.kind == MEMBERSHIP
   end
 
   def membership_monetized_price
-    @item_membership ||= find_membership
-    if @item_membership.present? then item_membership.monetized_price_for_cart end
-
-    binding.pry
-
-    self.acquirable.display_price_for_cart
+    self.acquirable.monetized_price_for_cart if self.kind == MEMBERSHIP
   end
 
   def membership_beneficiary_name
-    @item_beneficiary ||= find_beneficiary
-    if @item_beneficiary.present? then @item_beneficiary.name_for_cart end
-
-    binding.pry
-
-    self.benefitable.name_for_cart
+    self.benefitable.name_for_cart if self.kind == MEMBERSHIP
   end
 
   def find_membership
-    @item_membership = Membership.where(id: self.acquirable_id) if self.kind == MEMBERSHIP
-
-    binding.pry
-
-    self.acquirable
+    self.acquirable if self.kind == MEMBERSHIP
   end
 
   def find_beneficiary
-    @item_beneficiary = theme_contact_class.where(id: self.benefitable_id)
-
-    binding.pry
-
-    self.benefitable
+    self.benefitable if self.kind == MEMBERSHIP
   end
 end

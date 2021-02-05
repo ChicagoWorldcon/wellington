@@ -26,7 +26,8 @@ class CartController < ApplicationController
   before_action :locate_all_active_cart_items, only: [:destroy_active, :save_all_items_for_later]
   before_action :locate_all_cart_items_for_later, only: [:destroy_saved, :move_all_saved_items_to_cart]
 
-  before_action :verify_all_items_availability, only: [:show, :submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart, :save_all_items_for_later]
+  before_action :verify_all_items_availability, only: [:submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart, :save_all_items_for_later]
+  before_action :verify_single_item_availability, only: []
 
   before_action :locate_our_membership_offer_in_params, only: [:add_reservation_to_cart]
   before_action :assemble_our_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
@@ -162,7 +163,7 @@ class CartController < ApplicationController
   def save_item_for_later
     if @target_item
       @target_item.later = true
-      if target_item.save
+      if @target_item.save
         flash[:status] = :success
         flash[:notice] = "Item successfully saved for later."
       end
@@ -194,7 +195,7 @@ class CartController < ApplicationController
 
   def move_item_to_cart
     @target_item.later = false
-    if target_item.save
+    if @target_item.save
       flash[:status] = :success
       flash[:notice] = "Item successfully moved to cart."
     else
@@ -218,8 +219,7 @@ class CartController < ApplicationController
 
   def verify_single_item_availability
     target_item = CartItem.find(params[:id])
-    target_item.confirm_item_availability
-    if !target_item.confirm_item_availability
+    if !target_item.item_still_available?
       flash[:notice] = "#{target_item.item_name} is no longer available."
     else
       flash[:notice] = "Good news! #{target_item.item_name} is still available."
@@ -252,18 +252,6 @@ class CartController < ApplicationController
     end
   end
 
-
-
-  # DELETE /carts/1
-  # DELETE /carts/1.json
-  # def destroy
-  #   @cart_contents.destroy
-  #   respond_to do |format|
-  #     format.html { redirect_to carts_url, notice: 'Cart was successfully destroyed.' }
-  #     format.json { head :no_content }
-  #   end
-  # end
-
   private
 
   def require_nonsupport_login
@@ -279,7 +267,6 @@ class CartController < ApplicationController
     if @cart.nil?
       flash[:status] = :failure
       flash[:notice] = "We were unable to find or create your shopping cart."
-
       redirect_to memberships_path
     end
   end
@@ -290,8 +277,9 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:notice] = "Unable to recognize this item."
       flash[:messages] = @target_item.errors.messages
-      redirect_to cart_path
+      redirect_to cart_path and return
     end
+    single_item_is_available?
   end
 
   def locate_all_active_cart_items
@@ -329,7 +317,8 @@ class CartController < ApplicationController
     end
   end
 
-  def verify_all_items_availability
+  def single_item_is_available?
+    @target_item.item_still_available?
   end
 
   # Use callbacks to share common setup or constraints between actions.
@@ -357,6 +346,10 @@ class CartController < ApplicationController
   #   params.fetch(:cart, {})
   # end
 
+  def our_contact_params
+    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
+  end
+
 
 
   def validate_beneficiary
@@ -370,7 +363,13 @@ class CartController < ApplicationController
     end
   end
 
-
+  # THE FOLLOWING THREE METHODS DUPLICATE METHODS IN RESERVATION CONTROLLER
+  # TODO:  Make a date-of-birth helper or else move
+  # these to the  application helper, or maybe the reservation helper.
+  def dob_params_present?
+    dob_key_1 = "dob_array(1i)"
+    return params[theme_contact_param].key?(dob_key_1)
+  end
 
 
   def process_beneficiary_dob
@@ -379,21 +378,10 @@ class CartController < ApplicationController
     end
   end
 
-  # THE FOLLOWING THREE METHODS DUPLICATE METHODS IN RESERVATION CONTROLLER
-  # TODO:  Make a date-of-birth helper in application helper
-  def our_contact_params
-    return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
-  end
-
   def convert_dateselect_params_to_date
     key1 = "dob_array(1i)"
     key2 = "dob_array(2i)"
     key3 = "dob_array(3i)"
     Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
-  end
-
-  def dob_params_present?
-    dob_key_1 = "dob_array(1i)"
-    return params[theme_contact_param].key?(dob_key_1)
   end
 end

@@ -32,14 +32,13 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.cart_items (
     id bigint NOT NULL,
     cart_id bigint NOT NULL,
-    membership_id bigint NOT NULL,
     item_name character varying NOT NULL,
     item_price_cents integer DEFAULT 0 NOT NULL,
     kind character varying NOT NULL,
     later boolean DEFAULT false NOT NULL,
     available boolean DEFAULT true NOT NULL,
-    acquirable_type character varying,
-    acquirable_id bigint,
+    acquirable_type character varying NOT NULL,
+    acquirable_id bigint NOT NULL,
     benefitable_type character varying,
     benefitable_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
@@ -1051,13 +1050,6 @@ CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_
 
 
 --
--- Name: index_cart_items_on_membership_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_cart_items_on_membership_id ON public.cart_items USING btree (membership_id);
-
-
---
 -- Name: index_carts_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1334,14 +1326,6 @@ ALTER TABLE ONLY public.ranks
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
-
-
---
--- Name: cart_items fk_rails_e14d66e5b2; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cart_items
-    ADD CONSTRAINT fk_rails_e14d66e5b2 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
 
 
 --
