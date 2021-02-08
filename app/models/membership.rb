@@ -84,7 +84,7 @@ class Membership < ApplicationRecord
     self.price.format(with_currency: true)
   end
 
-  def monetized_price_for_cart
+  def price_in_cents_for_cart
     self.price_cents
   end
 

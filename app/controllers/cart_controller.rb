@@ -41,22 +41,24 @@ class CartController < ApplicationController
 
   def add_reservation_to_cart
     if (@our_offer.present? && @our_beneficiary.present?)
+      binding.pry
       @our_cart_item = CartItem.create(
         :acquirable => @our_offer.membership,
-        :item_name => @our_offer.membership.name,
-        :item_price_cents => @our_offer.membership.price_cents,
-        :cart_id => @cart.id,
+        # :item_name => @our_offer.membership.name,
+        # :item_price_cents => @our_offer.membership.price_cents,
+        :cart => @cart,
         :benefitable => @our_beneficiary,
         #TODO:  Maybe eliminate :kind, and just read from the :acquirable_type field
-        :kind => MEMBERSHIP,
-        :later => false
+        :kind => MEMBERSHIP
       )
+      binding.pry
       if @our_cart_item.save
         flash[:status] = :success
         flash[:notice] = "Membership successfully added to cart."
         redirect_to cart_path and return
       end
     end
+    binding.pry
     flash[:status] = :failure
     flash[:notice] = "This membership could not be added to your cart."
     flash[:messages] = @our_cart_item.errors.messages
@@ -143,7 +145,7 @@ class CartController < ApplicationController
   def remove_single_item
     if @target_item
       target_item_name = @target_item.item_display_name
-      @target_item_kind = @target_item.kind
+      target_item_kind = @target_item.kind
       @target_item.destroy
       flash[:status] = :success
       flash[:notice] = "#{@target_item_name} #{@target_item_kind} was successfully deleted"
@@ -220,9 +222,9 @@ class CartController < ApplicationController
   def verify_single_item_availability
     target_item = CartItem.find(params[:id])
     if !target_item.item_still_available?
-      flash[:notice] = "#{target_item.item_name} is no longer available."
+      flash[:notice] = "#{target_item.item_display_name} is no longer available."
     else
-      flash[:notice] = "Good news! #{target_item.item_name} is still available."
+      flash[:notice] = "Good news! #{target_item.item_display_name} is still available."
     end
     redirect_to cart_path
   end
@@ -283,7 +285,7 @@ class CartController < ApplicationController
   end
 
   def locate_all_active_cart_items
-    @active_cart_items = CartItemsHelper.cart_items_for_now(@cart)
+    @now_cart_items = CartItemsHelper.cart_items_for_now(@cart)
   end
 
   def locate_all_cart_items_for_later
@@ -304,7 +306,11 @@ class CartController < ApplicationController
   end
 
   def locate_our_membership_offer_in_params
+    #TODO: Make this more direct.  It may not need to be this complicated.
     @our_offer = CartItemsHelper.locate_offer(params[:offer])
+    binding.pry
+    kittens = "kittens"
+    @our_offer
     #TODO:  Make this fail back to the reservation page.
   end
 
@@ -349,8 +355,6 @@ class CartController < ApplicationController
   def our_contact_params
     return params.require(theme_contact_param).permit(theme_contact_class.const_get("PERMITTED_PARAMS"))
   end
-
-
 
   def validate_beneficiary
     if !@our_beneficiary.valid?

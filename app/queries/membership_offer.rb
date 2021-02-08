@@ -25,6 +25,7 @@ class MembershipOffer
   delegate :description, to: :membership
 
   def self.options
+    binding.pry
     Membership.active.order_by_price.map do |membership|
       MembershipOffer.new(membership)
     end

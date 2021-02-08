@@ -32,8 +32,8 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.cart_items (
     id bigint NOT NULL,
     cart_id bigint NOT NULL,
-    item_name character varying NOT NULL,
-    item_price_cents integer DEFAULT 0 NOT NULL,
+    item_name_memo character varying NOT NULL,
+    item_price_memo integer DEFAULT 0 NOT NULL,
     kind character varying NOT NULL,
     later boolean DEFAULT false NOT NULL,
     available boolean DEFAULT true NOT NULL,

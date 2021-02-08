@@ -15,9 +15,19 @@
 # limitations under the License.
 
 module Benefitable
+  # Benefitable is a sibling module to Acquirable.  It needs to be included # in the model for things like ChicagoContact, DcContact, etc, that
+  # represent a person whose information forms a key part of an item
+  # being purchased via the shopping cart. In the case of memberships, it
+  # represents the identity of the prospective membership holder.  (As
+  # distinct from the User, who is the owner of the shopping cart, and who # will be the one making the purchase.)
+
   extend ActiveSupport::Concern
 
   included do
     has_many :cart_items, :as => :benefitable
+  end
+
+  def benefitable_class
+    self.benefitable_type
   end
 end

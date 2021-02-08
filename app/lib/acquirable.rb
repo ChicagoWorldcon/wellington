@@ -15,9 +15,23 @@
 # limitations under the License.
 
 module Acquirable
+  # Acquirable is  a module that needs to be included in the model for
+  # anything we want users to be able put in their shopping cart.
+  #
+  # Currently, it is included in Membership.
+  #
+  # Acquirable has a sibling module, Benefitable, that is included in the
+  # model for ChicagoContact, DcContact, etc., so that those can become
+  #  part of a CartItem instance alongside a Membership.
+
   extend ActiveSupport::Concern
 
   included do
     has_many :cart_items, :as => :aquirable
   end
+
+  def acquirable_class
+    self.acquirable_type
+  end
+
 end

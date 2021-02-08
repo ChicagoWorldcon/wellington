@@ -20,16 +20,16 @@
 class CartItem < ApplicationRecord
   include ThemeConcern
 
-  monetize :item_price_cents
-
   # Support for donations and upgrades is coming later.  This is just
   # meant as a hint for the future about how to make that happen.
   MEMBERSHIP = "membership"
+  UNKNOWN = "unknown"
   # DONATION = "donation"
   # UPGRADE = "upgrade"
 
   KIND_OPTIONS = [
-    MEMBERSHIP
+    MEMBERSHIP,
+    UNKNOWN
     #DONATION,
     #UPGRADE
   ].freeze
@@ -58,40 +58,66 @@ class CartItem < ApplicationRecord
   belongs_to :acquirable, :polymorphic => true, required: true
 
   attribute :available, :boolean, default: true
-  attribute :later, :boolean, default: true
+  attribute :later, :boolean, default: false
 
-  validates :item_name, presence: true
-  validates :item_price_cents, presence: true
-  validates :kind, inclusion: { in: KIND_OPTIONS }
+  before_validation :note_acquirable_details, if: :new_record?
+  #before_validation  :set_boolean_defaults, if: :new_record?
+
+  validates :available, :inclusion => {in: [true, false]}
+  validates :later, :inclusion => {in: [true, false]}
   validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
+  # :item_name_memo and :item_price_memo exist to record the
+  # name and price of an acquirable at the time it was added to the
+  # cart by the user.  Stripe and the like should not use these.
+  # Those should, instead, use the information from the acquirable object
+  validates :item_name_memo, presence: true
+  validates_numericality_of :item_price_memo, presence: true
+  validates :kind, presence: true, inclusion: { in: KIND_OPTIONS }
+  validates :later, inclusion: {in: [true, false]}
 
   # TODO: Figure out how these should interact with the
   # availability confirmation scheme.
   def item_display_name
-    if self.kind == MEMBERSHIP
-      return membership_display_name
+    case self.kind
+    when MEMBERSHIP
+      membership_display_name
+    else
+      UNKNOWN
     end
   end
 
   def item_display_price
-    if self.kind == MEMBERSHIP
-      return membership_display_price
+    case self.kind
+    when MEMBERSHIP
+      membership_display_price
+    else
+      Money.new(0, "USD").format(with_currency: true)
     end
   end
 
-  def item_monetized_price
-    if self.kind == MEMBERSHIP
-      return membership_monetized_price
+  def item_price_in_cents
+    case self.kind
+    when MEMBERSHIP
+      membership_price_in_cents
+    else
+      0
     end
   end
 
-  def item_beneficiary
-    if self.kind == MEMBERSHIP
-      return membership_beneficiary_name
+  def item_beneficiary_name
+    case self.kind
+    when MEMBERSHIP
+      membership_beneficiary_name
+    else
+      ""
     end
   end
 
   def item_still_available?
+    # Note: This is currently written so as to make unavailability a
+    # permanent condition. Once something has become unavailable, it
+    # never becomes available again.   That, of course, is something
+    # that could be changed easily later on, as requirements change.
     confirmed = self.available
     # Written with this conditional to allow for later
     # addition of cart-items that aren't memberships.
@@ -99,18 +125,23 @@ class CartItem < ApplicationRecord
     # TODO: See if this can be better accomplished
     # with the ActiveScopes concern. NB-- right now,
     # I feel like it's kind of good the way it is.
-    if self.kind == MEMBERSHIP
+    if self.item_display_name == UNKNOWN
+      confirmed = false
+    elsif self.kind == MEMBERSHIP
       confirmed = (
         confirmed &&
+        self.item_display_name != UNKNOWN
+        binding.pry
         self.acquirable.active? &&
-        Membership.active.where(
+        self.acquirable_type.constantize.active.where(
           id: self.acquirable_id,
-          name: self.item_name,
-          price_cents: self.item_price_cents).present?
-        )
+          name: self.item_name_memo,
+          price_cents: self.item_price_memo
+        ).present?
+      )
     end
     self.available = confirmed
-    self.save
+    self.save!
     self.available
   end
 
@@ -126,8 +157,8 @@ class CartItem < ApplicationRecord
     self.acquirable.display_price_for_cart if self.kind == MEMBERSHIP
   end
 
-  def membership_monetized_price
-    self.acquirable.monetized_price_for_cart if self.kind == MEMBERSHIP
+  def membership_price_in_cents
+    self.acquirable.price_in_cents_for_cart if self.kind == MEMBERSHIP
   end
 
   def membership_beneficiary_name
@@ -140,5 +171,17 @@ class CartItem < ApplicationRecord
 
   def find_beneficiary
     self.benefitable if self.kind == MEMBERSHIP
+  end
+
+  def note_acquirable_details
+    # These aren't actually the details that will be used for Stripe and
+    # creation of a Charge.
+    # They're strictly here as a failsafe mechanism:  if
+    # something gets put in someone's cart and then sits there for
+    # three months, having these details logged means we can
+    # make sure that there haven't been meaningful changes
+    # to the associated acquirable in the interim.
+    self.item_price_memo = self.acquirable.price_cents
+    self.item_name_memo = self.acquirable.name
   end
 end

@@ -42,7 +42,7 @@
                   <div class="list-group list-group-horizontal now-details-list">
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=cart_item.kind %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_beneficiary %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_beneficiary_name %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_price %></li>
                   </div>
                   <div class="btn-group now-buttons" role="group">
@@ -81,7 +81,7 @@
                   <div class="list-group list-group-horizontal later-item-details-list">
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%=later_item.kind %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_beneficiary%></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_beneficiary_name%></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_price %></li>
                   </div>
                   <div class="btn-group later-buttons" role="group">

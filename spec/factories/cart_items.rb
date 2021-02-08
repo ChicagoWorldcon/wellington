@@ -36,8 +36,6 @@ FactoryBot.define do
   factory :cart_item do
     kind {"membership"}
     association :cart
-    # association :benefitable, :factory => :chicago_contact
-    # association :acquirable, :factory => :membership
 
     transient do
       acquirable { create(:membership, :adult)}
@@ -49,9 +47,6 @@ FactoryBot.define do
       cart_item.benefitable = evaluator.benefitable
     end
 
-    item_name { acquirable.name }
-    item_price_cents {acquirable.price_cents}
-
     trait :with_kidit do
       transient do
         acquirable { create(:membership, :kidit)}
@@ -59,8 +54,6 @@ FactoryBot.define do
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
-      item_name { acquirable.name }
-      item_price_cents {acquirable.price_cents}
     end
 
     trait :with_ya do
@@ -70,8 +63,6 @@ FactoryBot.define do
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
-      item_name { acquirable.name }
-      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_supporting do
@@ -81,8 +72,6 @@ FactoryBot.define do
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
-      item_name { acquirable.name }
-      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_expired_membership_tuatara do
@@ -92,8 +81,6 @@ FactoryBot.define do
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
-      item_name { acquirable.name }
-      item_price_cents { acquirable.price_cents }
     end
 
     trait :with_expired_membership_silver_f do
@@ -103,8 +90,6 @@ FactoryBot.define do
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
-      item_name { acquirable.name }
-      item_price_cents { acquirable.price_cents }
     end
 
     trait :saved_for_later do
@@ -119,13 +104,26 @@ FactoryBot.define do
 
     trait :price_altered do
       before(:create) do |cart_item, evaluator|
-        cart_item.item_price_cents += 100
+        cart_item.item_price_memo += 100
       end
     end
 
     trait :name_altered do
       before(:create) do |cart_item, evaluator|
-        cart_item.item_name = "altered"
+        cart_item.item_name_memo = "altered"
+      end
+    end
+
+    trait :uknown_kind do
+      after(:create) do |cart_item, evaluator|
+        cart_item.kind = "unknown"
+      end
+    end
+
+    trait :nonmembership do
+      after(:create) do |cart_item, evaluator|
+        cart_item.acquirable = nil
+        cart_item.kind = "unknown"
       end
     end
   end

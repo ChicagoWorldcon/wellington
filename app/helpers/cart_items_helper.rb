@@ -19,6 +19,7 @@ module CartItemsHelper
   # TODO: Figure out a better way to do this. This
   # is unweildy and I'm pretty sure we can do this more directly.
   def self.locate_offer(offer_params)
+    binding.pry
     target_offer = MembershipOffer.options.find do |offer|
       offer.hash == offer_params
     end

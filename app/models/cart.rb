@@ -36,7 +36,7 @@ class Cart < ApplicationRecord
     talliables = self.items_for_now
     if talliables.count > 0
       talliables.each do |item|
-        monetized += item.item_monetized_price
+        monetized += item.item_price_in_cents
       end
     end
     monetized
