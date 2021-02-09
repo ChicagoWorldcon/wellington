@@ -29,6 +29,7 @@
 # it.
 
 require "simplecov"
+require "pry"
 SimpleCov.start
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

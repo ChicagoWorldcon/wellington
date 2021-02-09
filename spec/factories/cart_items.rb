@@ -116,7 +116,7 @@ FactoryBot.define do
 
     trait :uknown_kind do
       after(:create) do |cart_item, evaluator|
-        cart_item.kind = "unknown"
+        cart_item.update_attribute(:kind, "unknown")
       end
     end
 

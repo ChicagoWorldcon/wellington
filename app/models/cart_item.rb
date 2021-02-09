@@ -52,7 +52,7 @@ class CartItem < ApplicationRecord
   # with whatever the item that's being bought is.
   # At the moment, the only acquirable a membership,
   # but we expect that eventually there may be t-shirts and the
-  # like.
+  # like.  Donations and upgrades would also be forms of :acquirable, if we made them addable to the cart.
   belongs_to :acquirable, :polymorphic => true, required: true
   belongs_to :cart
 
@@ -63,7 +63,6 @@ class CartItem < ApplicationRecord
   #before_validation  :set_boolean_defaults, if: :new_record?
 
   validates :available, :inclusion => {in: [true, false]}
-  validates :later, :inclusion => {in: [true, false]}
   validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
   # :item_name_memo and :item_price_memo exist to record the
   # name and price of an acquirable at the time it was added to the
@@ -71,8 +70,8 @@ class CartItem < ApplicationRecord
   # Those should, instead, use the information from the acquirable object
   validates :item_name_memo, presence: true
   validates_numericality_of :item_price_memo, presence: true
-  validates :kind, presence: true, inclusion: { in: KIND_OPTIONS }
-  validates :later, inclusion: {in: [true, false]}
+  validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
+  validates :later, :inclusion => {in: [true, false]}
 
   # TODO: Figure out how these should interact with the
   # availability confirmation scheme.
@@ -124,21 +123,16 @@ class CartItem < ApplicationRecord
     # TODO: See if this can be better accomplished
     # with the ActiveScopes concern. NB-- right now,
     # I feel like it's kind of good the way it is.
-    if self.item_display_name == UNKNOWN
-      confirmed = false
-    elsif self.kind == MEMBERSHIP
-      confirmed = (
-        confirmed &&
-        self.item_display_name != UNKNOWN
-        binding.pry
-        self.acquirable.active? &&
-        self.acquirable_type.constantize.active.where(
-          id: self.acquirable_id,
-          name: self.item_name_memo,
-          price_cents: self.item_price_memo
-        ).present?
-      )
-    end
+  confirmed = (
+    confirmed &&
+    self.item_display_name != UNKNOWN
+    self.acquirable.active? &&
+    self.acquirable_type.constantize.active.where(
+      id: self.acquirable_id,
+      name: self.item_name_memo,
+      price_cents: self.item_price_memo
+      ).present?
+    )
     self.available = confirmed
     self.save!
     self.available
