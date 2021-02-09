@@ -34,8 +34,8 @@
 
 FactoryBot.define do
   factory :cart_item do
-    kind {"membership"}
     association :cart
+    kind {"membership"}
 
     transient do
       acquirable { create(:membership, :adult)}
@@ -120,10 +120,10 @@ FactoryBot.define do
       end
     end
 
-    trait :nonmembership do
+    trait :nonmembership_without_benefitable do
       after(:create) do |cart_item, evaluator|
-        cart_item.acquirable = nil
-        cart_item.kind = "unknown"
+        cart_item.update_attribute(:kind, "unknown")
+        cart_item.update_attribute(:benefitable, nil)
       end
     end
   end

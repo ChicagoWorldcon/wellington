@@ -34,8 +34,6 @@ class CartItem < ApplicationRecord
     #UPGRADE
   ].freeze
 
-  belongs_to :cart
-
   # :benefitable, here, is a polymorphic association
   # with the theme_contact_class. It represents
   # the person whose name will be on the membership. (So,
@@ -56,6 +54,7 @@ class CartItem < ApplicationRecord
   # but we expect that eventually there may be t-shirts and the
   # like.
   belongs_to :acquirable, :polymorphic => true, required: true
+  belongs_to :cart
 
   attribute :available, :boolean, default: true
   attribute :later, :boolean, default: false

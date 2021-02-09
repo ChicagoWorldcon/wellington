@@ -9,7 +9,7 @@ class Cart < ApplicationRecord
   ].freeze
 
   attribute :status, :string, default: PENDING
-  validates :status, inclusion: { in: STATUS_OPTIONS }
+  validates :status, :inclusion => { in: STATUS_OPTIONS }
   belongs_to :user
   has_many :cart_items
 
