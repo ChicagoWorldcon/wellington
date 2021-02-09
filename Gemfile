@@ -62,6 +62,7 @@ group :development, :test do
   gem "rubocop-rspec"                                 # linting for idiomatic rspec
   gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
+  gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing. 
   gem "simplecov"                                     # tracks test coverage
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
   gem "timecop"                                       # time travel for specs
