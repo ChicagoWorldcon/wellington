@@ -393,10 +393,6 @@ RSpec.describe CartItem, type: :model do
         expect(base_model).not_to allow_value('meatloaf').for(:kind)
       end
 
-      it "will not allow 'kind' to accept the value nil" do
-        expect(base_model).not_to allow_value(nil).for(:kind)
-      end
-
       it "WILL allow 'kind' to accept the value 'membership'" do
         expect(base_model).to allow_value('membership').for(:kind)
       end
