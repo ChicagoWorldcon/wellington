@@ -170,228 +170,270 @@ RSpec.describe CartItem, type: :model do
         expect(display_price_item.item_price_memo).to be > 0
         expect(display_price_item.item_display_price).to match(/[1-9]/)
       end
-
-
     end
 
-    # describe "item_beneficiary_name" do
-    #   let(:beneficiary_name_item) {create(:cart_item)}
-    #   context "when kind == 'membership'" do
-    #
-    #     beneficiary_name_item.update_attributes!(kind: "membership")
-    #     expect(:beneficiary_name_item.kind).to eql("membership")
-    #
-    #     it "matches its benefitable's display_name_for_cart" do
-    #       expect(:beneficiary_name_item.item_beneficiary_name).to eql(:beneficiary_name_item.benefitable.name_for_cart)
-    #     end
-    #   end
-    #
-    #   context "when kind != 'membership'" do
-    #     beneficiary_name_item.update_attributes!(kind: "unknown")
-    #     expect(:beneficiary_name_item.kind).to eql("unknown")
-    #
-    #     it "is an empty string" do
-    #       expect(:beneficiary_name_item.item_beneficiary_name).to eql("")
-    #     end
-    #   end
-    # end
+    describe "item_beneficiary_name" do
+      let(:beneficiary_name_item) {create(:cart_item)}
+      context "when kind == 'membership'" do
 
-    # describe "item_still_available?" do
-    #   let(:availability_item) {create(:cart_item)}
-    #   let(:availalability_item_2) { create(:cart_item, :with_supporting)}
-    #   let(:availablitity_item_3) {create(:cart_item, :with_ya)}
-    #
-    #   let(:expired_membership_item1) {create(:cart_item, :with_expired_membership_tuatara)}
-    #   let(:expired_membership_item2) {create(:cart_item, :with_expired_membership_silver_f)}
-    #
-    #   context "when available == false" do
-    #     it "returns false, even if it would otherwise return true." do
-    #       # Arrangement for test validation:
-    #       availability_item.update_attributes!(available: true)
-    #       # Test Validation:
-    #       expect(:availability_item.item_still_available?).to eql(true)
-    #
-    #       # Arrangement for actual test:
-    #       availability_item.update_attributes!(available: false)
-    #       # Actual test:
-    #       expect(:availability_item.item_still_available?).to eql(false)
-    #     end
-    #   end
+        it "matches its benefitable's display_name_for_cart" do
+          beneficiary_name_item.update_attribute(:kind, "membership")
+          expect(beneficiary_name_item.kind).to eql("membership")
+          expect(beneficiary_name_item.item_beneficiary_name).to eql(beneficiary_name_item.benefitable.name_for_cart)
+        end
+      end
 
-      # context "when its acquirable has expired" do
-      #
-      #   #test validations:  Already-expired memberships
-      #   expect(:expired_membership_item_1.acquirable.active?).to eql(false)
-      #   expect(:expired_membership_item_2.acquirable.active?).to eql(false)
-      #
-      #   #test validations: acquirable artificially expired:
-      #   expect(:availablitity_item_3.acquirable.active?).to eql(true)
-      #   availability_item_3.acquirable.update_attributes(active_to: 1.day.ago)
-      #   expect(availability_item_3.acquirable.active?).to eql(false)
-      #   expect(availability_item_3.available).to eql(true)
-      #
-      #   it "returns false" do
-      #     expect(:expired_membership_item1.item_still_available?).to eql(false)
-      #
-      #     expect(:availability_item_3.item_still_available?).to eql(false)
-      #   end
-      #
-      #   it "sets its own 'available' attribute to false" do
-      #     # Validation
-      #     expect(:expired_membership_item_2.available).to eql(true)
-      #     # Action
-      #     expired_membership_item2.item_still_available?
-      #     # Actual test
-      #     expect(:expired_membership_item2.available).to eql(true)
-      #   end
-      # end
-      #
-      # context "when its item_name_memo doesn't match its aquirable's name" do
-      #   let(:name_match_item) {create(:cart_item:)}
-      #   #test_validation
-      #   expect(:name_match_item.item_still_available?).to eql(true)
-      #   it "returns false, even if it would have returned true if the names had matched." do
-      #     expect(:name_match_item.item_name_memo).to eql(:name_match_item.acquirable.name)
-      #     expect(:name_match_item.item_still_available?).to eql(true)
-      #     name_match_item.update_attributes!(item_name_memo: "altered")
-      #     expect(:name_match_item.item_name_memo).to_not eql(:name_match_item.acquirable.name)
-      #     expect(:name_match_item.item_still_available?).to eql(false)
-      #   end
-      # end
-      #
-      # context "when its item_price_memo doesn't match its aquirable's price_cents" do
-      #   let(:price_match_item) {create(:cart_item:)}
-      #   #test_validation
-      #   expect(:price_match_item.item_still_available?).to eql(true)
-      #   it "returns false, even if it would have returned true if the names had matched." do
-      #     expect(:price_match_item.item_price_memo).to eql(:price_match_item.acquirable.price_cents)
-      #     expect(:price_match_item.item_still_available?).to eql(true)
-      #     price_match_item.update_attributes!(item_price_memo: :price_match_item.acquirable.price_cents + 30)
-      #     expect(:price_match_item.item_price_memo).to_not eql(:price_match_item.acquirable.price_cents)
-      #     expect(:price_match_item.item_still_available?).to eql(false)
-      #   end
-      #
-      # end
-      #
-      # context "when its display name is unknown" do
-      #   let(:failed_display_item) { create(:cart_item)}
-      #   #Test validations:
-      #   it "Even when it would otherwise return true, a display name of 'unknown' will cause it to return false" do
-      #     expect(:failed_display_item.item_display_name).not_to eql("unknown")
-      #     expect(:failed_display_item.item_still_available?).to eql(true)
-      #     failed_display_item.update_attributes!(kind: "unknown")
-      #     expect(:failed_display_item.item_display_name).to eql("unknown")
-      #     expect(:failed_display_item.item_still_available?).to eql(false)
-      #   end
-      # end
+      context "when kind != 'membership'" do
+
+        it "is an empty string" do
+          beneficiary_name_item.update_attribute(:kind, "unknown")
+          expect(beneficiary_name_item.kind).to eql("unknown")
+          expect(beneficiary_name_item.item_beneficiary_name).to eql("")
+        end
+      end
     end
 
+    describe "item_still_available?" do
+      let(:availability_item) {create(:cart_item)}
+      let(:availability_item_2) { create(:cart_item, :with_supporting)}
+      let(:availability_item_3) {create(:cart_item, :with_ya)}
 
+      let(:expired_membership_item1) {create(:cart_item, :with_expired_membership_tuatara)}
+      let(:expired_membership_item2) {create(:cart_item, :with_expired_membership_silver_f)}
 
+      context "when available == false" do
+        it "returns false, even if it would otherwise return true." do
+          # Arrangement for test validation:
+          availability_item.update_attribute(:available, true)
+          # Test Validation:
+          expect(availability_item.item_still_available?).to eql(true)
 
+          # Arrangement for actual test:
+          availability_item.update_attribute(:available, false)
+          # Actual test:
+          expect(availability_item.item_still_available?).to eql(false)
+        end
+      end
 
-  #
-  # describe "validations" do
-  #
-  #   describe "validation of 'acquirable'" do
-  #     it "Validates the presence of the 'acquirable' attribute" do
-  #       expect(base_model).to_not allow_nil(:acquirable)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'available'" do
-  #     it "validates the presence of the 'available' attribute" do
-  #       expect(base_model).to validate_presence_of(:available)
-  #     end
-  #
-  #     it "will not allow 'available' to equal 'heck, yeah'" do
-  #       expect(base_model).to_not allow_value("heck, yeah").for(:available)
-  #     end
-  #
-  #     it "WILL allow 'available' to equal false" do
-  #       expect(base_model).to allow_value(false).for(:available)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'benefitable'" do
-  #     it "Validates the presence of 'benefitable' when the value of 'kind' is 'membership'" do
-  #       let(:membership_item) {create(:cart_item, kind: "membership")}
-  #       expect(membership_item).to_not allow_nil(:benefitable)
-  #     end
-  #
-  #     it "Allows the 'benefitable' attribute to be nil when the value of 'kind' is 'nonmembership'" do
-  #       let(:nonmembership_item) {create(:cart_item, kind: "nonmembership" )}
-  #       expect(nonmembership_item).to allow_nil(:benefitable)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'item_name_memo'" do
-  #     it "validates the presence of the 'item_name_memo' attribute" do
-  #       expect(base_model).to validate_presence_of(:item_name_memo)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'item_price_memo'" do
-  #     it "validates the presence of the 'item_price_memo' attribute" do
-  #       it "validates the presence of the 'item_price_memo' attribute" do
-  #         expect(base_model).to validate_presence_of(:item_price_memo)
-  #       end
-  #     end
-  #
-  #     it "validates 'item_price_memo' as numerical" do
-  #       expect(base_model).to validate_numericality_of(:item_price_memo)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'kind'" do
-  #     it "validates the presence of the 'kind' attribute" do
-  #       expect(base_model).to validate_presence_of(:kind)
-  #     end
-  #
-  #     it "will not allow 'kind' to accept the Boolean value true" do
-  #       expect(base_model).to_not allow_value(true).for(:kind)
-  #     end
-  #
-  #     it "will not allow 'kind' to accept the integer value 7" do
-  #       expect(base_model).to_not allow_value(7).for(:kind)
-  #     end
-  #
-  #     it "will not allow 'kind' accept the value 'meatloaf'" do
-  #       expect(base_model).to_not allow_value('meatloaf').for(:kind)
-  #     end
-  #
-  #     it "WILL allow 'kind' to accept the value 'membership'" do
-  #       expect(base_model).to allow_value('membership').for(:kind)
-  #     end
-  #
-  #     it "WILL allow 'kind' to accept the value 'unknown'" do
-  #       expect(base_model).to allow_value('unknown').for(:kind)
-  #     end
-  #   end
-  #
-  #   describe "validation of 'later'" do
-  #     it "validates the presence of the 'later' attribute" do
-  #       expect(base_model).to validate_presence_of(:later)
-  #     end
-  #
-  #     it "will not allow 'later' to accept the integer value 8" do
-  #       expect(base_model).to_not allow_value(8).for(:later)
-  #     end
-  #
-  #     it "will not allow 'later' to accept the value 'alligator'" do
-  #       expect(base_model).to_not allow_value('alligator').for(:later)
-  #     end
-  #
-  #     it "WILL allow 'later' to accept the Boolean value false" do
-  #       expect(base_model).to allow_value(false).for(:later)
-  #     end
-  #   end
-  # end
-  #
+      context "when its acquirable has expired" do
 
-  #
+        it "returns false for acquirables that have not been changed since the CartItem was created" do
+          #test validations:  Already-expired memberships
+          expect(expired_membership_item1.acquirable.active?).to eql(false)
+          #Actual test
+          expect(expired_membership_item1.item_still_available?).to eql(false)
+        end
 
-  #
+        it "returns false for acquirables that have been artificially expired" do
+          #test validations: acquirable artificially expired:
+          expect(availability_item_3.acquirable.active?).to eql(true)
+          expect(availability_item_3.available).to eql(true)
+          availability_item_3.acquirable.update_attribute(:active_to, 1.day.ago)
+          expect(availability_item_3.acquirable.active?).to eql(false)
 
-  # end
+          #Actual test
+          expect(availability_item_3.item_still_available?).to eql(false)
+        end
+
+        it "sets its own 'available' attribute to false when its acquirable is expired" do
+          # Validation
+          expect(expired_membership_item2.acquirable.active?).to eql(false)
+          expect(expired_membership_item2.available).to eql(true)
+          # Action
+          expired_membership_item2.item_still_available?
+          # Actual test
+          expect(expired_membership_item2.available).to eql(false)
+        end
+      end
+
+      context "when its item_name_memo doesn't match its aquirable's name" do
+        let(:name_match_item) {create(:cart_item)}
+
+        it "returns false, even if it would have returned true if the names had matched." do
+          #test_validation
+          expect(name_match_item.item_name_memo).to eql(name_match_item.acquirable.name)
+          expect(name_match_item.item_still_available?).to eql(true)
+          name_match_item.update_attribute(:item_name_memo, "altered")
+          expect(name_match_item.item_name_memo).not_to eql(name_match_item.acquirable.name)
+          expect(name_match_item.item_still_available?).to eql(false)
+        end
+      end
+
+      context "when its item_price_memo doesn't match its aquirable's price_cents" do
+        let(:price_match_item) {create(:cart_item)}
+
+        it "returns false, even if it would have returned true if the names had matched." do
+          # test_validation
+          expect(price_match_item.item_still_available?).to eql(true)
+          expect(price_match_item.item_price_memo).to eql(price_match_item.acquirable.price_cents)
+          expect(price_match_item.item_still_available?).to eql(true)
+          # Arrangement
+          price_match_item.update_attribute(:item_price_memo, price_match_item.acquirable.price_cents + 30)
+          # Secondary test validation
+          expect(price_match_item.item_price_memo).not_to eql(price_match_item.acquirable.price_cents)
+          # Actual test
+          expect(price_match_item.item_still_available?).to eql(false)
+        end
+
+      end
+
+      context "when its display name is unknown" do
+        let(:failed_display_item) { create(:cart_item)}
+
+        it "Even when it would otherwise return true, a display name of 'unknown' will cause it to return false" do
+          #Test validations:
+          expect(failed_display_item.item_display_name).not_to eql("unknown")
+          expect(failed_display_item.item_still_available?).to eql(true)
+          # Arrangement
+          failed_display_item.update_attribute(:kind, "unknown")
+          # Secondary validation
+          expect(failed_display_item.item_display_name).to eql("unknown")
+          expect(failed_display_item.item_still_available?).to eql(false)
+        end
+      end
+    end
+  end
+
+  describe "validations" do
+
+    describe "validation of 'acquirable'" do
+      it "Validates the presence of the 'acquirable' attribute" do
+        expect(base_model).not_to allow_value(nil).for(:acquirable)
+      end
+    end
+
+    describe "validation of 'available'" do
+      it "Will allow 'available' to equal false" do
+        expect(base_model).to allow_value(false).for(:available)
+      end
+
+      it "Will not allow 'available' to be assigned an empty string" do
+        expect(base_model).not_to allow_value("").for(:available)
+      end
+
+      it "Will not allow 'available' to be assigned nil" do
+        expect(base_model).not_to allow_value(nil).for(:available)
+      end
+
+      it "Will interpret assignment of a truthy string to 'available' as an assignment of Boolean true" do
+        # Arrangement and test validations:
+        truthy_string = "You bet!"
+        base_model.update_attribute(:available, false)
+        expect(base_model.available).to eql(false)
+        # Action:
+        base_model.update_attribute(:available, truthy_string)
+        # Tests
+        expect(base_model.available).not_to eql(truthy_string)
+        expect(base_model.available).to eql(true)
+      end
+
+      it "Will interpret assignment of a non-empty, falsey string to 'available' as an assignment of Boolean false" do
+        #Arrangement and test validations:
+        falsey_string = "F"
+        base_model.update_attribute(:available, true)
+        expect(base_model.available).to eql(true)
+        #Action:
+        base_model.update_attribute(:available, falsey_string)
+        #Tests
+        expect(base_model.available).not_to eql(falsey_string)
+        expect(base_model.available).to eql(false)
+      end
+    end
+
+    describe "validation of 'benefitable'" do
+      it "Validates the presence of 'benefitable' when the value of 'kind' is 'membership'" do
+        # Arrangement:
+        base_model.update_attribute(:kind, "membership")
+        # Test validation:
+        expect(base_model.kind).to eql("membership")
+        # Actual test:
+        expect(base_model).not_to allow_value(nil).for(:benefitable)
+      end
+
+      it "Allows the 'benefitable' attribute to be nil when the value of 'kind' is 'unknown'" do
+        # Arrangement:
+        base_model.update_attribute(:kind, "unknown")
+        # Test validation:
+        expect(base_model.kind).to eql("unknown")
+        # Actual test:
+        expect(base_model).to allow_value(nil).for(:benefitable)
+      end
+    end
+
+    describe "validation of 'item_name_memo'" do
+      it "validates the presence of the 'item_name_memo' attribute" do
+        expect(base_model).to validate_presence_of(:item_name_memo)
+      end
+    end
+
+    describe "validation of 'item_price_memo'" do
+      it "validates the presence of the 'item_price_memo' attribute" do
+        expect(base_model).to validate_presence_of(:item_price_memo)
+      end
+
+      it "validates 'item_price_memo' as numerical" do
+        expect(base_model).to validate_numericality_of(:item_price_memo)
+      end
+    end
+
+    describe "validation of 'kind'" do
+      it "validates the presence of the 'kind' attribute" do
+        expect(base_model).to validate_presence_of(:kind)
+      end
+
+      it "will not allow 'kind' to accept the Boolean value true" do
+        expect(base_model).not_to allow_value(true).for(:kind)
+      end
+
+      it "will not allow 'kind' to accept the integer value 7" do
+        expect(base_model).not_to allow_value(7).for(:kind)
+      end
+
+      it "will not allow 'kind' accept the value 'meatloaf'" do
+        expect(base_model).not_to allow_value('meatloaf').for(:kind)
+      end
+
+      it "will not allow 'kind' to accept the value nil" do
+        expect(base_model).not_to allow_value(nil).for(:kind)
+      end
+
+      it "WILL allow 'kind' to accept the value 'membership'" do
+        expect(base_model).to allow_value('membership').for(:kind)
+      end
+
+      it "WILL allow 'kind' to accept the value 'unknown'" do
+        expect(base_model).to allow_value('unknown').for(:kind)
+      end
+    end
+
+    describe "validation of 'later'" do
+      it "Will allow 'later' to equal true" do
+        expect(base_model).to allow_value(true).for(:later)
+      end
+
+      it "Will interpret assignment of a truthy string to 'available' as an assignment of Boolean true" do
+        # Arrangement and test validations:
+        truthy_string = "Absitively!"
+        base_model.update_attribute(:later, false)
+        expect(base_model.later).to eql(false)
+        # Action:
+        base_model.update_attribute(:later, truthy_string)
+        # Tests
+        expect(base_model.later).not_to eql(truthy_string)
+        expect(base_model.later).to eql(true)
+      end
+
+      it "Will interpret assignment of a non-empty, falsey string to 'available' as an assignment of Boolean false" do
+        #Arrangement and test validations:
+        falsey_string = "f"
+        base_model.update_attribute(:later, true)
+        expect(base_model.later).to eql(true)
+        #Action:
+        base_model.update_attribute(:later, falsey_string)
+        #Tests
+        expect(base_model.later).not_to eql(falsey_string)
+        expect(base_model.later).to eql(false)
+      end
+    end
+  end
 end

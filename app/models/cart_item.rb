@@ -69,9 +69,11 @@ class CartItem < ApplicationRecord
   # cart by the user.  Stripe and the like should not use these.
   # Those should, instead, use the information from the acquirable object
   validates :item_name_memo, presence: true
-  validates_numericality_of :item_price_memo, presence: true
+  validates :item_price_memo, presence: true
+  validates_numericality_of :item_price_memo
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   validates :later, :inclusion => {in: [true, false]}
+
 
   # TODO: Figure out how these should interact with the
   # availability confirmation scheme.
@@ -116,16 +118,14 @@ class CartItem < ApplicationRecord
     # permanent condition. Once something has become unavailable, it
     # never becomes available again.   That, of course, is something
     # that could be changed easily later on, as requirements change.
-    confirmed = self.available
-    # Written with this conditional to allow for later
-    # addition of cart-items that aren't memberships.
+
 
     # TODO: See if this can be better accomplished
     # with the ActiveScopes concern. NB-- right now,
     # I feel like it's kind of good the way it is.
   confirmed = (
-    confirmed &&
-    self.item_display_name != UNKNOWN
+    self.available &&
+    self.item_display_name != UNKNOWN &&
     self.acquirable.active? &&
     self.acquirable_type.constantize.active.where(
       id: self.acquirable_id,
@@ -134,7 +134,7 @@ class CartItem < ApplicationRecord
       ).present?
     )
     self.available = confirmed
-    self.save!
+    self.save
     self.available
   end
 
