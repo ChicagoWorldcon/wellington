@@ -15,7 +15,8 @@ def main():
 
     try:
         deployment_group = {
-            "staging": "dev",
+            "dev": "dev",
+            "staging": "staging",
             "release": "prod",
         }[opts.docker_tag]
     except KeyError:
