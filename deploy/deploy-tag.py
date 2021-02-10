@@ -16,7 +16,7 @@ def main():
     try:
         deployment_group = {
             "staging": "dev",
-            "main": "prod",
+            "release": "prod",
         }[opts.docker_tag]
     except KeyError:
         print(f"No deployment group for {opts.docker_tag}")
