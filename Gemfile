@@ -55,6 +55,7 @@ group :development, :test do
   #gem 'meta_request'                                  # allows you to use the 'rails panel' browser extension
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
+  gem "rails-controller-testing"                      # adds back deprecated "assigns" and "assert_template" expectations. 
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
   gem "rubocop-performance"                           # performance static analysis
@@ -62,7 +63,7 @@ group :development, :test do
   gem "rubocop-rspec"                                 # linting for idiomatic rspec
   gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
-  gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing. 
+  gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing.
   gem "simplecov"                                     # tracks test coverage
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
   gem "timecop"                                       # time travel for specs
