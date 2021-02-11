@@ -144,6 +144,40 @@ RSpec.describe Cart, type: :model do
         expect(unexpired_seen).to eql(false) #inverted
       end
     end
+
+    describe "cart_with_mix_of_everything" do
+      it "is valid" do
+        expect(cart_with_mix_of_everything).to be_valid
+      end
+
+      it "has more than five cart-items" do
+        expect(cart_with_mix_of_everything.cart_items.count).to be > 5
+      end
+
+      it "has at least one item that is marked as unavailable" do
+        unavailable_seen = false
+        cart_with_mix_of_everything.cart_items.each { |i| unavailable_seen = true if !i.available}
+        expect(unavailable_seen).to eql(true)
+      end
+
+      it "has at least one free item" do
+        free_seen = false
+        cart_with_mix_of_everything.cart_items.each { |i| free_seen = true if i.acquirable.price_cents == 0 }
+        expect(free_seen).to eql(true)
+      end
+
+      it "has at least one expired item" do
+        expired_seen = false
+        cart_with_mix_of_everything.cart_items.each {|i| expired_seen = true if !i.acquirable.active?}
+        expect(expired_seen).to eql(true)
+      end
+
+      it "has at least one saved-for-later item" do
+        later_seen = false
+        cart_with_mix_of_everything.cart_items.each {|i| later_seen = true if i.later}
+        expect(later_seen).to eql(true)
+      end
+    end
   end
 
   describe "associations" do

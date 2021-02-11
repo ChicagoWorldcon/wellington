@@ -41,24 +41,18 @@ class CartController < ApplicationController
 
   def add_reservation_to_cart
     if (@our_offer.present? && @our_beneficiary.present?)
-      binding.pry
       @our_cart_item = CartItem.create(
         :acquirable => @our_offer.membership,
-        # :item_name => @our_offer.membership.name,
-        # :item_price_cents => @our_offer.membership.price_cents,
         :cart => @cart,
         :benefitable => @our_beneficiary,
-        #TODO:  Maybe eliminate :kind, and just read from the :acquirable_type field
         :kind => MEMBERSHIP
       )
-      binding.pry
       if @our_cart_item.save
         flash[:status] = :success
         flash[:notice] = "Membership successfully added to cart."
         redirect_to cart_path and return
       end
     end
-    binding.pry
     flash[:status] = :failure
     flash[:notice] = "This membership could not be added to your cart."
     flash[:messages] = @our_cart_item.errors.messages
