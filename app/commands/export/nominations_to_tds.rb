@@ -1,18 +1,10 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 15-Feb-21 FNB Update table year values, remove Retro code
 
 # Export::NominationsToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
 # This SQL Server backs admin for the Hugo Nominations
@@ -26,11 +18,11 @@ class Export::NominationsToTds
   def call
     return if Nomination.none?
 
-    execute("DELETE FROM External_Nominations_2020")
+    execute("DELETE FROM External_Nominations_2021")
     nominations_2020.find_in_batches(batch_size: 100) do |batch|
       result = execute(
         %{
-          INSERT INTO External_Nominations_2020
+          INSERT INTO External_Nominations_2021
             (NominatorID, NominationID, CategoryID, PrimaryData, SecondData, ThirdData)
           VALUES
             #{batch.size.times.map { "( %i, %i, %i, '%s', '%s', '%s' )" }.join(",")}
@@ -50,30 +42,30 @@ class Export::NominationsToTds
       puts result.insert
     end
 
-    execute("DELETE FROM External_Nominations_1945")
-    nominations_1945.find_in_batches(batch_size: 100) do |batch|
-      result = execute(
-        %{
-          INSERT INTO External_Nominations_1945
-            (NominatorID, NominationID, CategoryID, PrimaryData, SecondData, ThirdData)
-          VALUES
-            #{batch.size.times.map { "( %i, %i, %i, '%s', '%s', '%s' )" }.join(",")}
-          ;
-        },
-        batch.flat_map do |nomination|
-          [
-            nomination.reservation.membership_number,
-            nomination.id,
-            nomination.category.id,
-            nomination.field_1,
-            nomination.field_2,
-            nomination.field_3,
-          ]
-        end
-      )
-      puts result.insert
-    end
-  end
+#    execute("DELETE FROM External_Nominations_1945")
+#    nominations_1945.find_in_batches(batch_size: 100) do |batch|
+#       result = execute(
+#         %{
+#           INSERT INTO External_Nominations_1945
+#             (NominatorID, NominationID, CategoryID, PrimaryData, SecondData, ThirdData)
+#           VALUES
+#             #{batch.size.times.map { "( %i, %i, %i, '%s', '%s', '%s' )" }.join(",")}
+#           ;
+#         },
+#         batch.flat_map do |nomination|
+#           [
+#             nomination.reservation.membership_number,
+#             nomination.id,
+#             nomination.category.id,
+#             nomination.field_1,
+#             nomination.field_2,
+#             nomination.field_3,
+#           ]
+#         end
+#       )
+#       puts result.insert
+#     end
+#   end
 
   private
 
