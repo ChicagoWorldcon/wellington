@@ -17,10 +17,10 @@ class Export::CategoriesToTds
   end
 
   def call
-    execute("DELETE FROM Award_Categories_2020").do
+    execute("DELETE FROM Award_Categories_2021").do
     result = execute(
       %{
-        INSERT INTO Award_Categories_2020
+        INSERT INTO Award_Categories_2021
           ( BallotPosition, CategoryID, CategoryName )
         VALUES
           #{categories_2020.size.times.map { "( %i, %i, '%s')" }.join(",")}
