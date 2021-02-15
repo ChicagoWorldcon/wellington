@@ -40,6 +40,7 @@ class Export::NominationsToTds
         end
       )
       puts result.insert
+      result.do # trerminate it.
     end
 
 #    execute("DELETE FROM External_Nominations_1945")

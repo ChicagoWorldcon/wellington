@@ -1,18 +1,8 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Copyright 2021 Fred Bauer
+#15-Feb 21 FNB remove retro.
 
 # Export::CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
 # This SQL Server backs admin for the Hugo Nominations
@@ -41,21 +31,22 @@ class Export::CategoriesToTds
       end
     )
     result.insert # Hack to acknowledge we've read the result from SQL Server
+    result.do
 
-    execute("DELETE FROM Award_Categories_1945")
-    result = execute(
-      %{
-        INSERT INTO Award_Categories_1945
-          ( BallotPosition, CategoryID, CategoryName )
-        VALUES
-          #{categories_1945.size.times.map { "( %i, %i, '%s')" }.join(",")}
-        ;
-      },
-      categories_1945.flat_map do |category|
-        [category.order || 0, category.id, cludge(category.name)]
-      end
-    )
-    result.insert # Hack to acknowledge we've read the result from SQL Server
+    # execute("DELETE FROM Award_Categories_1945")
+    # result = execute(
+    #   %{
+    #     INSERT INTO Award_Categories_1945
+    #       ( BallotPosition, CategoryID, CategoryName )
+    #     VALUES
+    #       #{categories_1945.size.times.map { "( %i, %i, '%s')" }.join(",")}
+    #     ;
+    #   },
+    #   categories_1945.flat_map do |category|
+    #     [category.order || 0, category.id, cludge(category.name)]
+    #   end
+    # )
+    # result.insert # Hack to acknowledge we've read the result from SQL Server
   end
 
   private
