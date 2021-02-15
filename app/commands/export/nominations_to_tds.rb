@@ -65,7 +65,7 @@ class Export::NominationsToTds
 #       )
 #       puts result.insert
 #     end
-#   end
+   end
 
   private
 
