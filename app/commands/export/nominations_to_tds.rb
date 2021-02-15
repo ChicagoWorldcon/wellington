@@ -18,7 +18,7 @@ class Export::NominationsToTds
   def call
     return if Nomination.none?
 
-    execute("DELETE FROM External_Nominations_2021")
+    execute("DELETE FROM External_Nominations_2021").do
     nominations_2020.find_in_batches(batch_size: 100) do |batch|
       result = execute(
         %{

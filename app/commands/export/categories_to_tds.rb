@@ -2,7 +2,7 @@
 
 # Copyright 2020 Matthew B. Gray
 # Copyright 2021 Fred Bauer
-#15-Feb 21 FNB remove retro.
+#15-Feb 21 FNB remove retro. Other fixes for TDS
 
 # Export::CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup
 # This SQL Server backs admin for the Hugo Nominations
@@ -17,7 +17,7 @@ class Export::CategoriesToTds
   end
 
   def call
-    execute("DELETE FROM Award_Categories_2020")
+    execute("DELETE FROM Award_Categories_2020").do
     result = execute(
       %{
         INSERT INTO Award_Categories_2020
