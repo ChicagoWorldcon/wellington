@@ -16,8 +16,8 @@
 
 module CartItemsHelper
 
-  # TODO: Figure out a better way to do this. This
-  # is unweildy and I'm pretty sure we can do this more directly.
+  # TODO: See if this can be eliminated.  There's a new method
+  # in MembershipOffer that should handle this. 
   def self.locate_offer(offer_params)
     binding.pry
     target_offer = MembershipOffer.options.find do |offer|
@@ -72,5 +72,27 @@ module CartItemsHelper
 
   def verify_availability_of_cart_contents(cart)
     CartItemsHelper.verify_availability_of_cart_contents(cart)
+  end
+
+  def destroy_cart_contents(cart)
+    CartItemsHelper.destroy_cart_contents(cart)
+  end
+
+  def self.destroy_cart_contents(cart)
+    cart.cart_items.each {|i| i.destroy}
+  end
+
+  def self.destroy_for_now_cart_items(cart)
+    now_items = cart_items_for_now(cart)
+    now_items.each {|i| i.destroy}
+  end
+
+  def self.destroy_cart_items_for_later(cart)
+    later_items = cart_items_for_later(cart)
+    later_items.each {|i| i.destroy}
+  end
+
+  def destroy_cart_items_for_later(cart)
+    CartItemsHelper.destroy_cart_items_for_later(cart)
   end
 end

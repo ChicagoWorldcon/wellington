@@ -93,12 +93,20 @@ FactoryBot.define do
     end
 
     trait :saved_for_later do
-      later {true}
+      after(:build) do |cart_item, evaluator|
+        cart_item.later = true
+      end
     end
 
     trait :unavailable do
-      before(:create) do |cart_item, evaluator|
+      after(:build) do |cart_item, evaluator|
         cart_item.available = false;
+      end
+    end
+
+    trait :incomplete do
+      after(:build) do |cart_item, evaluator|
+        cart_item.incomplete = true
       end
     end
 
@@ -114,7 +122,7 @@ FactoryBot.define do
       end
     end
 
-    trait :uknown_kind do
+    trait :unknown_kind do
       after(:create) do |cart_item, evaluator|
         cart_item.update_attribute(:kind, "unknown")
       end

@@ -91,4 +91,9 @@ class Membership < ApplicationRecord
   def name_for_cart
     self.to_s
   end
+
+  def name_and_price_hashcode
+    h_price = self.price > 0 ? self.price.format(with_currency: true) : "Free"
+    "#{self.name} #{h_price}"
+  end
 end

@@ -23,6 +23,7 @@ class CreateCartItems < ActiveRecord::Migration[6.1]
       t.string :kind, null:false
       t.boolean :later, default:false, null:false
       t.boolean :available, default:true, null:false
+      t.boolean :incomplete, default:false, null:false
       t.references :acquirable, polymorphic: true, index: true, null: false
       t.references :benefitable, polymorphic: true, index: true, null: true
       t.timestamps

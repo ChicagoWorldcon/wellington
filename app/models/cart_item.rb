@@ -58,12 +58,13 @@ class CartItem < ApplicationRecord
 
   attribute :available, :boolean, default: true
   attribute :later, :boolean, default: false
+  attribute :incomplete, :boolean, default: false
 
   before_validation :note_acquirable_details, if: :new_record?
-  #before_validation  :set_boolean_defaults, if: :new_record?
 
   validates :available, :inclusion => {in: [true, false]}
   validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
+  validates :incomplete, :inclusion => {in: [true, false]}
   # :item_name_memo and :item_price_memo exist to record the
   # name and price of an acquirable at the time it was added to the
   # cart by the user.  Stripe and the like should not use these.

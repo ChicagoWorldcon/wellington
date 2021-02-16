@@ -55,7 +55,7 @@ group :development, :test do
   #gem 'meta_request'                                  # allows you to use the 'rails panel' browser extension
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
-  gem "rails-controller-testing"                      # adds back deprecated "assigns" and "assert_template" expectations. 
+  gem "rails-controller-testing"                      # adds back deprecated "assigns" and "assert_template" expectations.
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
   gem "rubocop-performance"                           # performance static analysis

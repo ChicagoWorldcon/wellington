@@ -30,7 +30,7 @@ class CartController < ApplicationController
   before_action :verify_single_item_availability, only: []
 
   before_action :locate_our_membership_offer_in_params, only: [:add_reservation_to_cart]
-  before_action :assemble_our_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
+  before_action :generate_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
 
   PENDING = "pending"
   MEMBERSHIP = "membership"
@@ -40,6 +40,7 @@ class CartController < ApplicationController
   end
 
   def add_reservation_to_cart
+    binding.pry
     if (@our_offer.present? && @our_beneficiary.present?)
       @our_cart_item = CartItem.create(
         :acquirable => @our_offer.membership,
@@ -56,8 +57,7 @@ class CartController < ApplicationController
     flash[:status] = :failure
     flash[:notice] = "This membership could not be added to your cart."
     flash[:messages] = @our_cart_item.errors.messages
-    #TODO: Confirm this routing
-    redirect_to new_reservation_path
+    redirect_back(fallback_location: root_path)
   end
 
   def update_cart_info
@@ -77,6 +77,10 @@ class CartController < ApplicationController
     #   flash[:messages] = @cart.errors.messages
     #   redirect_to cart_path and return
     # end
+  end
+
+  def preview_purchase
+    # TODO
   end
 
   def submit_online_payment
@@ -258,6 +262,7 @@ class CartController < ApplicationController
   end
 
   def locate_cart
+    binding.pry
     @cart ||= Cart.find_by(user_id: current_user.id)
     @cart ||= create_cart
     if @cart.nil?
@@ -299,18 +304,20 @@ class CartController < ApplicationController
     end
   end
 
-  def locate_our_membership_offer_in_params
-    #TODO: Make this more direct.  It may not need to be this complicated.
-    @our_offer = CartItemsHelper.locate_offer(params[:offer])
+  def locate_membership_offer_via_params
     binding.pry
-    kittens = "kittens"
-    @our_offer
-    #TODO:  Make this fail back to the reservation page.
+    @our_offer = MembershipOffer.locate_active_offer_by_hashcode(params[:offer])
+    binding.pry
+    if !@our_offer.present?
+      flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
+      redirect_back(fallback_location: memberships_path) and return
+    end
   end
 
-  def assemble_our_membership_beneficiary_from_params
-    #This is how you make this all Con-agnostic.
+  def generate_membership_beneficiary_from_params
+    binding.pry
     @our_beneficiary = theme_contact_class.new(our_contact_params)
+    binding.pry
     if @our_beneficiary.present?
       process_beneficiary_dob
       validate_beneficiary
@@ -354,31 +361,23 @@ class CartController < ApplicationController
     if !@our_beneficiary.valid?
       flash[:error] = @our_beneficiary.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
       # TODO: Make sure this is what you want to render.
-      render "/reservations/new"
-      return
+      redirect_back(fallback_location: root_path) and return
     else
       @our_beneficiary.save
     end
   end
 
-  # THE FOLLOWING THREE METHODS DUPLICATE METHODS IN RESERVATION CONTROLLER
-  # TODO:  Make a date-of-birth helper or else move
-  # these to the  application helper, or maybe the reservation helper.
-  def dob_params_present?
-    dob_key_1 = "dob_array(1i)"
-    return params[theme_contact_param].key?(dob_key_1)
-  end
-
   def process_beneficiary_dob
-    if dob_params_present?
-      @our_beneficiary.date_of_birth = convert_dateselect_params_to_date
+    our_dob = DateOfBirthParamsHelper.generate_dob_from_params(params)
+    if our_dob
+      @our_beneficiary.date_of_birth = our_dob
     end
   end
 
-  def convert_dateselect_params_to_date
-    key1 = "dob_array(1i)"
-    key2 = "dob_array(2i)"
-    key3 = "dob_array(3i)"
-    Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
-  end
+  # def convert_dateselect_params_to_date
+  #   key1 = "dob_array(1i)"
+  #   key2 = "dob_array(2i)"
+  #   key3 = "dob_array(3i)"
+  #   Date.new(params[theme_contact_param][key1].to_i, params[theme_contact_param][key2].to_i, params[theme_contact_param][key3].to_i)
+  # end
 end

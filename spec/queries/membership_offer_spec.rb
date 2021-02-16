@@ -64,4 +64,27 @@ RSpec.describe MembershipOffer do
     end
   end
 
+  describe "#locate_active_offer_by_hashcode" do
+    context "when the hashcode matches an active offer" do
+      it "is not empty" do
+        pending
+      end
+      it "is an instance of MembershipOffer" do
+        pending
+      end
+    end
+
+    context "when the hashcode matches an inactive offer" do
+      it "is empty" do
+        pending
+      end
+    end
+
+    context "when the hashcode matches a nonexistent offer" do
+      it "is empty" do
+        pending
+      end
+    end
+  end
+
 end

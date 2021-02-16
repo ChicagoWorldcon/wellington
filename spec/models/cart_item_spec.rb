@@ -34,9 +34,10 @@ RSpec.describe CartItem, type: :model do
       :with_expired_membership_silver_f,
       :saved_for_later,
       :unavailable,
+      :incomplete,
       :price_altered,
       :name_altered,
-      :uknown_kind,
+      :unknown_kind,
       :nonmembership_without_benefitable
     ].each do |factory_trait|
       it "can create a valid object with trait:  #{factory_trait}" do

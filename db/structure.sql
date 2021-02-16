@@ -37,6 +37,7 @@ CREATE TABLE public.cart_items (
     kind character varying NOT NULL,
     later boolean DEFAULT false NOT NULL,
     available boolean DEFAULT true NOT NULL,
+    incomplete boolean DEFAULT false NOT NULL,
     acquirable_type character varying NOT NULL,
     acquirable_id bigint NOT NULL,
     benefitable_type character varying,

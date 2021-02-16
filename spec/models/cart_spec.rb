@@ -31,10 +31,15 @@ RSpec.describe Cart, type: :model do
   let(:free_only_cart) { create(:cart, :with_free_items)}
   let(:free_and_not_free_cart) { create(:cart, :with_basic_items, :with_free_items )}
 
+  let(:incomplete_only_cart) {create(:cart, :with_incomplete_items)}
+  let(:incomplete_and_complete_cart) {create(:cart, :with_incomplete_items, :with_basic_items)}
+
   let(:expired_only_cart) { create(:cart, :with_expired_membership_items)}
   let(:expired_and_unexpired_cart) { create(:cart, :with_basic_items, :with_expired_membership_items)}
 
-  let(:cart_with_mix_of_everything) { create(:cart, :with_basic_items, :with_items_for_later, :with_unavailable_items, :with_free_items, :with_expired_membership_items)}
+  let!(:cart_with_all_problem_items) { create(:cart, :with_all_problematic_items)}
+
+  let!(:cart_with_100_mixed) { create(:cart, :with_100_mixed_items)}
 
   describe "#factories" do
     it "can create a valid, basic object" do
@@ -62,25 +67,25 @@ RSpec.describe Cart, type: :model do
       it "has no items that are saved for later" do
         saved_for_later_seen = false
         basic_items_cart.cart_items.each { |i| saved_for_later_seen = true if i.later == true }
-        expect(saved_for_later_seen).to eql(false) #inverted
+        expect(saved_for_later_seen).to eql(false)
       end
 
       it "has no items that are marked unavailable" do
         unavailable_seen = false
         basic_items_cart.cart_items.each { |i| unavailable_seen = true if i.available == false}
-        expect(unavailable_seen).to eql(false) #inverted
+        expect(unavailable_seen).to eql(false)
       end
 
       it "has no items that are free" do
         free_seen = false
         basic_items_cart.cart_items.each { |i| free_seen = true if i.acquirable.price_cents == 0 }
-        expect(free_seen).to eql(false) #inverted
+        expect(free_seen).to eql(false)
       end
 
       it "has no items that are expired" do
         expired_seen = false
         basic_items_cart.cart_items.each { |i| expired_seen = true if i.acquirable.active? == false }
-        expect(expired_seen).to eql(false) #inverted
+        expect(expired_seen).to eql(false)
       end
     end
 
@@ -88,6 +93,7 @@ RSpec.describe Cart, type: :model do
       it "is valid" do
         expect(saved_only_cart).to be_valid
       end
+
       it "has at least one cart item" do
         expect(saved_only_cart.cart_items.count).to be > 0
       end
@@ -141,41 +147,75 @@ RSpec.describe Cart, type: :model do
       it "has no items for unexpired memberships" do
         unexpired_seen = false
         expired_only_cart.cart_items.each { |i| unexpired_seen = true if i.acquirable.active? == true }
-        expect(unexpired_seen).to eql(false) #inverted
+        expect(unexpired_seen).to eql(false)
       end
     end
 
-    describe "cart_with_mix_of_everything" do
+    describe "cart with_incomplete_items factory" do
       it "is valid" do
-        expect(cart_with_mix_of_everything).to be_valid
+        expect(incomplete_only_cart).to be_valid
       end
 
-      it "has more than five cart-items" do
-        expect(cart_with_mix_of_everything.cart_items.count).to be > 5
+      it "has at least one cart item" do
+        expect(incomplete_only_cart.cart_items.count).to be > 0
       end
 
-      it "has at least one item that is marked as unavailable" do
-        unavailable_seen = false
-        cart_with_mix_of_everything.cart_items.each { |i| unavailable_seen = true if !i.available}
-        expect(unavailable_seen).to eql(true)
+      it "has no items that are not marked incomplete" do
+        complete_seen = false
+        incomplete_only_cart.cart_items.each { |i| complete_seen = true if !i.incomplete}
+        expect(complete_seen).to eql(false)
+      end
+    end
+
+    describe "all_problematic_items factory" do
+      it "is valid" do
+        expect(cart_with_all_problem_items).to be_valid
       end
 
-      it "has at least one free item" do
-        free_seen = false
-        cart_with_mix_of_everything.cart_items.each { |i| free_seen = true if i.acquirable.price_cents == 0 }
-        expect(free_seen).to eql(true)
+      it "Has a bunch of stuff going on" do
+        pending
+      end
+    end
+
+    describe "cart with_100_mixed factory" do
+      it "is valid" do
+        expect(cart_with_100_mixed).to be_valid
       end
 
-      it "has at least one expired item" do
-        expired_seen = false
-        cart_with_mix_of_everything.cart_items.each {|i| expired_seen = true if !i.acquirable.active?}
-        expect(expired_seen).to eql(true)
+      it "has 100 cart-items" do
+        expect(cart_with_100_mixed.cart_items.count).to eql(100)
       end
 
-      it "has at least one saved-for-later item" do
-        later_seen = false
-        cart_with_mix_of_everything.cart_items.each {|i| later_seen = true if i.later}
-        expect(later_seen).to eql(true)
+      it "has 15 items marked as unavailable" do
+        unavailable_seen = 0
+        cart_with_100_mixed.cart_items.each { |i| unavailable_seen += 1 if !i.available}
+        expect(unavailable_seen).to eql(15)
+      end
+
+      it "has 15 free items" do
+        free_seen = 0
+        cart_with_100_mixed.cart_items.each { |i| free_seen += 1 if i.acquirable.price_cents == 0 }
+        expect(free_seen).to eql(15)
+      end
+
+      it "has 15 expired items" do
+        expired_seen = 0
+        cart_with_100_mixed.cart_items.each {|i| expired_seen += 1 if i.acquirable.active? == false}
+        expect(expired_seen).to eql(15)
+      end
+
+      it "has 15 saved-for-later items" do
+        later_seen = 0
+        cart_with_100_mixed.cart_items.each {|i|
+          later_seen += 1 if i.later}
+        expect(later_seen).to eql(15)
+      end
+
+      it "has 15 incomplete items" do
+        incomplete_seen = 0
+        cart_with_100_mixed.cart_items.each {|i|
+          incomplete_seen += 1 if i.incomplete}
+        expect(incomplete_seen).to eql(15)
       end
     end
   end
@@ -231,7 +271,7 @@ RSpec.describe Cart, type: :model do
         it "returns the sum of the prices of all cart items that are not saved for later" do
           cart_subtotal = 0
           for_now_and_saved_cart.cart_items.each {|i| cart_subtotal += i.acquirable.price_cents if !i.later}
-          expect(cart_subtotal).to eql(for_now_and_saved_cart.subtotal_cents) #inverted
+          expect(cart_subtotal).to eql(for_now_and_saved_cart.subtotal_cents)
         end
       end
 
@@ -283,7 +323,8 @@ RSpec.describe Cart, type: :model do
         end
 
         it "is expressed in US dollars" do
-          expect(basic_items_cart.subtotal_display).to match(/\A\${1}\d+.{1}\d{2}\z/)
+          # This isn't bulletproof as a currency format validator, but it's more than good enough for the current purpose.
+          expect(basic_items_cart.subtotal_display).to match(/\A\${1}[0-9,]+.{1}\d{2}\z/)
         end
       end
     end
@@ -297,7 +338,7 @@ RSpec.describe Cart, type: :model do
 
       context "cart with mixed items-for-now and saved-for-later items" do
         it "is not empty" do
-          expect(for_now_and_saved_cart.items_for_now).not_to be_empty #inverted
+          expect(for_now_and_saved_cart.items_for_now).not_to be_empty
         end
 
         it "contains instances of CartItem" do
