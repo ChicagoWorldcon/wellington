@@ -32,14 +32,25 @@ module CartItemsHelper
     CartItemsHelper.locate_offer(offer_params)
   end
 
+  def self.locate_cart_item(item_id)
+    CartItem.find_by(id: item_id)
+  end
+
+  def locate_cart_item(item_id)
+    CartItemsHelper.locate_cart_item(item_id)
+  end
+
+  def self.locate_cart_item_with_cart(item_id, cart_id)
+    CartItem.find_by(id: item_id, cart_id: cart_id)
+  end
+
+  def locate_cart_item_with_cart(item_id, cart_id)
+    CartItemsHelper.locate_cart_item_with_cart(item_id, cart_d)
+  end
+
+
+
   def self.cart_items_for_now(cart)
-    # now_items = []
-    # cart.cart_items.each {|item|
-    #   if item.later == false
-    #     now_items << item
-    #   end
-    # }
-    # now_items
     cart.cart_items.select {|i| !i.later}
   end
 
@@ -48,13 +59,6 @@ module CartItemsHelper
   end
 
   def self.cart_items_for_later(cart)
-    # later_items = []
-    # cart.cart_items.each {|item|
-    #   if item.later == true
-    #     later_items << item
-    #   end
-    # }
-    # later_items
     cart.cart_items.select {|i| i.later}
   end
 
@@ -65,7 +69,7 @@ module CartItemsHelper
   def self.verify_availability_of_cart_contents(cart)
     all_contents_available = true;
     cart.cart_items.each {|item|
-      all_contents_available = all_contents_available && item.item_still_available?
+      all_contents_available = false if !item.item_still_available?
     }
     return all_contents_available
   end
@@ -109,10 +113,16 @@ module CartItemsHelper
 
 
   def self.unsave_all_cart_items(cart)
+    all_movable = true
     cart.cart_items.each do |i|
       i.later = false
-      i.save
+      unless i.save
+        flash[:error] = "unable to move #{i.item_display_name} to cart"
+        flash[:messages] = i.errors.messages
+        all_movable = false
+      end
     end
+    all_movable
   end
 
   def unsave_all_cart_items(cart)

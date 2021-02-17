@@ -295,6 +295,7 @@ RSpec.describe CartController, type: :controller do
             pending
             expect(assigns(:our_cart_item.incomplete).to eql(true))
           end
+
           it "adds the item to the cart" do
             pending
             expect(assigns(:cart).cart_items.count).to eql(starting_hodgepodge_cart_count + 1)
@@ -303,18 +304,6 @@ RSpec.describe CartController, type: :controller do
         end
       end
     end
-  end
-
-  xdescribe "#update_cart_info" do
-    pending
-  end
-
-  xdescribe "#submit_online_payment" do
-    pending
-  end
-
-  xdescribe "#pay_with_cheque" do
-    pending
   end
 
   describe "#destroy" do
@@ -927,12 +916,6 @@ RSpec.describe CartController, type: :controller do
       let!(:century_cart_id) { century_cart.id }
       let!(:century_cart_count) { century_cart.cart_items.count }
       let!(:century_cart_user) { century_cart.user }
-      # let!(:century_cart_now_items_count_initial) {
-      #
-      #
-      #
-      #   century_cart.cart_items.inject(0) {|nows, i| nows += 1 if i.later == false}}
-      # let!(:century_cart_later_items_count_initial) {century_cart.cart_items.inject(0) {|laters, i| laters += 1 if i.later == true}}
 
       before do
         sign_in(century_cart_user)
@@ -965,7 +948,6 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "results in a cart in which all items are saved items" do
-
         later_items = 0
         assigns(:cart).cart_items.each {|i| later_items += 1 if i.later}
         expect(later_items).to eql(assigns(:cart).cart_items.count)
@@ -973,49 +955,888 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "#move_all_saved_items_to_cart" do
+  describe "PATCH #move_all_saved_items_to_cart" do
+    context "when the cart is empty" do
+      render_views
 
-    context "when the cart has items-for-later" do
+      let!(:e_cart) {create(:cart)}
+      let!(:e_cart_id) { e_cart.id }
+      let!(:e_cart_count) { e_cart.cart_items.count }
+      let!(:e_cart_user) { e_cart.user }
+
+      before do
+        sign_in(e_cart_user)
+        patch :move_all_saved_items_to_cart
+      end
+
+      after do
+        sign_out(e_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "sets a flash notice about not finding any saved items" do
+        expect(subject).to set_flash[:notice].to(/no saved/i)
+      end
+
+      it "Does not destroy the Cart object" do
+        expect(assigns(:cart)).not_to be_nil
+        expect(assigns(:cart)).to be
+        expect(assigns(:cart).id).to eql(e_cart_id)
+        expect(assigns(:cart)).to eq(e_cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(e_cart_count).to eql(0)
+        expect(e_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
     end
 
-    context "when the cart has expired items" do
-    end
+    context "when the cart starts with only saved items" do
+      render_views
 
-    context "when the cart has unavailable items" do
-    end
+      let!(:l_cart) {create(:cart, :with_items_for_later)}
+      let!(:l_cart_id) { l_cart.id }
+      let!(:l_cart_count) { l_cart.cart_items.count }
+      let!(:l_cart_user) { l_cart.user }
+      let!(:l_cart_now_items_count_initial) {l_cart.cart_items.inject(0) {|nows, i|
+       nows += 1 if i.later == false} || 0}
+      let!(:l_cart_later_items_count_initial) {l_cart.cart_items.inject(0) {|laters, i|
+       laters += 1 if i.later == true} || 0}
 
-    context "when the cart contains items with an unknown kind" do
+      before do
+        sign_in(l_cart_user)
+        patch :move_all_saved_items_to_cart
+      end
+
+      after do
+        sign_out(l_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+        expect(subject).to set_flash[:notice].to(/successfully/)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "Does not destroy the Cart object" do
+        expect(assigns(:cart)).not_to be_nil
+        expect(assigns(:cart)).to be
+        expect(assigns(:cart).id).to eql(l_cart_id)
+        expect(assigns(:cart)).to eq(l_cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(l_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "reduces the number of saved items in the cart to zero" do
+        laters = 0
+        assigns(:cart).cart_items.each {|i| laters += 1 if i.later}
+
+        expect(l_cart_later_items_count_initial).to be > 0
+        expect(laters).to eql(0)
+      end
+
+      it "increases the number of saved items by the number of previously-active items" do
+        nows = 0
+        assigns(:cart).cart_items.each {|i| nows += 1 if !i.later}
+        expect(nows).to eql(l_cart_later_items_count_initial + l_cart_now_items_count_initial)
+      end
+
+      it "results in a cart in which there are no saved items" do
+        laters = 0
+        assigns(:cart).cart_items.each {|i| laters += 1 if i.later}
+
+        nows = 0
+        assigns(:cart).cart_items.each {|i| nows += 1 if !i.later}
+
+        expect(nows).to eql(assigns(:cart).cart_items.count)
+        expect(laters).to eql(0)
+      end
     end
 
     context "when the cart contains 100 items" do
+
+      let!(:c_cart) {create(:cart, :with_100_mixed_items)}
+      let!(:c_cart_id) { c_cart.id }
+      let!(:c_cart_count) { c_cart.cart_items.count }
+      let!(:c_cart_user) { c_cart.user }
+
+      before do
+        sign_in(c_cart_user)
+        patch :move_all_saved_items_to_cart
+      end
+
+      after do
+        sign_out(c_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+        expect(subject).to set_flash[:notice].to(/successfully moved/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "Does not destroy the Cart object" do
+        expect(assigns(:cart)).not_to be_nil
+        expect(assigns(:cart)).to be
+        expect(assigns(:cart).id).to eql(c_cart_id)
+        expect(assigns(:cart)).to eq(c_cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(c_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "results in a cart with zero saved items" do
+        laters = 0
+        assigns(:cart).cart_items.each {|i| laters += 1 if i.later}
+        expect(laters).to eql(0)
+      end
+
+      it "results in a cart in which all items are in the active part of the cart" do
+        laters = 0
+        assigns(:cart).cart_items.each {|i| laters += 1 if i.later}
+        nows = 0
+        assigns(:cart).cart_items.each {|i| nows += 1 if !i.later}
+        expect(nows).to eql(assigns(:cart).cart_items.count)
+        expect(laters).to eql(0)
+      end
     end
   end
 
-  xdescribe "#verify_all_items_availability" do
+  describe "#verify_all_items_availability" do
 
-    context "when the cart has items-for-later" do
+    context "when the cart contains only basic items" do
+      render_views
+
+      let!(:bas_cart) {create(:cart, :with_basic_items)}
+      let!(:bas_cart_id) { bas_cart.id }
+      let!(:bas_cart_count) { bas_cart.cart_items.count }
+      let!(:bas_cart_user) { bas_cart.user }
+      let!(:bas_cart_avail_count_initial) {bas_cart.cart_items.inject(0) {|avails, i|
+       avails += 1 if i.available == true} || 0}
+
+      before do
+        sign_in(bas_cart_user)
+        patch :verify_all_items_availability
+      end
+
+      after do
+        sign_out(bas_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+        expect(subject).not_to set_flash[:alert]
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(bas_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "does not change the number of available items in the cart" do
+        avails = 0
+        assigns(:cart).cart_items.each {|i| avails += 1 if i.available}
+        expect(avails).to eql(bas_cart_avail_count_initial)
+      end
     end
 
-    context "when the cart has expired items" do
+    context "when the cart contains only expired items" do
+      render_views
+
+      let!(:exp_cart) {create(:cart, :with_expired_membership_items)}
+      let!(:exp_cart_id) { exp_cart.id }
+      let!(:exp_cart_count) { exp_cart.cart_items.count }
+      let!(:exp_cart_user) { exp_cart.user }
+      let!(:exp_cart_avail_count_initial) {exp_cart.cart_items.inject(0) {|avails, i|
+       avails += 1 if i.available == true} || 0}
+
+      before do
+        sign_in(exp_cart_user)
+        patch :verify_all_items_availability
+      end
+
+      after do
+        sign_out(exp_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert]
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(exp_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "reduces the number of items in the cart marked 'available' to zero." do
+        avails = 0
+        assigns(:cart).cart_items.each {|i| avails += 1 if i.available}
+        expect(avails).to be < exp_cart_avail_count_initial
+        expect(avails).to eql(0)
+      end
     end
 
-    context "when the cart has unavailable items" do
+    context "when the cart contains a mix of problematic items" do
+      render_views
+      let!(:prob_cart) {create(:cart, :with_all_problematic_items)}
+      let!(:prob_cart_id) { prob_cart.id }
+      let!(:prob_cart_count) { prob_cart.cart_items.count }
+      let!(:prob_cart_user) { prob_cart.user }
+      let!(:prob_cart_avail_count_initial) {prob_cart.cart_items.inject(0) {|avails, i|
+       avails += 1 if i.available == true} || 0}
+
+      before do
+        sign_in(prob_cart_user)
+        patch :verify_all_items_availability
+      end
+
+      after do
+        sign_out(prob_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert]
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(prob_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "Reduces the number of available items in the cart to zero" do
+        avails = 0
+        assigns(:cart).cart_items.each {|i| avails += 1 if i.available}
+        binding.pry
+        expect(avails).to be < prob_cart_avail_count_initial
+        expect(avails).to eql(0)
+      end
     end
 
-    context "when the cart contains items with an unknown kind" do
+    context "when the cart contains a mix of problematic and non-problematic items" do
+      render_views
+      let!(:assorted_cart) {create(:cart, :with_all_problematic_items, :with_free_items, :with_basic_items)}
+      let!(:assorted_cart_id) { assorted_cart.id }
+      let!(:assorted_cart_count) { assorted_cart.cart_items.count }
+      let!(:assorted_cart_user) { assorted_cart.user }
+      let!(:assorted_cart_avail_count_initial) {assorted_cart.cart_items.inject(0) {|avails, i|
+       avails += 1 if i.available == true} || 0}
+
+      before do
+        sign_in(assorted_cart_user)
+        patch :verify_all_items_availability
+      end
+
+      after do
+        sign_out(assorted_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert]
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(assorted_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "Reduces the number of available items in the cart, but not to zero" do
+        avails = 0
+        assigns(:cart).cart_items.each {|i| avails += 1 if i.available}
+        expect(avails).to be < assorted_cart_avail_count_initial
+        expect(avails).to be > 0
+      end
     end
 
     context "when the cart contains 100 items" do
-    end
+      let!(:hundo_cart) {create(:cart, :with_100_mixed_items)}
+      let!(:hundo_cart_id) { hundo_cart.id }
+      let!(:hundo_cart_count) { hundo_cart.cart_items.count }
+      let!(:hundo_cart_user) { hundo_cart.user }
 
+      before do
+        sign_in(hundo_cart_user)
+        patch :verify_all_items_availability
+      end
+
+      after do
+        sign_out(hundo_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert]
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the total number of CartItems in the cart" do
+        expect(hundo_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+    end
   end
 
-  xdescribe "#remove_single_item" do
-
+  describe "DELETE #remove_single_item" do
     context "when the item is basic" do
+      render_views
+
+      let!(:bsc_cart) { create(:cart, :with_basic_items) }
+      let!(:bsc_cart_id) { bsc_cart.id }
+      let!(:bsc_cart_count) { bsc_cart.cart_items.count }
+      let!(:bsc_cart_user) { bsc_cart.user }
+      let!(:bsc_item) { bsc_cart.cart_items.sample }
+      let!(:bsc_item_id) { bsc_item.id }
+
+      before do
+        sign_in(bsc_cart_user)
+        delete :remove_single_item, params: {
+          :id => bsc_item_id
+        }
+      end
+
+      after do
+        sign_out(bsc_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about succeeding" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "reduces the number of items in the cart by one" do
+        expect(bsc_cart_count).to eql(assigns(:cart).cart_items.count + 1)
+      end
+
+      it "removes the targeted item from the cart" do
+        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == bsc_item_id}
+
+        expect(found_cart_items).to be_empty
+      end
+
+      it "removes the targeted item from the database" do
+        found_database_items = CartItem.where(id: bsc_item_id)
+        expect(found_database_items).to be_empty
+      end
     end
 
     context "when the item is saved-for-later" do
+      let!(:sfl_cart) { create(:cart, :with_items_for_later) }
+      let!(:sfl_cart_id) { sfl_cart.id }
+      let!(:sfl_cart_count) { sfl_cart.cart_items.count }
+      let!(:sfl_cart_user) { sfl_cart.user }
+      let!(:sfl_item) { sfl_cart.cart_items.sample }
+      let!(:sfl_item_id) { sfl_item.id }
+
+      let!(:sfl_cart_later_count_initial) {sfl_cart.cart_items.inject(0) {|laters, i|
+       laters += 1 if i.later == true} || 0}
+
+      before do
+        sign_in(sfl_cart_user)
+        delete :remove_single_item, params: {
+          :id => sfl_item_id
+        }
+      end
+
+      after do
+        sign_out(sfl_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about succeeding" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "reduces the number of items in the cart by one" do
+        expect(sfl_cart_count).to eql(assigns(:cart).cart_items.count + 1)
+      end
+
+      it "removes the targeted item from the cart" do
+        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == sfl_item_id}
+        expect(found_cart_items).to be_empty
+      end
+
+      it "reduces the number of items in the cart that are saved for later by one" do
+        laters = 0
+        assigns(:cart).cart_items.each {|i| laters += 1 if i.later }
+        expect(laters).to eql(sfl_cart_later_count_initial - 1)
+      end
+
+      it "removes the targeted item from the database" do
+        found_database_items = CartItem.where(id: sfl_item_id)
+        expect(found_database_items).to be_empty
+      end
+    end
+
+    context "when the item is expired" do
+      let!(:ex_cart) { create(:cart, :with_expired_membership_items) }
+      let!(:ex_cart_id) { ex_cart.id }
+      let!(:ex_cart_count) { ex_cart.cart_items.count }
+      let!(:ex_cart_user) { ex_cart.user }
+      let!(:ex_item) { ex_cart.cart_items.sample }
+      let!(:ex_item_id) { ex_item.id }
+
+      before do
+        sign_in(ex_cart_user)
+        delete :remove_single_item, params: {
+          :id => ex_item_id
+        }
+      end
+
+      after do
+        sign_out(ex_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about succeeding" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "reduces the number of items in the cart by one" do
+        expect(ex_cart_count).to eql(assigns(:cart).cart_items.count + 1)
+      end
+
+      it "removes the targeted item from the cart" do
+        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == ex_item_id}
+        expect(found_cart_items).to be_empty
+      end
+
+      it "removes the targeted item from the database" do
+        found_database_items = CartItem.where(id: ex_item_id)
+        expect(found_database_items).to be_empty
+      end
+    end
+
+    context "when the items's item_name_memo doesn't match its acquirable's name" do
+      let!(:altn_cart) { create(:cart, :with_altered_name_items) }
+      let!(:altn_cart_id) { altn_cart.id }
+      let!(:altn_cart_count) { altn_cart.cart_items.count }
+      let!(:altn_cart_user) { altn_cart.user }
+      let!(:altn_item) { altn_cart.cart_items.sample }
+      let!(:altn_item_id) { altn_item.id }
+
+      before do
+        sign_in(altn_cart_user)
+        delete :remove_single_item, params: {
+          :id => altn_item_id
+        }
+      end
+
+      after do
+        sign_out(altn_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about succeeding" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "reduces the number of items in the cart by one" do
+        expect(altn_cart_count).to eql(assigns(:cart).cart_items.count + 1)
+      end
+
+      it "removes the targeted item from the cart" do
+        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == altn_item_id}
+        expect(found_cart_items).to be_empty
+      end
+
+      it "removes the targeted item from the database" do
+        found_database_items = CartItem.where(id: altn_item_id)
+        expect(found_database_items).to be_empty
+      end
+    end
+
+    context "when the cart contains 100 items" do
+      let!(:benj_cart) { create(:cart, :with_100_mixed_items) }
+      let!(:benj_cart_id) { benj_cart.id }
+      let!(:benj_cart_count) { benj_cart.cart_items.count }
+      let!(:benj_cart_user) { benj_cart.user }
+      let!(:benj_item) { benj_cart.cart_items.sample }
+      let!(:benj_item_id) { benj_item.id }
+
+      before do
+        sign_in(benj_cart_user)
+        delete :remove_single_item, params: {
+          :id => benj_item_id
+        }
+      end
+
+      after do
+        sign_out(benj_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about succeeding" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "reduces the number of items in the cart by one" do
+        expect(benj_cart_count).to eql(assigns(:cart).cart_items.count + 1)
+      end
+
+      it "removes the targeted item from the cart" do
+        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == benj_item_id}
+        expect(found_cart_items).to be_empty
+      end
+
+      it "removes the targeted item from the database" do
+        found_database_items = CartItem.where(id: benj_item_id)
+        expect(found_database_items).to be_empty
+      end
+    end
+
+    context "when the item is not in the user's cart" do
+      let!(:unremarkable_cart) { create(:cart, :with_basic_items) }
+      let!(:unremarkable_cart_id) { unremarkable_cart.id }
+      let!(:unremarkable_cart_count) { unremarkable_cart.cart_items.count }
+      let!(:unremarkable_cart_user) { unremarkable_cart.user }
+
+      let!(:item_from_nowhere) {hodgepodge_cart.cart_items.sample}
+      let!(:item_from_nowhere_id) {item_from_nowhere.id}
+      let!(:item_from_nowhere_cart) {item_from_nowhere.cart}
+
+      before do
+        sign_in(unremarkable_cart_user)
+        delete :remove_single_item, params: {
+          :id => item_from_nowhere_id
+        }
+      end
+
+      after do
+        sign_out(unremarkable_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about not recognizing the item" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "Does not reduce the number of items in the cart" do
+        expect(unremarkable_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "Does not change the item's original cart association" do
+        expect(item_from_nowhere_cart.id).not_to eql(assigns(:cart).id)
+      end
+
+      it "Does not remove the targeted item from the database" do
+        found_database_items = CartItem.where(id: item_from_nowhere_id)
+        expect(found_database_items).not_to be_empty
+      end
+    end
+
+    context "when the item has already been removed" do
+      let(:meh_cart) { create(:cart, :with_basic_items) }
+      let(:meh_cart_id) { meh_cart.id }
+      let(:meh_cart_user) { meh_cart.user }
+      let(:doomed_item) {meh_cart.cart_items.sample}
+      let(:doomed_item_id) {doomed_item.id}
+      let(:total_cart_items) {CartItem.count}
+      let(:meh_cart_count) { meh_cart.cart_items.count }
+
+      before do
+        doomed_item.destroy
+        meh_cart.reload
+        meh_cart_count = meh_cart.cart_items.count
+        total_cart_items = CartItem.count
+        sign_in(meh_cart_user)
+        delete :remove_single_item, params: {
+          :id => doomed_item_id
+        }
+      end
+
+      after do
+        sign_out(meh_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about not recognizing the item" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "Does not reduce the number of items in the cart" do
+        binding.pry
+        expect(meh_cart_count).to eql(assigns(:cart).cart_items.count)
+      end
+
+      it "Does not reduce the number of CartItems in the database" do
+        binding.pry
+        expect(total_cart_items).to eql(CartItem.count)
+      end
+    end
+  end
+
+  describe "PATCH verify_single_item_availability" do
+
+    context "when the item is basic" do
+      render_views
+
+      let!(:bbb_cart) { create(:cart, :with_basic_items) }
+      let!(:bbb_cart_user) { bbb_cart.user }
+      let!(:bbb_item) { bbb_cart.cart_items.sample }
+      let!(:bbb_item_id) { bbb_item.id }
+
+      before do
+        sign_in(bbb_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => bbb_item_id
+        }
+      end
+
+      after do
+        sign_out(bbb_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the item being available" do
+        expect(subject).to set_flash[:notice].to(/good news/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute set to true" do
+        expect(assigns(:target_item).available).to eql(true)
+      end
+    end
+
+    context "when the item is saved-for-later" do
+      let!(:lates_cart) { create(:cart, :with_items_for_later) }
+      let!(:lates_cart_user) { lates_cart.user }
+      let!(:lates_item) { lates_cart.cart_items.sample }
+      let!(:lates_item_id) { lates_item.id }
+
+      before do
+        sign_in(bbb_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => lates_item_id
+        }
+      end
+
+      after do
+        sign_out(lates_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a positive flash notice" do
+        expect(subject).to set_flash[:notice].to(/good news/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute set to true" do
+        expect(assigns(:target_item).available).to eql(true)
+      end
+    end
+
+    context "when the item is expired" do
+      let!(:expi_cart) { create(:cart, :with_expired_membership_items) }
+      let!(:expi_cart_user) { expi_cart.user }
+      let!(:expi_item) { expi_cart.cart_items.sample }
+      let!(:expi_item_id) { expi_item.id }
+      let!(:expi_item_available) {expi_item.available}
+
+      before do
+        sign_in(expi_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => expi_item_id
+        }
+      end
+
+      after do
+        sign_out(expi_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute changed to false" do
+        expect(expi_item_available).to eql(true)
+        expect(assigns(:target_item).available).to eql(false)
+      end
+    end
+
+    context "when the items's item_name_memo doesn't match its acquirable's name" do
+      let!(:altered_n_cart) { create(:cart, :with_altered_name_items) }
+      let!(:altered_n_cart_user) { altered_n_cart.user }
+      let!(:altered_n_item) { altered_n_cart.cart_items.sample }
+      let!(:altered_n_item_id) { altered_n_item.id }
+      let!(:altered_n_item_available) {altered_n_item.available}
+
+      before do
+        sign_in(altered_n_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => altered_n_item_id
+        }
+      end
+
+      after do
+        sign_out(altered_n_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute changed to false" do
+        expect(altered_n_item_available).to eql(true)
+        expect(assigns(:target_item).available).to eql(false)
+      end
+    end
+
+    context "when the item's item_price_memo doesn't match its acquirable's price" do
+
+      let!(:altered_p_cart) { create(:cart, :with_altered_price_items) }
+      let!(:altered_p_cart_user) { altered_p_cart.user }
+      let!(:altered_p_item) { altered_p_cart.cart_items.sample }
+      let!(:altered_p_item_id) { altered_p_item.id }
+      let!(:altered_p_item_available) {altered_p_item.available}
+
+      before do
+        sign_in(altered_p_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => altered_p_item_id
+        }
+      end
+
+      after do
+        sign_out(altered_p_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute changed to false" do
+        expect(altered_p_item_available).to eql(true)
+        expect(assigns(:target_item).available).to eql(false)
+      end
     end
 
     context "when the item has an unknown kind" do
@@ -1025,32 +1846,59 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is marked unavailable" do
+    end
+
+    context "when the item is not in the user's cart" do
+    end
+
+    context "when the item no longer exists" do
+    end
+
+    context "when the item is marked incomplete" do
+    end
+  end
+
+  xdescribe "#save_item_for_later" do
+    context "when the item is basic" do
+    end
+
+    context "when the item is already saved-for-later" do
+    end
+
+    context "when the item has an unknown kind" do
+    end
+
+    context "when the item is expired" do
+    end
+
+    context "when the item is marked unavailable" do
+    end
+
+    context "when the items's item_name_memo doesn't match its acquirable's name" do
+    end
+
+    context "when the item's item_price_memo does't match it's acquirable's price_cents" do
     end
 
     context "when the item is marked incomplete" do
     end
 
-    context "when the items's item_name_memo doesn't match its acquirable's name" do
+    context "when the item is not in the user's cart" do
     end
 
-    context "when the item's item_price_memo does't match it's acquirable's price_cents" do
+    context "when the item no longer exists" do
     end
 
     context "when the cart contains 100 items" do
     end
-
   end
 
-  xdescribe "PATCH verify_single_item_availability" do
-
-  end
-
-  xdescribe "#save_item_for_later" do
-
-    context "when the item is basic" do
-    end
+  xdescribe "#move_item_to_cart" do
 
     context "when the item is saved-for-later" do
+    end
+
+    context "when the item is already in the active part of the cart" do
     end
 
     context "when the item has an unknown kind" do
@@ -1068,54 +1916,33 @@ RSpec.describe CartController, type: :controller do
     context "when the item's item_price_memo does't match it's acquirable's price_cents" do
     end
 
-    context "when the cart contains 100 items" do
+    context "when the item is not in the user's cart" do
     end
 
-  end
-
-  describe "#move_item_to_cart" do
-
-    context "when the item is basic" do
-    end
-
-    context "when the item is saved-for-later" do
-    end
-
-    context "when the item has an unknown kind" do
-    end
-
-    context "when the item is expired" do
-    end
-
-    context "when the item is marked unavailable" do
-    end
-
-    context "when the items's item_name_memo doesn't match its acquirable's name" do
-    end
-
-    context "when the item's item_price_memo does't match it's acquirable's price_cents" do
-    end
-
-    context "when the cart has items-for-later" do
-    end
-
-    context "when the cart has expired items" do
-    end
-
-    context "when the cart has unavailable items" do
-    end
-
-    context "when the cart contains items with an unknown kind" do
+    context "when the item no longer exists" do
     end
 
     context "when the cart contains 100 items" do
     end
-
   end
 
+  ###### NOT IMPLEMENTED IN THE CONTROLLER YET:
   xdescribe "#edit_single_item" do
   end
 
   xdescribe "#update" do
+  end
+
+
+  xdescribe "#update_cart_info" do
+    pending
+  end
+
+  xdescribe "#submit_online_payment" do
+    pending
+  end
+
+  xdescribe "#pay_with_cheque" do
+    pending
   end
 end

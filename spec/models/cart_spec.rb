@@ -37,7 +37,15 @@ RSpec.describe Cart, type: :model do
   let(:expired_only_cart) { create(:cart, :with_expired_membership_items)}
   let(:expired_and_unexpired_cart) { create(:cart, :with_basic_items, :with_expired_membership_items)}
 
+  let!(:cart_with_altered_name_items) { create(:cart, :with_altered_name_items)}
+
+  let!(:cart_with_altered_price_items) { create(:cart, :with_altered_price_items)}
+
+  let!(:cart_with_unknown_kind_items) { create(:cart, :with_unknown_kind_items)}
+
   let!(:cart_with_all_problem_items) { create(:cart, :with_all_problematic_items)}
+
+  let!(:cart_with_10_mixed) { create(:cart, :with_10_mixed_items)}
 
   let!(:cart_with_100_mixed) { create(:cart, :with_100_mixed_items)}
 
@@ -135,6 +143,20 @@ RSpec.describe Cart, type: :model do
       end
     end
 
+    describe "cart with_unkown_kind_items factory" do
+      it "is valid" do
+        expect(cart_with_unknown_kind_items).not_to be_valid #inverted
+      end
+      it "has at least one cart item" do
+        expect(cart_with_unknown_kind_items.cart_items.count).not_to be > 0 #inverted
+      end
+      it "only has items where kind = 'unknown'" do
+        known_seen = false
+        cart_with_unknown_kind_items.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
+        expect(known_seen).not_to eql(false) #inverted
+      end
+    end
+
     describe "cart with_expired_membership_items factory" do
       it "is valid" do
         expect(expired_only_cart).to be_valid
@@ -167,6 +189,40 @@ RSpec.describe Cart, type: :model do
       end
     end
 
+    describe "cart with_altered_name_items factory" do
+      it "is valid" do
+        expect(cart_with_altered_name_items).not_to be_valid #inverted
+      end
+
+      it "has at least one cart item" do
+        expect(cart_with_altered_name_items.cart_items.count).not_to be > 0 #inverted
+      end
+
+      it "has no items where the item_name_memo field matches the acquirable's name field" do
+        match_seen = false
+        cart_with_altered_name_items.cart_items.each { |i| match_seen = true if i.item_name_memo == i.acquirable.name}
+        expect(match_seen).not_to eql(false) #inverted
+      end
+    end
+
+    describe "cart with_altered_price_items factory" do
+      it "is valid" do
+        expect(cart_with_altered_price_items).not_to be_valid #inverted
+      end
+
+      it "has at least one cart item" do
+        expect(cart_with_altered_price_items.cart_items.count).not_to be > 0 #inverted
+      end
+
+      it "has no items where the item_price_memo field matches the acquirable's price_cents field" do
+        match_seen = false
+        cart_with_altered_price_items.cart_items.each { |i| match_seen = true if i.item_price_memo == i.acquirable.price_cents}
+        expect(match_seen).not_to eql(false) #inverted
+      end
+    end
+
+
+
     describe "all_problematic_items factory" do
       it "is valid" do
         expect(cart_with_all_problem_items).to be_valid
@@ -174,6 +230,48 @@ RSpec.describe Cart, type: :model do
 
       it "Has a bunch of stuff going on" do
         pending
+      end
+    end
+
+    describe "cart with_10_mixed_items factory" do
+      it "is valid" do
+        expect(cart_with_10_mixed).to be_valid
+      end
+
+      it "has 10 cart-items" do
+        expect(cart_with_10_mixed.cart_items.count).to eql(10)
+      end
+
+      it "has 2 items marked as unavailable" do
+        unavailable_seen = 0
+        cart_with_10_mixed.cart_items.each { |i| unavailable_seen += 1 if !i.available}
+        expect(unavailable_seen).to eql(2)
+      end
+
+      it "has 1 free item" do
+        free_seen = 0
+        cart_with_10_mixed.cart_items.each { |i| free_seen += 1 if i.acquirable.price_cents == 0 }
+        expect(free_seen).to eql(1)
+      end
+
+      it "has 2 expired items" do
+        expired_seen = 0
+        cart_with_10_mixed.cart_items.each {|i| expired_seen += 1 if i.acquirable.active? == false}
+        expect(expired_seen).to eql(2)
+      end
+
+      it "has 2 saved-for-later items" do
+        later_seen = 0
+        cart_with_10_mixed.cart_items.each {|i|
+          later_seen += 1 if i.later}
+        expect(later_seen).to eql(2)
+      end
+
+      it "has 1 incomplete item" do
+        incomplete_seen = 0
+        cart_with_10_mixed.cart_items.each {|i|
+          incomplete_seen += 1 if i.incomplete}
+        expect(incomplete_seen).to eql(1)
       end
     end
 

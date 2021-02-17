@@ -111,27 +111,32 @@ FactoryBot.define do
     end
 
     trait :price_altered do
-      before(:create) do |cart_item, evaluator|
+      after(:create) do |cart_item, evaluator|
         cart_item.item_price_memo += 100
+        cart_item.save
       end
     end
 
     trait :name_altered do
-      before(:create) do |cart_item, evaluator|
+      after(:create) do |cart_item, evaluator|
         cart_item.item_name_memo = "altered"
+        cart_item.save
       end
     end
 
     trait :unknown_kind do
       after(:create) do |cart_item, evaluator|
         cart_item.update_attribute(:kind, "unknown")
+        cart_item.save
       end
     end
 
     trait :nonmembership_without_benefitable do
       after(:create) do |cart_item, evaluator|
         cart_item.update_attribute(:kind, "unknown")
+        cart_item.save
         cart_item.update_attribute(:benefitable, nil)
+        cart_item.save
       end
     end
   end
