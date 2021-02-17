@@ -210,9 +210,9 @@ class CartController < ApplicationController
 
   def verify_single_item_availability
     if @target_item.item_still_available?
-      flash[:notice] = "Good news! #{target_item.item_display_name} is still available."
+      flash[:notice] = "Good news! #{@target_item.item_display_name} is still available."
     else
-      flash[:alert] = "#{target_item.item_display_name} is no longer available."
+      flash[:alert] = "#{@target_item.item_display_name} is no longer available."
     end
     render :cart
   end
