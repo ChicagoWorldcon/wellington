@@ -23,13 +23,13 @@ class CartController < ApplicationController
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 
   before_action :locate_all_cart_items, only: [:destroy]
-  before_action :locate_all_active_cart_items, only: [:destroy_active, :save_all_items_for_later]
+  before_action :locate_all_active_cart_items, only: [:destroy_active]
   before_action :locate_all_cart_items_for_later, only: [:destroy_saved, :move_all_saved_items_to_cart]
 
-  before_action :verify_all_items_availability, only: [:submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart, :save_all_items_for_later]
+  before_action :verify_all_items_availability, only: [:submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart]
   before_action :verify_single_item_availability, only: []
 
-  before_action :locate_our_membership_offer_in_params, only: [:add_reservation_to_cart]
+  before_action :locate_membership_offer_via_params, only: [:add_reservation_to_cart]
   before_action :generate_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
 
   PENDING = "pending"
@@ -40,7 +40,6 @@ class CartController < ApplicationController
   end
 
   def add_reservation_to_cart
-    binding.pry
     if (@our_offer.present? && @our_beneficiary.present?)
       @our_cart_item = CartItem.create(
         :acquirable => @our_offer.membership,
@@ -51,11 +50,10 @@ class CartController < ApplicationController
       if @our_cart_item.save
         flash[:status] = :success
         flash[:notice] = "Membership successfully added to cart."
-        redirect_to cart_path and return
+        @cart.reload
+        render :cart and return
       end
     end
-    flash[:status] = :failure
-    flash[:notice] = "This membership could not be added to your cart."
     flash[:messages] = @our_cart_item.errors.messages
     redirect_back(fallback_location: root_path)
   end
@@ -93,11 +91,13 @@ class CartController < ApplicationController
 
   def destroy
     # This empties the cart of all items, both active and saved.
-    if @all_cart_items && @all_cart_items.count > 0
-      @all_cart_items.each do |cart_item|
-        cart_item.destroy
-      end
-    end
+    # if @all_cart_items && @all_cart_items.count > 0
+    #   @all_cart_items.each do |cart_item|
+    #     cart_item.destroy
+    #   end
+    # end
+    CartItemsHelper.destroy_cart_contents(@cart)
+    @cart.reload
     if @cart.cart_items.count == 0
       flash[:status] = :success
       flash[:notice] = "Your cart is now empty."
@@ -105,15 +105,19 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:notice] = "Your cart could not be fully emptied."
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def destroy_active
-    if @active_cart_items && @active_cart_items.count > 0
-      @active_cart_items.each do |now_item|
-        now_item.destroy
-      end
-    end
+    CartItemsHelper.destroy_for_now_cart_items(@cart)
+    #
+    #
+    # if @active_cart_items && @active_cart_items.count > 0
+    #   @active_cart_items.each do |now_item|
+    #     now_item.destroy
+    #   end
+    # end
+    @cart.reload
     if CartItemsHelper.cart_items_for_now(@cart).count == 0
       flash[:status] = :success
       flash[:notice] = "Active cart successfully emptied!"
@@ -121,15 +125,18 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:notice] = "One or more items could not be deleted."
     end
-    redirect_to cart_path
+    @cart.reload
+    render :cart
   end
 
   def destroy_saved
-    if @later_cart_items && @later_cart_items.count > 0
-      @later_cart_items.each do |later_item|
-        later_item.destroy
-      end
-    end
+    CartItemsHelper.destroy_cart_items_for_later(@cart)
+    # if @later_cart_items && @later_cart_items.count > 0
+    #   @later_cart_items.each do |later_item|
+    #     later_item.destroy
+    #   end
+    # end
+    @cart.reload
     if CartItemsHelper.cart_items_for_later(@cart).count == 0
       flash[:status] = :success
       flash[:notice] = "Saved items successfully cleared!"
@@ -137,7 +144,7 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:result_text] = "One or more items could not be deleted."
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def remove_single_item
@@ -157,7 +164,7 @@ class CartController < ApplicationController
         flash[:errors] = @target_item.errors.messages
       end
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def save_item_for_later
@@ -172,25 +179,20 @@ class CartController < ApplicationController
       flash[:notice] = "This item could not be saved for later."
       flash[:messages] = @cart.errors.messages
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def save_all_items_for_later
-    if @active_cart_items && @active_cart_items.count > 0
-      @active_cart_items.each do |item|
-        item.now = false;
-        unless item.save
-          flash[:status] = :failure
-          flash[:notice] = "Unable to save item for later."
-          flash[:messages] = @cart.errors.messages
-        end
-      end
-      if CartItemsHelper.cart_items_for_now(@cart).count == 0 && CartItemsHelper.cart_items_for_later(@cart).count > 0
+    CartItemsHelper.save_all_cart_items_for_later(@cart)
+    @cart.reload
+    if CartItemsHelper.cart_items_for_now(@cart).count == 0 && CartItemsHelper.cart_items_for_later(@cart).count > 0
         flash[:status] = :success
         flash[:notice] = "All active items have now been saved for later."
-      end
+      else
+        flash[:status] = :failure
+        flash[:notice] = "One or more items could not be saved for later"
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def move_item_to_cart
@@ -203,7 +205,7 @@ class CartController < ApplicationController
       flash[:notice] = "This item could not be moved to the cart."
       flash[:messages] = @target_item.errors.messages
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def move_all_saved_items_to_cart
@@ -213,7 +215,7 @@ class CartController < ApplicationController
       item.save
       # TODO: Add appropriate flash messages
     end
-    redirect_to cart_path
+    render :cart
   end
 
 
@@ -224,14 +226,14 @@ class CartController < ApplicationController
     else
       flash[:notice] = "Good news! #{target_item.item_display_name} is still available."
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def verify_all_items_availability
     if !CartItemsHelper.verify_availability_of_cart_contents(@cart)
       flash[:notice] = "One or more of your items is no longer available."
     end
-    redirect_to cart_path
+    render :cart
   end
 
   def edit_single_item
@@ -262,7 +264,6 @@ class CartController < ApplicationController
   end
 
   def locate_cart
-    binding.pry
     @cart ||= Cart.find_by(user_id: current_user.id)
     @cart ||= create_cart
     if @cart.nil?
@@ -305,9 +306,7 @@ class CartController < ApplicationController
   end
 
   def locate_membership_offer_via_params
-    binding.pry
     @our_offer = MembershipOffer.locate_active_offer_by_hashcode(params[:offer])
-    binding.pry
     if !@our_offer.present?
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
       redirect_back(fallback_location: memberships_path) and return
@@ -315,9 +314,7 @@ class CartController < ApplicationController
   end
 
   def generate_membership_beneficiary_from_params
-    binding.pry
     @our_beneficiary = theme_contact_class.new(our_contact_params)
-    binding.pry
     if @our_beneficiary.present?
       process_beneficiary_dob
       validate_beneficiary

@@ -80,7 +80,7 @@
                   %>
                   <div class="list-group list-group-horizontal later-item-details-list">
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%=later_item.kind %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_name %></li>
+                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_name %></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_beneficiary_name%></li>
                     <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_price %></li>
                   </div>

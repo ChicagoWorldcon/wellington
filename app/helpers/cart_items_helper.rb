@@ -17,9 +17,8 @@
 module CartItemsHelper
 
   # TODO: See if this can be eliminated.  There's a new method
-  # in MembershipOffer that should handle this. 
+  # in MembershipOffer that should handle this.
   def self.locate_offer(offer_params)
-    binding.pry
     target_offer = MembershipOffer.options.find do |offer|
       offer.hash == offer_params
     end
@@ -34,13 +33,14 @@ module CartItemsHelper
   end
 
   def self.cart_items_for_now(cart)
-    now_items = []
-    cart.cart_items.each {|item|
-      if item.later == false
-        now_items << item
-      end
-    }
-    now_items
+    # now_items = []
+    # cart.cart_items.each {|item|
+    #   if item.later == false
+    #     now_items << item
+    #   end
+    # }
+    # now_items
+    cart.cart_items.select {|i| !i.later}
   end
 
   def cart_items_for_now(cart)
@@ -48,13 +48,14 @@ module CartItemsHelper
   end
 
   def self.cart_items_for_later(cart)
-    later_items = []
-    cart.cart_items.each {|item|
-      if item.later == true
-        later_items << item
-      end
-    }
-    later_items
+    # later_items = []
+    # cart.cart_items.each {|item|
+    #   if item.later == true
+    #     later_items << item
+    #   end
+    # }
+    # later_items
+    cart.cart_items.select {|i| i.later}
   end
 
   def cart_items_for_later(cart)
@@ -62,7 +63,6 @@ module CartItemsHelper
   end
 
   def self.verify_availability_of_cart_contents(cart)
-    binding.pry
     all_contents_available = true;
     cart.cart_items.each {|item|
       all_contents_available = all_contents_available && item.item_still_available?
@@ -94,5 +94,28 @@ module CartItemsHelper
 
   def destroy_cart_items_for_later(cart)
     CartItemsHelper.destroy_cart_items_for_later(cart)
+  end
+
+  def self.save_all_cart_items_for_later(cart)
+    cart.cart_items.each do  |i|
+      i.later = true
+      i.save
+    end
+  end
+
+  def save_all_items_for_later(cart)
+    CartItemsHelper.save_all_items_for_later(cart)
+  end
+
+
+  def self.unsave_all_cart_items(cart)
+    cart.cart_items.each do |i|
+      i.later = false
+      i.save
+    end
+  end
+
+  def unsave_all_cart_items(cart)
+    CartItemsHelper.save_all_items_for_later(cart)
   end
 end

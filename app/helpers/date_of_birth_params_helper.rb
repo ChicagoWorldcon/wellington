@@ -20,22 +20,33 @@ module DateOfBirthParamsHelper
   DATESELECT_KEY_1 = "dob_array(1i)"
   DATESELECT_KEY_2 = "dob_array(2i)"
   DATESELECT_KEY_3 = "dob_array(3i)"
+  DATE_OF_BIRTH = "date_of_birth"
 
   def self.generate_dob_from_params(params)
     params_to_check = params.key?(theme_contact_param) ? params[theme_contact_param] : params
-    if dob_params_present(params_to_check)
+    if single_date_of_birth_param_present?(params_to_check)
+      return Date.parse(params_to_check[DATE_OF_BIRTH])
+    elsif dateselect_params_present?(params_to_check)
       return convert_dateselect_params_to_date(params_to_check)
     else
       return nil
     end
   end
 
-  def self.dob_params_present?(params)
+  def self.single_date_of_birth_param_present?(params)
+    return params.key?(DATE_OF_BIRTH)
+  end
+
+  def single_date_of_birth_param_present?(params)
+    DateOfBirthParamsHelper.date_of_birth_present?(params)
+  end
+
+  def self.dateselect_params_present?(params)
     return params.key?(DATESELECT_KEY_1) && params.key?(DATESELECT_KEY_2) &&
     params.key?(DATESELECT_KEY_3)
   end
 
-  def dob_params_present?(params)
+  def dateselect_params_present?(params)
     DateOfBirthParamsHelper.dob_params_present?(params)
   end
 
