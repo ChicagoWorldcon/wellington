@@ -170,10 +170,17 @@ dotenv
 
 ### Install dependencies
 
+Note that some of the gems other libraries already installed.
 Run these commands to install your ruby and node dependencies:
 
 ```sh
+sudo apt-get install libpq-dev
+sudo apt-get install freetds-dev
 bundle install
+rbenv rehash
+
+sudo apt install nodejs
+sudo apt install yarn
 yarn install
 ```
 
