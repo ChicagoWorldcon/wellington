@@ -82,7 +82,9 @@ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 rbenv install 2.7.1
-rbenv local 2.7.1
+rbenv local 2.7.1  (or) rbenv global 2.7.1
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+ruby -v (to verify install)
 ```
 
 
@@ -90,6 +92,12 @@ Configuration for development should be done using whatever method you use for p
 
 ```sh
 brew install direnv
+```
+
+```sh
+sudo apt-get install direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 After that step, follow the instructions for your shell to [hook direnv into
