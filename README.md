@@ -78,7 +78,11 @@ Windows 10 (from https://www.digitalocean.com/community/tutorials/how-to-install
 sudo apt update
 sudo apt install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+rbenv install 2.7.1
+rbenv local 2.7.1
 ```
 
 
