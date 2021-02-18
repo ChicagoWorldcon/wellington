@@ -62,6 +62,7 @@ files on your machine.
 ### Install docker for your platform
 
 [docker and docker-compose](https://docs.docker.com/compose/install/)
+For Windows 10, Install WSL2 (https://docs.microsoft.com/en-us/windows/wsl/install-win10) and Ubuntu (18.04 LTS) before installing Docker.  Configure Docker to use WSL2 (Windows 10 Home will default to this) 
 
 ### Install interpreters and environment
 
@@ -72,6 +73,14 @@ brew install rbenv
 rbenv install 2.7.1
 rbenv local 2.7.1
 ```
+Windows 10 (from https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04)
+```sh
+sudo apt update
+sudo apt install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+
+```
+
 
 Configuration for development should be done using whatever method you use for projects, but [direnv](https://direnv.net/) is probably the best one:
 
