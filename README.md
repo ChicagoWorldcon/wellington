@@ -179,7 +179,9 @@ sudo apt-get install freetds-dev
 bundle install
 rbenv rehash
 
-sudo apt install nodejs
+https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+nvm install --lts
 sudo apt install yarn
 yarn install
 ```
