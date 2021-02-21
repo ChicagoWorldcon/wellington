@@ -19,38 +19,15 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
         id: extract_name
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
       - name: Define the repository labels
         run: |
-          echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}" >> $GITHUB_ENV
-          echo "CONTAINER_STAGING_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-pr-${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
+          echo "CONTAINER_TEST_REPOSITORY=ci-pr-${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
           docker build  --target=development --pull -t $CONTAINER_TEST_REPOSITORY .
-          docker push $CONTAINER_TEST_REPOSITORY
 
       - name: Run specs
         run: |
           docker run -d --name="test-database" --hostname "postgres" -e "POSTGRES_PASSWORD=test" postgres:latest
           docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_REPOSITORY bundle exec rake db:create db:structure:load spec
-
-      - name: Publish to the PR tag
-        run: |
-          docker pull $CONTAINER_TEST_REPOSITORY
-          docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_STAGING_REPOSITORY
-          docker push $CONTAINER_STAGING_REPOSITORY
-
-      - name: Clean up the CI testing tag
-        run: |
-          aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
