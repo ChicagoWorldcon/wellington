@@ -61,6 +61,7 @@ group :development, :test do
   gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
   gem "simplecov"                                     # tracks test coverage
+  gem "solargraph"                                    # language server support
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
   gem "timecop"                                       # time travel for specs
 end
