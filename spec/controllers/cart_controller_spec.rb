@@ -67,6 +67,9 @@ RSpec.describe CartController, type: :controller do
   let!(:hodgepodge_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
   let!(:existing_hodgepodge_user) {hodgepodge_cart.user}
 
+  let!(:shared_basic_cart) {create(:cart, :with_basic_items)}
+  let!(:shared_basic_cart_user) { shared_basic_cart.user}
+
   let(:support_user) { create(:support)}
 
   describe "#show" do
@@ -1324,12 +1327,12 @@ RSpec.describe CartController, type: :controller do
     context "when the item is basic" do
       render_views
 
-      let!(:bsc_cart) { create(:cart, :with_basic_items) }
-      let!(:bsc_cart_id) { bsc_cart.id }
-      let!(:bsc_cart_count) { bsc_cart.cart_items.count }
-      let!(:bsc_cart_user) { bsc_cart.user }
-      let!(:bsc_item) { bsc_cart.cart_items.sample }
-      let!(:bsc_item_id) { bsc_item.id }
+      let(:bsc_cart) { create(:cart, :with_basic_items) }
+      let(:bsc_cart_id) { bsc_cart.id }
+      let(:bsc_cart_count) { bsc_cart.cart_items.count }
+      let(:bsc_cart_user) { bsc_cart.user }
+      let(:bsc_item) { bsc_cart.cart_items.sample }
+      let(:bsc_item_id) { bsc_item.id }
 
       before do
         sign_in(bsc_cart_user)
@@ -1371,14 +1374,14 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is saved-for-later" do
-      let!(:sfl_cart) { create(:cart, :with_items_for_later) }
-      let!(:sfl_cart_id) { sfl_cart.id }
-      let!(:sfl_cart_count) { sfl_cart.cart_items.count }
-      let!(:sfl_cart_user) { sfl_cart.user }
-      let!(:sfl_item) { sfl_cart.cart_items.sample }
-      let!(:sfl_item_id) { sfl_item.id }
+      let(:sfl_cart) { create(:cart, :with_items_for_later) }
+      let(:sfl_cart_id) { sfl_cart.id }
+      let(:sfl_cart_count) { sfl_cart.cart_items.count }
+      let(:sfl_cart_user) { sfl_cart.user }
+      let(:sfl_item) { sfl_cart.cart_items.sample }
+      let(:sfl_item_id) { sfl_item.id }
 
-      let!(:sfl_cart_later_count_initial) {sfl_cart.cart_items.inject(0) {|laters, i|
+      let(:sfl_cart_later_count_initial) {sfl_cart.cart_items.inject(0) {|laters, i|
        laters += 1 if i.later == true} || 0}
 
       before do
@@ -1426,12 +1429,12 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is expired" do
-      let!(:ex_cart) { create(:cart, :with_expired_membership_items) }
-      let!(:ex_cart_id) { ex_cart.id }
-      let!(:ex_cart_count) { ex_cart.cart_items.count }
-      let!(:ex_cart_user) { ex_cart.user }
-      let!(:ex_item) { ex_cart.cart_items.sample }
-      let!(:ex_item_id) { ex_item.id }
+      let(:ex_cart) { create(:cart, :with_expired_membership_items) }
+      let(:ex_cart_id) { ex_cart.id }
+      let(:ex_cart_count) { ex_cart.cart_items.count }
+      let(:ex_cart_user) { ex_cart.user }
+      let(:ex_item) { ex_cart.cart_items.sample }
+      let(:ex_item_id) { ex_item.id }
 
       before do
         sign_in(ex_cart_user)
@@ -1472,12 +1475,12 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the items's item_name_memo doesn't match its acquirable's name" do
-      let!(:altn_cart) { create(:cart, :with_altered_name_items) }
-      let!(:altn_cart_id) { altn_cart.id }
-      let!(:altn_cart_count) { altn_cart.cart_items.count }
-      let!(:altn_cart_user) { altn_cart.user }
-      let!(:altn_item) { altn_cart.cart_items.sample }
-      let!(:altn_item_id) { altn_item.id }
+      let(:altn_cart) { create(:cart, :with_altered_name_items) }
+      let(:altn_cart_id) { altn_cart.id }
+      let(:altn_cart_count) { altn_cart.cart_items.count }
+      let(:altn_cart_user) { altn_cart.user }
+      let(:altn_item) { altn_cart.cart_items.sample }
+      let(:altn_item_id) { altn_item.id }
 
       before do
         sign_in(altn_cart_user)
@@ -1518,12 +1521,12 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 items" do
-      let!(:benj_cart) { create(:cart, :with_100_mixed_items) }
-      let!(:benj_cart_id) { benj_cart.id }
-      let!(:benj_cart_count) { benj_cart.cart_items.count }
-      let!(:benj_cart_user) { benj_cart.user }
-      let!(:benj_item) { benj_cart.cart_items.sample }
-      let!(:benj_item_id) { benj_item.id }
+      let(:benj_cart) { create(:cart, :with_100_mixed_items) }
+      let(:benj_cart_id) { benj_cart.id }
+      let(:benj_cart_count) { benj_cart.cart_items.count }
+      let(:benj_cart_user) { benj_cart.user }
+      let(:benj_item) { benj_cart.cart_items.sample }
+      let(:benj_item_id) { benj_item.id }
 
       before do
         sign_in(benj_cart_user)
@@ -1564,14 +1567,14 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is not in the user's cart" do
-      let!(:unremarkable_cart) { create(:cart, :with_basic_items) }
-      let!(:unremarkable_cart_id) { unremarkable_cart.id }
-      let!(:unremarkable_cart_count) { unremarkable_cart.cart_items.count }
-      let!(:unremarkable_cart_user) { unremarkable_cart.user }
+      let(:unremarkable_cart) { create(:cart, :with_basic_items) }
+      let(:unremarkable_cart_id) { unremarkable_cart.id }
+      let(:unremarkable_cart_count) { unremarkable_cart.cart_items.count }
+      let(:unremarkable_cart_user) { unremarkable_cart.user }
 
-      let!(:item_from_nowhere) {hodgepodge_cart.cart_items.sample}
-      let!(:item_from_nowhere_id) {item_from_nowhere.id}
-      let!(:item_from_nowhere_cart) {item_from_nowhere.cart}
+      let(:item_from_nowhere) {hodgepodge_cart.cart_items.sample}
+      let(:item_from_nowhere_id) {item_from_nowhere.id}
+      let(:item_from_nowhere_cart) {item_from_nowhere.cart}
 
       before do
         sign_in(unremarkable_cart_user)
@@ -1647,12 +1650,10 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "Does not reduce the number of items in the cart" do
-        binding.pry
         expect(meh_cart_count).to eql(assigns(:cart).cart_items.count)
       end
 
       it "Does not reduce the number of CartItems in the database" do
-        binding.pry
         expect(total_cart_items).to eql(CartItem.count)
       end
     end
@@ -1663,10 +1664,10 @@ RSpec.describe CartController, type: :controller do
     context "when the item is basic" do
       render_views
 
-      let!(:bbb_cart) { create(:cart, :with_basic_items) }
-      let!(:bbb_cart_user) { bbb_cart.user }
-      let!(:bbb_item) { bbb_cart.cart_items.sample }
-      let!(:bbb_item_id) { bbb_item.id }
+      let(:bbb_cart) { create(:cart, :with_basic_items) }
+      let(:bbb_cart_user) { bbb_cart.user }
+      let(:bbb_item) { bbb_cart.cart_items.sample }
+      let(:bbb_item_id) { bbb_item.id }
 
       before do
         sign_in(bbb_cart_user)
@@ -1697,13 +1698,13 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is saved-for-later" do
-      let!(:lates_cart) { create(:cart, :with_items_for_later) }
-      let!(:lates_cart_user) { lates_cart.user }
-      let!(:lates_item) { lates_cart.cart_items.sample }
-      let!(:lates_item_id) { lates_item.id }
+      let(:lates_cart) { create(:cart, :with_items_for_later) }
+      let(:lates_cart_user) { lates_cart.user }
+      let(:lates_item) { lates_cart.cart_items.sample }
+      let(:lates_item_id) { lates_item.id }
 
       before do
-        sign_in(bbb_cart_user)
+        sign_in(lates_cart_user)
         patch :verify_single_item_availability, params: {
           :id => lates_item_id
         }
@@ -1731,11 +1732,11 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item is expired" do
-      let!(:expi_cart) { create(:cart, :with_expired_membership_items) }
-      let!(:expi_cart_user) { expi_cart.user }
-      let!(:expi_item) { expi_cart.cart_items.sample }
-      let!(:expi_item_id) { expi_item.id }
-      let!(:expi_item_available) {expi_item.available}
+      let(:expi_cart) { create(:cart, :with_expired_membership_items) }
+      let(:expi_cart_user) { expi_cart.user }
+      let(:expi_item) { expi_cart.cart_items.sample }
+      let(:expi_item_id) { expi_item.id }
+      let(:expi_item_available) {expi_item.available}
 
       before do
         sign_in(expi_cart_user)
@@ -1767,11 +1768,11 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the items's item_name_memo doesn't match its acquirable's name" do
-      let!(:altered_n_cart) { create(:cart, :with_altered_name_items) }
-      let!(:altered_n_cart_user) { altered_n_cart.user }
-      let!(:altered_n_item) { altered_n_cart.cart_items.sample }
-      let!(:altered_n_item_id) { altered_n_item.id }
-      let!(:altered_n_item_available) {altered_n_item.available}
+      let(:altered_n_cart) { create(:cart, :with_altered_name_items) }
+      let(:altered_n_cart_user) { altered_n_cart.user }
+      let(:altered_n_item) { altered_n_cart.cart_items.sample }
+      let(:altered_n_item_id) { altered_n_item.id }
+      let(:altered_n_item_available) {altered_n_item.available}
 
       before do
         sign_in(altered_n_cart_user)
@@ -1804,11 +1805,11 @@ RSpec.describe CartController, type: :controller do
 
     context "when the item's item_price_memo doesn't match its acquirable's price" do
 
-      let!(:altered_p_cart) { create(:cart, :with_altered_price_items) }
-      let!(:altered_p_cart_user) { altered_p_cart.user }
-      let!(:altered_p_item) { altered_p_cart.cart_items.sample }
-      let!(:altered_p_item_id) { altered_p_item.id }
-      let!(:altered_p_item_available) {altered_p_item.available}
+      let(:altered_p_cart) { create(:cart, :with_altered_price_items) }
+      let(:altered_p_cart_user) { altered_p_cart.user }
+      let(:altered_p_item) { altered_p_cart.cart_items.sample }
+      let(:altered_p_item_id) { altered_p_item.id }
+      let(:altered_p_item_available) {altered_p_item.available}
 
       before do
         sign_in(altered_p_cart_user)
@@ -1840,89 +1841,967 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the item has an unknown kind" do
+      let(:unknown_k_cart) { create(:cart, :with_unknown_kind_items) }
+      let(:unknown_k_cart_user) { unknown_k_cart.user }
+      let(:unknown_k_item) { unknown_k_cart.cart_items.sample }
+      let(:unknown_k_item_id) { unknown_k_item.id }
+      let(:unknown_k_item_available) {unknown_k_item.available}
+
+      before do
+        sign_in(unknown_k_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => unknown_k_item_id
+        }
+      end
+
+      after do
+        sign_out(unknown_k_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute changed to false" do
+        expect(unknown_k_item_available).to eql(true)
+        expect(assigns(:target_item).available).to eql(false)
+      end
     end
 
-    context "when the item is expired" do
-    end
+    context "when the item is already marked unavailable" do
+      let(:unav_cart) { create(:cart, :with_unavailable_items) }
+      let(:unav_cart_user) { unav_cart.user }
+      let(:unav_item) { unav_cart.cart_items.sample }
+      let(:unav_item_id) { unav_item.id }
+      let(:unav_item_available) {unav_item.available}
 
-    context "when the item is marked unavailable" do
+      before do
+        sign_in(unav_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => unav_item_id
+        }
+      end
+
+      after do
+        sign_out(unav_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' remain set to false" do
+        expect(unav_item_available).to eql(false)
+        expect(assigns(:target_item).available).to eql(false)
+      end
     end
 
     context "when the item is not in the user's cart" do
+      let(:whatevs_cart) { create(:cart, :with_basic_items) }
+      let(:whatevs_cart_id) { whatevs_cart.id }
+      let(:whatevs_cart_count) { whatevs_cart.cart_items.count }
+      let(:whatevs_cart_user) { whatevs_cart.user }
+
+      let(:extraneous_item) {hodgepodge_cart.cart_items.sample}
+      let(:extraneous_item_id) {extraneous_item.id}
+      let(:extraneous_item_availability) { extraneous_item.available}
+
+      before do
+        sign_in(whatevs_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => extraneous_item_id
+        }
+      end
+
+      after do
+        sign_out(whatevs_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the value of the item's 'available' attribute" do
+        expect(extraneous_item_availability).to eql(CartItem.find_by(id: extraneous_item_id).available)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
     end
 
     context "when the item no longer exists" do
+
+      let(:plain_cart) { create(:cart, :with_expired_membership_items) }
+      let(:plain_cart_id) { plain_cart.id }
+      let(:plain_cart_user) { plain_cart.user }
+      let(:condemned_item) {plain_cart.cart_items.sample}
+      let(:condemned_item_id) {condemned_item.id}
+      let(:condemned_item_availability) {condemned_item.available}
+
+      before do
+        condemned_item.destroy
+        plain_cart.reload
+        sign_in(plain_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => condemned_item_id
+        }
+      end
+
+      after do
+        sign_out(plain_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
     end
 
     context "when the item is marked incomplete" do
+      let(:incom_cart) { create(:cart, :with_incomplete_items) }
+      let(:incom_cart_user) { incom_cart.user }
+      let(:incom_item) { incom_cart.cart_items.sample }
+      let(:incom_item_id) { incom_item.id }
+      let(:incom_item_available) {incom_item.available}
+
+      before do
+        sign_in(incom_cart_user)
+        patch :verify_single_item_availability, params: {
+          :id => incom_item_id
+        }
+      end
+
+      after do
+        sign_out(incom_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        pending
+        expect(subject).to set_flash[:alert].to(/no longer/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'available' attribute changed to false" do
+        pending
+        expect(incom_item_available).to eql(true)
+        expect(assigns(:target_item).available).to eql(false)
+      end
     end
   end
 
-  xdescribe "#save_item_for_later" do
+  describe "PATCH #save_item_for_later" do
     context "when the item is basic" do
+      render_views
+
+      let(:bbbb_cart) { create(:cart, :with_basic_items) }
+      let(:bbbb_cart_user) { bbbb_cart.user }
+      let(:bbbb_item) { bbbb_cart.cart_items.sample }
+      let(:bbbb_item_id) { bbbb_item.id }
+      let(:bbbb_item_later) { bbbb_item.later }
+
+      before do
+        sign_in(bbbb_cart_user)
+        patch :save_item_for_later, params: {
+          :id => bbbb_item_id
+        }
+      end
+
+      after do
+        sign_out(bbbb_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute changed to true" do
+        expect(bbbb_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
     end
 
     context "when the item is already saved-for-later" do
-    end
+      let(:laters_cart) { create(:cart, :with_items_for_later) }
+      let(:laters_cart_user) { laters_cart.user }
+      let(:laters_item) { laters_cart.cart_items.sample }
+      let(:laters_item_id) { laters_item.id }
+      let(:laters_item_later) { laters_item.later }
 
-    context "when the item has an unknown kind" do
+      before do
+        sign_in(laters_cart_user)
+        patch :save_item_for_later, params: {
+          :id => laters_item_id
+        }
+      end
+
+      after do
+        sign_out(laters_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the item's later attribute's value of true" do
+        expect(laters_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(laters_item_later)
+      end
     end
 
     context "when the item is expired" do
-    end
+      let(:expir_cart) { create(:cart, :with_expired_membership_items) }
+      let(:expir_cart_user) { expir_cart.user }
+      let(:expir_item) { expir_cart.cart_items.sample }
+      let(:expir_item_id) { expir_item.id }
+      let(:expir_item_later) {expir_item.later}
 
-    context "when the item is marked unavailable" do
+      before do
+        sign_in(expir_cart_user)
+        patch :save_item_for_later, params: {
+          :id => expir_item_id
+        }
+      end
+
+      after do
+        sign_out(expir_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "changes the item's later attribute's value to true" do
+        expect(expir_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
     end
 
     context "when the items's item_name_memo doesn't match its acquirable's name" do
+      let(:alt_n_cart) { create(:cart, :with_altered_name_items) }
+      let(:alt_n_cart_user) { alt_n_cart.user }
+      let(:alt_n_item) { alt_n_cart.cart_items.sample }
+      let(:alt_n_item_id) { alt_n_item.id }
+      let(:alt_n_item_later) {alt_n_item.later}
+
+      before do
+        sign_in(alt_n_cart_user)
+        patch :save_item_for_later, params: {
+          :id => alt_n_item_id
+        }
+      end
+
+      after do
+        sign_out(alt_n_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "change the item's 'later' attribute's value to true" do
+        expect(alt_n_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
     end
 
-    context "when the item's item_price_memo does't match it's acquirable's price_cents" do
+    context "when the item's item_price_memo doesn't match its acquirable's price" do
+
+      let(:alt_p_cart) { create(:cart, :with_altered_price_items) }
+      let(:alt_p_cart_user) { alt_p_cart.user }
+      let(:alt_p_item) { alt_p_cart.cart_items.sample }
+      let(:alt_p_item_id) { alt_p_item.id }
+      let(:alt_p_item_later) {alt_p_item.later}
+
+      before do
+        sign_in(alt_p_cart_user)
+        patch :save_item_for_later, params: {
+          :id => alt_p_item_id
+        }
+      end
+
+      after do
+        sign_out(alt_p_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to true" do
+        expect(alt_p_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
+    end
+
+    context "when the item has an unknown kind" do
+      let(:unk_k_cart) { create(:cart, :with_unknown_kind_items) }
+      let(:unk_k_cart_user) { unk_k_cart.user }
+      let(:unk_k_item) { unk_k_cart.cart_items.sample }
+      let(:unk_k_item_id) { unk_k_item.id }
+      let(:unk_k_item_later) {unk_k_item.later}
+
+      before do
+        sign_in(unk_k_cart_user)
+        patch :save_item_for_later, params: {
+          :id => unk_k_item_id
+        }
+      end
+
+      after do
+        sign_out(unk_k_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the change being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to true" do
+        expect(unk_k_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
+    end
+
+    context "when the item is marked unavailable" do
+      let(:unavl_cart) { create(:cart, :with_unavailable_items) }
+      let(:unavl_cart_user) { unavl_cart.user }
+      let(:unavl_item) { unavl_cart.cart_items.sample }
+      let(:unavl_item_id) { unavl_item.id }
+      let(:unavl_item_later) {unavl_item.later}
+
+      before do
+        sign_in(unavl_cart_user)
+        patch :save_item_for_later, params: {
+          :id => unavl_item_id
+        }
+      end
+
+      after do
+        sign_out(unavl_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the operationn being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to true" do
+        expect(unavl_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
+    end
+
+    context "when the item is not in the user's cart" do
+      let(:pre_latered_cart) { create(:cart, :with_items_for_later) }
+      let(:pre_latered_cart_user) { pre_latered_cart.user }
+
+      let(:external_item) {shared_basic_cart.cart_items.sample}
+      let(:external_item_id) {external_item.id}
+      let(:external_item_later) { external_item.later}
+
+      before do
+        sign_in(pre_latered_cart_user)
+        patch :save_item_for_later, params: {
+          :id => external_item_id
+        }
+      end
+
+      after do
+        sign_out(pre_latered_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not change the value of the item's 'later' attribute" do
+        expect(external_item_later).to eql(false)
+        expect(external_item_later).to eql(CartItem.find_by(id: external_item_id).later)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
+    end
+
+    context "when the item no longer exists" do
+
+      let(:nominal_cart) { create(:cart, :with_basic_items) }
+      let(:nominal_cart_user) { nominal_cart.user }
+      let(:nominal_cart_later_items_seen_initial) { nominal_cart.cart_items.inject(0) {|laters, i|
+       laters += 1 if i.later == true} || 0}
+
+      let(:cancelled_item) {nominal_cart.cart_items.sample}
+      let(:cancelled_item_id) {cancelled_item.id}
+
+      before do
+        cancelled_item.destroy
+        nominal_cart.reload
+        sign_in(nominal_cart_user)
+        patch :save_item_for_later, params: {
+          :id => cancelled_item_id
+        }
+      end
+
+      after do
+        sign_out(nominal_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
+
+      it "does not change the number of items in the cart with a value of true assigned to their later attribute" do
+        laters_seen = 0
+        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later }
+        expect(nominal_cart_later_items_seen_initial).to eql(laters_seen)
+      end
     end
 
     context "when the item is marked incomplete" do
-    end
+      let(:incompl_cart) { create(:cart, :with_incomplete_items) }
+      let(:incompl_cart_user) { incompl_cart.user }
+      let(:incompl_item) { incompl_cart.cart_items.sample }
+      let(:incompl_item_id) { incompl_item.id }
+      let(:incompl_item_later) {incompl_item.later}
 
-    context "when the item is not in the user's cart" do
-    end
+      before do
+        sign_in(incompl_cart_user)
+        patch :save_item_for_later, params: {
+          :id => incompl_item_id
+        }
+      end
 
-    context "when the item no longer exists" do
-    end
+      after do
+        sign_out(incompl_cart_user)
+      end
 
-    context "when the cart contains 100 items" do
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the operation being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to true" do
+        expect(incompl_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(true)
+      end
     end
   end
 
-  xdescribe "#move_item_to_cart" do
+  describe "PATCH #move_item_to_cart" do
+    context "when the item is basic and saved for later" do
+      let(:basic_laters_cart) { create(:cart, :with_items_for_later) }
+      let(:basic_laters_cart_user) { basic_laters_cart.user }
+      let(:basic_laters_item) { basic_laters_cart.cart_items.sample }
+      let(:basic_laters_item_id) { basic_laters_item.id }
+      let(:basic_laters_item_later) { basic_laters_item.later }
 
-    context "when the item is saved-for-later" do
+      before do
+        sign_in(basic_laters_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => basic_laters_item_id
+        }
+      end
+
+      after do
+        sign_out(basic_laters_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "Changes the item's later attribute's value to false" do
+        expect(basic_laters_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
-    context "when the item is already in the active part of the cart" do
+    context "when the item is expired and saved for later" do
+      let(:expir_later_cart) { create(:cart, :with_expired_saved_for_later_items) }
+      let(:expir_later_cart_user) { expir_later_cart.user }
+      let(:expir_later_item) { expir_later_cart.cart_items.sample }
+      let(:expir_later_item_id) { expir_later_item.id }
+      let(:expir_later_item_later) {expir_later_item.later}
+
+      before do
+        sign_in(expir_later_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => expir_later_item_id
+        }
+      end
+
+      after do
+        sign_out(expir_later_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "changes the item's later attribute's value to false" do
+        expect(expir_later_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
-    context "when the item has an unknown kind" do
+    context "when the items's item_name_memo doesn't match its acquirable's name and it is saved for later" do
+      let(:alt_n_saved_cart) { create(:cart, :with_name_altered_saved_for_later_items) }
+      let(:alt_n_saved_cart_user) { alt_n_saved_cart.user }
+      let(:alt_n_saved_item) { alt_n_saved_cart.cart_items.sample }
+      let(:alt_n_saved_item_id) { alt_n_saved_item.id }
+      let(:alt_n_saved_item_later) {alt_n_saved_item.later}
+
+      before do
+        sign_in(alt_n_saved_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => alt_n_saved_item_id
+        }
+      end
+
+      after do
+        sign_out(alt_n_saved_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "change the item's 'later' attribute's value to false" do
+        expect(alt_n_saved_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
-    context "when the item is expired" do
+    context "when the item's item_price_memo doesn't match its acquirable's price and the item is saved for later" do
+
+      let(:altered_p_saved_cart) { create(:cart, :with_price_altered_saved_for_later_items) }
+      let(:altered_p_saved_cart_user) { altered_p_saved_cart.user }
+      let(:altered_p_saved_item) { altered_p_saved_cart.cart_items.sample }
+      let(:altered_p_saved_item_id) { altered_p_saved_item.id }
+      let(:altered_p_saved_item_later) {altered_p_saved_item.later}
+
+      before do
+        sign_in(altered_p_saved_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => altered_p_saved_item_id
+        }
+      end
+
+      after do
+        sign_out(altered_p_saved_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:notice].to(/successfully/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to false" do
+        expect(altered_p_saved_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
-    context "when the item is marked unavailable" do
+    context "when the item has an unknown kind and is saved for later" do
+      let(:unk_k_saved_cart) { create(:cart, :with_unknown_kind_saved_for_later_items) }
+      let(:unk_k_saved_cart_user) { unk_k_saved_cart.user }
+      let(:unk_k_saved_item) { unk_k_saved_cart.cart_items.sample }
+      let(:unk_k_saved_item_id) { unk_k_saved_item.id }
+      let(:unk_k_saved_item_later) {unk_k_saved_item.later}
+
+      before do
+        sign_in(unk_k_saved_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => unk_k_saved_item_id
+        }
+      end
+
+      after do
+        sign_out(unk_k_saved_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the change being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to false" do
+        expect(unk_k_saved_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
-    context "when the items's item_name_memo doesn't match its acquirable's name" do
-    end
+    context "when the item is marked unavailable and is saved for later" do
+      let(:unavl_saved_cart) { create(:cart, :with_unavailable_saved_for_later_items) }
+      let(:unavl_saved_cart_user) { unavl_saved_cart.user }
+      let(:unavl_saved_item) { unavl_saved_cart.cart_items.sample }
+      let(:unavl_saved_item_id) { unavl_saved_item.id }
+      let(:unavl_saved_item_later) {unavl_saved_item.later}
 
-    context "when the item's item_price_memo does't match it's acquirable's price_cents" do
+      before do
+        sign_in(unavl_saved_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => unavl_saved_item_id
+        }
+      end
+
+      after do
+        sign_out(unavl_saved_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the operationn being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to false" do
+        expect(unavl_saved_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
 
     context "when the item is not in the user's cart" do
+      let(:pre_l_cart) { create(:cart, :with_items_for_later) }
+      let(:pre_l_cart_user) { pre_l_cart.user }
+      let(:pre_l_cart_later_items_seen_initial) { pre_l_cart.cart_items.inject(0) {|laters, i|
+       laters += 1 if i.later == true} || 0}
+
+      let(:extern_item) {shared_basic_cart.cart_items.sample}
+      let(:extern_item_id) {extern_item.id}
+      let(:extern_item_later) { extern_item.later}
+
+      before do
+        extern_item.later = true
+        extern_item.save
+        extern_item_later = extern_item.later
+        pre_l_cart.reload
+        sign_in(pre_l_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => extern_item_id
+        }
+      end
+
+      after do
+        sign_out(pre_l_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
+
+      it "does not change the value of the item's 'later' attribute, which is set to true" do
+        expect(extern_item_later).to eql(true)
+        expect(extern_item_later).to eql(CartItem.find_by(id: extern_item_id).later)
+      end
+
+      it "does not change the number of items that are saved for later in the cart" do
+        laters_seen = 0
+        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later}
+        expect(laters_seen).to eql(pre_l_cart_later_items_seen_initial)
+      end
     end
 
     context "when the item no longer exists" do
+
+      let(:nominal_later_cart) { create(:cart, :with_items_for_later) }
+      let(:nominal_later_cart_user) { nominal_later_cart.user }
+      let(:nominal_later_cart_later_items_seen_initial) { nominal_later_cart.cart_items.inject(0) {|laters, i|
+       laters += 1 if i.later == true} || 0}
+
+      let(:eliminated_item) {nominal_later_cart.cart_items.sample}
+      let(:eliminated_item_id) {eliminated_item.id}
+      let(:eliminated_item_later) {eliminated_item.later}
+
+      before do
+        eliminated_item.destroy
+        nominal_later_cart.reload
+        sign_in(nominal_later_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => eliminated_item_id
+        }
+      end
+
+      after do
+        sign_out(nominal_later_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "does not assign a value assigned to the @target_item instance variable" do
+        expect(assigns(:target_item)).to be_nil
+      end
+
+      it "does not change the number of items in the cart with a value of true assigned to their later attribute" do
+        laters_seen = 0
+        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later }
+        expect(nominal_later_cart_later_items_seen_initial).to eql(laters_seen)
+      end
     end
 
-    context "when the cart contains 100 items" do
+    context "when the item is marked incomplete and saved" do
+      let(:incompl_saved_cart) { create(:cart, :with_incomplete_saved_for_later_items) }
+      let(:incompl_saved_cart_user) { incompl_saved_cart.user }
+      let(:incompl_saved_item) { incompl_saved_cart.cart_items.sample }
+      let(:incompl_saved_item_id) { incompl_saved_item.id }
+      let(:incompl_saved_item_later) {incompl_saved_item.later}
+
+      before do
+        sign_in(incompl_saved_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => incompl_saved_item_id
+        }
+      end
+
+      after do
+        sign_out(incompl_saved_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about the operation being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "ends with the target item having its 'later' attribute's value changed to false" do
+        expect(incompl_saved_item_later).to eql(true)
+        expect(assigns(:target_item).later).to eql(false)
+      end
+    end
+
+    context "when the item is not saved for later initially" do
+
+      let(:no_laters_cart) { create(:cart, :with_basic_items) }
+      let(:no_laters_cart_user) { no_laters_cart.user }
+      let(:no_laters_item) { no_laters_cart.cart_items.sample }
+      let(:no_laters_item_id) { no_laters_item.id }
+      let(:no_laters_item_later) { no_laters_item.later }
+
+      before do
+        sign_in(no_laters_cart_user)
+        patch :move_item_to_cart, params: {
+          :id => no_laters_item_id
+        }
+      end
+
+      after do
+        sign_out(no_laters_cart_user)
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "sets a flash notice about being successful" do
+        expect(subject).to set_flash[:notice].to(/successful/i)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:cart)
+      end
+
+      it "results in no change to the target item's 'later' attribute's value of false" do
+        expect(no_laters_item_later).to eql(false)
+        expect(assigns(:target_item).later).to eql(no_laters_item_later)
+        expect(assigns(:target_item).later).to eql(false)
+      end
     end
   end
 
@@ -1932,7 +2811,6 @@ RSpec.describe CartController, type: :controller do
 
   xdescribe "#update" do
   end
-
 
   xdescribe "#update_cart_info" do
     pending

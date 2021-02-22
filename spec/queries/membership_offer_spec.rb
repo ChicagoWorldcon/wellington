@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2020 Victoria Garcia
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -86,5 +86,4 @@ RSpec.describe MembershipOffer do
       end
     end
   end
-
 end

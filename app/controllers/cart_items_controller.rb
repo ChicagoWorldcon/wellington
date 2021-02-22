@@ -62,23 +62,19 @@ class CartItemsController < ApplicationController
   def verify_availability
   end
 
-  #TODO:  This duplicates some of the
   def create_reservation_item
     @cart_item = CartItem.new
     @cart_item.type = MEMBERSHIP
     if !@contact.valid?
       flash[:error] = @contact.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
       #TODO:  Rethink what you want to render here.
-      render "/reservations/new"
-      return
+      redirect_to "/reservations/new" and return
     end
     @cart_item.chicago_contact = @contact
     @cart_item.membership = @my_offer
-    redirect_to cart_path
+    render :cart
   end
 
-  # POST /cart_items
-  # POST /cart_items.json
   def create
     @cart_item = CartItem.new(cart_item_params)
 
@@ -93,8 +89,6 @@ class CartItemsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /cart_items/1
-  # PATCH/PUT /cart_items/1.json
   def update
     respond_to do |format|
       if @cart_item.update(cart_item_params)
@@ -107,8 +101,6 @@ class CartItemsController < ApplicationController
     end
   end
 
-  # DELETE /cart_items/1
-  # DELETE /cart_items/1.json
   def destroy
     @cart_item.destroy
     respond_to do |format|
@@ -131,11 +123,11 @@ class CartItemsController < ApplicationController
     @cart_item = CartItem.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
-  def cart_item_params
+  # TODO: Only allow a list of trusted parameters through.
+  #def cart_item_params
     # Thinking: Item-type, Item-id, hrrrm.
-    params.fetch(:cart_item, {})
-  end
+    #params.fetch(:cart_item, {})
+#  end
 
   #TODO:  **ALL** of the stuff below is duplicated from the Reservation controller.  This stuff needs to be extracted to a helper or a concern or something, because THIS IS NOT OKAY.  (I know I'm the one who put it here, but it's meant to be temporary. If there's a PR and this is still here, then something has gone wrong. --VEG)
 

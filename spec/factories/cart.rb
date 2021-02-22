@@ -39,6 +39,18 @@ FactoryBot.define do
       end
     end
 
+    trait :with_altered_price_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :price_altered, cart: new_cart)
+      end
+    end
+
+    trait :with_unknown_kind_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :unknown_kind, cart: new_cart)
+      end
+    end
+
     trait :with_expired_membership_items do
       after(:create) do |new_cart, _evaluator|
         create_list(:cart_item, 3, :with_expired_membership_tuatara, cart: new_cart)
@@ -74,6 +86,42 @@ FactoryBot.define do
         create_list(:cart_item, 15, :incomplete, cart: new_cart)
         create_list(:cart_item, 15, :saved_for_later, cart: new_cart)
         create_list(:cart_item, 15, :with_kidit, cart: new_cart)
+      end
+    end
+
+    trait :with_unknown_kind_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :unknown_kind_saved_for_later, cart: new_cart)
+      end
+    end
+
+    trait :with_unavailable_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :unavailable_saved_for_later, cart: new_cart)
+      end
+    end
+
+    trait :with_incomplete_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :incomplete_saved_for_later, cart: new_cart)
+      end
+    end
+
+    trait :with_price_altered_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :price_altered_saved_for_later, cart: new_cart)
+      end
+    end
+
+    trait :with_name_altered_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :name_altered_saved_for_later, cart: new_cart)
+      end
+    end
+
+    trait :with_expired_saved_for_later_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :expired_saved_for_later, cart: new_cart)
       end
     end
   end

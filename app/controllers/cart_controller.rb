@@ -22,7 +22,7 @@ class CartController < ApplicationController
   before_action :locate_cart
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 
-  before_action :verify_all_cart_contents, only: [:submit_online_payment, :pay_with_cheque, :move_all_saved_items_to_cart]
+  before_action :verify_all_cart_contents, only: [:submit_online_payment, :pay_with_cheque, :preview_purchase, :move_all_saved_items_to_cart]
 
   before_action :locate_membership_offer_via_params, only: [:add_reservation_to_cart]
   before_action :generate_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
@@ -53,31 +53,9 @@ class CartController < ApplicationController
     redirect_back(fallback_location: root_path)
   end
 
-  def update_cart_info
-    # IF I ACTUALLY USE THIS it will be for shipping and billing-type stuff.
-
-
-    # [TODO] Find the cart order and then update
-    # stuff from the params (presumably).
-    # Then:
-    # if @cart.save
-    #   flash[:status] = :success
-    #   flash[:result_text] = "Your order information has been successfully updated!"
-    #   redirect_to cart_path and return
-    # else
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "We were unable to update your order information."
-    #   flash[:messages] = @cart.errors.messages
-    #   redirect_to cart_path and return
-    # end
-  end
-
-  def preview_purchase
-    # TODO
-  end
-
   def submit_online_payment
     #TODO
+    @active_cart = CartItemsHelper.cart_items_for_now(@cart)
   end
 
   def pay_with_cheque
@@ -86,11 +64,6 @@ class CartController < ApplicationController
 
   def destroy
     # This empties the cart of all items, both active and saved.
-    # if @all_cart_items && @all_cart_items.count > 0
-    #   @all_cart_items.each do |cart_item|
-    #     cart_item.destroy
-    #   end
-    # end
     CartItemsHelper.destroy_cart_contents(@cart)
     @cart.reload
     if @cart.cart_items.count == 0
@@ -105,13 +78,6 @@ class CartController < ApplicationController
 
   def destroy_active
     CartItemsHelper.destroy_for_now_cart_items(@cart)
-    #
-    #
-    # if @active_cart_items && @active_cart_items.count > 0
-    #   @active_cart_items.each do |now_item|
-    #     now_item.destroy
-    #   end
-    # end
     @cart.reload
     if CartItemsHelper.cart_items_for_now(@cart).count == 0
       flash[:status] = :success
@@ -157,11 +123,9 @@ class CartController < ApplicationController
     if @target_item
       @target_item.later = true
       if @target_item.save
-        flash[:status] = :success
         flash[:notice] = "Item successfully saved for later."
       end
     else
-      flash[:status] = :failure
       flash[:notice] = "This item could not be saved for later."
       flash[:messages] = @cart.errors.messages
     end
@@ -229,15 +193,34 @@ class CartController < ApplicationController
 
   def update
     # TODO: Figure out if this, or some form of this, is actually necessary.
-    respond_to do |format|
-      if @cart.update(cart_params)
-        format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
-        format.json { render :show, status: :ok, location: @cart }
-      else
-        format.html { render :edit }
-        format.json { render json: @cart.errors, status: :unprocessable_entity }
-      end
-    end
+    # respond_to do |format|
+    #   if @cart.update(cart_params)
+    #     format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
+    #     format.json { render :show, status: :ok, location: @cart }
+    #   else
+    #     format.html { render :edit }
+    #     format.json { render json: @cart.errors, status: :unprocessable_entity }
+    #   end
+    # end
+  end
+
+  def update_cart_info
+    # IF I ACTUALLY USE THIS it will be for shipping and billing-type stuff.
+
+
+    # [TODO] Find the cart order and then update
+    # stuff from the params (presumably).
+    # Then:
+    # if @cart.save
+    #   flash[:status] = :success
+    #   flash[:result_text] = "Your order information has been successfully updated!"
+    #   redirect_to cart_path and return
+    # else
+    #   flash[:status] = :failure
+    #   flash[:result_text] = "We were unable to update your order information."
+    #   flash[:messages] = @cart.errors.messages
+    #   redirect_to cart_path and return
+    # end
   end
 
   private
@@ -279,15 +262,6 @@ class CartController < ApplicationController
     @all_cart_items = @cart.cart_items
   end
 
-  def cart_item_membership_id
-    target_item = CartItem.where(id: params[:id])
-    if target_item.present?
-      target_item.membership_id
-    else
-      -1
-    end
-  end
-
   def locate_membership_offer_via_params
     @our_offer = MembershipOffer.locate_active_offer_by_hashcode(params[:offer])
     if !@our_offer.present?
@@ -327,7 +301,7 @@ class CartController < ApplicationController
     end
   end
 
-    # Only allow a list of trusted parameters through.
+    # TODO: Only allow a list of trusted parameters through.
   # def cart_params
   #   params.fetch(:cart, {})
   # end
