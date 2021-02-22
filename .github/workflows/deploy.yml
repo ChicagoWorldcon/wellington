@@ -7,7 +7,7 @@ on:
       - main
       - staging
       - release
-      - ci-testing
+      - ci-testing*
 
 jobs:
   release:
@@ -37,10 +37,37 @@ jobs:
           echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}" >> $GITHUB_ENV
           echo "CONTAINER_DEPLOY_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
 
-      - name: Build, tag, and push image to Amazon ECR
-        run: |
-          docker build  --target=development --pull -t $CONTAINER_TEST_REPOSITORY .
-          docker push $CONTAINER_TEST_REPOSITORY
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Builder instance name
+        run: echo ${{ steps.buildx.outputs.name }}
+
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build the image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: false
+          load: true
+          target: development
+          tags: "${{ env.CONTAINER_TEST_REPOSITORY }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Run specs
         run: |
@@ -58,9 +85,8 @@ jobs:
           docker run $CONTAINER_TEST_REPOSITORY script/yarn_smart_audit.rb
           docker run $CONTAINER_TEST_REPOSITORY yarn check --integrity
 
-      - name: Publish to the branch tag
+      - name: Publish the deployable image
         run: |
-          docker pull $CONTAINER_TEST_REPOSITORY
           docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_DEPLOY_REPOSITORY
           docker push $CONTAINER_DEPLOY_REPOSITORY
 

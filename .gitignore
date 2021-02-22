@@ -50,3 +50,8 @@ public/assets
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# ignore some local tool setup files
+.tool-versions
+.python-version
+.ruby-version
