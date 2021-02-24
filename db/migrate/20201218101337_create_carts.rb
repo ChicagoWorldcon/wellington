@@ -19,7 +19,6 @@ class CreateCarts < ActiveRecord::Migration[6.1]
     create_table :carts do |t|
       t.references :user, index: true, null: false, foreign_key: true
       t.string :status, null: false, default: "pending"
-      t.references :buyable, polymorphic:true, index: true, null: false
       t.timestamps
     end
   end

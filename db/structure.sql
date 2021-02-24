@@ -74,8 +74,6 @@ CREATE TABLE public.carts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     status character varying DEFAULT 'pending'::character varying NOT NULL,
-    buyable_type character varying NOT NULL,
-    buyable_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1051,13 +1049,6 @@ CREATE INDEX index_cart_items_on_benefitable ON public.cart_items USING btree (b
 --
 
 CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_id);
-
-
---
--- Name: index_carts_on_buyable; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_carts_on_buyable ON public.carts USING btree (buyable_type, buyable_id);
 
 
 --

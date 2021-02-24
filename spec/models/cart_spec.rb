@@ -19,55 +19,14 @@ require 'rails_helper'
 RSpec.describe Cart, type: :model do
   subject(:base_model) {create(:cart)}
 
-  let(:empty_cart) { create(:cart)}
-  let(:basic_items_cart) { create(:cart, :with_basic_items)}
-
-  let(:saved_only_cart) { create(:cart, :with_items_for_later)}
-  let(:for_now_and_saved_cart) { create(:cart, :with_basic_items, :with_items_for_later)}
-
-  let(:unavailable_only_cart) { create(:cart, :with_unavailable_items)}
-  let(:available_and_unavailable_cart) { create(:cart, :with_basic_items, :with_unavailable_items)}
-
-  let(:free_only_cart) { create(:cart, :with_free_items)}
-  let(:free_and_not_free_cart) { create(:cart, :with_basic_items, :with_free_items )}
-
-  let(:incomplete_only_cart) {create(:cart, :with_incomplete_items)}
-  let(:incomplete_and_complete_cart) {create(:cart, :with_incomplete_items, :with_basic_items)}
-
-  let(:expired_only_cart) { create(:cart, :with_expired_membership_items)}
-  let(:expired_and_unexpired_cart) { create(:cart, :with_basic_items, :with_expired_membership_items)}
-
-  let!(:cart_with_altered_name_items) { create(:cart, :with_altered_name_items)}
-
-  let!(:cart_with_altered_price_items) { create(:cart, :with_altered_price_items)}
-
-  let!(:cart_with_unknown_kind_items) { create(:cart, :with_unknown_kind_items)}
-
-  let!(:cart_with_all_problem_items) { create(:cart, :with_all_problematic_items)}
-
-  let!(:cart_with_10_mixed) { create(:cart, :with_10_mixed_items)}
-
-  let!(:cart_with_100_mixed) { create(:cart, :with_100_mixed_items)}
-
-  let!(:cart_with_unknown_kind_saved) { create(:cart, :with_unknown_kind_saved_for_later_items)}
-
-  let!(:cart_with_unavailable_saved) { create(:cart, :with_unavailable_saved_for_later_items)}
-
-  let!(:cart_with_incomplete_saved) { create(:cart, :with_incomplete_saved_for_later_items)}
-
-  let!(:cart_with_price_altered_saved) { create(:cart, :with_price_altered_saved_for_later_items)}
-
-  let!(:cart_with_name_altered_saved) { create(:cart, :with_name_altered_saved_for_later_items)}
-
-  let!(:cart_with_expired_saved) { create(:cart, :with_expired_saved_for_later_items)}
-
-
-  xdescribe "#factories" do
+  describe "#factories" do
     it "can create a valid, basic object" do
       expect(create(:cart)).to be_valid
     end
 
     describe "empty cart factory" do
+      let(:empty_cart) { create(:cart)}
+
       it "is valid" do
         expect(empty_cart).to be_valid
       end
@@ -77,6 +36,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_basic_items factory" do
+      let(:basic_items_cart) { create(:cart, :with_basic_items)}
+
       it "is valid" do
         expect(basic_items_cart).to be_valid
       end
@@ -111,6 +72,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_items_for_later factory" do
+      let(:saved_only_cart) { create(:cart, :with_items_for_later)}
+
       it "is valid" do
         expect(saved_only_cart).to be_valid
       end
@@ -127,6 +90,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_free_items factory" do
+      let(:free_only_cart) { create(:cart, :with_free_items)}
+
       it "is valid" do
         expect(free_only_cart).to be_valid
       end
@@ -143,6 +108,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_unavailable_items factory" do
+      let(:unavailable_only_cart) { create(:cart, :with_unavailable_items)}
+
       it "is valid" do
         expect(unavailable_only_cart).to be_valid
       end
@@ -157,6 +124,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_unkown_kind_items factory" do
+      let(:cart_with_unknown_kind_items) { create(:cart, :with_unknown_kind_items)}
+
       it "is valid" do
         expect(cart_with_unknown_kind_items).to be_valid
       end
@@ -171,6 +140,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_expired_membership_items factory" do
+      let(:expired_only_cart) { create(:cart, :with_expired_membership_items)}
+
       it "is valid" do
         expect(expired_only_cart).to be_valid
       end
@@ -187,6 +158,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_incomplete_items factory" do
+      let(:incomplete_only_cart) {create(:cart, :with_incomplete_items)}
+
       it "is valid" do
         expect(incomplete_only_cart).to be_valid
       end
@@ -203,6 +176,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_altered_name_items factory" do
+      let(:cart_with_altered_name_items) { create(:cart, :with_altered_name_items)}
+
       it "is valid" do
         expect(cart_with_altered_name_items).to be_valid
       end
@@ -219,6 +194,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_altered_price_items factory" do
+      let(:cart_with_altered_price_items) { create(:cart, :with_altered_price_items)}
+
       it "is valid" do
         expect(cart_with_altered_price_items).to be_valid
       end
@@ -235,6 +212,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "all_problematic_items factory" do
+      let(:cart_with_all_problem_items) { create(:cart, :with_all_problematic_items)}
+
       it "is valid" do
         expect(cart_with_all_problem_items).to be_valid
       end
@@ -271,6 +250,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_10_mixed_items factory" do
+      let(:cart_with_10_mixed) { create(:cart, :with_10_mixed_items)}
+
       it "is valid" do
         expect(cart_with_10_mixed).to be_valid
       end
@@ -313,6 +294,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_100_mixed factory" do
+      let(:cart_with_100_mixed) { create(:cart, :with_100_mixed_items)}
+
       it "is valid" do
         expect(cart_with_100_mixed).to be_valid
       end
@@ -355,6 +338,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_unknown_kind_saved_for_later factory" do
+      let(:cart_with_unknown_kind_saved) { create(:cart, :with_unknown_kind_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_unknown_kind_saved).to be_valid
       end
@@ -371,12 +356,14 @@ RSpec.describe Cart, type: :model do
 
       it "only has items where kind = 'unknown'" do
         known_seen = false
-        cart_with_unknown_kind_items.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
+        cart_with_unknown_kind_saved.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
         expect(known_seen).to eql(false)
       end
     end
 
     describe "cart with_unavailable_saved_for_later factory" do
+      let(:cart_with_unavailable_saved) { create(:cart, :with_unavailable_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_unavailable_saved).to be_valid
       end
@@ -399,6 +386,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_incomplete_saved_for_later factory" do
+      let(:cart_with_incomplete_saved) { create(:cart, :with_incomplete_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_incomplete_saved).to be_valid
       end
@@ -421,6 +410,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_price_altered_saved_for_later factory" do
+      let(:cart_with_price_altered_saved) { create(:cart, :with_price_altered_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_price_altered_saved).to be_valid
       end
@@ -443,6 +434,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_name_altered_saved_for_later factory" do
+      let(:cart_with_name_altered_saved) { create(:cart, :with_name_altered_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_name_altered_saved).to be_valid
       end
@@ -465,6 +458,8 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_expired_saved_for_later factory" do
+      let(:cart_with_expired_saved) { create(:cart, :with_expired_saved_for_later_items)}
+
       it "is valid" do
         expect(cart_with_expired_saved).to be_valid
       end
@@ -509,6 +504,8 @@ RSpec.describe Cart, type: :model do
   describe "public instance methods" do
     describe "subtotal_cents" do
       context "empty cart" do
+        let(:empty_cart) { create(:cart)}
+
         it "returns an integer" do
           expect(empty_cart.subtotal_cents).to be_kind_of(Integer)
         end
@@ -519,6 +516,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with basic items" do
+        let(:basic_items_cart) { create(:cart, :with_basic_items)}
+
         it "returns an integer" do
           expect(basic_items_cart.subtotal_cents).to be_kind_of(Integer)
         end
@@ -535,6 +534,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with mixed for-now and saved-for-later items" do
+        let(:for_now_and_saved_cart) { create(:cart, :with_basic_items, :with_items_for_later)}
+
         it "returns the sum of the prices of all cart items that are not saved for later" do
           cart_subtotal = 0
           for_now_and_saved_cart.cart_items.each {|i| cart_subtotal += i.acquirable.price_cents if !i.later}
@@ -543,6 +544,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with mixed available and unavailable items" do
+        let(:available_and_unavailable_cart) { create(:cart, :with_basic_items, :with_unavailable_items)}
+
         it "returns the sum of the prices of all cart items that are not marked unavailable" do
           cart_subtotal = 0
           available_and_unavailable_cart.cart_items.each {|i| cart_subtotal += i.acquirable.price_cents if i.available}
@@ -551,6 +554,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with mixed expired and unexpired items" do
+        let(:expired_and_unexpired_cart) { create(:cart, :with_basic_items, :with_expired_membership_items)}
+
         it "returns the sum of the prices of all cart items that are not expired" do
           cart_subtotal = 0
           expired_and_unexpired_cart.cart_items.each {|i| cart_subtotal += i.acquirable.price_cents if i.acquirable.active?}
@@ -559,6 +564,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with free items" do
+        let(:free_only_cart) { create(:cart, :with_free_items)}
+
         it "returns zero" do
           expect(free_only_cart.subtotal_cents).to eql(0)
         end
@@ -567,6 +574,8 @@ RSpec.describe Cart, type: :model do
 
     describe "subtotal_display" do
       context "empty cart" do
+        let(:empty_cart) { create(:cart)}
+
         it "returns a string" do
           expect(empty_cart.subtotal_display).to be_kind_of(String)
         end
@@ -581,6 +590,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with basic items" do
+        let(:basic_items_cart) { create(:cart, :with_basic_items)}
+
         it "returns a string" do
           expect(basic_items_cart.subtotal_display).to be_kind_of(String)
         end
@@ -598,12 +609,16 @@ RSpec.describe Cart, type: :model do
 
     describe "items_for_now" do
       context "empty cart" do
+        let(:empty_cart) { create(:cart)}
+
         it "is empty" do
           expect(empty_cart.items_for_now).to be_empty
         end
       end
 
       context "cart with mixed items-for-now and saved-for-later items" do
+        let(:for_now_and_saved_cart) { create(:cart, :with_basic_items, :with_items_for_later)}
+
         it "is not empty" do
           expect(for_now_and_saved_cart.items_for_now).not_to be_empty
         end
@@ -620,6 +635,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with unavailable items" do
+        let(:unavailable_only_cart) { create(:cart, :with_unavailable_items)}
+
         it "is not empty" do
           expect(unavailable_only_cart.items_for_now).not_to be_empty
         end
@@ -630,6 +647,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with expired items" do
+        let(:expired_only_cart) { create(:cart, :with_expired_membership_items)}
+
         it "is not empty" do
           expect(expired_only_cart.items_for_now).not_to be_empty
         end
@@ -642,18 +661,24 @@ RSpec.describe Cart, type: :model do
 
     describe "items_for_later" do
       context "empty cart" do
+        let(:empty_cart) { create(:cart)}
+
         it "is empty" do
           expect(empty_cart.items_for_later).to be_empty
         end
       end
 
       context "cart with basic items" do
+        let(:basic_items_cart) { create(:cart, :with_basic_items)}
+
         it "is empty" do
           expect(basic_items_cart.items_for_later).to be_empty
         end
       end
 
       context "cart with only items for later" do
+        let(:saved_only_cart) { create(:cart, :with_items_for_later)}
+
         it "is not empty" do
           expect(saved_only_cart.items_for_later).not_to be_empty
         end
@@ -668,6 +693,8 @@ RSpec.describe Cart, type: :model do
       end
 
       context "cart with mixture of items for now and items saved for later" do
+        let(:for_now_and_saved_cart) { create(:cart, :with_basic_items, :with_items_for_later)}
+
         it "is not empty" do
           expect(for_now_and_saved_cart.items_for_later).not_to be_empty
         end
