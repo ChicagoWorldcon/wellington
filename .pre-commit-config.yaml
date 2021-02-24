@@ -16,7 +16,7 @@
 exclude: >-
   (?x)^(
       vendor/.*|
-      .*\.lock
+      .*\.lock|
       db/structure.sql
   )$
 repos:
