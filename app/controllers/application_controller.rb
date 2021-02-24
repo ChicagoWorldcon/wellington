@@ -62,4 +62,11 @@ class ApplicationController < ActionController::Base
   def hugo_admin_signed_in?
     support_signed_in? && current_support.hugo_admin.present?
   end
+
+  def lookup_cart
+    @existing_cart = Cart.find_by(user_id: current_user.id)
+    if @existing_cart.nil?
+      head :forbidden
+    end
+  end
 end

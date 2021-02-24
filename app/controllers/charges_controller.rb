@@ -18,7 +18,8 @@
 # Test cards are here: https://stripe.com/docs/testing
 class ChargesController < ApplicationController
 
-  before_action :lookup_reservation!
+  before_action :lookup_reservation!, except: [:new_cart_group]
+  before_action :lookup_cart, only: [:new_cart_group_charge]
 
   def new
     if @reservation.paid?
@@ -33,6 +34,12 @@ class ChargesController < ApplicationController
 
     @price_options = price_steps.reverse.map do |price|
       [price.format, price.cents]
+    end
+  end
+
+  def new_cart_group_charge
+    if @existing_cart
+      #Do things
     end
   end
 
