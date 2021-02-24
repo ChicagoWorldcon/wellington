@@ -21,7 +21,11 @@ class ReportMailer < ApplicationMailer
   helper_method :border_styles
 
   def nominations_csv
-    return if $nomination_reports_email.nil?
+    destinations = ReportRecipient.where(report: "nomination").pluck(:email_address)
+    if destinations.empty?
+      puts("No nomination report recipients; skipping")
+      return
+    end
 
     command = Export::NominationCsv.new
     csv = command.call
@@ -38,12 +42,16 @@ class ReportMailer < ApplicationMailer
 
     mail(
       subject: "Nominations export #{date}",
-      to: $nomination_reports_email,
+      to: destinations,
     )
   end
 
   def memberships_csv
-    return if $membership_reports_email.nil?
+    destinations = ReportRecipient.where(report: "membership").pluck(:email_address)
+    if destinations.empty?
+      puts("No membership report recipients; skipping")
+      return
+    end
 
     command = Export::MembershipCsv.new
     csv = command.call
@@ -60,7 +68,7 @@ class ReportMailer < ApplicationMailer
 
     mail(
       subject: "Memberships export #{date}",
-      to: $membership_reports_email,
+      to: destinations,
     )
   end
 
