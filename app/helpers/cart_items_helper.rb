@@ -16,6 +16,8 @@
 
 module CartItemsHelper
 
+  MEMBERSHIP = "membership"
+
   # TODO: See if this can be eliminated.  There's a new method
   # in MembershipOffer that should handle this.
   def self.locate_offer(offer_params)
@@ -90,6 +92,18 @@ module CartItemsHelper
   def verify_availability_of_cart_contents(cart)
     CartItemsHelper.verify_availability_of_cart_contents(cart)
   end
+
+  def self.cart_contents_ready_for_payment?(cart)
+    all_contents_ready = true
+    cart.cart_items.each {|i| all_contents_ready = false if !i.item_ready_for_payment?}
+    all_contents_ready
+  end
+
+  def cart_contents_ready_for_payment?(cart)
+    CartItemsHelper.cart_items_ready_for_payment?(cart)
+  end
+
+
 
   def self.destroy_cart_contents(cart)
     if cart
@@ -170,5 +184,17 @@ module CartItemsHelper
 
   def unsave_all_cart_items(cart)
     CartItemsHelper.unsave_all_cart_items(cart)
+  end
+
+  def self.locate_all_membership_items(cart)
+    if cart.present?
+      cart.cart_items.select {|i| i.kind == MEMBERSHIP}
+    else
+      return nil
+    end
+  end
+
+  def locate_all_membership_items(cart)
+    CartItemsHelper.locate_all_membership_items(cart)
   end
 end
