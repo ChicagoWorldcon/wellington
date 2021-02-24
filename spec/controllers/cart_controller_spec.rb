@@ -20,15 +20,10 @@ RSpec.describe CartController, type: :controller do
 
   let(:contact_model_key) { Claim.contact_strategy.to_s.underscore.to_sym }
 
-  let!(:kidit) { create(:membership, :kidit) }
-  let!(:adult) { create(:membership, :adult) }
-  let!(:tuatara) { create(:membership, :tuatara)}
+  let(:tuatara) { create(:membership, :tuatara)}
+  let(:offer_expired) {MembershipOffer.new(tuatara)}
 
-  let!(:offer_valid) { MembershipOffer.new(adult) }
-  let!(:offer_expired) {MembershipOffer.new(tuatara)}
-  let!(:offer_age_dependent) {MembershipOffer.new(kidit)}
-
-  let!(:valid_contact_params) do
+  let(:valid_contact_params) do
     FactoryBot.build(:chicago_contact).slice(
       :first_name,
       :last_name,
@@ -39,7 +34,7 @@ RSpec.describe CartController, type: :controller do
     )
   end
 
-  let!(:valid_contact_params_with_dob) do
+  let(:valid_contact_params_with_dob) do
     FactoryBot.build(:chicago_contact).slice(
       :first_name,
       :last_name,
@@ -51,7 +46,7 @@ RSpec.describe CartController, type: :controller do
     )
   end
 
-  let!(:invalid_contact_params) do
+  let(:invalid_contact_params) do
     FactoryBot.build(:chicago_contact).slice(
       :first_name,
       :last_name,
@@ -61,18 +56,9 @@ RSpec.describe CartController, type: :controller do
     )
   end
 
-  # let!(:stresstest_cart) {create(:cart, :with_100_mixed_items)}
-  # let!(:existing_stresstest_user) { stresstest_cart.user }
-
-  let(:hodgepodge_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
-  let(:existing_hodgepodge_user) {hodgepodge_cart.user}
-
-  let(:shared_basic_cart) {create(:cart, :with_basic_items)}
-  let(:shared_basic_cart_user) { shared_basic_cart.user}
-
   let(:support_user) { create(:support)}
 
-  xdescribe "#show" do
+  describe "#show" do
     context "when a first-time user is signed in" do
       render_views
       let(:naive_user) { create(:user)}
@@ -100,18 +86,20 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when a user with an existing cart is signed in" do
+      let(:existing_cart) {create(:cart, :with_basic_items)}
+      let(:existing_user) {existing_cart.user}
 
       before do
-        sign_in(existing_hodgepodge_user)
+        sign_in(existing_user)
         get :show
       end
 
       after do
-        sign_out(existing_hodgepodge_user)
+        sign_out(existing_user)
       end
 
       xit "finds the user's cart" do
-        expect(assigns(:cart)).not_to eq(hodgepodge_cart) #inverted
+        expect(assigns(:cart)).not_to eq(existing_cart) #inverted
       end
 
       xit "renders" do
@@ -153,25 +141,28 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "#add_reservation_to_cart" do
-    before do
-      sign_in(existing_hodgepodge_user)
-    end
-
-    after do
-      sign_out(existing_hodgepodge_user)
-    end
-
+  describe "#add_reservation_to_cart" do
     context "when the membembership is active and the beneficiary has all the necessary info" do
       render_views
+      let(:adult) { create(:membership, :adult) }
+      let(:offer_valid) { MembershipOffer.new(adult) }
 
-      let!(:starting_hodgepodge_cart_count) {hodgepodge_cart.cart_items.count}
+      let!(:good_enough_cart) {create(:cart, :with_basic_items)}
+      let!(:good_enough_user) { good_enough_cart.user }
+
+      let!(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
       before do
+        sign_in(good_enough_user)
+
         post :add_reservation_to_cart, params: {
           contact_model_key => valid_contact_params_with_dob,
           :offer => offer_valid.hash
         }
+      end
+
+      after do
+        sign_out(good_enough_user)
       end
 
       it "succeeds" do
@@ -184,8 +175,8 @@ RSpec.describe CartController, type: :controller do
 
       it "locates the user's cart" do
         expect(assigns(:cart)).to be_a(Cart)
-        expect(assigns(:cart)).to eq(hodgepodge_cart)
-        expect(assigns(:cart).user).to eq(existing_hodgepodge_user)
+        expect(assigns(:cart)).to eq(good_enough_cart)
+        expect(assigns(:cart).user).to eq(good_enough_user)
       end
 
       it "creates an offer object per our params" do
@@ -209,20 +200,32 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "adds the new CartItem to the cart" do
-        expect(assigns(:cart).cart_items.count).to eql(starting_hodgepodge_cart_count + 1)
+        expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count + 1)
         found_in_cart = assigns(:cart).cart_items.find {|i| i.id == assigns(:our_cart_item).id }
         expect(assigns(:our_cart_item)).to eq(found_in_cart)
       end
     end
 
     context "when there are issues with the beneficiary or the membership" do
+      let(:good_enough_cart) {create(:cart, :with_basic_items)}
+      let(:good_enough_user) { good_enough_cart.user }
+
       context "when the HTTP_REFERER has been set" do
+
+        before do
+          sign_in(good_enough_user)
+        end
+
+        after do
+          sign_out(good_enough_user)
+        end
+
         before(:each) do
           request.env['HTTP_REFERER'] = memberships_path
         end
 
         context "when the membership offer is expired" do
-          let!(:starting_hodgepodge_cart_count) {hodgepodge_cart.cart_items.count}
+          let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
           before do
             post :add_reservation_to_cart, params: {
@@ -236,27 +239,34 @@ RSpec.describe CartController, type: :controller do
             expect(response).to redirect_to(memberships_path)
           end
 
-          it "sets a flash error about the offer being unavailable" do
-             expect(subject).to set_flash[:error].to(/no longer available/i)
-          end
-
-          it "sets a flash error about the message no longer being available" do
+          it "sets a flash error about the membership no longer being available" do
             expect(subject).to set_flash[:error].to(/no longer available/i)
           end
 
           it "does not add a new item to the cart" do
-            expect(assigns(:cart).cart_items.count).to eql(starting_hodgepodge_cart_count)
+            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count)
           end
         end
       end
 
       context "when the HTTP_REFERER has not been set" do
+        before do
+          sign_in(good_enough_user)
+        end
+
+        after do
+          sign_out(good_enough_user)
+        end
+
         before(:each) do
           request.env['HTTP_REFERER'] = nil
         end
 
         context "when the beneficiary is invalid" do
-          let!(:starting_hodgepodge_cart_count) {hodgepodge_cart.cart_items.count}
+          let(:adult) { create(:membership, :adult) }
+          let(:offer_valid) { MembershipOffer.new(adult) }
+          let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
+
           before do
             post :add_reservation_to_cart, params: {
               contact_model_key => invalid_contact_params,
@@ -274,19 +284,28 @@ RSpec.describe CartController, type: :controller do
           end
 
           it "does not add the item to the cart" do
-            expect(assigns(:cart).cart_items.count).to eql(starting_hodgepodge_cart_count)
+            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count)
           end
         end
       end
 
       context "when the beneficiary params do not include a date of birth" do
-        let!(:starting_hodgepodge_cart_count) {hodgepodge_cart.cart_items.count}
+        let(:adult) { create(:membership, :adult) }
+        let(:offer_valid) { MembershipOffer.new(adult) }
+
+        let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
         before do
+          sign_in(good_enough_user)
+
           post :add_reservation_to_cart, params: {
             contact_model_key => valid_contact_params,
             :offer => offer_valid.hash
           }
+        end
+
+        after do
+          sign_out(good_enough_user)
         end
 
         it "leaves the contact object's date_of_birth field empty" do
@@ -301,7 +320,7 @@ RSpec.describe CartController, type: :controller do
 
           it "adds the item to the cart" do
             pending
-            expect(assigns(:cart).cart_items.count).to eql(starting_hodgepodge_cart_count + 1)
+            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count + 1)
             expect(assigns(:our_cart_item).cart).to eq(assigns(:cart))
           end
         end
@@ -309,7 +328,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "#destroy" do
+  describe "#destroy" do
 
     context "when the cart is empty" do
       render_views
@@ -428,7 +447,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "#destroy_active" do
+  describe "#destroy_active" do
 
     context "when the cart is empty" do
       render_views
@@ -561,7 +580,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "#destroy_saved" do
+  describe "#destroy_saved" do
 
     context "when the cart is empty" do
       render_views
@@ -698,7 +717,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "PATCH #save_all_items_for_later" do
+  describe "PATCH #save_all_items_for_later" do
     context "when the cart is empty" do
       render_views
       let!(:hollow_cart) { create(:cart)}
@@ -958,7 +977,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "PATCH #move_all_saved_items_to_cart" do
+  describe "PATCH #move_all_saved_items_to_cart" do
     context "when the cart is empty" do
       render_views
 
@@ -1322,7 +1341,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "DELETE #remove_single_item" do
+  describe "DELETE #remove_single_item" do
     context "when the item is basic" do
       render_views
 
@@ -1542,7 +1561,8 @@ RSpec.describe CartController, type: :controller do
       let(:unremarkable_cart_count) { unremarkable_cart.cart_items.count }
       let(:unremarkable_cart_user) { unremarkable_cart.user }
 
-      let(:item_from_nowhere) {hodgepodge_cart.cart_items.sample}
+      let(:nowhere_cart) {create(:cart, :with_basic_items)}
+      let(:item_from_nowhere) {nowhere_cart.cart_items.sample}
       let(:item_from_nowhere_id) {item_from_nowhere.id}
       let(:item_from_nowhere_cart) {item_from_nowhere.cart}
 
@@ -1888,7 +1908,8 @@ RSpec.describe CartController, type: :controller do
       let(:whatevs_cart_count) { whatevs_cart.cart_items.count }
       let(:whatevs_cart_user) { whatevs_cart.user }
 
-      let(:extraneous_item) {hodgepodge_cart.cart_items.sample}
+      let(:extraneous_cart) { create(:cart, :with_basic_items) }
+      let(:extraneous_item) {extraneous_cart.cart_items.sample}
       let(:extraneous_item_id) {extraneous_item.id}
       let(:extraneous_item_availability) { extraneous_item.available}
 
@@ -2002,7 +2023,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "PATCH #save_item_for_later" do
+  describe "PATCH #save_item_for_later" do
     context "when the item is basic" do
       render_views
 
@@ -2262,8 +2283,9 @@ RSpec.describe CartController, type: :controller do
       let(:pre_latered_cart) { create(:cart, :with_items_for_later) }
       let(:pre_latered_cart_user) { pre_latered_cart.user }
 
-      let(:external_item) {shared_basic_cart.cart_items.sample}
-      let(:external_item_id) {external_item.id}
+      let(:external_cart) { create(:cart, :with_basic_items) }
+      let(:external_item) { external_cart.cart_items.sample }
+      let(:external_item_id) { external_item.id }
       let(:external_item_later) { external_item.later}
 
       before do
@@ -2382,7 +2404,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  xdescribe "PATCH #move_item_to_cart" do
+  describe "PATCH #move_item_to_cart" do
     context "when the item is basic and saved for later" do
       let(:basic_laters_cart) { create(:cart, :with_items_for_later) }
       let(:basic_laters_cart_user) { basic_laters_cart.user }
@@ -2606,8 +2628,9 @@ RSpec.describe CartController, type: :controller do
       let(:pre_l_cart_later_items_seen_initial) { pre_l_cart.cart_items.inject(0) {|laters, i|
        laters += 1 if i.later == true} || 0}
 
-      let(:extern_item) {shared_basic_cart.cart_items.sample}
-      let(:extern_item_id) {extern_item.id}
+      let(:extern_cart) { create(:cart, :with_basic_items)}
+      let(:extern_item) { extern_cart.cart_items.sample}
+      let(:extern_item_id) { extern_item.id }
       let(:extern_item_later) { extern_item.later}
 
       before do
