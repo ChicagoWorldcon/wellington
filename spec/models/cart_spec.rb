@@ -62,7 +62,7 @@ RSpec.describe Cart, type: :model do
   let!(:cart_with_expired_saved) { create(:cart, :with_expired_saved_for_later_items)}
 
 
-  describe "#factories" do
+  xdescribe "#factories" do
     it "can create a valid, basic object" do
       expect(create(:cart)).to be_valid
     end
@@ -158,15 +158,15 @@ RSpec.describe Cart, type: :model do
 
     describe "cart with_unkown_kind_items factory" do
       it "is valid" do
-        expect(cart_with_unknown_kind_items).not_to be_valid #inverted
+        expect(cart_with_unknown_kind_items).to be_valid
       end
       it "has at least one cart item" do
-        expect(cart_with_unknown_kind_items.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_unknown_kind_items.cart_items.count).to be > 0
       end
       it "only has items where kind = 'unknown'" do
         known_seen = false
         cart_with_unknown_kind_items.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
-        expect(known_seen).not_to eql(false) #inverted
+        expect(known_seen).to eql(false)
       end
     end
 
@@ -204,33 +204,33 @@ RSpec.describe Cart, type: :model do
 
     describe "cart with_altered_name_items factory" do
       it "is valid" do
-        expect(cart_with_altered_name_items).not_to be_valid #inverted
+        expect(cart_with_altered_name_items).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_altered_name_items.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_altered_name_items.cart_items.count).to be > 0
       end
 
       it "has no items where the item_name_memo field matches the acquirable's name field" do
         match_seen = false
         cart_with_altered_name_items.cart_items.each { |i| match_seen = true if i.item_name_memo == i.acquirable.name}
-        expect(match_seen).not_to eql(false) #inverted
+        expect(match_seen).to eql(false)
       end
     end
 
     describe "cart with_altered_price_items factory" do
       it "is valid" do
-        expect(cart_with_altered_price_items).not_to be_valid #inverted
+        expect(cart_with_altered_price_items).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_altered_price_items.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_altered_price_items.cart_items.count).to be > 0
       end
 
       it "has no items where the item_price_memo field matches the acquirable's price_cents field" do
         match_seen = false
         cart_with_altered_price_items.cart_items.each { |i| match_seen = true if i.item_price_memo == i.acquirable.price_cents}
-        expect(match_seen).not_to eql(false) #inverted
+        expect(match_seen).to eql(false)
       end
     end
 
@@ -239,8 +239,34 @@ RSpec.describe Cart, type: :model do
         expect(cart_with_all_problem_items).to be_valid
       end
 
-      it "Has a bunch of stuff going on" do
-        pending
+      it "has two items where the .item_price_memo does not match .acquirable.price_cents" do
+        price_mismatches = 0
+        cart_with_all_problem_items.cart_items.each { |i| price_mismatches += 1 if i.item_price_memo != i.acquirable.price_cents}
+        expect(price_mismatches).to eql(2)
+      end
+
+      it "has two items where the .item_name_memo does not match .acquirable.name" do
+        name_mismatches = 0
+        cart_with_all_problem_items.cart_items.each { |i| name_mismatches += 1 if i.item_name_memo != i.acquirable.name }
+        expect(name_mismatches).to eql(2)
+      end
+
+      it "has four items where .kind == 'unknown' " do
+        unknowns = 0
+        cart_with_all_problem_items.cart_items.each { |i| unknowns+= 1 if i.kind == "unknown" }
+        expect(unknowns).to eql(4)
+      end
+
+      it "has two items that do not have a 'benefitable' " do
+        no_benefitables = 0
+        cart_with_all_problem_items.cart_items.each { |i| no_benefitables += 1 if i.benefitable.blank? }
+        expect(no_benefitables).to eql(2)
+      end
+
+      it "has two items that are expired" do
+        expireds = 0
+        cart_with_all_problem_items.cart_items.each { |i| expireds += 1 if !i.acquirable.active? }
+        expect(expireds).to eql(2)
       end
     end
 
@@ -330,134 +356,133 @@ RSpec.describe Cart, type: :model do
 
     describe "cart with_unknown_kind_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_unknown_kind_saved).not_to be_valid #inverted
+        expect(cart_with_unknown_kind_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_unknown_kind_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_unknown_kind_saved.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
+      it "only inlcudes items that are saved-for-later" do
         for_now_seen = false
         cart_with_unknown_kind_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        expect(for_now_seen).to eql(false)
       end
 
       it "only has items where kind = 'unknown'" do
         known_seen = false
         cart_with_unknown_kind_items.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
-        expect(known_seen).not_to eql(false) #inverted
+        expect(known_seen).to eql(false)
       end
     end
 
     describe "cart with_unavailable_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_unavailable_saved).not_to be_valid #inverted
+        expect(cart_with_unavailable_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_unavailable_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_unavailable_saved.cart_items.count).to be > 0
       end
 
       it "has no items that are not saved for later" do
         for_now_seen = false
         cart_with_unavailable_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        expect(for_now_seen).to eql(false)
       end
 
-      it "has no items that are not marked as unavailable" do
-        unavailable_seen = 0
-        cart_with_unavailable_saved.cart_items.each { |i| unavailable_seen += 1 if !i.available}
-        expect(unavailable_seen).not_to eql(0) #inverted
+      it "has no items that are marked as available" do
+        available_seen = 0
+        cart_with_unavailable_saved.cart_items.each { |i| available_seen += 1 if i.available}
+        expect(available_seen).to eql(0)
       end
     end
 
     describe "cart with_incomplete_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_incomplete_saved).not_to be_valid #inverted
+        expect(cart_with_incomplete_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_incomplete_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_incomplete_saved.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
+      it "only includes items that are saved-for-later" do
         for_now_seen = false
-        cart_with_incomplete_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        cart_with_incomplete_saved.cart_items.each { |i| for_now_seen = true if !i.later }
+        expect(for_now_seen).to eql(false)
       end
 
-      it "has no items that are not marked incomplete" do
-        incomplete_seen = 0
-        cart_with_incomplete_saved.cart_items.each {|i|
-          incomplete_seen += 1 if i.incomplete}
-        expect(incomplete_seen).not_to eql(0) #inverted
+      it "only includes items that are marked incomplete" do
+        complete_seen = false
+        cart_with_incomplete_saved.cart_items.each {|i| complete_seen = true if !i.incomplete}
+        expect(complete_seen).to eql(false)
       end
     end
 
     describe "cart with_price_altered_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_price_altered_saved).not_to be_valid #inverted
+        expect(cart_with_price_altered_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_price_altered_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_price_altered_saved.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
+      it "contains only items that are saved-for-later" do
         for_now_seen = false
-        cart_with_price_altered_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        cart_with_price_altered_saved.cart_items.each { |i| for_now_seen = true if !i.later}
+        expect(for_now_seen).to eql(false)
       end
 
       it "has no items where the item_price_memo field matches the acquirable's price_cents field" do
         match_seen = false
         cart_with_price_altered_saved.cart_items.each { |i| match_seen = true if i.item_price_memo == i.acquirable.price_cents}
-        expect(match_seen).not_to eql(false) #inverted
+        expect(match_seen).to eql(false)
       end
     end
 
     describe "cart with_name_altered_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_name_altered_saved).not_to be_valid #inverted
+        expect(cart_with_name_altered_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_name_altered_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_name_altered_saved.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
+      it "contains only items that are saved-for-later" do
         for_now_seen = false
-        cart_with_name_altered_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        cart_with_name_altered_saved.cart_items.each { |i| for_now_seen = true if !i.later}
+        expect(for_now_seen).to eql(false)
       end
 
       it "has no items where the item_name_memo field matches the acquirable's name field" do
         match_seen = false
         cart_with_name_altered_saved.cart_items.each { |i| match_seen = true if i.item_name_memo == i.acquirable.name}
-        expect(match_seen).not_to eql(false) #inverted
+        expect(match_seen).to eql(false)
       end
     end
 
     describe "cart with_expired_saved_for_later factory" do
       it "is valid" do
-        expect(cart_with_expired_saved).not_to be_valid #inverted
+        expect(cart_with_expired_saved).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_expired_saved.cart_items.count).not_to be > 0 #inverted
+        expect(cart_with_expired_saved.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
+      it "contains only items that are saved-for-later" do
         for_now_seen = false
-        cart_with_expired_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).not_to eql(false) #inverted
+        cart_with_expired_saved.cart_items.each { |i| for_now_seen = true if !i.later}
+        expect(for_now_seen).to eql(false)
       end
 
-      it "has no items that are expired" do
-        expired_seen = 0
-        cart_with_expired_saved.cart_items.each {|i| expired_seen += 1 if i.acquirable.active? == false}
-        expect(expired_seen).not_to eql(0) #inverted
+      it "contains only items that are expired" do
+        active_seen = false
+        cart_with_expired_saved.cart_items.each { |i| active_seen += 1 if i.acquirable.active? }
+        expect(active_seen).to eql(false)
       end
     end
   end
