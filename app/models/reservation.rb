@@ -20,6 +20,8 @@
 # People are associated to Reservation through Claim which is a join table to User
 # Membership details like display name are associated to Reservation through Order which is a join table to Membership
 class Reservation < ApplicationRecord
+  include Buyable
+
   PAID = "paid"
   DISABLED = "disabled"
   INSTALMENT = "instalment"
