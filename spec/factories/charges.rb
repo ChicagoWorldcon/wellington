@@ -17,8 +17,11 @@
 
 FactoryBot.define do
   factory :charge do
+
     association :user
-    association :reservation
+    #association :reservation
+    association :buyable
+
     amount_currency { $currency }
 
     comment { "Factory Generated Charge" }

@@ -24,7 +24,7 @@ class Reservation < ApplicationRecord
   DISABLED = "disabled"
   INSTALMENT = "instalment"
 
-  has_many :charges
+  has_many :charges, :as => :buyable
   has_many :claims
   has_many :nominations
   has_many :orders

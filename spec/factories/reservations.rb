@@ -49,13 +49,15 @@ FactoryBot.define do
       if new_reservation.paid?
         create(:charge, :generate_description,
           user: new_reservation.user,
-          reservation: new_reservation,
+          buyable: new_reservation,
+          # reservation: new_reservation,
           amount: new_reservation.membership.price
         )
       elsif new_reservation.instalment? && evaluator.instalment_paid > 0
         create(:charge, :generate_description,
           user: new_reservation.user,
-          reservation: new_reservation,
+          buyable: new_reservation,
+          # reservation: new_reservation,
           amount: evaluator.instalment_paid,
         )
       end
@@ -63,14 +65,19 @@ FactoryBot.define do
 
     trait :with_order_against_membership do
       after(:build) do |new_reservation, _evaluator|
-        create(:order, :with_membership, reservation: new_reservation)
+        create(:order, :with_membership,
+        reservation: new_reservation
+      )
         new_reservation.reload
       end
     end
 
     trait :with_claim_from_user do
       after(:build) do |new_reservation, _evaluator|
-        new_claim = build(:claim, :with_user, :with_contact, reservation: new_reservation)
+        new_claim = build(:claim, :with_user, :with_contact,
+        buyable: new_reservation,
+        reservation: new_reservation
+        )
         new_reservation.claims << new_claim
       end
     end

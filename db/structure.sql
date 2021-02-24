@@ -74,6 +74,8 @@ CREATE TABLE public.carts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     status character varying DEFAULT 'pending'::character varying NOT NULL,
+    buyable_type character varying NOT NULL,
+    buyable_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -148,10 +150,11 @@ CREATE TABLE public.charges (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id bigint NOT NULL,
-    reservation_id bigint NOT NULL,
     transfer character varying NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    buyable_type character varying,
+    buyable_id bigint
 );
 
 
@@ -1051,6 +1054,13 @@ CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_
 
 
 --
+-- Name: index_carts_on_buyable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_carts_on_buyable ON public.carts USING btree (buyable_type, buyable_id);
+
+
+--
 -- Name: index_carts_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1072,10 +1082,10 @@ CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
 
 
 --
--- Name: index_charges_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_charges_on_buyable; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_charges_on_reservation_id ON public.charges USING btree (reservation_id);
+CREATE INDEX index_charges_on_buyable ON public.charges USING btree (buyable_type, buyable_id);
 
 
 --
@@ -1282,14 +1292,6 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: charges fk_rails_5cd975e78e; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.charges
-    ADD CONSTRAINT fk_rails_5cd975e78e FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
-
-
---
 -- Name: cart_items fk_rails_6cdb1f0139; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1425,6 +1427,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200724003813'),
 ('20201218101337'),
 ('20201218101654'),
-('20210105055602');
+('20210105055602'),
+('20210224001734');
 
 

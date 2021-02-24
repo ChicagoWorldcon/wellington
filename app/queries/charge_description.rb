@@ -79,19 +79,22 @@ class ChargeDescription
   end
 
   def maybe_member_name
-    claims = charge.reservation.claims
+    #TODO: Make sure a version of this for cart is present
+    claims = charge.buyable.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.contact
   end
 
   def membership_type
-    "#{charged_membership} member #{charge.reservation.membership_number}"
+    #TODO: Make sure a version of this for cart is present
+    "#{charged_membership} member #{charge.buyable.membership_number}"
   end
 
   def charged_membership
+    #TODO: Make sure a version of this for cart is present
     return @charged_membership if @charged_membership.present?
 
-    orders = charge.reservation.orders
+    orders = charge.buyable.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
   end
 
@@ -104,11 +107,11 @@ class ChargeDescription
   end
 
   def orders_so_far
-    charge.reservation.orders.where("created_at <= ?", charge_active_at)
+    charge.buyable.orders.where("created_at <= ?", charge_active_at)
   end
 
   def charges_so_far
-    successful = charge.reservation.charges.successful
+    successful = charge.buyable.charges.successful
     successful.where.not(id: charge.id).where("created_at < ?", charge_active_at)
   end
 

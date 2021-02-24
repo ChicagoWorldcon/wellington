@@ -29,7 +29,8 @@ class Charge < ApplicationRecord
   TRANSFER_CASH = "cash"
 
   belongs_to :user
-  belongs_to :reservation
+  #belongs_to :reservation
+  belongs_to :buyable, :polymorphic => true
 
   monetize :amount_cents
 

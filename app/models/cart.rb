@@ -1,5 +1,6 @@
 class Cart < ApplicationRecord
   require 'money'
+  include Buyable
 
   PENDING = "pending"
   PAID = "paid"
@@ -11,6 +12,7 @@ class Cart < ApplicationRecord
   attribute :status, :string, default: PENDING
   validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
   belongs_to :user
+  has_many :charges, :as => :buyable
   has_many :cart_items
 
   def subtotal_cents

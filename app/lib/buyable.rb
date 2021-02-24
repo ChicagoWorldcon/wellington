@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-#
-# Copyright 2020 Victoria Garcia
+
+# Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class CreateCarts < ActiveRecord::Migration[6.1]
-  def change
-    create_table :carts do |t|
-      t.references :user, index: true, null: false, foreign_key: true
-      t.string :status, null: false, default: "pending"
-      t.references :buyable, polymorphic:true, index: true, null: false
-      t.timestamps
-    end
+module Buyable
+  # Buyable is  a module that needs to be included in
+  # the model for anything that is going to be the basis of
+  # a Stripe charge.  (As of this writing, that's Reservation and Cart.
+  #
+  # It facilitates a polymorphic association within Charge.
+
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :charges, :as => :buyable
+  end
+
+  def buyable_class
+    self.buyable_type
   end
 end
