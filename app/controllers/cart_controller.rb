@@ -22,7 +22,8 @@ class CartController < ApplicationController
   before_action :locate_cart
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 
-  before_action :verify_all_cart_contents, only: [:submit_online_payment, :pay_with_cheque, :preview_purchase, :move_all_saved_items_to_cart]
+  before_action :verify_all_cart_contents, only: [:move_all_saved_items_to_cart]
+  before_action :all_contents_confirmed_ready_for_payment?, only:[:submit_online_payment, :pay_with_cheque, :preview_purchase]
 
   before_action :locate_membership_offer_via_params, only: [:add_reservation_to_cart]
   before_action :generate_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
@@ -51,15 +52,6 @@ class CartController < ApplicationController
     end
     flash[:messages] = @our_cart_item.errors.messages
     redirect_back(fallback_location: root_path)
-  end
-
-  def submit_online_payment
-    #TODO
-    @active_cart = CartItemsHelper.cart_items_for_now(@cart)
-  end
-
-  def pay_with_cheque
-    #TODO
   end
 
   def destroy
@@ -223,6 +215,19 @@ class CartController < ApplicationController
     # end
   end
 
+  def submit_online_payment
+    service = PayForCart.new(@cart)
+    if service.call
+      flash[:notice] = %{
+        Thank you for your purchase!
+      }
+    end
+    render :cart
+  end
+
+  def pay_with_cheque
+  end
+
   private
 
   def require_nonsupport_login
@@ -334,5 +339,14 @@ class CartController < ApplicationController
       verified = false
     end
     verified
+  end
+
+  def all_contents_confirmed_ready_for_payment?
+    confirmed = true
+    if !CartItemesHelper.cart_contents_ready_for_payment?(@cart)
+      flash[:alert] = "there is a problem with one or more of your items."
+      confirmed = false
+    end
+    confirmed
   end
 end
