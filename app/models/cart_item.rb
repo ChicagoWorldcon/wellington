@@ -114,29 +114,16 @@ class CartItem < ApplicationRecord
     end
   end
 
+  def item_ready_for_payment?
+    ready = confirm_availability
+    if self.kind == MEMBERSHIP
+      ready = ready && confirm_beneficiary
+    end
+    ready
+  end
+
   def item_still_available?
-    # Note: This is currently written so as to make unavailability a
-    # permanent condition. Once something has become unavailable, it
-    # never becomes available again.   That, of course, is something
-    # that could be changed easily later on, as requirements change.
-
-
-    # TODO: See if this can be better accomplished
-    # with the ActiveScopes concern. NB-- right now,
-    # I feel like it's kind of good the way it is.
-  confirmed = (
-    self.available &&
-    self.item_display_name != UNKNOWN &&
-    self.acquirable.active? &&
-    self.acquirable_type.constantize.active.where(
-      id: self.acquirable_id,
-      name: self.item_name_memo,
-      price_cents: self.item_price_memo
-      ).present?
-    )
-    self.available = confirmed
-    self.save
-    self.available
+    confirm_availability
   end
 
   private
@@ -165,6 +152,41 @@ class CartItem < ApplicationRecord
 
   def find_beneficiary
     self.benefitable if self.kind == MEMBERSHIP
+  end
+
+  def confirm_beneficiary
+    confirmed_beneficiary = false
+    if self.benefitable.present?
+      self.incomplete = self.incomplete && self.beneficiary.valid?
+      self.save
+      confirmed_beneficiary = self.benefitable.valid?
+    end
+    confirmed_beneficiary
+  end
+
+  def confirm_availability
+    # Note: This is currently written so as to make unavailability a
+    # permanent condition. Once something has become unavailable, it
+    # never becomes available again.   That, of course, is something
+    # that could be changed easily later on, as requirements change.
+
+
+    # TODO: See if this can be better accomplished
+    # with the ActiveScopes concern. NB-- right now,
+    # I feel like it's kind of good the way it is.
+  confirmed = (
+    self.available &&
+    self.item_display_name != UNKNOWN &&
+    self.acquirable.active? &&
+    self.acquirable_type.constantize.active.where(
+      id: self.acquirable_id,
+      name: self.item_name_memo,
+      price_cents: self.item_price_memo
+      ).present?
+    )
+    self.available = confirmed
+    self.save
+    self.available
   end
 
   def note_acquirable_details
