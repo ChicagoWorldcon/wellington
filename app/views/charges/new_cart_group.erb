@@ -1,0 +1,53 @@
+<%
+# Copyright 2021 Victoria Garcia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the fLicense is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+%>
+
+<h1>
+  Pay for Shopping Cart Contents
+</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        <%= form_tag(reservation_charges_path, "id" => "cart-charge-form", "data-stripe" => stripe_config(@existing_cart)) do %>
+          <article>
+            <div id="error_explanation"></div>
+
+            <h2>
+              The total due for this order is  <%= @existing_cart.subtotal %>.
+            </h2>
+          </article>
+          <%= hidden_field_tag(:stripeToken) %>
+          <%= hidden_field_tag(:stripeEmail) %>
+          <%= hidden_field_tag(:cart, @existing_cart.id) %>
+          <div class="l-v-spacing-both">
+            <div class="form-group">
+              <%= submit_tag("Pay Now", id: "cart-pay-button", class: "btn btn-m-full-width") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <% @existing_cart.cart_items.each do |cart_item| %>
+          <%= render("cart_item_card", cart_item: cart_item) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
