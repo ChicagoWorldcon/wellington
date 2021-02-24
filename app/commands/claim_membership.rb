@@ -24,6 +24,7 @@ class ClaimMembership
   attr_reader :customer, :membership, :membership_number
 
   def initialize(membership, customer:, membership_number: nil)
+    binding.pry
     @customer = customer
     @membership = membership
     @membership_number = membership_number
