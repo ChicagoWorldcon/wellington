@@ -216,13 +216,17 @@ class CartController < ApplicationController
   end
 
   def submit_online_payment
+    binding.pry
     service = PayForCart.new(@cart)
-    if service.call
-      flash[:notice] = %{
-        Thank you for your purchase!
-      }
+    service.call
+    if service.good_to_go
+      flash[:notice] = "Thank you for your purchase!"
+    else
+      flash[:alert] = "There were some problems with your cart"
+      @cart.reload
+      render :cart and return
     end
-    render :cart
+    
   end
 
   def pay_with_cheque

@@ -34,7 +34,7 @@
  #         *   Make the necessary model changes
  #         *   Do the migration (it's drafted, and the draft is in Notes)]
 
-class PayForCart
+class PrepCartForPayment
 
   MEMBERSHIP = "membership"
 
