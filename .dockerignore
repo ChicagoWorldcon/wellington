@@ -26,12 +26,14 @@
 /.bundle
 /.vscode/*
 /.direnv
-/log/*
-/tmp/*
+/log/
+/tmp/
 /node_modules
 /yarn-error.log
 .byebug_history
 .vscode/*
+.DS_Store
+*.log
 
 # Timings per spec, good for debugging slow specs
 spec/examples.txt
