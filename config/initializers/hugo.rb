@@ -19,7 +19,8 @@
 # ENV["HUGO_CLOSED_AT="2020-08-02T12:00:00+1200"
 
 class SetHugoGlobals
-  RUNNING_IN_CI = ENV["GITLAB_CI_RUNNING"].present?
+  RUNNING_IN_CI = ENV["GITLAB_CI_RUNNING"].present? || ENV["CI"] == "true"
+  HUGO_GLOBALS_NEEDED = !RUNNING_IN_CI && Rails.env.production?
 
   def call
     $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
@@ -31,17 +32,17 @@ class SetHugoGlobals
 
   def time_from(lookup)
     time_string = ENV[lookup]
-    assert_pressent_on_production!(time_string, lookup)
-    parse!(time_string, lookup)
+    assert_present_on_production!(time_string, lookup)
+    parse!(time_string, lookup) if time_string.present?
   end
 
-  def assert_pressent_on_production!(time_string, lookup)
-    if time_string.nil?
+  def assert_present_on_production!(time_string, lookup)
+    if time_string.nil? && HUGO_GLOBALS_NEEDED
       puts
       puts "Missing requried environment variable #{lookup}"
       puts "Please check your .env"
       puts
-      exit 1 if !RUNNING_IN_CI && Rails.env.production?
+      exit 1
     end
   end
 
