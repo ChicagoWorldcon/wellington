@@ -68,6 +68,7 @@ class Export::NominationRow
 
       reservation.membership_number,
       user.email,
+      user.sign_in_count,
       contact.preferred_first_name,
       contact.preferred_last_name,
       contact.title,

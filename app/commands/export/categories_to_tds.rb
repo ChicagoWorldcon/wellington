@@ -2,6 +2,8 @@
 
 # Copyright 2020 Matthew B. Gray
 # Copyright 2021 Fred Bauer
+# Licensed under the Apache License, Version 2.0
+
 #15-Feb 21 FNB remove retro. Other fixes for TDS
 
 # Export::CategoriesToTds puts categories stored in our system and syncs them with Dave's SQL Server setup

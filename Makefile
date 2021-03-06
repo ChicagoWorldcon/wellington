@@ -84,7 +84,7 @@ sidekiq:
 # Workflows speicifc to conzealand
 # Gives you a full environment, seeded database
 # Reset database by setting NAPALM=true in your .env
-dc-start: conzealand-stop
+dc-start: dc-stop
 	docker-compose -f docker-compose-with-rails.yml up # Create and start containers
 
 # stops application containers
@@ -92,7 +92,7 @@ dc-stop:
 	docker-compose -f docker-compose-with-rails.yml stop
 
 # stops and removes all docker assets used by this application
-dc-clean: stop
+dc-clean: dc-stop
 	docker-compose -f docker-compose-with-rails.yml down --volumes --rmi all # Stop and remove containers, networks, images, and volumes
 
 # opens up a REPL that lets you run code in the project
