@@ -10,7 +10,7 @@
 # It's configured through config/database.yml and inherited by most things in the models directory
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
-  strip_attributes
+  strip_attributes :collapse_spaces => true
 
   protected
 
