@@ -24,6 +24,7 @@ require 'time'
 require_relative '../validators/email_for_pubs_validator'
 
 class ChicagoContact < ApplicationRecord
+
   include Benefitable
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
@@ -69,6 +70,7 @@ class ChicagoContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items, :as => :benefitable
 
   attr_reader :for_import
   attr_accessor :dob_array
@@ -120,6 +122,26 @@ class ChicagoContact < ApplicationRecord
     end
   end
 
+  def shortened_display_name
+    if preferred_first_name.present? ^ preferred_last_name.present?
+      if preferred_first_name.present?
+        "#{preferred_first_name}"
+      else
+        "#{preferred_last_name}"
+      end
+    elsif preferred_first_name.present? && preferred_last_name.present?
+      "#{preferred_first_name[0, 1]}. #{preferred_last_name}"
+    elsif first_name.present? ^ last_name.present?
+      if first_name.present?
+        "#{first_name}"
+      else
+        "#{last_name}"
+      end
+    else
+      "#{first_name[0, 1]}. #{last_name}"
+    end.strip
+  end
+
   def name_for_cart
     self.to_s
   end
@@ -129,9 +151,9 @@ class ChicagoContact < ApplicationRecord
   end
 
   def fun_badge_title?
-    return false if !badge_title.present?        # if you've set one
+    return false if !badge_title.present?  # if you've set one
     return false if badge_title.match(/\s/)      # breif, so doesn't have whitespace
-    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred nam
+    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
   end
 end

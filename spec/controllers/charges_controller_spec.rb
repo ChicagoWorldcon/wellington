@@ -68,7 +68,7 @@ RSpec.describe ChargesController, type: :controller do
       create(:charge,
         amount: amount_posted,
         user: user,
-        reservation: reservation,
+        buyable: reservation,
       )
     end
 
@@ -147,7 +147,7 @@ RSpec.describe ChargesController, type: :controller do
           let(:amount_owed) { 0 }
 
           before do
-            create(:charge, amount: 340_00, reservation: reservation, user: user)
+            create(:charge, amount: 340_00, buyable: reservation, user: user)
           end
 
           it "redirects to the reservation" do
@@ -168,8 +168,8 @@ RSpec.describe ChargesController, type: :controller do
           let(:amount_owed) { Money.new(110_00) }
 
           before do
-            create(:charge, amount: 100_00, reservation: reservation, user: user)
-            create(:charge, amount: amount_posted, reservation: reservation, user: user)
+            create(:charge, amount: 100_00, buyable: reservation, user: user)
+            create(:charge, amount: amount_posted, buyable: reservation, user: user)
           end
 
           it "redirects to the reservation" do

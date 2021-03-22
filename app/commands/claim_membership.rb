@@ -24,14 +24,13 @@ class ClaimMembership
   attr_reader :customer, :membership, :membership_number
 
   def initialize(membership, customer:, membership_number: nil)
-    binding.pry
     @customer = customer
     @membership = membership
     @membership_number = membership_number
   end
 
   def call
-    customer.transaction do
+    ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
       Reservation.lock # pessimistic membership number uniqueness
       as_at = Time.now
       reservation = Reservation.create!(

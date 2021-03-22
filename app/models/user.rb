@@ -31,6 +31,12 @@ class User < ApplicationRecord
   has_many :claims
   has_many :notes
   has_many :reservations, through: :active_claims
+  has_many :carts
+
+  # See Cart's validations, one active, pending cart and one active, processing cart at a time. 
+  has_one  :active_pending_cart, -> () { active_pending }, class_name: "Cart"
+  has_one  :active_processing_cart, -> () { active_processing }, class_name: "Cart"
+
 
   validates :email, presence: true, uniqueness: true
   validates :hugo_download_counter, presence: true

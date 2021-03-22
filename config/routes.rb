@@ -59,17 +59,18 @@ Rails.application.routes.draw do
 
   get '/cart', to: 'cart#show', as: 'cart'
   delete '/cart/empty', to: 'cart#destroy', as: 'cart_empty'
-  get '/cart/preview_purchase', to: 'cart#preview_purchase', as: 'cart_preview_purchase'
+  get '/cart/preview_online_purchase', to: 'cart#preview_online_purchase', as: 'cart_preview_online_purchase'
   post '/cart/pay_online', to: 'cart#submit_online_payment', as: 'cart_pay_online'
   post '/cart/pay_with_cheque', to: 'cart#pay_with_cheque', as: 'cart_pay_with_cheque'
+  post '/cart/pay_by_installment', to: 'cart#pay_by_installment', as: 'cart_installments'
   patch '/cart/verify', to: 'cart#verify_all_items_availability', as: 'cart_verify_all'
   delete '/cart/clear_all_active', to: 'cart#destroy_active', as: 'cart_clear_all_active'
   patch 'cart/save_all_for_later', to: 'cart#save_all_items_for_later', as: 'cart_save_all'
   patch 'cart/activate_all_saved', to: 'cart#move_all_saved_items_to_cart', as: 'cart_activate_all'
   delete '/cart/clear_all_saved', to: 'cart#destroy_saved', as: 'cart_clear_all_saved'
 
-
   scope :cart, only: [:show, :create, :edit, :update] do
+    get :new_group_charge, to: 'charges#new_group_charge', as: 'charge_for_cart'
     resources :cart_items, only: [:index, :show, :edit, :update] do
       get 'index_current_cart_items', :on => :collection, as: 'current_cart_items'
       get 'edit_membership', :on => :member
@@ -80,10 +81,17 @@ Rails.application.routes.draw do
       delete 'remove_single_item', :on => :member, to: 'cart#remove_single_item', as: 'remove_single'
       patch 'save_item_for_later', :on => :member, to: 'cart#save_item_for_later', as: 'save_single'
       patch 'move_item_to_cart', :on => :member, to: 'cart#move_item_to_cart', as: 'move_single'
+      delete 'remove_single_checkout_item', :on => :member, to:
+      'cart#remove_single_checkout_item', as: 'remove_single_checkout'
+      patch 'save_single_checkout_item_for_later', :on => :member, to: 'cart#save_single_checkout_item_for_later', as: 'save_single_checkout'
+      patch 'confirm_single_checkout_item_availability', :on => :member, to: 'cart#check_single_checkout_item_availability', as: 'availability_for_single_checkout'
     end
   end
 
-  match 'cart_items/create' => 'cart_items#create', via: :post, :as => 'create_item'
+  match 'charges/cart_payment_confirmation' => 'charges#group_charge_confirmation', via: :get, :as => 'group_charge_confirmation'
+
+  match 'charges/create_group_charge' => 'charges#create_group_charge', via: :post, :as => 'create_group_charge'
+
   resources :credits
   resources :landing
   resources :memberships
@@ -99,6 +107,8 @@ Rails.application.routes.draw do
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
+
+  match 'cart_items/create' => 'cart_items#create', via: :post, :as => 'create_item'
 
 
 

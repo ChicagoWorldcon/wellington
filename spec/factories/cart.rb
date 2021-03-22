@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :cart do
     association :user
     status {"pending"}
+    active_from { 1.week.ago }
 
     trait :with_basic_items do
       after(:create) do |new_cart, _evaluator|

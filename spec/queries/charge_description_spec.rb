@@ -34,7 +34,7 @@ RSpec.describe ChargeDescription do
     subject(:for_accounts) { ChargeDescription.new(charge).for_accounts }
 
     let(:membership_number) { 5423.to_s }
-    let(:charge) { create(:charge, reservation: unicorn_reservation) }
+    let(:charge) { create(:charge, buyable: unicorn_reservation) }
 
     let(:unicorn_reservation) do
       create(:reservation, :with_claim_from_user, :instalment,
@@ -59,13 +59,13 @@ RSpec.describe ChargeDescription do
 
     context "when charge succeeds" do
       let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, reservation: unicorn_reservation) }
+      let(:charge) { create(:charge, buyable: unicorn_reservation) }
       it { is_expected.to_not match(/failed/i) }
     end
 
     context "when charge fails" do
       let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, :failed, reservation: unicorn_reservation) }
+      let(:charge) { create(:charge, :failed, buyable: unicorn_reservation) }
       it { is_expected.to match(/failed/i) }
     end
   end

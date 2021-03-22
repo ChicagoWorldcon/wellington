@@ -38,10 +38,13 @@ CREATE TABLE public.cart_items (
     later boolean DEFAULT false NOT NULL,
     available boolean DEFAULT true NOT NULL,
     incomplete boolean DEFAULT false NOT NULL,
+    processed boolean DEFAULT false NOT NULL,
     acquirable_type character varying NOT NULL,
     acquirable_id bigint NOT NULL,
     benefitable_type character varying,
     benefitable_id bigint,
+    holdable_type character varying,
+    holdable_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -74,6 +77,8 @@ CREATE TABLE public.carts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     status character varying DEFAULT 'pending'::character varying NOT NULL,
+    active_from timestamp without time zone NOT NULL,
+    active_to timestamp without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1049,6 +1054,13 @@ CREATE INDEX index_cart_items_on_benefitable ON public.cart_items USING btree (b
 --
 
 CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_id);
+
+
+--
+-- Name: index_cart_items_on_holdable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_holdable ON public.cart_items USING btree (holdable_type, holdable_id);
 
 
 --

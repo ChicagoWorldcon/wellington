@@ -53,30 +53,4 @@ module ReservationsHelper
       end
     end
   end
-
-  def self.process_reservation_cart_item(c_contact, c_membership)
-    #TODO: Make sure this circularity is actually necessary.
-
-    # What this does:
-    #    1. Via ClaimMembership:
-    #       a. Assigns a membership number
-    #       b. Creates a reservation with the state: INSTALLMENT
-    #          (unless) the membership's price is zero, and
-    #          with a date-stamp
-    #       c. Creates an Order with a date-stamp
-    #       d. Creates a Claim with a date-stamp
-    new_reservation = current_user.transaction do
-      service = ClaimMembership.new(c_membership, customer: current_user)
-      new_reservation = service.call
-      c_contact.claim = new_reservation.active_claim
-      c_contact.save!
-      new_reservation
-    end
-
-    yield new_reservation
-  end
-
-  def process_reservation_cart_item(c_item)
-    ReservationsHelper.process_reservation_cart_item(c_item)
-  end
 end

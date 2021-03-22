@@ -17,6 +17,7 @@
 require "rails_helper"
 
 RSpec.describe CartController, type: :controller do
+  render_views
 
   let(:contact_model_key) { Claim.contact_strategy.to_s.underscore.to_sym }
 
@@ -60,7 +61,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "#show" do
     context "when a first-time user is signed in" do
-      render_views
       let(:naive_user) { create(:user)}
       before do
         sign_in(naive_user)
@@ -108,7 +108,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when a support user is signed in" do
-      render_views
 
       before do
         sign_in(support_user)
@@ -143,7 +142,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "#add_reservation_to_cart" do
     context "when the membembership is active and the beneficiary has all the necessary info" do
-      render_views
       let(:adult) { create(:membership, :adult) }
       let(:offer_valid) { MembershipOffer.new(adult) }
 
@@ -166,11 +164,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders the cart template" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "locates the user's cart" do
@@ -331,7 +329,6 @@ RSpec.describe CartController, type: :controller do
   describe "#destroy" do
 
     context "when the cart is empty" do
-      render_views
 
       let!(:empty_cart) { create(:cart)}
       let!(:empty_user) { empty_cart.user }
@@ -348,11 +345,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not destroy the Cart object" do
@@ -373,7 +370,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart has every kind of item" do
-      render_views
 
       let!(:full_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
       let!(:full_cart_count) { full_cart.cart_items.count }
@@ -390,11 +386,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -413,6 +409,8 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 items" do
+      render_views false
+
       let!(:hundred_cart) {create(:cart, :with_100_mixed_items)}
       let!(:hundred_cart_user) { hundred_cart.user }
       let!(:hundred_cart_id) { hundred_cart.id }
@@ -428,7 +426,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "Does not destroy the Cart object" do
@@ -450,7 +448,6 @@ RSpec.describe CartController, type: :controller do
   describe "#destroy_active" do
 
     context "when the cart is empty" do
-      render_views
 
       let!(:zero_cart) { create(:cart)}
       let!(:zero_cart_user) { zero_cart.user }
@@ -467,11 +464,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not destroy the Cart object" do
@@ -507,11 +504,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -535,6 +532,7 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 mixed items" do
+      render_views false
 
       let!(:hundred_mixed_cart) {create(:cart, :with_100_mixed_items)}
       let!(:hundred_mixed_user) { hundred_mixed_cart.user }
@@ -551,11 +549,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -583,7 +581,6 @@ RSpec.describe CartController, type: :controller do
   describe "#destroy_saved" do
 
     context "when the cart is empty" do
-      render_views
 
       let!(:blank_cart) { create(:cart)}
       let!(:blank_cart_user) { blank_cart.user }
@@ -600,11 +597,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not destroy the Cart object" do
@@ -624,7 +621,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart has every kind of item" do
-      render_views
 
       let!(:variety_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
       let!(:variety_cart_id) { variety_cart.id }
@@ -641,11 +637,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -671,6 +667,7 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 mixed items" do
+      render_views false
 
       let!(:hundred_variety_cart) {create(:cart, :with_100_mixed_items)}
       let!(:hundred_variety_user) { hundred_variety_cart.user }
@@ -687,11 +684,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -719,7 +716,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "PATCH #save_all_items_for_later" do
     context "when the cart is empty" do
-      render_views
       let!(:hollow_cart) { create(:cart)}
       let!(:hollow_cart_user) { hollow_cart.user }
       let!(:hollow_cart_count) { hollow_cart.cart_items.count }
@@ -735,11 +731,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not destroy the Cart object" do
@@ -759,7 +755,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart has only basic items" do
-      render_views
 
       let!(:basic_cart) {create(:cart, :with_basic_items)}
       let!(:basic_cart_id) { basic_cart.id }
@@ -780,11 +775,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -826,7 +821,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart already contains saved items" do
-      render_views
       let!(:all_saved_cart) {create(:cart, :with_items_for_later)}
       let!(:all_saved_cart_id) { all_saved_cart.id }
       let!(:all_saved_cart_count) { all_saved_cart.cart_items.count }
@@ -845,11 +839,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -895,7 +889,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "Does not destroy the Cart object" do
@@ -934,6 +928,8 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 items" do
+      render_views false
+
       let!(:century_cart) {create(:cart, :with_100_mixed_items)}
       let!(:century_cart_id) { century_cart.id }
       let!(:century_cart_count) { century_cart.cart_items.count }
@@ -949,7 +945,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "Does not destroy the Cart object" do
@@ -979,7 +975,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "PATCH #move_all_saved_items_to_cart" do
     context "when the cart is empty" do
-      render_views
 
       let!(:e_cart) {create(:cart)}
       let!(:e_cart_id) { e_cart.id }
@@ -996,11 +991,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "sets a flash notice about not finding any saved items" do
@@ -1021,7 +1016,7 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart starts with only saved items" do
-      render_views
+
 
       let!(:l_cart) {create(:cart, :with_items_for_later)}
       let!(:l_cart_id) { l_cart.id }
@@ -1042,12 +1037,12 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
         expect(subject).to set_flash[:notice].to(/successfully/)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -1088,6 +1083,7 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 items" do
+      render_views false
 
       let!(:c_cart) {create(:cart, :with_100_mixed_items)}
       let!(:c_cart_id) { c_cart.id }
@@ -1104,12 +1100,12 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
         expect(subject).to set_flash[:notice].to(/successfully moved/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Does not destroy the Cart object" do
@@ -1143,7 +1139,6 @@ RSpec.describe CartController, type: :controller do
   describe "#verify_all_items_availability" do
 
     context "when the cart contains only basic items" do
-      render_views
 
       let!(:bas_cart) {create(:cart, :with_basic_items)}
       let!(:bas_cart_id) { bas_cart.id }
@@ -1162,12 +1157,12 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
         expect(subject).not_to set_flash[:alert]
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not change the total number of CartItems in the cart" do
@@ -1182,7 +1177,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains only expired items" do
-      render_views
 
       let!(:exp_cart) {create(:cart, :with_expired_membership_items)}
       let!(:exp_cart_id) { exp_cart.id }
@@ -1201,11 +1195,11 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "sets a flash alert" do
@@ -1225,7 +1219,6 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains a mix of problematic items" do
-      render_views
       let!(:prob_cart) {create(:cart, :with_all_problematic_items)}
       let!(:prob_cart_id) { prob_cart.id }
       let!(:prob_cart_count) { prob_cart.cart_items.count }
@@ -1243,15 +1236,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert]
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not change the total number of CartItems in the cart" do
@@ -1267,7 +1260,7 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains a mix of problematic and non-problematic items" do
-      render_views
+
       let!(:assorted_cart) {create(:cart, :with_all_problematic_items, :with_free_items, :with_basic_items)}
       let!(:assorted_cart_id) { assorted_cart.id }
       let!(:assorted_cart_count) { assorted_cart.cart_items.count }
@@ -1285,15 +1278,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert]
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not change the total number of CartItems in the cart" do
@@ -1309,6 +1302,8 @@ RSpec.describe CartController, type: :controller do
     end
 
     xcontext "when the cart contains 100 items" do
+      render_views false
+
       let!(:hundo_cart) {create(:cart, :with_100_mixed_items)}
       let!(:hundo_cart_id) { hundo_cart.id }
       let!(:hundo_cart_count) { hundo_cart.cart_items.count }
@@ -1324,15 +1319,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert]
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not change the total number of CartItems in the cart" do
@@ -1343,7 +1338,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "DELETE #remove_single_item" do
     context "when the item is basic" do
-      render_views
 
       let(:bsc_cart) { create(:cart, :with_basic_items) }
       let(:bsc_cart_id) { bsc_cart.id }
@@ -1363,15 +1357,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about succeeding" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "removes the targeted item from the cart" do
@@ -1408,15 +1402,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about succeeding" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "removes the targeted item from the cart" do
@@ -1455,15 +1449,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about succeeding" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "removes the targeted item from the cart" do
@@ -1497,15 +1491,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about succeeding" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "removes the targeted item from the database" do
@@ -1515,6 +1509,8 @@ RSpec.describe CartController, type: :controller do
     end
 
     context "when the cart contains 100 items" do
+      render_views false
+
       let(:benj_cart) { create(:cart, :with_100_mixed_items) }
       let(:benj_cart_id) { benj_cart.id }
       let(:benj_cart_user) { benj_cart.user }
@@ -1533,15 +1529,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about succeeding" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "removes the targeted item from the cart" do
@@ -1649,10 +1645,9 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  describe "PATCH verify_single_item_availability" do
+  describe "PATCH #verify_single_item_availability" do
 
     context "when the item is basic" do
-      render_views
 
       let(:bbb_cart) { create(:cart, :with_basic_items) }
       let(:bbb_cart_user) { bbb_cart.user }
@@ -1671,15 +1666,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the item being available" do
         expect(subject).to set_flash[:notice].to(/good news/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute set to true" do
@@ -1705,15 +1700,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a positive flash notice" do
         expect(subject).to set_flash[:notice].to(/good news/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute set to true" do
@@ -1740,15 +1735,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute changed to false" do
@@ -1776,15 +1771,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute changed to false" do
@@ -1813,15 +1808,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute changed to false" do
@@ -1849,15 +1844,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute changed to false" do
@@ -1885,15 +1880,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' remain set to false" do
@@ -2003,7 +1998,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
@@ -2011,8 +2006,8 @@ RSpec.describe CartController, type: :controller do
         expect(subject).to set_flash[:alert].to(/no longer/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'available' attribute changed to false" do
@@ -2025,7 +2020,6 @@ RSpec.describe CartController, type: :controller do
 
   describe "PATCH #save_item_for_later" do
     context "when the item is basic" do
-      render_views
 
       let(:bbbb_cart) { create(:cart, :with_basic_items) }
       let(:bbbb_cart_user) { bbbb_cart.user }
@@ -2045,15 +2039,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute changed to true" do
@@ -2081,15 +2075,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "does not change the item's later attribute's value of true" do
@@ -2117,15 +2111,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "changes the item's later attribute's value to true" do
@@ -2153,15 +2147,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "change the item's 'later' attribute's value to true" do
@@ -2190,15 +2184,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to true" do
@@ -2226,15 +2220,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the change being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to true" do
@@ -2262,15 +2256,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the operationn being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to true" do
@@ -2386,15 +2380,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the operation being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to true" do
@@ -2424,15 +2418,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "Changes the item's later attribute's value to false" do
@@ -2460,15 +2454,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "changes the item's later attribute's value to false" do
@@ -2496,15 +2490,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "change the item's 'later' attribute's value to false" do
@@ -2533,15 +2527,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash alert" do
         expect(subject).to set_flash[:notice].to(/successfully/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to false" do
@@ -2569,15 +2563,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the change being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to false" do
@@ -2605,15 +2599,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the operationn being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to false" do
@@ -2742,15 +2736,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about the operation being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "ends with the target item having its 'later' attribute's value changed to false" do
@@ -2779,15 +2773,15 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "sets a flash notice about being successful" do
         expect(subject).to set_flash[:notice].to(/successful/i)
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart)
       end
 
       it "results in no change to the target item's 'later' attribute's value of false" do

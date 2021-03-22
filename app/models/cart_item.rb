@@ -54,11 +54,21 @@ class CartItem < ApplicationRecord
   # but we expect that eventually there may be t-shirts and the
   # like.  Donations and upgrades would also be forms of :acquirable, if we made them addable to the cart.
   belongs_to :acquirable, :polymorphic => true, required: true
+
+  # :holdable refers to a piece of digital property created
+  # through purchase of the cart item. As of this writing,
+  # Reservations are the only Holdables we have, but other examples
+  # might include site-selection tokens, tickets for special events,
+  # etc.
+  belongs_to :holdable, :polymorphic => true, required: false
+
   belongs_to :cart
+  has_one :user, through: :cart
 
   attribute :available, :boolean, default: true
   attribute :later, :boolean, default: false
   attribute :incomplete, :boolean, default: false
+  attribute :processed, :boolean, default: false
 
   before_validation :note_acquirable_details, if: :new_record?
 
@@ -74,6 +84,7 @@ class CartItem < ApplicationRecord
   validates_numericality_of :item_price_memo
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   validates :later, :inclusion => {in: [true, false]}
+  validates :processed, :inclusion => {in: [true, false]}
 
 
   # TODO: Figure out how these should interact with the
@@ -84,6 +95,15 @@ class CartItem < ApplicationRecord
       membership_display_name
     else
       UNKNOWN
+    end
+  end
+
+  def item_unique_id_for_laypeople
+    case self.kind
+    when MEMBERSHIP
+      membership_unique_for_laypeeps
+    else
+      nil
     end
   end
 
@@ -99,7 +119,11 @@ class CartItem < ApplicationRecord
   def item_price_in_cents
     case self.kind
     when MEMBERSHIP
-      membership_price_in_cents
+      if self.item_reservation
+        AmountOwedForReservation.new(self.holdable).amount_owed
+      else
+        membership_price_in_cents
+      end
     else
       0
     end
@@ -114,6 +138,15 @@ class CartItem < ApplicationRecord
     end
   end
 
+  def shortened_item_beneficiary_name
+    case self.kind
+    when MEMBERSHIP
+      shortened_membership_beneficiary_name
+    else
+      ""
+    end
+  end
+
   def item_ready_for_payment?
     ready = confirm_availability
     if self.kind == MEMBERSHIP
@@ -122,8 +155,22 @@ class CartItem < ApplicationRecord
     ready
   end
 
+  def item_reservation
+    item_res = (self.holdable.present? && self.holdable.kind_of?(Reservation)) ? self.holdable : nil
+  end
+
   def item_still_available?
     confirm_availability
+  end
+
+  def membership_cart_item_is_valid?
+    #TODO: Maybe make some kind of informative error situation here.
+    valid = self.acquirable.kind_of?(Membership)
+    if valid
+      valid = false unless self.benefitable.present? && self.benefitable.valid?
+      valid = false unless self.acquirable.present? && self.acquirable.active?
+    end
+    valid
   end
 
   private
@@ -135,7 +182,13 @@ class CartItem < ApplicationRecord
   end
 
   def membership_display_price
-    self.acquirable.display_price_for_cart if self.kind == MEMBERSHIP
+    if self.kind == MEMBERSHIP
+      if self.item_reservation
+        AmountOwedForReservation.new(self.item_reservation).amount_owed.format(with_currency: true)
+      else
+        self.acquirable.display_price_for_cart
+      end
+    end
   end
 
   def membership_price_in_cents
@@ -144,6 +197,10 @@ class CartItem < ApplicationRecord
 
   def membership_beneficiary_name
     self.benefitable.name_for_cart if self.kind == MEMBERSHIP
+  end
+
+  def shortened_membership_beneficiary_name
+    self.benefitable.shortened_display_name if self.kind == MEMBERSHIP
   end
 
   def find_membership
@@ -199,5 +256,10 @@ class CartItem < ApplicationRecord
     # to the associated acquirable in the interim.
     self.item_price_memo = self.acquirable.price_cents
     self.item_name_memo = self.acquirable.name
+  end
+
+  def membership_unique_for_laypeeps
+    return nil if self.kind != MEMBERSHIP
+    self.item_reservation ? self.item_reservation.membership_number : nil
   end
 end

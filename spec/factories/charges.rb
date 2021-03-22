@@ -19,8 +19,7 @@ FactoryBot.define do
   factory :charge do
 
     association :user
-    #association :reservation
-    association :buyable
+    association :buyable, factory: :reservation
 
     amount_currency { $currency }
 

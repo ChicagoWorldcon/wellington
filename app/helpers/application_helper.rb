@@ -23,6 +23,7 @@ module ApplicationHelper
   include ThemeConcern
 
   DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
+  MYSQL_MAX_FIELD_LENGTH = 255
 
   # The root page has an expanded menu
   def navigation_classes

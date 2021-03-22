@@ -32,8 +32,11 @@ class Reservation < ApplicationRecord
   has_many :orders
   has_many :ranks
 
+  has_one :cart_item, :as => :holdable
   has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
   has_one :active_order, ->() { active }, class_name: "Order" # See Order's validations, one order active at a time
+
+  has_one :cart_item
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
 

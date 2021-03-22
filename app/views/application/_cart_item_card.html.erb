@@ -21,7 +21,7 @@
         <h4 class= "acquirable-name"<%= cart_item.item_display_name %></h4>
       </div>
       <div class="card-body">
-        <h5 class="card-title"><%= cart_item.display_price %></h5>
+        <h5 class="card-title"><%= cart_item.item_display_price %></h5>
         <% if cart_item.kind == "membership" %>
           <p><%= t("rights.description") %></p>
           <ul class="list-group list-group-flush mt-3 mb-4">

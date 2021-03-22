@@ -584,8 +584,8 @@ RSpec.describe Cart, type: :model do
           expect(empty_cart.subtotal_display).not_to match(/[1-9]/)
         end
 
-        it "is expressed in US dollars" do
-          expect(empty_cart.subtotal_display).to match(/\A\${1}\d+.{1}\d{2}\z/)
+        it "is expressed in US dollars with an explicit unit abbreviation" do
+          expect(empty_cart.subtotal_display).to match(/\A\${1}\d{1,3}(?:,\d{3})*\.{1}\d{2}\sUSD\z/)
         end
       end
 
@@ -600,9 +600,9 @@ RSpec.describe Cart, type: :model do
           expect(basic_items_cart.subtotal_display).to match(/[1-9]/)
         end
 
-        it "is expressed in US dollars" do
+        it "is expressed in US dollars with an explicit unit abbreviation" do
           # This isn't bulletproof as a currency format validator, but it's more than good enough for the current purpose.
-          expect(basic_items_cart.subtotal_display).to match(/\A\${1}[0-9,]+.{1}\d{2}\z/)
+          expect(basic_items_cart.subtotal_display).to match(/\A\${1}\d{1,3}(?:,\d{3})*\.{1}\d{2}\sUSD\z/)
         end
       end
     end

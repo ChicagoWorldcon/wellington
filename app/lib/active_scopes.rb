@@ -17,6 +17,10 @@
 # TODO Extract to gem, move tests from Claim to this gem
 # TODO Better tests, most of this is integration tested by Claim
 module ActiveScopes
+  PENDING = "pending"
+  PROCESSING = "processing"
+  FOR_LATER = "for_later"
+
   def self.included(base)
     base.after_initialize do
       self[:active_from] ||= Time.now
@@ -39,6 +43,20 @@ module ActiveScopes
         moment,
         moment,
       )
+    }
+
+    # :active_pending, :active_processing, and :active_for_later are
+    # cart-specific scopes.
+    base.scope :active_pending, ->() {
+      active_at(Time.now).where(status: PENDING)
+    }
+
+    base.scope :active_processing, ->() {
+      active_at(Time.now).where(status: PROCESSING)
+    }
+
+    base.scope :active_for_later, ->() {
+      active_at(Time.now).where(status: FOR_LATER)
     }
 
     def active?

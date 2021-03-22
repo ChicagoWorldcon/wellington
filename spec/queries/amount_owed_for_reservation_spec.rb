@@ -39,7 +39,7 @@ RSpec.describe AmountOwedForReservation do
       let(:reservation) { claim.reservation }
 
       before do
-        create(:charge, user: user, reservation: claim.reservation, amount: charge_amount)
+        create(:charge, user: user, buyable: claim.reservation, amount: charge_amount)
       end
 
       it "returns the amount owing" do
@@ -48,7 +48,7 @@ RSpec.describe AmountOwedForReservation do
 
       context "where some have failed" do
         before do
-          create(:charge, user: user, reservation: claim.reservation, amount: charge_amount, state: Charge::STATE_FAILED)
+          create(:charge, user: user, buyable: claim.reservation, amount: charge_amount, state: Charge::STATE_FAILED)
         end
 
         it "returns the amount owing" do

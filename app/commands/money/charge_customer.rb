@@ -18,10 +18,10 @@
 # Money::ChargeCustomer creates a charge record against a User for the Stripe integrations
 # Truthy returns mean the charge succeeded, otherwise check #errors for failure details.
 class Money::ChargeCustomer
-  attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
+  attr_reader :buyable, :user, :token, :charge_amount, :charge, :amount_owed
 
-  def initialize(reservation, user, token, amount_owed, charge_amount: nil)
-    @reservation = reservation
+  def initialize(buyable, user, token, amount_owed, charge_amount: nil)
+    @buyable = buyable
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
@@ -31,7 +31,7 @@ class Money::ChargeCustomer
   def call
     @charge = ::Charge.stripe.pending.create!(
       user: user,
-      reservation: reservation,
+      buyable: buyable,
       stripe_id: token,
       amount: charge_amount,
       comment: "Pending stripe payment",
@@ -57,16 +57,7 @@ class Money::ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    reservation.transaction do
-      @charge.comment = ChargeDescription.new(@charge).for_users
-      @charge.save!
-      if fully_paid?
-        reservation.update!(state: Reservation::PAID)
-      else
-        reservation.update!(state: Reservation::INSTALMENT)
-      end
-    end
-
+    buyable_transaction
     @charge.successful?
   end
 
@@ -79,6 +70,42 @@ class Money::ChargeCustomer
   end
 
   private
+
+  def buyable_transaction
+     if @buyable.kind_of?(Cart)
+       cart_transaction
+     else
+       reservation_transaction
+    end
+  end
+
+  def cart_transaction
+    ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      @charge.comment = ChargeDescription.new(@charge).for_cart_transactions
+      charge.save!
+      reservations_in_cart = CartItemsHelper.locate_all_cart_item_reservations(@buyable)
+      if fully_paid?
+        reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)} if reservations_in_cart.present?
+        @buyable.update!(status: Cart::PAID, active_to: Time.now)
+        @buyable.reload
+      else
+        reservations_in_cart.each {|res| res.update!(state: Reservation::INSTALMENT)} if reservations_in_cart.present?
+        @buyable.reload
+      end
+    end
+  end
+
+  def reservation_transaction
+    ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      @charge.comment = ChargeDescription.new(@charge).for_users
+      @charge.save!
+      if fully_paid?
+        @buyable.update!(state: Reservation::PAID)
+      else
+        @buyable.update!(state: Reservation::INSTALMENT)
+      end
+    end
+  end
 
   def check_charge_amount
     if !charge_amount.present?
@@ -106,9 +133,11 @@ class Money::ChargeCustomer
   end
 
   def create_stripe_charge
+    our_description = @buyable.kind_of?(Cart) ? ChargeDescription.new(@charge).for_cart_transactions(for_account: true) : ChargeDescription.new(@charge).for_accounts
+
     # Note, stripe does everything in cents
     @stripe_charge = Stripe::Charge.create(
-      description: ChargeDescription.new(@charge).for_accounts,
+      description: our_description,
       currency: $currency,
       customer: user.stripe_id,
       source: @card_id,

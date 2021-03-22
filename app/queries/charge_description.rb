@@ -20,6 +20,7 @@
 # And so that accountants get really nice text in reports
 class ChargeDescription
   include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
 
   attr_reader :charge
 
@@ -52,6 +53,46 @@ class ChargeDescription
     ].compact.join(" ")
   end
 
+  def for_cart_transactions(for_account: false)
+
+    base_charge_description = {
+      "for_users" => [
+        maybe_charge_state,
+        formatted_amount,
+        "Fully Paid",
+        "with",
+        payment_type,
+        "for "
+      ].compact.join(" "),
+
+      "for_accounts" => [
+        formatted_amount,
+        "Fully Paid",
+        "for "
+      ].compact.join(" ")
+    }
+
+    cart_charge_desc = for_account ? base_charge_description["for_accounts"] : base_charge_description["for_users"]
+
+    max_cart_description_length = ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH - cart_charge_desc.length
+
+    if max_cart_description_length > 0
+      cart_description = CartContentsDescription.new(
+        charged_cart,
+        max_characters: max_cart_description_length
+      ).describe_cart_contents
+      full_cart_desc = cart_charge_desc.concat(cart_description)
+    else
+      full_cart_desc = cart_charge_desc.concat(" #{worldcon_public_name}")
+    end
+
+    if full_cart_desc.length > ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH
+      return full_cart_desc[0, ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH]
+    end
+
+    full_cart_desc
+  end
+
   private
 
   def maybe_charge_state
@@ -80,9 +121,15 @@ class ChargeDescription
 
   def maybe_member_name
     #TODO: Make sure a version of this for cart is present
+    return if charge.buyable.kind_of?(Cart)
     claims = charge.buyable.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.contact
+  end
+
+  def charged_cart
+    return if !charge.buyable.kind_of?(Cart)
+    @charged_cart ||= charge.buyable
   end
 
   def membership_type
@@ -92,8 +139,8 @@ class ChargeDescription
 
   def charged_membership
     #TODO: Make sure a version of this for cart is present
+    return if !charge.buyable.kind_of?(Reservation)
     return @charged_membership if @charged_membership.present?
-
     orders = charge.buyable.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
   end

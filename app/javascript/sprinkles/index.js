@@ -65,15 +65,19 @@ $(document).ready(() => {
     },
   });
 
-  document.querySelector('#reservation-button').addEventListener('click', (e) => {
+  document.querySelector('#payment-button').addEventListener('click', (e) => {
     e.preventDefault();
 
     document.querySelector('#error_explanation').innerHtml = '';
 
-    let amount = document.querySelector('select#amount').value;
-    amount = amount.replace(/\$/g, '').replace(/,/g, '');
+    let amount = config.prospective_amount > -1 ? config.prospective_amount : document.querySelector('select#amount').value
 
-    amount = parseInt(amount, 10);
+    // let amount = document.querySelector('select#amount').value;
+    if (!Number.isInteger(amount)) {
+        amount = amount.replace(/\$/g, '').replace(/,/g, '');
+        amount = parseInt(amount, 10);
+    }
+
 
     if (Number.isNaN(amount)) {
       // eslint-disable-next-line no-alert

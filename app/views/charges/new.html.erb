@@ -45,7 +45,7 @@
           <%= hidden_field_tag(:reservation, @reservation.id) %>
           <div class="l-v-spacing-both">
             <div class="form-group">
-              <%= submit_tag("Pay for #{@membership} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
+              <%= submit_tag("Pay for #{@membership} membership", id: "payment-button", class: "btn btn-m-full-width") %>
             </div>
           </div>
         <% end %>

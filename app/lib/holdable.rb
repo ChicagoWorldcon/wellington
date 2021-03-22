@@ -14,20 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module Buyable
+module Holdable
   # Buyable is  a module that needs to be included in
-  # the model for anything that is going to be the basis of
-  # a Stripe charge.  (As of this writing, that's Reservation and Cart.)
+  # the model for any kind of possessable digital object
+  # that comes into being pursuant to the purchase of a
+  # CartItem. 
   #
-  # It facilitates a polymorphic association within Charge.
+  # At this time, the only Holdable is Reservation, but we
+  # expect that others (such as Site Selection Tokens) are
+  # likely to be added in the future.
+  #
+  # Holdable facilitates a polymorphic relationship within
+  # CartItem.
 
   extend ActiveSupport::Concern
 
   included do
-    has_many :charges, :as => :buyable
+    has_one :cart_item, :as => :holdable
   end
 
-  def buyable_class
-    self.buyable_type
+  def holdable_class
+    self.holdable_type
   end
 end

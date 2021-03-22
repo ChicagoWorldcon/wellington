@@ -17,19 +17,23 @@
 class CartController < ApplicationController
   include ThemeConcern
 
-  before_action :require_nonsupport_login
+  helper ApplicationHelper
+  helper ChargesHelper
 
+  before_action :require_nonsupport_login
   before_action :locate_cart
-  before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
+  before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability, :remove_single_checkout_item, :save_single_checkout_item_for_later, :check_single_checkout_item_availability]
 
   before_action :verify_all_cart_contents, only: [:move_all_saved_items_to_cart]
-  before_action :all_contents_confirmed_ready_for_payment?, only:[:submit_online_payment, :pay_with_cheque, :preview_purchase]
+  #before_action :all_contents_confirmed_ready_for_payment?, only:[:pay_with_cheque]
+  before_action :now_items_confirmed_ready_for_payment?, only:[:submit_online_payment, :pay_with_cheque]
 
   before_action :locate_membership_offer_via_params, only: [:add_reservation_to_cart]
   before_action :generate_membership_beneficiary_from_params, only: [:add_reservation_to_cart]
 
   PENDING = "pending"
   MEMBERSHIP = "membership"
+  FOR_LATER = "for_later"
 
   def show
     render :cart
@@ -47,7 +51,7 @@ class CartController < ApplicationController
         flash[:status] = :success
         flash[:notice] = "Membership successfully added to cart."
         @cart.reload
-        render :cart and return
+        redirect_to cart_path and return
       end
     end
     flash[:messages] = @our_cart_item.errors.messages
@@ -65,7 +69,7 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:notice] = "Your cart could not be fully emptied."
     end
-    render :cart
+    redirect_to cart_path
   end
 
   def destroy_active
@@ -79,7 +83,7 @@ class CartController < ApplicationController
       flash[:notice] = "One or more items could not be deleted."
     end
     @cart.reload
-    render :cart
+    redirect_to cart_path
   end
 
   def destroy_saved
@@ -92,36 +96,19 @@ class CartController < ApplicationController
       flash[:status] = :failure
       flash[:result_text] = "One or more items could not be deleted."
     end
-    render :cart
+    redirect_to cart_path
   end
 
   def remove_single_item
-    if @target_item
-      target_item_name = @target_item.item_display_name
-      target_item_kind = @target_item.kind
-      @target_item.destroy
-      flash[:notice] = "#{@target_item_name} #{@target_item_kind} was successfully deleted"
-    else
-      flash[:alert] = "This item could not be removed from your cart."
-      if @cart
-        flash[:errors] = @cart.errors.messages
-      end
-    end
+    single_item_remove
     @cart.reload
-    render :cart
+    redirect_to cart_path
   end
 
   def save_item_for_later
-    if @target_item
-      @target_item.later = true
-      if @target_item.save
-        flash[:notice] = "Item successfully saved for later."
-      end
-    else
-      flash[:notice] = "This item could not be saved for later."
-      flash[:messages] = @cart.errors.messages
-    end
-    render :cart
+    single_item_save
+    @cart.reload
+    redirect_to cart_path
   end
 
   def save_all_items_for_later
@@ -132,7 +119,7 @@ class CartController < ApplicationController
       else
         flash[:notice] = "One or more items could not be saved for later"
     end
-    render :cart
+    redirect_to cart_path
   end
 
   def move_item_to_cart
@@ -145,7 +132,7 @@ class CartController < ApplicationController
       flash[:notice] = "This item could not be moved to the cart."
       flash[:messages] = @target_item.errors.messages
     end
-    render :cart
+    redirect_to cart_path
   end
 
   def move_all_saved_items_to_cart
@@ -160,23 +147,124 @@ class CartController < ApplicationController
       flash[:notice] = "No saved items found"
     end
     @cart.reload
-    render :cart
+    redirect_to cart_path
   end
 
 
   def verify_single_item_availability
-    if @target_item.item_still_available?
-      flash[:notice] = "Good news! #{@target_item.item_display_name} is still available."
-    else
-      flash[:alert] = "#{@target_item.item_display_name} is no longer available."
-    end
-    render :cart
+    single_item_availability_check
+    @cart.reload
+    redirect_to cart_path
   end
 
   def verify_all_items_availability
     verify_all_cart_contents
-    render :cart
+    redirect_to cart_path
   end
+
+  def preview_online_purchase
+    recovereds = CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+    @cart.reload
+    if recovereds > 0
+      flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding to purchase preview."
+      redirect_to cart_path and return
+    elsif !now_items_confirmed_ready_for_payment?
+      flash[:notice] = "There is a problem with one or more of your items.  Please review the contents of your cart before proceeding to payment."
+      redirect_to cart_verify_all_path and return
+    else
+      @check_button = just_buying_memberships?
+      @expected_charge = @cart.subtotal_display
+      @items_for_purchase = @cart.items_for_now
+    end
+  end
+
+  def remove_single_checkout_item
+    single_item_remove
+    @cart.reload
+    # @expected_charge = @cart.subtotal_display
+    redirect_to cart_preview_online_purchase_path
+  end
+
+  def save_single_checkout_item_for_later
+    single_item_save
+    @cart.reload
+    # @expected_charge = @cart.subtotal_display
+    redirect_to cart_path
+  end
+
+  def check_single_checkout_item_availability
+    single_item_availability_check
+    @cart.reload
+    # @expected_charge = @cart.subtotal_display
+    redirect_to cart_preview_online_purchase_path
+  end
+
+  def submit_online_payment
+    confirm_ready_to_proceed
+
+    transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      prep_service = PrepCartForPayment.new(@cart)
+      our_results = prep_service.call
+      # our_results
+    end
+
+    if transaction_results[:amount_to_charge] == 0
+      flash[:notice] = "None of your items require payment."
+      # TODO: Figure out if this is the correct redirect
+      redirect_to reservations_path and return
+    end
+
+    if !transaction_results[:good_to_go]
+      flash[:alert] = "There was a problem with one or more of your items!"
+      CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+      @cart.reload
+      #TODO:  Maybe use the _payment_problem.html.erb partial here
+      redirect_to cart_path and return
+    end
+
+    @processing_cart = transaction_results[:processing_cart]
+    @prospective_charge_formatted = transaction_results[:amount_to_charge]
+    @prospective_charge_cents = transaction_results[:amount_to_charge].cents
+    #TODO: Refine this message.
+    flash[:notice] = "Your requested reservations have been created."
+
+    render :submit_online_payment
+  end
+
+  def pay_with_cheque
+    confirm_ready_to_proceed
+
+    transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      prep_service = PrepCartForPayment.new(@cart)
+      our_results = prep_service.call
+      # our_results
+    end
+
+    if !transaction_results[:good_to_go]
+      flash[:alert] = "There was a problem with one or more of your items!"
+      CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+      @cart.reload
+      #TODO:  Maybe use the _payment_problem.html.erb partial here
+      redirect_to cart_path and return
+    end
+
+    if transaction_results[:amount_to_charge] == 0
+      flash[:notice] = "None of your items require payment."
+    end
+
+    flash[:notice] = "Your requested reservations have been created. See your email for instructions on payment by cheque."
+
+    transaction_results[:processing_cart].status = Cart::AWAITING_CHEQUE
+    transaction_results[:processing_cart].save
+
+    trigger_cart_waiting_for_cheque_payment_mailer(transaction_results[:processing_cart], transaction_results[:amount_to_charge].cents)
+
+    redirect_to reservations_path
+  end
+
+  ###############################
+  # Don't Know If I Need These: #
+  ###############################
 
   def edit_single_item
     # This will be for going into the reservation data, in theory
@@ -185,51 +273,11 @@ class CartController < ApplicationController
 
   def update
     # TODO: Figure out if this, or some form of this, is actually necessary.
-    # respond_to do |format|
-    #   if @cart.update(cart_params)
-    #     format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
-    #     format.json { render :show, status: :ok, location: @cart }
-    #   else
-    #     format.html { render :edit }
-    #     format.json { render json: @cart.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   def update_cart_info
+    # TODO: figure out if this is necessary.
     # IF I ACTUALLY USE THIS it will be for shipping and billing-type stuff.
-
-
-    # [TODO] Find the cart order and then update
-    # stuff from the params (presumably).
-    # Then:
-    # if @cart.save
-    #   flash[:status] = :success
-    #   flash[:result_text] = "Your order information has been successfully updated!"
-    #   redirect_to cart_path and return
-    # else
-    #   flash[:status] = :failure
-    #   flash[:result_text] = "We were unable to update your order information."
-    #   flash[:messages] = @cart.errors.messages
-    #   redirect_to cart_path and return
-    # end
-  end
-
-  def submit_online_payment
-    binding.pry
-    service = PayForCart.new(@cart)
-    service.call
-    if service.good_to_go
-      flash[:notice] = "Thank you for your purchase!"
-    else
-      flash[:alert] = "There were some problems with your cart"
-      @cart.reload
-      render :cart and return
-    end
-    
-  end
-
-  def pay_with_cheque
   end
 
   private
@@ -242,13 +290,25 @@ class CartController < ApplicationController
   end
 
   def locate_cart
-    @cart ||= Cart.find_by(user_id: current_user.id)
+    @cart ||= Cart.active_pending.find_by(user: current_user)
     @cart ||= create_cart
+    #TODO: Recover failed items(Maybe!!!)
+    CartItemsHelper.recover_failed_processing_items(@cart, current_user)
     if @cart.nil?
       flash[:status] = :failure
       flash[:notice] = "We were unable to find or create your shopping cart."
       redirect_to memberships_path
     end
+  end
+
+  def locate_pending_cart
+    @cart ||= Cart.active_pending.find_by(user: current_user)
+    @cart ||= create_cart(with_status: PENDING)
+  end
+
+  def locate_cart_for_later
+    @cart ||= Cart.active_pending.find_by(user: current_user)
+    @cart ||= create_cart(with_status: FOR_LATER)
   end
 
   def locate_target_item
@@ -291,19 +351,19 @@ class CartController < ApplicationController
     @target_item.item_still_available?
   end
 
-  def create_cart
-    # Status "pending" keeps downstream validations from rejecting the
-    # cart for not having payment info, etc. Not sure if I'm going to have
-    # those yet, but this preserves the option for now.
+  def create_cart(with_status: PENDING)
+    # Status PENDING is for the part of the cart where active items go.
+    # Status FOR_LATER is for the part of the cart where saved items go.
     if user_signed_in? && !support_signed_in?
-      @cart = Cart.new status: PENDING
+      @cart = Cart.new status: with_status
       # current_user is a Devise helper.
       @cart.user_id = User.find_by(id: current_user.id).id
+      @cart.active_from = Time.now
       if @cart.save
         flash[:status] = :success
       else
         flash[:status] = :failure
-        flash[:notice] = "We weren't able to create your shopping cart, so everything is now doomed."
+        flash[:notice] = "We weren't able to fully create your shopping cart."
         flash[:messages] = @cart.errors.messages
       end
       return @cart
@@ -345,12 +405,90 @@ class CartController < ApplicationController
     verified
   end
 
-  def all_contents_confirmed_ready_for_payment?
+  def now_items_confirmed_ready_for_payment?
     confirmed = true
-    if !CartItemesHelper.cart_contents_ready_for_payment?(@cart)
+    if !CartItemsHelper.cart_contents_ready_for_payment?(@cart, true)
       flash[:alert] = "there is a problem with one or more of your items."
       confirmed = false
+      cart.reload
     end
     confirmed
+  end
+
+  def single_item_remove
+    removed = false
+    if @target_item
+      target_item_name = @target_item.item_display_name
+      target_item_kind = @target_item.kind
+      @target_item.destroy
+      removed = true
+      flash[:notice] = "#{@target_item_name} #{@target_item_kind} was successfully deleted"
+    else
+      flash[:alert] = "This item could not be removed from your cart."
+      if @cart
+        flash[:errors] = @cart.errors.messages
+      end
+    end
+    removed
+  end
+
+  def single_item_save
+    saved = false
+    if @target_item
+      @target_item.later = true
+      if @target_item.save
+        saved = true
+        flash[:notice] = "Item successfully saved for later."
+      end
+    else
+      flash[:notice] = "This item could not be saved for later."
+      flash[:messages] = @cart.errors.messages
+    end
+    saved
+  end
+
+  def single_item_availability_check
+    available = false
+    if @target_item.item_still_available?
+      available = true
+      flash[:notice] = "Good news! #{@target_item.item_display_name} is still available."
+    else
+      flash[:alert] = "#{@target_item.item_display_name} is no longer available."
+    end
+    available
+  end
+
+  def just_buying_memberships?
+    CartItemsHelper.now_items_include_only_memberships?(@cart)
+  end
+
+  def confirm_ready_to_proceed
+    recovereds = CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+    if recovereds > 0
+      flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding."
+      redirect_to cart_path and return
+    end
+    if !now_items_confirmed_ready_for_payment?
+      flash[:notice] = "There is a problem with one or more of your items.  Please review your cart before proceeding."
+      redirect_to cart_verify_all_path and return
+    end
+  end
+
+  def trigger_cart_waiting_for_cheque_payment_mailer(cart, amount_outstanding)
+    item_descs = CartContentsDescription.new(
+      cart,
+      with_layperson_uniq_id: true,
+      for_email: true,
+      force_full_contact_name: true
+    ).describe_cart_contents
+
+    PaymentMailer.cart_waiting_for_cheque(
+      user: current_user,
+      item_count: cart.cart_items.size,
+      outstanding_amount: amount_outstanding,
+      item_descriptions: item_descs,
+      transaction_date: Time.now,
+      cart_number: cart.id
+    ).deliver_later
   end
 end

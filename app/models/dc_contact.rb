@@ -67,6 +67,7 @@ class DcContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items, :as => :benefitable
 
   attr_reader :for_import
 

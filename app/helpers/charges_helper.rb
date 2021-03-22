@@ -17,12 +17,11 @@
 # limitations under the License.
 
 module ChargesHelper
-
   include ApplicationHelper
 
-  MEMBERSHIP = "membership"
+  MEMBERSHIP = CartItem::MEMBERSHIP
 
-  def stripe_config(prospective_purchase)
+  def stripe_config(prospective_purchase, prospective_amount = -1)
     our_desc_string = description_str_for_stripe(prospective_purchase)
     return {
         key: Rails.configuration.stripe[:publishable_key],
@@ -30,6 +29,7 @@ module ChargesHelper
         email: prospective_purchase.user.email,
         name: worldcon_public_name_spaceless,
         currency: $currency,
+        prospective_amount: prospective_amount
     }.to_json
   end
 
@@ -37,34 +37,32 @@ module ChargesHelper
 
   def description_str_for_stripe(prospective_purchase)
     description_string = ""
-    if prospective_purchase.kind_of? Reservation
-      description_string = "#{worldcon_public_name} #{prospective_purchase.membership.name} membership"
-    elsif prospective_purchase.kind_of? Cart
-      description_string = cart_contents_description(prospective_purchase)
-    elsif prospective_purchase.kind_of? CartItem
-      description_string = cart_item_description(prospective_purchase)
+    case
+      when prospective_purchase.kind_of?(Reservation)
+        description_string = "#{worldcon_public_name} #{prospective_purchase.membership.name} membership"
+
+      when prospective_purchase.kind_of?(Cart)
+        description_string = cart_contents_description(prospective_purchase)
+
+      when prospective_purchase.kind_of?(CartItem)
+        description_string = cart_item_description(prospective_purchase)
     else
       description_string = "#{worldcon_public_name} item"
     end
 
-    return description_string
+    if description_string.length > ::CartItemsHelper::MYSQL_MAX_FIELD_LENGTH
+      return description_string[0, ::CartItemsHelper::MYSQL_MAX_FIELD_LENGTH]
+    end
+
+    description_string
   end
 
   def cart_contents_description(cart)
-    description_string = ""
-    cart.cart_items.each do |i|
-      if i.kind == MEMBERSHIP
-        item_desc = "#{worldcon_public_name} #{i.item_display_name} membership for #{i.item_beneficiary_name}, "
-      else
-        item_desc = "#{worldcon_public_name} #{i.item_display_name}, "
-      end
-      description_string = description_string.concat(item_desc)
-    end
-    description_string.chomp!(", ")
+    description_string = CartContentsDescription.new(cart).describe_cart_contents
   end
 
   def cart_item_description(cart_item)
     beneficiary_info = cart_item.benefitable.present? ? "for #{cart_item.item_beneficiary_name}" : ""
-    return "#{worldcon_public_name} #{cart_item.display_name} #{beneficiary_info}"
+    return "#{worldcon_public_name} #{cart_item.display_name} #{beneficiary_info}".strip!
   end
 end

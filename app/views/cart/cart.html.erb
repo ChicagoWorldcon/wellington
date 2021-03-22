@@ -57,7 +57,7 @@
           <div class="active-admin-container">
             <h4 style="color:orangered">[This is where the control buttons for the whole active cart go]</h4>
             <div class="btn-group payment-buttons" role="group">
-              <%= button_to "Pay Online Now", cart_pay_online_path, method: :post, class: "btn btn-outline-primary" %>
+              <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
               <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
               <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
