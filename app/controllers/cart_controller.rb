@@ -290,9 +290,14 @@ class CartController < ApplicationController
   private
 
   def require_nonsupport_login
-    unless user_signed_in? && !support_signed_in?
-      flash[:alert] = "You must be signed in to access the cart.  If you are a support user attempting to make personal purchases, please log in to your personal (nonsupport) account."
-      redirect_to root_path
+    binding.pry
+    if support_signed_in?
+      binding.pry
+      flash[:alert] = "You are currently logged in as support staff. If you are a support user attempting to make personal purchases, please log in to your personal (nonsupport) account."
+      redirect_to root_path and return
+    elsif !user_signed_in?
+      flash[:alert] = "You must be signed in to access the cart."
+      redirect_to root_path and return
     end
   end
 
