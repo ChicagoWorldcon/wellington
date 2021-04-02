@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PrepCartForPayment
+class CartServices::PrepCartForPayment
 
   MEMBERSHIP = CartItem::MEMBERSHIP
   PENDING = Cart::PENDING

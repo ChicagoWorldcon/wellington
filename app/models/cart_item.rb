@@ -214,8 +214,6 @@ class CartItem < ApplicationRecord
   def confirm_beneficiary
     confirmed_beneficiary = false
     if self.benefitable.present?
-      self.incomplete = self.incomplete && self.beneficiary.valid?
-      self.save
       confirmed_beneficiary = self.benefitable.valid?
     end
     confirmed_beneficiary

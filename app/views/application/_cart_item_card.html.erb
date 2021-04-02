@@ -13,12 +13,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 %>
-<div class = "container cart-item-card-pair-container">
-  <h2>This Is A <%= cart_item.kind.capitalize %> Cart Item</h2>
+<div class = "container cart-item-card-pair-container h-100">
+  <div class="card-header" style="background-color:darkgreen">
+    <h2><%= cart_item.kind.capitalize %></h2>
+  </div>
   <div class = "card-group">
     <div class="card acquirable-card">
       <div class = "card-header text-nowrap">
-        <h4 class= "acquirable-name"<%= cart_item.item_display_name %></h4>
+        <h4 class= "acquirable-name"><%= cart_item.item_display_name %></h4>
       </div>
       <div class="card-body">
         <h5 class="card-title"><%= cart_item.item_display_price %></h5>
@@ -42,13 +44,12 @@
         <% end %>
       </div>
       <div class="card-footer">
-        <%= yield %>
       </div>
     </div>
     <% if cart_item.benefitable.present? %>
       <div class="card benefitable-card">
         <div class = "card-header text-nowrap">
-          <h4 class= "benefitable-name"<%= cart_item.item_beneficiary_name%></h4>
+          <h4 class= "benefitable-name"><%= cart_item.item_beneficiary_name%></h4>
         </div>
         <div class="card-body">
           <div class="card-title">
@@ -60,8 +61,18 @@
           </div>
         </div>
         <div class="card-footer">
-          <%= yield %>
         </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="card-footer" style="background-color:firebrick">
+    <% binding.pry %>
+    <% if !!defined?(admin_buttons) && admin_buttons.present? %>
+      <div class="btn-group checkout-item-admin-buttons" role="group">
+        <% binding.pry %>
+        <% admin_buttons.each do |a_button| %>
+           <%= a_button %>
+        <% end %>
       </div>
     <% end %>
   </div>

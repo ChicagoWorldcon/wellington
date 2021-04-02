@@ -33,10 +33,8 @@
             <div class="form-group">
               <div class="btn-group w-100">
                 <%= submit_tag("Reserve and Pay Online Now", id: "cart-proceed-to-pay-button", class: "btn btn-m-full-width") %>
-                <% if @check_and_installment_buttons %>
+                <% if @check_button %>
                   <div class="col"><input type="submit" value="Reserve and Pay with Cheque" class="btn" formaction="<%= cart_pay_with_cheque_path %>"></div>
-
-                  <div class="col"><input type="submit" value="Reserve and Pay in Installments" class="btn" formaction="<%= cart_installments_path %>"></div>
                 <% end %>
               </div>
             </div>
@@ -48,12 +46,7 @@
     <div class="col-12 col-lg-4">
       <div class="l-v-spacing">
         <% @items_for_purchase.each do |cart_item| %>
-          <%= render("cart_item_card", cart_item: cart_item) %>
-            <div class="btn-group checkout-item-buttons" role="group">
-              <%= button_to "Delete", remove_single_checkout_cart_item_path(cart_item), method: :delete, class: "btn btn-outline-info" %>
-              <%= button_to "Save for Later", save_single_checkout_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
-              <%= button_to "Check Availability", availability_for_single_checkout_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
-            </div>
+          <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item, saving: false)) %>
         <% end %>
       </div>
     </div>

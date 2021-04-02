@@ -99,7 +99,9 @@ module CartItemsHelper
     CartItemsHelper.verify_availability_of_cart_contents(cart)
   end
 
-  def self.cart_contents_ready_for_payment?(cart, now_items_only = false)
+  def self.cart_contents_ready_for_payment?(cart, now_items_only: false)
+    return false if cart.cart_items.blank?
+    return false if now_items_only && cart_items_for_now(cart).blank?
     all_contents_ready = true
     cart.cart_items.each do |i|
       if (now_items_only && !i.later) || !now_items_only
@@ -109,8 +111,8 @@ module CartItemsHelper
     all_contents_ready
   end
 
-  def cart_contents_ready_for_payment?(cart)
-    CartItemsHelper.cart_items_ready_for_payment?(cart)
+  def cart_contents_ready_for_payment?(cart, now_items_only: false)
+    CartItemsHelper.cart_items_ready_for_payment?(cart, now_items_only: false)
   end
 
   def self.destroy_cart_contents(cart)
@@ -217,84 +219,6 @@ module CartItemsHelper
     CartItemsHelper.locate_all_membership_items(cart)
   end
 
-  #TODO: Figure out how much of this failed processing recovery stuff we need or want.
-
-  def self.recover_failed_processing_items(cart, user)
-    recovered = 0
-    if cart.present? && user.present?
-      fail_carts = Cart.active_processing.where(user: user).where.not(id: cart.id)
-      if fail_carts.present?
-        fail_carts.to_ary.each do |f|
-          f.cart_items.each do |i|
-            if unprocessed_reservation_item?(f, i)
-              recovered += 1
-              i.cart = cart
-              i.save!
-            end
-          end
-          f.reload
-          f.status = ::Cart::PAID if mark_failed_cart_paid?(f)
-          f.active_to = Time.now if mark_failed_cart_inactive?(f)
-          f.save
-          # TODO: GET RID OF THIS-- it's just for development
-          if f.active_and_processing == true
-            f.cart_items.each {|i|
-            puts "destroying cart item #{i.id}"
-            i.destroy }
-            puts "destroying cart #{f}"
-            f.destroy
-          end
-        end
-      end
-      cart.reload
-    end
-    recovered
-  end
-
-  def recover_failed_processing_items(cart, user)
-    CartItemsHelper.recover_failed_processing_items(cart, user)
-  end
-
-  def self.unprocessed_reservation_item?(cart, item)
-    return false if (cart.status != PROCESSING || cart.active? == false)
-    return true if (item.kind == MEMBERSHIP && !item.item_reservation.present?)
-    unprocessed = false
-    if (item.item_reservation.present? && item.item_reservation.state == ::Reservation::INSTALMENT &&  item.acquirable.price > 0)
-      unprocessed = (AmountOwedForReservation.new(item.item_reservation).amount_owed == item.acquirable.price)
-    end
-    unprocessed
-  end
-
-  def unprocessed_reservation_item?(cart, item)
-    CartItemsHelper.unprocessed_reservation_item?(cart, item)
-  end
-
-  def self.mark_failed_cart_paid?(cart)
-    return false if cart.status != PROCESSING
-    return false if cart.cart_items.empty?
-    mark_paid = true
-    cart.cart_items.each do |i|
-      if i.item_reservation.present?
-        mark_paid = false if (i.item_reservation.state == INSTALLMENT) && (AmountOwedForReservation.new(i.item_reservation).amount_owed) > 0
-      end
-    end
-    mark_paid
-  end
-
-  def mark_failed_cart_paid?(cart)
-    CartItemsHelper.mark_failed_cart_paid?(cart)
-  end
-
-  def self.mark_failed_cart_inactive?(cart)
-    cart.reload
-    return false if cart.status != PROCESSING
-    return true if cart.cart_items.empty?
-  end
-
-  def mark_failed_cart_inactive?(cart)
-    CartItemsHelper.mark_failed_cart_inactive?(cart)
-  end
-
   def self.locate_all_cart_item_reservations(cart)
     res_ary = []
     if !cart.cart_items.empty?
@@ -317,35 +241,134 @@ module CartItemsHelper
     CartItemsHelper.now_items_include_only_memberships?(cart)
   end
 
-  def self.mark_cart_items_processed(cart, now_items_only = false)
-    cart.reload
-    cart.cart_items.each do |i|
-      i.processed = true if (!i.later || !now_items_only)
-      i.save!
+  def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true)
+    [].tap do |buttons|
+      if deletion
+        buttons << button_to("Delete", remove_single_checkout_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
+      end
+
+      if saving
+        if cart_item.later == true
+          buttons << button_to("Move to Cart", move_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
+        else
+          buttons << button_to("Save for Later", save_single_checkout_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
+        end
+      end
+
+      if availability
+        buttons << button_to("Check Availability", availability_for_single_checkout_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
+      end
     end
   end
 
-  def mark_cart_items_processed(cart, now_items_only = false)
-    CartItemsHelper.mark_cart_items_processed(cart, now_items_only)
-  end
+  #TODO: Figure out how much of this failed processing recovery stuff we need or want.
+  # def self.recover_failed_processing_items(cart, user)
+  #   recovered = 0
+  #   if cart.present? && user.present?
+  #     fail_carts = Cart.active_processing.where(user: user).where.not(id: cart.id)
+  #     if fail_carts.present?
+  #       fail_carts.to_ary.each do |f|
+  #         f.cart_items.each do |i|
+  #           if unprocessed_reservation_item?(f, i)
+  #             recovered += 1
+  #             i.cart = cart
+  #             i.save!
+  #           end
+  #         end
+  #         f.reload
+  #         f.status = ::Cart::PAID if mark_failed_cart_paid?(f)
+  #         f.active_to = Time.now if mark_failed_cart_inactive?(f)
+  #         f.save
+  #         # TODO: GET RID OF THIS-- it's just for development
+  #         if f.active_and_processing == true
+  #           f.cart_items.each {|i|
+  #           puts "destroying cart item #{i.id}"
+  #           i.destroy }
+  #           puts "destroying cart #{f}"
+  #           f.destroy
+  #         end
+  #       end
+  #     end
+  #     cart.reload
+  #   end
+  #   recovered
+  # end
+  #
+  # def recover_failed_processing_items(cart, user)
+  #   CartItemsHelper.recover_failed_processing_items(cart, user)
+  # end
+  #
+  # def self.unprocessed_reservation_item?(cart, item)
+  #   return false if (cart.status != PROCESSING || cart.active? == false)
+  #   return true if (item.kind == MEMBERSHIP && !item.item_reservation.present?)
+  #   unprocessed = false
+  #   if (item.item_reservation.present? && item.item_reservation.state == ::Reservation::INSTALMENT &&  item.acquirable.price > 0)
+  #     unprocessed = (AmountOwedForReservation.new(item.item_reservation).amount_owed == item.acquirable.price)
+  #   end
+  #   unprocessed
+  # end
+  #
+  # def unprocessed_reservation_item?(cart, item)
+  #   CartItemsHelper.unprocessed_reservation_item?(cart, item)
+  # end
+  #
+  # def self.mark_failed_cart_paid?(cart)
+  #   return false if cart.status != PROCESSING
+  #   return false if cart.cart_items.empty?
+  #   mark_paid = true
+  #   cart.cart_items.each do |i|
+  #     if i.item_reservation.present?
+  #       mark_paid = false if (i.item_reservation.state == INSTALLMENT) && (AmountOwedForReservation.new(i.item_reservation).amount_owed) > 0
+  #     end
+  #   end
+  #   mark_paid
+  # end
+  #
+  # def mark_failed_cart_paid?(cart)
+  #   CartItemsHelper.mark_failed_cart_paid?(cart)
+  # end
+  #
+  # def self.mark_failed_cart_inactive?(cart)
+  #   cart.reload
+  #   return false if cart.status != PROCESSING
+  #   return true if cart.cart_items.empty?
+  # end
+  #
+  # def mark_failed_cart_inactive?(cart)
+  #   CartItemsHelper.mark_failed_cart_inactive?(cart)
+  # end
 
-  def self.stamp_cart_inactive(cart)
-    cart.active_to = Time.now
-    cart.save!
-    cart.reload
-  end
 
-  def stamp_cart_inactive(cart)
-    CartItemsHelper.stamp_cart_inactive(cart)
-  end
 
-  def self.post_payment_housekeeping(cart, now_items_only = false)
-    cart.reload
-    mark_cart_items_processed(cart, now_items_only)
-    stamp_cart_inactive(cart)
-  end
-
-  def post_payment_housekeeping(cart, now_items_only = false)
-    CartItemsHelper.post_payment_housekeeping(cart, now_items_only)
-  end
+  # def self.mark_cart_items_processed(cart, now_items_only = false)
+  #   cart.reload
+  #   cart.cart_items.each do |i|
+  #     i.processed = true if (!i.later || !now_items_only)
+  #     i.save!
+  #   end
+  # end
+  #
+  # def mark_cart_items_processed(cart, now_items_only = false)
+  #   CartItemsHelper.mark_cart_items_processed(cart, now_items_only)
+  # end
+  #
+  # def self.stamp_cart_inactive(cart)
+  #   cart.active_to = Time.now
+  #   cart.save!
+  #   cart.reload
+  # end
+  #
+  # def stamp_cart_inactive(cart)
+  #   CartItemsHelper.stamp_cart_inactive(cart)
+  # end
+  #
+  # def self.post_payment_housekeeping(cart, now_items_only = false)
+  #   cart.reload
+  #   mark_cart_items_processed(cart, now_items_only)
+  #   stamp_cart_inactive(cart)
+  # end
+  #
+  # def post_payment_housekeeping(cart, now_items_only = false)
+  #   CartItemsHelper.post_payment_housekeeping(cart, now_items_only)
+  # end
 end

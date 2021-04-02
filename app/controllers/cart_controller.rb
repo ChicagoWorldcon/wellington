@@ -18,6 +18,7 @@ class CartController < ApplicationController
   include ThemeConcern
 
   helper ApplicationHelper
+  helper CartItemsHelper
   helper ChargesHelper
 
   before_action :require_nonsupport_login
@@ -163,9 +164,13 @@ class CartController < ApplicationController
   end
 
   def preview_online_purchase
-    recovereds = CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
     @cart.reload
-    if recovereds > 0
+
+    if CartItemsHelper.cart_items_for_now(@cart).blank?
+      flash[:notice] = "There is nothing in your cart to purchase! (Hint: check to see if you've saved the thing(s) you want for later.)"
+      redirect_to cart_path and return
+    elsif recovereds > 0
       flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding to purchase preview."
       redirect_to cart_path and return
     elsif !now_items_confirmed_ready_for_payment?
@@ -203,9 +208,8 @@ class CartController < ApplicationController
     confirm_ready_to_proceed
 
     transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
-      prep_service = PrepCartForPayment.new(@cart)
+      prep_service = CartServices::PrepCartForPayment.new(@cart)
       our_results = prep_service.call
-      # our_results
     end
 
     if transaction_results[:amount_to_charge] == 0
@@ -216,7 +220,7 @@ class CartController < ApplicationController
 
     if !transaction_results[:good_to_go]
       flash[:alert] = "There was a problem with one or more of your items!"
-      CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+      CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
       @cart.reload
       #TODO:  Maybe use the _payment_problem.html.erb partial here
       redirect_to cart_path and return
@@ -232,17 +236,18 @@ class CartController < ApplicationController
   end
 
   def pay_with_cheque
-    confirm_ready_to_proceed
+    #TODO: fix Ready to Proceed issue
+    # confirm_ready_to_proceed
 
     transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
-      prep_service = PrepCartForPayment.new(@cart)
+      prep_service = CartServices::PrepCartForPayment.new(@cart)
       our_results = prep_service.call
       # our_results
     end
 
     if !transaction_results[:good_to_go]
       flash[:alert] = "There was a problem with one or more of your items!"
-      CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+      CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
       @cart.reload
       #TODO:  Maybe use the _payment_problem.html.erb partial here
       redirect_to cart_path and return
@@ -257,7 +262,9 @@ class CartController < ApplicationController
     transaction_results[:processing_cart].status = Cart::AWAITING_CHEQUE
     transaction_results[:processing_cart].save
 
-    trigger_cart_waiting_for_cheque_payment_mailer(transaction_results[:processing_cart], transaction_results[:amount_to_charge].cents)
+    owed_for_mailer = transaction_results[:amount_to_charge].kind_of?(Integer) ? transaction_results[:amount_to_charge] : transaction_results[:amount_to_charge].cents
+
+     trigger_cart_waiting_for_cheque_payment_mailer(transaction_results[:processing_cart], owed_for_mailer)
 
     redirect_to reservations_path
   end
@@ -292,12 +299,12 @@ class CartController < ApplicationController
   def locate_cart
     @cart ||= Cart.active_pending.find_by(user: current_user)
     @cart ||= create_cart
-    #TODO: Recover failed items(Maybe!!!)
-    CartItemsHelper.recover_failed_processing_items(@cart, current_user)
     if @cart.nil?
       flash[:status] = :failure
       flash[:notice] = "We were unable to find or create your shopping cart."
       redirect_to memberships_path
+    else
+      CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
     end
   end
 
@@ -407,10 +414,10 @@ class CartController < ApplicationController
 
   def now_items_confirmed_ready_for_payment?
     confirmed = true
-    if !CartItemsHelper.cart_contents_ready_for_payment?(@cart, true)
+    if !CartItemsHelper.cart_contents_ready_for_payment?(@cart, now_items_only: true)
       flash[:alert] = "there is a problem with one or more of your items."
       confirmed = false
-      cart.reload
+      @cart.reload
     end
     confirmed
   end
@@ -463,7 +470,7 @@ class CartController < ApplicationController
   end
 
   def confirm_ready_to_proceed
-    recovereds = CartItemsHelper.recover_failed_processing_items(@cart, current_user)
+    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
     if recovereds > 0
       flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding."
       redirect_to cart_path and return

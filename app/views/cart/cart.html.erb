@@ -16,105 +16,69 @@
   TODO: figure out if we need to disable some or all buttons for  unavailable items.
 %>
 
-<h1 style="background-color:purple; color:crimson">Shopping Cart</h1>
-<section style="background-color:violet; color:aquamarine" class="l-section">
-  <div class="row">
-    <div class="col-12 col-md-12">
-      <div class="l-panel">
-      </div>
-      <h3 style="color:olive">[This is where the stuff in the cart will go]</h3>
+<h1 style="background-color:purple; color:cyan">SHOPPING CART</h1>
+<div class="container text-center">
+  <% if @cart.cart_items.present? %>
+    <h2 style=
+    "color:yellow">Items to Purchase Now:</h2>
+
+    <% if cart_items_for_now(@cart).present? %>
+      <div class="now-items" style="background-color:violet">
 
 
-      <% if @cart.cart_items.count > 0 %>
-        <div class="cart-contents">
-          <ul class="cart-items-now">
-            <h4 style="color:cyan">[This is where the ACTIVE cart-items are.]</h4>
-            <% cart_items_for_now(@cart).each do |cart_item| %>
-              <li>
-                <div class="now-item-details">
-                  <%#
+        <div class="row d-inline-flex align-items-stretch">
+          <% cart_items_for_now(@cart).each do |cart_item| %>
+            <div class="row row-cols-auto mb-3 ml-2" style="background-color:violet">
+              <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item))%>
+            </div>
+          <% end %>
+        </div>
 
-                      THIS LIST-GROUP WILL HAVE LINKS TO THE SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH
-                      IN TURN WILL HAVE EDITING PAGES
-
-                      THINKING I'M GOING TO TRY AND MAKE THE EDITING PAGES WORK AS COLLAPSIBLE ELEMENTS.
-                  %>
-                  <div class="list-group list-group-horizontal now-details-list">
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%=cart_item.kind %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_beneficiary_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if cart_item.available == false %>"><%= cart_item.item_display_price %></li>
-                  </div>
-                  <div class="btn-group now-buttons" role="group">
-                    <%= button_to "Save for Later", save_single_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
-                    <%= button_to "Remove from Cart", remove_single_cart_item_path(cart_item), method: :delete, class: "btn btn-outline-info" %>
-                    <%= button_to "Check Availability", verify_single_cart_item_path(cart_item), method: :patch, class: "btn btn-outline-info" %>
-                  </div>
-                </div>
-              </li>
-            <% end %>
-          </ul>
-          <div class="active-admin-container">
-            <h4 style="color:orangered">[This is where the control buttons for the whole active cart go]</h4>
-            <div class="btn-group payment-buttons" role="group">
+        <div class="active-admin-container">
+          <div class="btn-group payment-buttons" role="group">
+            <% if CartItemsHelper.cart_contents_ready_for_payment?(@cart, now_items_only: true) %>
               <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
-              <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
-              <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
-            </div>
-            <div class "subtotal-container" style="background-color:violet; color:aquamarine">
-              <h5 style="color:yellow"> Cart Subtotal: <%= @cart.subtotal_display %></h5>
-            </div>
+              <% end %>
+            <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
+            <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
           </div>
-
-
-          <ul class "cart-items-later">
-            <h4 style="color:yellowgreen">[This is where the SAVED-FOR-LATER cart-items are.]</h4>
-            <% cart_items_for_later(@cart).each do |later_item|  %>
-            <li>
-                <div class="later-item-details">
-                  <%#
-                      TODO:
-                      AS WITH ITS COUNTERPART ABOVE, THIS LIST-GROUP WILL HAVE LINKS TO THE
-                      SHOW-PAGES FOR THE RELEVANT ELEMENTS, WHICH IN TURN WILL HAVE EDITING PAGES
-                  %>
-                  <div class="list-group list-group-horizontal later-item-details-list">
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%=later_item.kind %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_name %></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_beneficiary_name%></li>
-                    <li class="list-group-item list-group-item-action <%= 'unavailable-item' if later_item.available == false %>"><%= later_item.item_display_price %></li>
-                  </div>
-                  <div class="btn-group later-buttons" role="group">
-                    <%= button_to "Move to Cart", move_single_cart_item_path(later_item), method: :patch, class: "btn btn-outline-info" %>
-                    <%= button_to "Delete", remove_single_cart_item_path(later_item), method: :delete, class: "btn btn-outline-info" %>
-                    <%= button_to "Check Availability", verify_single_cart_item_path(later_item), method: :patch, class: "btn btn-outline-info" %>
-                  </div>
-                </div>
-              </li>
-            <% end %>
-          </ul>
-          <div class="saved-admin-container">
-            <h4 style="color:indigo">[This is where the admin buttons for the saved stuff go.]</h4>
-            <div class="btn-group later-buttons" role="group">
-              <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
-              <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
-            </div>
+          <div class="subtotal-container" style="background-color:darkorange">
+            <h5 style="color:indigo"> Cart Subtotal: <%= @cart.subtotal_display %></h5>
           </div>
-          <div class="general-admin-container">
-            <h4 style="color:indigo">[This is where the admin buttons for the whole cart will go.]</h4>
-            <div class="btn-group overall-buttons" role="group">
-
-
-
-
-              <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-warning" %>
-              <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-warning" %>
-            </div>
-          </div>
+        </div>
       </div>
-      <% else %>
-        <h4> Your cart is empty! </h4>
-      <% end %>
+    <% else %>
+      <h4 style="color:chocolate"> All your items are saved for later.  </h4>
+    <% end %>
+
+    <% if cart_items_for_later(@cart).present? %>
+      <h2 style="color:maroon">Items Saved for Later:</h2>
+      <div class="later-items" style="background-color:thistle">
+        <div class="row d-inline-flex align-items-stretch">
+          <% cart_items_for_later(@cart).each do |later_item| %>
+            <div class="row row-cols-auto mb-3 ml-2" style="background-color:darkslategray">
+              <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item)) %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="btn-group later-buttons" role="group">
+          <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
+          <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
+        </div>
+      </div>
+    <% end %>
+
+
+    <div class="all-cart-admin-container" style="background-color:mediumvioletred">
+      <div class="btn-group overall-buttons" role="group">
+        <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-warning" %>
+        <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-warning" %>
+      </div>
     </div>
-  </div>
-</section>
+
+  <% else %>
+    <h4 style="background-color:lightsteelblue; color:olive"> Your cart is empty! </h4>
+  <% end %>
+</div>

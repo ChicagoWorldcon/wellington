@@ -130,7 +130,6 @@ class CartContentsDescription
   end
 
   def process_item_description_fragment(fragment, description_object)
-    binding.pry
     description_object[:character_count] += fragment.length
     description_object[:description_array] << fragment
     description_object

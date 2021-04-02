@@ -20,6 +20,7 @@ module ChargesHelper
   include ApplicationHelper
 
   MEMBERSHIP = CartItem::MEMBERSHIP
+  MYSQL_MAX_FIELD_LENGTH = 255
 
   def stripe_config(prospective_purchase, prospective_amount = -1)
     our_desc_string = description_str_for_stripe(prospective_purchase)
@@ -50,8 +51,8 @@ module ChargesHelper
       description_string = "#{worldcon_public_name} item"
     end
 
-    if description_string.length > ::CartItemsHelper::MYSQL_MAX_FIELD_LENGTH
-      return description_string[0, ::CartItemsHelper::MYSQL_MAX_FIELD_LENGTH]
+    if description_string.length > MYSQL_MAX_FIELD_LENGTH
+      return description_string[0, MYSQL_MAX_FIELD_LENGTH]
     end
 
     description_string
