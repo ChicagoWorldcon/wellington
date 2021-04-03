@@ -206,7 +206,7 @@ class CartController < ApplicationController
   def verify_single_item_availability
     single_item_availability_check
     @cart.reload
-    redirect_to cart_path
+    redirect_back(fallback_location: cart_path)
   end
 
   def verify_all_items_availability
@@ -256,18 +256,13 @@ class CartController < ApplicationController
         redirect_to cart_path and return
       else
         @check_button = just_buying_memberships?
-        @expected_charge = @cart.subtotal_display
-        @items_for_purchase = @cart.items_for_now
+        @expected_charge = @cart_chassis.now_cart.subtotal_display
+        @items_for_purchase = @cart_chassis.now_cart
       end
-
-
-
-
-
-
     end
-
   end
+
+  ####REFACTORING_ENDS
 
   def remove_single_checkout_item
     single_item_remove
@@ -289,8 +284,13 @@ class CartController < ApplicationController
     redirect_back(fallback_location: cart_path)
   end
 
+  ###REFACTORING_STARTS
+
   def submit_online_payment
     confirm_ready_to_proceed
+
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
 
     transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
       prep_service = CartServices::PrepCartForPayment.new(@cart)
@@ -305,8 +305,11 @@ class CartController < ApplicationController
 
     if !transaction_results[:good_to_go]
       flash[:alert] = "There was a problem with one or more of your items!"
-      CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
-      @cart.reload
+
+      recovery_cart = @cart.present? @cart : defacto_cart.now_cart
+      CartServices::RecoverFailedProcessingItems.new(recovery_cart, current_user).call
+      @cart.reload if @cart.present?
+      @cart_chassis.full_reload if @cart_chassis.present?
       #TODO:  Maybe use the _payment_problem.html.erb partial here
       redirect_to cart_path and return
     end
@@ -322,12 +325,14 @@ class CartController < ApplicationController
 
   def pay_with_cheque
     #TODO: fix Ready to Proceed issue
-    # confirm_ready_to_proceed
+    confirm_ready_to_proceed
+
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
 
     transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
-      prep_service = CartServices::PrepCartForPayment.new(@cart)
+      prep_service = CartServices::PrepCartForPayment.new(defacto_cart)
       our_results = prep_service.call
-      # our_results
     end
 
     if !transaction_results[:good_to_go]
@@ -566,23 +571,27 @@ class CartController < ApplicationController
   end
 
   def just_buying_memberships?
-
-    confirmed = true
     defacto_cart = @cart if @cart.present?
     defacto_cart ||= @cart_chassis
-    
+
     now_items_include_only_memberships?(defacto_cart)
   end
 
   def confirm_ready_to_proceed
-    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
+
+
+
+
+    recovereds = CartServices::RecoverFailedProcessingItems.new(defacto_cart, current_user).call
     if recovereds > 0
       flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding."
       redirect_to cart_path and return
     end
     if !now_items_confirmed_ready_for_payment?
       flash[:notice] = "There is a problem with one or more of your items.  Please review your cart before proceeding."
-      redirect_to cart_verify_all_path and return
+      redirect_to cart_path and return
     end
   end
 

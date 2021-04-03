@@ -24,11 +24,11 @@ class CartServices::PrepCartForPayment
 
   attr_reader :our_cart, :amount_to_charge, :good_to_go, :processing_cart
 
-  def initialize(cart)
-    @original_cart_object = cart
-    @our_cart = figure_out_cart(cart)
-    @cart_type = note_cart_type(cart)
-    @user = note_user(cart)
+  def initialize(cart_obj)
+    @original_cart_object = cart_obj
+    @our_cart = figure_out_cart(cart_obj)
+    @cart_type = note_cart_type(cart_obj)
+    @user = note_user(cart_obj)
     @amount_to_charge = 0
     @good_to_go = false
     @initial_item_count = initial_purchasable_item_count

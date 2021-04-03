@@ -127,13 +127,7 @@ module CartItemsHelper
   end
 
   def self.cart_contents_readiness_machine(c_object, for_now_only: false)
-    case
-    when c_object.kind_of? Cart
-      cart_contents_ready_for_payment?(c_object, now_items_only: for_now_only)
-    when c_object.kind_of? CartChassis
-      cart_contents_ready_for_payment?(c_object.now_cart)
-      cart_contents_ready_for_payment?(c_object.later_cart) unless now_items_only
-    end
+
   end
 
   def self.cart_contents_ready_for_payment?(cart, now_items_only: false)
@@ -148,8 +142,13 @@ module CartItemsHelper
     all_contents_ready
   end
 
-  def cart_contents_ready_for_payment?(cart, now_items_only: false)
-    CartItemsHelper.cart_items_ready_for_payment?(cart, now_items_only: false)
+  def cart_contents_ready_for_payment?(c_object, now_items_only: false)
+    case
+    when c_object.kind_of? Cart
+      CartItemsHelper.cart_items_ready_for_payment?(c_object, now_items_only: false)
+    when c_object.kind_of? CartChassis
+      return c_object.can_proceed_to_payment?
+    end
   end
 
   def self.cart_contents_destroyer(c_object)

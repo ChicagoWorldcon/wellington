@@ -103,6 +103,4 @@ class CartChassis
     @now_cart.cart_items.each {|i| all_ready = false if !i.item_ready_for_payment}
     all_ready
   end
-
-
 end

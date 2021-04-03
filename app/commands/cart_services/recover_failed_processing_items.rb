@@ -23,8 +23,8 @@ class CartServices::RecoverFailedProcessingItems
 
   attr_reader :our_cart, :our_user
 
-  def initialize(cart, user)
-    @our_cart = cart
+  def initialize(cart_object, user)
+    @our_cart = identify_our_cart(cart_object)
     @our_user = user
   end
 
@@ -53,6 +53,15 @@ class CartServices::RecoverFailedProcessingItems
   end
 
   private
+
+  def identify_our_cart(c_obj)
+    case
+    when c_obj.kind_of? Cart
+      return c_obj
+    when c_obj.kind_of? CartChassis
+      return c_obj.now_cart
+    end
+  end
 
   def unprocessed_reservation_item?(cart, item)
     return false if (cart.status != PROCESSING || cart.active? == false)
