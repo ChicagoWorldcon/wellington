@@ -25,7 +25,8 @@ module CartItemsHelper
   PAID = "paid"
 
   # TODO: See if this can be eliminated.  There's a new method
-  # in MembershipOffer that should handle this.
+  # in MembershipOffer that should handle this. Currently, all
+  # it's doing is getting tested.
   def self.locate_offer(offer_params)
     target_offer = MembershipOffer.options.find do |offer|
       offer.hash == offer_params
@@ -48,12 +49,17 @@ module CartItemsHelper
     CartItemsHelper.locate_cart_item(item_id)
   end
 
-  def self.locate_cart_item_with_cart(item_id, cart_id)
-    CartItem.find_by(id: item_id, cart_id: cart_id)
+  def self.locate_cart_item_with_cart(item_id, c_object)
+    CartItem.find_by(id: item_id, cart: c_object)
   end
 
-  def locate_cart_item_with_cart(item_id, cart_id)
-    CartItemsHelper.locate_cart_item_with_cart(item_id, cart_id)
+  def locate_cart_item_with_cart(item_id, c_object)
+    case
+    when c_object.kind_of? Cart
+      CartItemsHelper.locate_cart_item_with_cart(item_id, c_object)
+    when c_object.kind_of? CartChassis
+      CartItemLocator.new(our_user: current_user, item_id: item_id).locate_current_cart_item_for_user
+    end
   end
 
   def self.cart_items_for_now(cart)
@@ -64,8 +70,13 @@ module CartItemsHelper
     end
   end
 
-  def cart_items_for_now(cart)
-    CartItemsHelper.cart_items_for_now(cart)
+  def cart_items_for_now(c_object)
+    case
+    when c_object.kind_of? Cart
+      CartItemsHelper.cart_items_for_now(c_object)
+    when c_object.kind_of? CartChassis
+      CartItemLocator.new(our_user: current_user).cart_items_for_now
+    end
   end
 
   def self.cart_items_for_later(cart)
@@ -76,8 +87,24 @@ module CartItemsHelper
     end
   end
 
-  def cart_items_for_later(cart)
-    CartItemsHelper.cart_items_for_later(cart)
+  def cart_items_for_later(c_object)
+    case
+    when c_object.kind_of? Cart
+      CartItemsHelper.cart_items_for_now(c_object)
+    when c_object.kind_of? CartChassis
+      CartItemLocator.new(our_user: current_user).cart_items_for_later
+    end
+  end
+
+  def self.cart_contents_verifier(c_object)
+    case
+    when c_object.kind_of? Cart
+      verify_availability_of_cart_contents(c_object)
+    when c_object.kind_of? CartChassis
+      now_v = verify_availability_of_cart_contents(c_object.now_cart)
+      later_v = verify_availability_of_cart_contents(c_object.later_cart)
+      return now_v && later_v
+    end
   end
 
   def self.verify_availability_of_cart_contents(cart)
@@ -99,6 +126,16 @@ module CartItemsHelper
     CartItemsHelper.verify_availability_of_cart_contents(cart)
   end
 
+  def self.cart_contents_readiness_machine(c_object, for_now_only: false)
+    case
+    when c_object.kind_of? Cart
+      cart_contents_ready_for_payment?(c_object, now_items_only: for_now_only)
+    when c_object.kind_of? CartChassis
+      cart_contents_ready_for_payment?(c_object.now_cart)
+      cart_contents_ready_for_payment?(c_object.later_cart) unless now_items_only
+    end
+  end
+
   def self.cart_contents_ready_for_payment?(cart, now_items_only: false)
     return false if cart.cart_items.blank?
     return false if now_items_only && cart_items_for_now(cart).blank?
@@ -115,6 +152,16 @@ module CartItemsHelper
     CartItemsHelper.cart_items_ready_for_payment?(cart, now_items_only: false)
   end
 
+  def self.cart_contents_destroyer(c_object)
+    case
+    when c_object.kind_of? Cart
+      destroy_cart_contents(c_object)
+    when c_object.kind_of? CartChassis
+      destroy_cart_contents(c_object.now_cart)
+      destroy_cart_contents(c_object.later_cart)
+    end
+  end
+
   def self.destroy_cart_contents(cart)
     if cart
       cart.cart_items.each {|i| i.destroy}
@@ -126,11 +173,13 @@ module CartItemsHelper
   end
 
   def destroy_cart_contents(cart)
+    cart.reload
     CartItemsHelper.destroy_cart_contents(cart)
   end
 
   def self.destroy_for_now_cart_items(cart)
     if cart
+      cart.reload
       now_items = cart_items_for_now(cart)
       now_items.each {|i| i.destroy}
       cart.reload
@@ -140,8 +189,15 @@ module CartItemsHelper
     end
   end
 
-  def destroy_for_now_cart_items(cart)
-    CartItemsHelper.destroy_for_now_cart_items(cart)
+  def destroy_for_now_cart_items(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.destroy_for_now_cart_items(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.destroy_all_cart_contents
+    end
   end
 
   def self.destroy_cart_items_for_later(cart)
@@ -153,8 +209,15 @@ module CartItemsHelper
     end
   end
 
-  def destroy_cart_items_for_later(cart)
-    CartItemsHelper.destroy_cart_items_for_later(cart)
+  def destroy_cart_items_for_later(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.destroy_cart_items_for_later(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.destroy_all_items_for_later
+    end
   end
 
   def self.save_all_cart_items_for_later(cart)
@@ -170,8 +233,15 @@ module CartItemsHelper
     end
   end
 
-  def save_all_cart_items_for_later(cart)
-    CartItemsHelper.save_all_cart_items_for_later(cart)
+  def save_all_cart_items_for_later(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.save_all_cart_items_for_later(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.save_all_items_for_later
+    end
   end
 
   def self.unsave_all_cart_items(cart)
@@ -187,12 +257,19 @@ module CartItemsHelper
       cart.reload
       return cart_items_for_later(cart).empty?
     else
-      return nil
+      return -1
     end
   end
 
-  def unsave_all_cart_items(cart)
-    CartItemsHelper.unsave_all_cart_items(cart)
+  def unsave_all_cart_items(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.unsave_all_cart_items(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.move_all_saved_to_cart
+    end
   end
 
   def self.locate_all_membership_items(cart)
@@ -203,8 +280,15 @@ module CartItemsHelper
     end
   end
 
-  def locate_all_membership_items(cart)
-    CartItemsHelper.locate_all_membership_items(cart)
+  def locate_all_membership_items(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.locate_all_membership_items(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.all_membership_items
+    end
   end
 
   def self.locate_all_membership_items_for_now(cart)
@@ -215,8 +299,15 @@ module CartItemsHelper
     end
   end
 
-  def locate_all_membership_items_for_now(cart)
-    CartItemsHelper.locate_all_membership_items(cart)
+  def locate_all_membership_items_for_now(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.locate_all_membership_items(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.all_membership_items_for_now
+    end
   end
 
   def self.locate_all_cart_item_reservations(cart)
@@ -229,16 +320,30 @@ module CartItemsHelper
     res_ary
   end
 
-  def locate_all_cart_item_reservations(cart)
-    CartItemsHelper.locate_cart_item_reservations(cart)
+  def locate_all_cart_item_reservations(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.locate_cart_item_reservations(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return c_object.all_reservations_from_current_cart_items
+    end
   end
 
   def self.now_items_include_only_memberships?(cart)
     CartItem.where({cart: cart, later: false}).where.not(kind: CartItem::MEMBERSHIP).count == 0
   end
 
-  def now_items_include_only_memberships?(cart)
-    CartItemsHelper.now_items_include_only_memberships?(cart)
+  def now_items_include_only_memberships?(c_object)
+    case
+    when c_object.kind_of? Cart
+      c_object.reload
+      return CartItemsHelper.now_items_include_only_memberships?(c_object)
+    when c_object.kind_of? CartChassis
+      c_object.full_reload
+      return CartItemLocator.new(our_user: current_user).all_items_for_now_are_memberships?
+    end
   end
 
   def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true)

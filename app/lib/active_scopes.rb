@@ -45,8 +45,8 @@ module ActiveScopes
       )
     }
 
-    # :active_pending, :active_processing, and :active_for_later are
-    # cart-specific scopes.
+    # :active_pending, :active_processing, :active_for_later, and
+    # :active_for_now are cart-specific scopes.
     base.scope :active_pending, ->() {
       active_at(Time.now).where(status: PENDING)
     }
@@ -57,6 +57,10 @@ module ActiveScopes
 
     base.scope :active_for_later, ->() {
       active_at(Time.now).where(status: FOR_LATER)
+    }
+
+    base.scope :active_for_now, ->() {
+      active_at(Time.now).where(status: FOR_NOW)
     }
 
     def active?

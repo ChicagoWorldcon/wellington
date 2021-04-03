@@ -71,6 +71,7 @@ class CartItem < ApplicationRecord
   attribute :processed, :boolean, default: false
 
   before_validation :note_acquirable_details, if: :new_record?
+  before_validation :set_kind_value, if: :new_record?
 
   validates :available, :inclusion => {in: [true, false]}
   validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
@@ -254,6 +255,15 @@ class CartItem < ApplicationRecord
     # to the associated acquirable in the interim.
     self.item_price_memo = self.acquirable.price_cents
     self.item_name_memo = self.acquirable.name
+  end
+
+  def set_kind_value
+    case self.acquirable_type
+    when "Membership"
+      self.kind = MEMBERSHIP
+    else
+      self.kind = UNKNOWN
+    end
   end
 
   def membership_unique_for_laypeeps

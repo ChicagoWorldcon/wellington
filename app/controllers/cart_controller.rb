@@ -22,7 +22,8 @@ class CartController < ApplicationController
   helper ChargesHelper
 
   before_action :require_nonsupport_login
-  before_action :locate_cart
+  #before_action :locate_cart
+  before_action :locate_cart_chassis
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability, :remove_single_checkout_item, :save_single_checkout_item_for_later, :check_single_checkout_item_availability]
 
   before_action :verify_all_cart_contents, only: [:move_all_saved_items_to_cart]
@@ -41,10 +42,14 @@ class CartController < ApplicationController
   end
 
   def add_reservation_to_cart
+
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis.now_cart
+
     if (@our_offer.present? && @our_beneficiary.present?)
       @our_cart_item = CartItem.create(
         :acquirable => @our_offer.membership,
-        :cart => @cart,
+        :cart => defacto_cart,
         :benefitable => @our_beneficiary,
         :kind => MEMBERSHIP
       )
@@ -61,34 +66,80 @@ class CartController < ApplicationController
 
   def destroy
     # This empties the cart of all items, both active and saved.
-    CartItemsHelper.destroy_cart_contents(@cart)
-    @cart.reload
-    if @cart.cart_items.count == 0
-      flash[:status] = :success
-      flash[:notice] = "Your cart is now empty."
-    else
-      flash[:status] = :failure
-      flash[:notice] = "Your cart could not be fully emptied."
+
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
+    #CartItemsHelper.destroy_cart_contents(defacto_cart)
+    CartItemsHelper.cart_contents_destroyer(defacto_cart)
+    if @cart.present?
+      @cart.reload
+      if @cart.cart_items.count == 0
+        flash[:status] = :success
+        flash[:notice] = "Your cart is now empty."
+      else
+        flash[:status] = :failure
+        flash[:notice] = "Your cart could not be fully emptied."
+      end
+    elsif @cart_chassis.present?
+      @cart_chassis.full_reload
+      if @cart_chassis.all_items_count == 0
+        flash[:status] = :success
+        flash[:notice] = "The thing's empty. Groovy."
+      else
+        flash[:status] = :failure
+        flash[:notice] = "The thing's still got stuff in it. Boners."
+      end
     end
     redirect_to cart_path
   end
 
   def destroy_active
-    CartItemsHelper.destroy_for_now_cart_items(@cart)
-    @cart.reload
-    if CartItemsHelper.cart_items_for_now(@cart).count == 0
-      flash[:status] = :success
-      flash[:notice] = "Active cart successfully emptied!"
-    else
-      flash[:status] = :failure
-      flash[:notice] = "One or more items could not be deleted."
+
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
+
+
+
+
+    destroy_for_now_cart_items(defacto_cart)
+    # @cart.reload
+    # if CartItemsHelper.cart_items_for_now(@cart).count == 0
+    #   flash[:status] = :success
+    #   flash[:notice] = "Active cart successfully emptied!"
+    # else
+    #   flash[:status] = :failure
+    #   flash[:notice] = "One or more items could not be deleted."
+    # end
+    # @cart.reload
+
+
+    if @cart.present?
+      @cart.reload
+      if CartItemsHelper.cart_items_for_now(@cart).count == 0
+        flash[:status] = :success
+        flash[:notice] = "Your cart is now empty."
+      else
+        flash[:status] = :failure
+        flash[:notice] = "Your cart could not be fully emptied."
+      end
+    elsif @cart_chassis.present?
+      @cart_chassis.full_reload
+      if @cart_chassis.now_items_count == 0
+        flash[:status] = :success
+        flash[:notice] = "The right-now stuff is dumped. Thrilling!"
+      else
+        flash[:status] = :failure
+        flash[:notice] = "Some right-now stuff is still stuck here. Bleh."
+      end
     end
-    @cart.reload
     redirect_to cart_path
   end
 
+
+  ### REFACTORING STOPS ####
+
   def destroy_saved
-    CartItemsHelper.destroy_cart_items_for_later(@cart)
+    destroy_cart_items_for_later(@cart)
     @cart.reload
     if CartItemsHelper.cart_items_for_later(@cart).count == 0
       flash[:status] = :success
@@ -160,27 +211,62 @@ class CartController < ApplicationController
 
   def verify_all_items_availability
     verify_all_cart_contents
-    redirect_to cart_path
+    @cart.reload
+    redirect_back(fallback_location: cart_path)
   end
 
-  def preview_online_purchase
-    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
-    @cart.reload
+  ####REFACTORING RESTARTS
 
-    if CartItemsHelper.cart_items_for_now(@cart).blank?
-      flash[:notice] = "There is nothing in your cart to purchase! (Hint: check to see if you've saved the thing(s) you want for later.)"
-      redirect_to cart_path and return
-    elsif recovereds > 0
-      flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding to purchase preview."
-      redirect_to cart_path and return
-    elsif !now_items_confirmed_ready_for_payment?
-      flash[:notice] = "There is a problem with one or more of your items.  Please review the contents of your cart before proceeding to payment."
-      redirect_to cart_verify_all_path and return
-    else
-      @check_button = just_buying_memberships?
-      @expected_charge = @cart.subtotal_display
-      @items_for_purchase = @cart.items_for_now
+  def preview_online_purchase
+
+    if @cart.present?
+      recovereds = CartServices::RecoverFailedProcessingItems.new(@cart, current_user).call
+      @cart.reload
+
+      if CartItemsHelper.cart_items_for_now(@cart).blank?
+        flash[:notice] = "There is nothing in your cart to purchase! (Hint: check to see if you've saved the thing(s) you want for later.)"
+        redirect_to cart_path and return
+      elsif recovereds > 0
+        flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding to purchase preview."
+        redirect_to cart_path and return
+      elsif !now_items_confirmed_ready_for_payment?
+        flash[:notice] = "There is a problem with one or more of your items.  Please review the contents of your cart before proceeding to payment."
+        redirect_to cart_path and return
+      else
+        @check_button = just_buying_memberships?
+        @expected_charge = @cart.subtotal_display
+        @items_for_purchase = @cart.items_for_now
+      end
+    elsif @cart_chassis.present?
+      if @cart_chassis.now_items_count == 0
+        flash[:notice] = "Dude. Pick something to buy first."
+        redirect_to cart_path and return
+      end
+
+      recovereds = CartServices::RecoverFailedProcessingItems.new(@cart_chassis.now_cart, current_user).call
+      @cart_chassis.full_reload
+
+      if recovereds > 0
+        flash[:notice] = "There were #{recovereds} goobered-up items found.  What?? That's not supposed to happen anymore."
+        redirect_to cart_path and return
+      end
+
+      if !now_items_confirmed_ready_for_payment?
+        flash[:notice] = "You've got at least one baffed-up item. Go back and figure it out."
+        redirect_to cart_path and return
+      else
+        @check_button = just_buying_memberships?
+        @expected_charge = @cart.subtotal_display
+        @items_for_purchase = @cart.items_for_now
+      end
+
+
+
+
+
+
     end
+
   end
 
   def remove_single_checkout_item
@@ -200,8 +286,7 @@ class CartController < ApplicationController
   def check_single_checkout_item_availability
     single_item_availability_check
     @cart.reload
-    # @expected_charge = @cart.subtotal_display
-    redirect_to cart_preview_online_purchase_path
+    redirect_back(fallback_location: cart_path)
   end
 
   def submit_online_payment
@@ -311,13 +396,23 @@ class CartController < ApplicationController
     end
   end
 
-  def locate_pending_cart
-    @cart ||= Cart.active_pending.find_by(user: current_user)
-    @cart ||= create_cart(with_status: PENDING)
+  def locate_cart_chassis
+    @cart_chassis || establish_cart_chassis
+    @cart_chassis.now_cart || locate_cart_for_now
+    @cart_chassis.later_cart || locate_cart_for_later
+  end
+
+  def establish_cart_chassis
+    @cart_chassis.new()
+  end
+
+  def locate_cart_for_now
+    @cart ||= Cart.active_for_now.find_by(user: current_user)
+    @cart ||= create_cart(with_status: FOR_NOW)
   end
 
   def locate_cart_for_later
-    @cart ||= Cart.active_pending.find_by(user: current_user)
+    @cart ||= Cart.active_for_later.find_by(user: current_user)
     @cart ||= create_cart(with_status: FOR_LATER)
   end
 
@@ -362,22 +457,21 @@ class CartController < ApplicationController
   end
 
   def create_cart(with_status: PENDING)
-    # Status PENDING is for the part of the cart where active items go.
+    # Status PENDING is being deprecated.
+    # Status FOR_NOW is for the part of the cart where active items go.
     # Status FOR_LATER is for the part of the cart where saved items go.
-    if user_signed_in? && !support_signed_in?
-      @cart = Cart.new status: with_status
-      # current_user is a Devise helper.
-      @cart.user_id = User.find_by(id: current_user.id).id
-      @cart.active_from = Time.now
-      if @cart.save
-        flash[:status] = :success
-      else
-        flash[:status] = :failure
-        flash[:notice] = "We weren't able to fully create your shopping cart."
-        flash[:messages] = @cart.errors.messages
-      end
-      return @cart
+    cart = Cart.new status: with_status
+    # current_user is a Devise helper.
+    cart.user_id = User.find_by(id: current_user.id).id
+    cart.active_from = Time.now
+    if cart.save
+      flash[:status] = :success
+    else
+      flash[:status] = :failure
+      flash[:notice] = "We weren't able to fully create your shopping cart."
+      flash[:messages] = cart.errors.messages
     end
+    cart
   end
 
     # TODO: Only allow a list of trusted parameters through.
@@ -417,10 +511,13 @@ class CartController < ApplicationController
 
   def now_items_confirmed_ready_for_payment?
     confirmed = true
-    if !CartItemsHelper.cart_contents_ready_for_payment?(@cart, now_items_only: true)
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
+    if !CartItemsHelper.cart_contents_ready_for_payment?(defacto_cart, now_items_only: true)
       flash[:alert] = "there is a problem with one or more of your items."
       confirmed = false
-      @cart.reload
+      @cart.reload if @cart.present?
+      @cart_chassis.full_reload if @cart_chassis.present?
     end
     confirmed
   end
@@ -469,7 +566,12 @@ class CartController < ApplicationController
   end
 
   def just_buying_memberships?
-    CartItemsHelper.now_items_include_only_memberships?(@cart)
+
+    confirmed = true
+    defacto_cart = @cart if @cart.present?
+    defacto_cart ||= @cart_chassis
+    
+    now_items_include_only_memberships?(defacto_cart)
   end
 
   def confirm_ready_to_proceed
