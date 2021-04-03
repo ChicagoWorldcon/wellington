@@ -20,9 +20,12 @@
 namespace :factory_bot do
   desc "Verify that all FactoryBot factories are valid"
   task lint: :environment do
+    factories_to_lint = FactoryBot.factories.select do |factory|
+      factory.name =~ /(cart)/
+    end
     if Rails.env.test?
       DatabaseCleaner.cleaning do
-        FactoryBot.lint
+        FactoryBot.lint factories_to_lint, traits: true
       end
     else
       system("bundle exec rake factory_bot:lint RAILS_ENV='test'")
