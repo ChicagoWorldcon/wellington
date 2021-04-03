@@ -20,6 +20,7 @@ module ActiveScopes
   PENDING = "pending"
   PROCESSING = "processing"
   FOR_LATER = "for_later"
+  FOR_NOW = "for_now"
 
   def self.included(base)
     base.after_initialize do

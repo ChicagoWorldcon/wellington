@@ -18,16 +18,16 @@
 
 <h1 style="background-color:purple; color:cyan">SHOPPING CART</h1>
 <div class="container text-center">
-  <% if @cart.cart_items.present? %>
+  <% if @now_bin.present? || @later_bin.present? %>
     <h2 style=
     "color:yellow">Items to Purchase Now:</h2>
 
-    <% if cart_items_for_now(@cart).present? %>
+    <% if @now_bin.present? %>
       <div class="now-items" style="background-color:violet">
 
 
         <div class="row d-inline-flex align-items-stretch">
-          <% cart_items_for_now(@cart).each do |cart_item| %>
+          <% @now_bin.each do |cart_item| %>
             <div class="row row-cols-auto mb-3 ml-2" style="background-color:violet">
               <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item))%>
             </div>
@@ -36,7 +36,7 @@
 
         <div class="active-admin-container">
           <div class="btn-group payment-buttons" role="group">
-            <% if CartItemsHelper.cart_contents_ready_for_payment?(@cart, now_items_only: true) %>
+            <% if cart_contents_ready_for_payment?(@shopping_cart, now_items_only: true) %>
               <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
               <% end %>
@@ -44,7 +44,7 @@
             <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
           </div>
           <div class="subtotal-container" style="background-color:darkorange">
-            <h5 style="color:indigo"> Cart Subtotal: <%= @cart.subtotal_display %></h5>
+            <h5 style="color:indigo"> Cart Subtotal: <%= @now_subtotal %></h5>
           </div>
         </div>
       </div>
@@ -52,11 +52,11 @@
       <h4 style="color:chocolate"> All your items are saved for later.  </h4>
     <% end %>
 
-    <% if cart_items_for_later(@cart).present? %>
+    <% if @later_bin.present? %>
       <h2 style="color:maroon">Items Saved for Later:</h2>
       <div class="later-items" style="background-color:thistle">
         <div class="row d-inline-flex align-items-stretch">
-          <% cart_items_for_later(@cart).each do |later_item| %>
+          <% @later_bin.each do |later_item| %>
             <div class="row row-cols-auto mb-3 ml-2" style="background-color:darkslategray">
               <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item)) %>
             </div>

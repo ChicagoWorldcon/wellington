@@ -49,27 +49,27 @@ class CartServices::PrepCartForPayment
 
   def figure_out_cart(cart_o)
     case
-    when cart_o.kind_of? Cart
+    when cart_o.kind_of?(Cart)
       return cart_o
-    when cart_o.kind_of? CartChassis
+    when cart_o.kind_of?(CartChassis)
       return cart_o.now_cart
     end
   end
 
   def note_cart_type(cart_o)
     case
-    when cart_o.kind_of? Cart
+    when cart_o.kind_of?(Cart)
       return VANILLA_CART
-    when cart_o.kind_of? CartChassis
+    when cart_o.kind_of?(CartChassis)
       return CHASSIS
     end
   end
 
   def note_user(cart_o)
     case
-    when cart_o.kind_of? Cart
+    when cart_o.kind_of?(Cart)
       return cart_o.user
-    when cart_o.kind_of? CartChassis
+    when cart_o.kind_of?(CartChassis)
       return cart_o.now_cart.user
     end
   end

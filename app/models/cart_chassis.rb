@@ -86,11 +86,11 @@ class CartChassis
   end
 
   def self.now_items_count
-    @now_cart.present? && @now_cart.cart_items.present? @now_cart.cart_items.count : 0
+    @now_cart.present? && @now_cart.cart_items.present? ? @now_cart.cart_items.count : 0
   end
 
   def self.later_items_count
-    @later_cart.present? && @later_cart.cart_items.present? @later_cart.cart_items.count : 0
+    @later_cart.present? && @later_cart.cart_items.present? ? @later_cart.cart_items.count : 0
   end
 
   def self.all_items_count

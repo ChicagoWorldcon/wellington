@@ -56,9 +56,9 @@ class CartServices::RecoverFailedProcessingItems
 
   def identify_our_cart(c_obj)
     case
-    when c_obj.kind_of? Cart
+    when c_obj.kind_of?(Cart)
       return c_obj
-    when c_obj.kind_of? CartChassis
+    when c_obj.kind_of?(CartChassis)
       return c_obj.now_cart
     end
   end
