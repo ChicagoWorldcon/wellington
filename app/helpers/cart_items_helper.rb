@@ -50,18 +50,20 @@ module CartItemsHelper
   end
 
   def self.locate_cart_item_with_cart(item_id, c_object)
+    binding.pry
     CartItem.find_by(id: item_id, cart: c_object)
   end
 
-  def locate_cart_item_with_cart(item_id, c_object)
+  def locate_cart_item_with_cart(cart_item_id, c_object)
     binding.pry
     case
     when c_object.kind_of?(Cart)
       binding.pry
-      CartItemsHelper.locate_cart_item_with_cart(item_id, c_object)
+      CartItemsHelper.locate_cart_item_with_cart(cart_item_id, c_object)
     when c_object.kind_of?(CartChassis)
       binding.pry
-      CartItemLocator.new(our_user: current_user, item_id: item_id).locate_current_cart_item_for_user
+      locator = CartItemLocator.new(our_user: current_user, item_id: cart_item_id)
+      locator.locate_current_cart_item_for_user
     end
   end
 
@@ -78,7 +80,10 @@ module CartItemsHelper
     when c_object.kind_of?(Cart)
       CartItemsHelper.cart_items_for_now(c_object)
     when c_object.kind_of?(CartChassis)
-      CartItemLocator.new(our_user: current_user).cart_items_for_now
+      binding.pry
+      locator = CartItemLocator.new(our_user: current_user)
+      binding.pry
+      locator.cart_items_for_now
     end
   end
 

@@ -18,59 +18,62 @@
 # repository for the various queries needed to find and process items
 # within the Cart
 class CartItemLocator
-  include ActiveModel::Model
-
   MEMBERSHIP = CartItem::MEMBERSHIP
   RESERVATION = "Reservation"
 
-  attr_accessor :our_user
+  attr_accessor :our_user, :our_item_id
 
-  def initalize(our_user: curr_user, item_id: nil)
-    @our_user = curr_user
+  def initialize(our_user: curr_user, item_id: nil)
+    binding.pry
+    @our_user = our_user
     @our_item_id = item_id
   end
 
   def locate_current_cart_item_for_user
     #Checks the user and the carts so as to prevent shenanigans
-    r_item = CartItem.find_by(id: @our_item_id, user: @our_user)
+    binding.pry
+    r_item = CartItem.find_by(id: @our_item_id)
     return nil if r_item.blank?
-    (r_item.cart == our_now_cart || r_item.cart == our_later_cart) ? r_item : nil
+    binding.pry
+    return nil if r_item.user != @our_user
+    binding.pry
+    (r_item.cart == our_now_bin || r_item.cart == our_later_bin) ? r_item : nil
   end
 
   def cart_items_for_now
-    n_cart = our_now_cart
-    (n_cart.present? && n_cart.cart_items.present?) ? n_cart.cart_items : []
+    n_bin = our_now_bin
+    (n_bin.present? && n_bin.cart_items.present?) ? n_bin.cart_items : []
   end
 
   def cart_items_for_later
-    l_cart = our_later_cart
-    (l_cart.present? && l_cart.cart_items.present?) ? l_cart.cart_items : []
+    l_bin = our_later_bin
+    (l_bin.present? && l_bin.cart_items.present?) ? l_bin.cart_items : []
   end
 
   def all_current_cart_items(as_ary: true)
-    now_c = our_now_cart
-    later_c = our_later_cart
-    return [] unless (our_now_cart.present? || our_later_cart.present?)
-    currs = CartItems.where(cart: now_c).or(CartItems.where(cart: later_c))
+    now_b = our_now_bin
+    later_b = our_later_bin
+    return [] unless (our_now_bin.present? || our_later_bin.present?)
+    currs = CartItems.where(cart: now_b).or(CartItems.where(cart: later_b))
     as_ary ? currs.to_ary : currs
   end
 
   def all_membership_items_for_now(as_ary: true)
-    m_items = CartItem.where(cart: our_now_cart, kind: MEMBERSHIP)
+    m_items = CartItem.where(cart: our_now_bin, kind: MEMBERSHIP)
     as_ary ? m_items.to_ary : m_items
   end
 
   def all_membership_items(as_array: true)
-    all_ms = all_membership_items_for_now(as_ary: false).or(CartItem.where(cart: our_later_cart, kind: MEMBERSHIP))
+    all_ms = all_membership_items_for_now(as_ary: false).or(CartItem.where(cart: our_later_bin, kind: MEMBERSHIP))
     as_array ? all_ms.to_ary : all_ms
   end
 
   def all_reservations_from_cart_items_for_now
-    CartItem.where(cart: our_now_cart, holdable_type: RESERVATION).select('holdable').map(&:holdable)
+    CartItem.where(cart: our_now_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_cart_items_for_later
-    CartItem.where(cart: our_later_cart, holdable_type: RESERVATION).select('holdable').map(&:holdable)
+    CartItem.where(cart: our_later_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_current_cart_items
@@ -78,16 +81,16 @@ class CartItemLocator
   end
 
   def all_items_for_now_are_memberships?
-    CartItem.where({cart: @now_cart, later: false}).where.not(kind: MEMBERSHIP).count == 0
+    CartItem.where({cart: our_now_bin, later: false}).where.not(kind: MEMBERSHIP).count == 0
   end
 
   private
 
-  def our_now_cart
+  def our_now_bin
     Cart.active_for_now.find_by(user: @our_user)
   end
 
-  def our_later_cart
+  def our_later_bin
     Cart.active_for_later.find_by(user: @our_user)
   end
 end

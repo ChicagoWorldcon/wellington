@@ -66,10 +66,8 @@
     <% end %>
   </div>
   <div class="card-footer" style="background-color:firebrick">
-    <% binding.pry %>
     <% if !!defined?(admin_buttons) && admin_buttons.present? %>
       <div class="btn-group checkout-item-admin-buttons" role="group">
-        <% binding.pry %>
         <% admin_buttons.each do |a_button| %>
            <%= a_button %>
         <% end %>

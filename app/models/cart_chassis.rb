@@ -29,78 +29,103 @@
 
 class CartChassis
   include ActiveModel::Model
-  attr_accessor :now_cart, :later_cart
+  attr_accessor :now_bin, :later_bin
 
-  def initialize(now_cart: nil, later_cart: nil)
-    @now_cart = now_cart
-    @later_cart = later_cart
+  def initialize(now_bin: nil, later_bin: nil)
+    binding.pry
+    @now_bin = now_bin
+    @later_bin = later_bin
   end
 
-  def self.full_reload
-    @now_cart.reload if @now_cart.present?
-    @later_cart.reload if @later_cart.present?
+  def full_reload
+    @now_bin.reload if @now_bin.present?
+    @later_bin.reload if @later_bin.present?
   end
 
-  def self.save_all_items_for_later
-    return -1 unless @now_cart && @later_cart
-    @now_cart.cart_items.each do |i|
+  def all_bins_present?
+    @now_bin.present? && @later_bin.present?
+  end
+
+  def now_items
+    (@now_bin.present? && @now_bin.cart_items.present?) ? @now_bin.cart_items : []
+  end
+
+  def later_items
+    (@later_bin.present? && @later_bin.cart_items.present?) ? @later_bin.cart_items : []
+  end
+
+  def has_now_items?
+    @now_bin.present? && @now_bin.cart_items.present?
+  end
+
+  def has_later_items?
+    @later_bin.present? && @later_bin.cart_items.present?
+  end
+
+  def now_subtotal
+    @now_bin.subtotal_display
+  end
+
+  def save_all_items_for_later
+    return -1 unless @now_bin && @later_cart
+    @now_bin.cart_items.each do |i|
       i.later = true
-      i.cart = @later_cart
+      i.cart = @later_bin
       i.save
     end
     self.full_reload
-    return @now_cart.cart_items.count
+    return @now_bin.cart_items.count
   end
 
-  def self.move_all_saved_to_cart
-    return -1 unless @now_cart && @later_cart
-    @later_cart.cart_items.each do |i|
+  def move_all_saved_to_cart
+    return -1 unless @now_bin && @later_bin
+    @later_bin.cart_items.each do |i|
       i.later = false
-      i.cart = @now_cart
+      i.cart = @now_bin
       i.save
     end
     self.full_reload
-    return @later_cart.cart_items.count
+    return @later_bin.cart_items.count
   end
 
-  def self.destroy_all_items_for_now
-    return unless @now_cart
-    return 0 if @now_cart.cart_items.blank?
-    @now_cart.cart_items.each {|i| i.destroy}
-    @now_cart.reload
-    @now_cart.cart_items.count
+  def destroy_all_items_for_now
+    return unless @now_bin
+    return 0 if @now_bin.cart_items.blank?
+    @now_bin.cart_items.each {|i| i.destroy}
+    @now_bin.reload
+    @now_bin.cart_items.count
   end
 
-  def self.destroy_all_items_for_later
-    return unless @later_cart
-    return 0 if @later_cart.cart_items.blank?
-    @later_cart.cart_items.each {|i| i.destroy}
-    @later_cart.reload
-    @later_cart.cart_items.count
+  def destroy_all_items_for_later
+    return unless @later_bin
+    return 0 if @later_bin.cart_items.blank?
+    @later_bin.cart_items.each {|i| i.destroy}
+    @later_bin.reload
+    @later_bin.cart_items.count
   end
 
-  def self.destroy_all_cart_contents
+  def destroy_all_cart_contents
     lingering_n = self.destroy_all_items_for_now
     lingering_l = self.destroy_all_items_for_later
     lingering_n + lingering_l
   end
 
-  def self.now_items_count
-    @now_cart.present? && @now_cart.cart_items.present? ? @now_cart.cart_items.count : 0
+  def now_items_count
+    @now_bin.present? && @now_bin.cart_items.present? ? @now_bin.cart_items.count : 0
   end
 
-  def self.later_items_count
-    @later_cart.present? && @later_cart.cart_items.present? ? @later_cart.cart_items.count : 0
+  def later_items_count
+    @later_bin.present? && @later_bin.cart_items.present? ? @later_bin.cart_items.count : 0
   end
 
-  def self.all_items_count
+  def all_items_count
     self.now_items_count + self.later_items_count
   end
 
-  def self.can_proceed_to_payment?
-    return false if (@now_cart.blank? || @now_cart.cart_items.size == 0)
+  def can_proceed_to_payment?
+    return false if (@now_cart.blank? || @now_bin.cart_items.size == 0)
     all_ready = true
-    @now_cart.cart_items.each {|i| all_ready = false if !i.item_ready_for_payment}
+    @now_bin.cart_items.each {|i| all_ready = false if !i.item_ready_for_payment?}
     all_ready
   end
 end
