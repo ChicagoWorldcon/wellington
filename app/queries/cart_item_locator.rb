@@ -32,12 +32,16 @@ class CartItemLocator
   def locate_current_cart_item_for_user
     #Checks the user and the carts so as to prevent shenanigans
     binding.pry
-    r_item = CartItem.find_by(id: @our_item_id)
-    return nil if r_item.blank?
+    # r_item = CartItem.find_by(id: @our_item_id)
+    # return nil if r_item.blank?
+    # binding.pry
+    # return nil if r_item.user != @our_user
+    # binding.pry
+    # (r_item.cart == our_now_bin || r_item.cart == our_later_bin) ? r_item : nil
+
+    r_item = CartItem.where(cart: [our_now_bin, our_later_bin], id: @our_item_id)
     binding.pry
-    return nil if r_item.user != @our_user
-    binding.pry
-    (r_item.cart == our_now_bin || r_item.cart == our_later_bin) ? r_item : nil
+    r_item.length == 1 ? r_item[0] : nil
   end
 
   def cart_items_for_now
@@ -51,10 +55,7 @@ class CartItemLocator
   end
 
   def all_current_cart_items(as_ary: true)
-    now_b = our_now_bin
-    later_b = our_later_bin
-    return [] unless (our_now_bin.present? || our_later_bin.present?)
-    currs = CartItems.where(cart: now_b).or(CartItems.where(cart: later_b))
+    currs = CartItem.where(cart: [our_now_bin, our_later_bin])
     as_ary ? currs.to_ary : currs
   end
 
@@ -64,20 +65,24 @@ class CartItemLocator
   end
 
   def all_membership_items(as_array: true)
-    all_ms = all_membership_items_for_now(as_ary: false).or(CartItem.where(cart: our_later_bin, kind: MEMBERSHIP))
+    all_ms = CartItem.where(cart: [our_now_bin, our_later_bin], kind: MEMBERSHIP)
     as_array ? all_ms.to_ary : all_ms
   end
 
   def all_reservations_from_cart_items_for_now
+    binding.pry
     CartItem.where(cart: our_now_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_cart_items_for_later
+    binding.pry
     CartItem.where(cart: our_later_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_current_cart_items
-    all_reservations_from_cart_items_for_now.concat(all_reservations_from_cart_items_for_later)
+    # all_reservations_from_cart_items_for_now.concat(all_reservations_from_cart_items_for_later)
+    binding.pry
+    CartItem.where(cart: [our_now_bin, our_later_bin], holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_items_for_now_are_memberships?
