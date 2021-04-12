@@ -22,63 +22,46 @@ class CartServices::ResolveCartChassis
   attr_accessor :our_user, :existing_cart_chassis
 
   def initialize(user: our_user, existing_cart_chassis: nil)
-    binding.pry
     @our_user = user
     @curr_c_c = existing_cart_chassis
   end
 
   def call
-    binding.pry
     our_now_bin = locate_chassis_bin(for_later: false)
     our_later_bin = locate_chassis_bin(for_later: true)
-    CartChassis.new(now_bin: our_now_bin, later_bin: our_later_bin)
+    chassis = CartChassis.new(now_bin: our_now_bin, later_bin: our_later_bin)
+    return {cart_chassis: chassis, errors: errors}
+  end
+
+  def errors
+    @errors ||= []
   end
 
   private
 
   def locate_chassis_bin(for_later: false)
-    binding.pry
+    # Status FOR_NOW is for the part of the cart where active items go.
+    # Status FOR_LATER is for the part of the cart where saved items go.
     our_bin = nil
 
     if @curr_c_c.present?
       our_bin = (for_later && @curr_c_c.later_bin.present?) ? @curr_c_c.later_bin : nil
+
       our_bin ||= (!for_later && @curr_c_c.now_bin.present?) ? @curr_c_c.now_bin : nil
     end
 
-    binding.pry
-
     our_bin ||= for_later ? Cart.active_for_later.find_by(user: @our_user) : Cart.active_for_now.find_by(user: @our_user)
 
-    binding.pry
-
     our_bin ||= for_later ? create_cart_bin(with_status: FOR_LATER) : create_cart_bin(with_status: FOR_NOW)
-
-    binding.pry
-
-    our_bin
   end
 
-
-
   def create_cart_bin(with_status:)
-    # Status FOR_NOW is for the part of the cart where active items go.
-    # Status FOR_LATER is for the part of the cart where saved items go.
-    binding.pry
     cart_bin = Cart.new status: with_status
-    # current_user is a Devise helper.
     cart_bin.user = @our_user
     cart_bin.active_from = Time.now
-    binding.pry
-    if cart_bin.save
-      binding.pry
-      flash[:status] = :success
-    else
-      binding.pry
-      flash[:status] = :failure
-      flash[:notice] = "We weren't able to fully create your shopping cart."
-      flash[:messages] = cart_bin.errors.messages
+    if !cart_bin.save
+      errors << cart_bin.errors.messages
     end
-    binding.pry
     cart_bin
   end
 end

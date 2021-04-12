@@ -23,6 +23,7 @@ class CartController < ApplicationController
   before_action :require_nonsupport_login
   #before_action :locate_cart
   before_action :get_cart_chassis
+
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability, :remove_single_checkout_item, :save_single_checkout_item_for_later, :check_single_checkout_item_availability]
 
   #before_action :verify_all_cart_contents, only: [:move_all_saved_items_to_cart]
@@ -50,23 +51,21 @@ class CartController < ApplicationController
     new_cart_item = CartServices::ResolveCartItem.new(
       full_params: params,
       bin_for_now: @cart_chassis.now_bin,
-      item_kind: MEMBERSHIP
-    )
-    # if (@our_offer.present? && @our_beneficiary.present?)
-    #   @our_cart_item = CartItem.create(
-    #     :acquirable => @our_offer.membership,
-    #     :cart => defacto_cart,
-    #     :benefitable => @our_beneficiary,
-    #     :kind => MEMBERSHIP
-    #   )
+      item_kind: MEMBERSHIP,
+      flash_obj: flash
+    ).call
+
     if new_cart_item.present? && new_cart_item.save
+      binding.pry
       flash[:status] = :success
       flash[:notice] = "Membership successfully added to cart."
       @cart_chassis.full_reload
+      binding.pry
       prep_bins
+      binding.pry
       redirect_to cart_path and return
     end
-
+    binding.pry
     flash[:messages] = new_cart_item.errors.messages
     prep_bins
     redirect_back(fallback_location: root_path)
@@ -74,7 +73,6 @@ class CartController < ApplicationController
 
   def destroy
     # This empties the cart of all items, both active and saved.
-
     binding.pry
 
     defacto_cart = @cart if @cart.present?
@@ -513,8 +511,15 @@ class CartController < ApplicationController
   # end
 
   def get_cart_chassis
-    binding.pry
-    @cart_chassis = (@cart_chassis.try(:now_bin) && @cart_chassis.try(:later_bin)) ? @cart_chassis : CartServices::ResolveCartChassis.new(user: current_user, existing_cart_chassis: @cart_chassis).call
+    @cart_chassis ||= nil
+    unless (@cart_chassis.try(:now_bin) && @cart_chassis.try(:later_bin))
+      r_c_serv = CartServices::ResolveCartChassis.new(user: current_user, existing_cart_chassis: @cart_chassis).call
+      if r_c_serv[:cart_chassis].present?
+        @cart_chassis = r_c_serv[:cart_chassis]
+      else
+        flash[:alert] = r_c_serv[:errors]
+      end
+    end
   end
 
   # def build_new_cart_chassis

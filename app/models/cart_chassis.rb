@@ -32,7 +32,6 @@ class CartChassis
   attr_accessor :now_bin, :later_bin
 
   def initialize(now_bin: nil, later_bin: nil)
-    binding.pry
     @now_bin = now_bin
     @later_bin = later_bin
   end
