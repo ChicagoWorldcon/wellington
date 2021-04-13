@@ -60,12 +60,14 @@ class Cart < ApplicationRecord
 
   def subtotal_cents
     self.cart_items.reduce(0) { |sum, i| sum + i.item_price_in_cents }
-    # self.cart_items.each { |i| subtotal += i.item_price_in_cents}
-    # subtotal
   end
 
   def subtotal_display
     Money.new(self.subtotal_cents, "USD").format(with_currency: true)
+  end
+
+  def paid?
+    self.status == PAID
   end
 
   def active_and_pending

@@ -15,14 +15,15 @@
 %>
 
 <h1 style="color:orangered">
-  Place Order (<%= @processing_cart.cart_items.count %> items)
+  Place Order (<%= @transaction_cart.cart_items.count %> items)
 </h1>
 
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <%= form_tag(create_group_charge_path, "id" => "charge-form", "data-stripe" => stripe_config(@processing_cart, @prospective_charge_cents)) do %>
+        binding.pry
+        <%= form_tag(create_group_charge_path, "id" => "charge-form", "data-stripe" => stripe_config(@transaction_cart, @prospective_charge_cents)) do %>
           <article>
             <div id="error_explanation"></div>
             <h2>
@@ -39,7 +40,7 @@
           </article>
           <%= hidden_field_tag(:stripeToken) %>
           <%= hidden_field_tag(:stripeEmail) %>
-          <%= hidden_field_tag(:buyable, @processing_cart.id) %>
+          <%= hidden_field_tag(:buyable, @transaction_cart.id) %>
           <%= hidden_field_tag(:amount, @prospective_charge_cents) %>
           <div class="l-v-spacing-both">
             <div class="form-group">
@@ -52,7 +53,7 @@
 
     <div class="col-12 col-lg-4">
       <div class="l-v-spacing">
-        <% @processing_cart.cart_items.each do |cart_item| %>
+        <% @transaction_cart.cart_items.each do |cart_item| %>
           <% # TODO: This is excessively entangled.  Put this in a view helper. %>
           <% if cart_item.item_reservation.present? %>
             <%= render("reservation_card", reservation: cart_item.item_reservation) %>

@@ -82,10 +82,10 @@ class Money::ChargeCustomer
   def cart_transaction
     ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
       @charge.comment = ChargeDescription.new(@charge).for_cart_transactions
-      charge.save!
-      reservations_in_cart = CartItemsHelper.locate_all_cart_item_reservations(@buyable)
+      @charge.save!
+      reservations_in_cart = ReservationsInCart.new(@buyable).reservations_found
       if fully_paid?
-        reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)} if reservations_in_cart.present?
+        reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)}
         @buyable.update!(status: Cart::PAID, active_to: Time.now)
         @buyable.reload
       else

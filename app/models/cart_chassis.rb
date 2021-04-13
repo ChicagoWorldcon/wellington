@@ -60,8 +60,20 @@ class CartChassis
   #   @later_bin.present? && @later_bin.cart_items.present?
   # end
 
+  def purchase_bin
+    @now_bin
+  end
+
+  def purchase_bin_paid?
+    @now_bin.paid?
+  end
+
   def purchase_subtotal
     @now_bin.subtotal_display
+  end
+
+  def purchase_subtotal_cents
+    @now_bin.subtotal_cents
   end
 
   def move_item_to_saved(our_item)
@@ -69,17 +81,14 @@ class CartChassis
   end
 
   def move_item_to_cart(our_item)
-    binding.pry
     self.move_specific_cart_item(item: our_item, moving_to_saved: false)
   end
 
   def save_all_items_for_later
-    binding.pry
     move_entire_bin_contents(moving_to_saved: true)
   end
 
   def move_all_saved_to_cart
-    binding.pry
     move_entire_bin_contents(moving_to_saved: false)
     # return -1 unless @now_bin && @later_bin
     # @later_bin.cart_items.each do |i|
@@ -96,24 +105,18 @@ class CartChassis
   # end
 
   def destroy_all_items_for_now
-    binding.pry
     lingering = destroy_specific_bin_contents(now_bin: true)
-    binding.pry
     lingering == 0
   end
 
   def destroy_all_items_for_later
-    binding.pry
     lingering = destroy_specific_bin_contents(now_bin: false)
-    binding.pry
     lingering == 0
   end
 
   def destroy_all_cart_contents
-    binding.pry
     lingering_n = destroy_specific_bin_contents(now_bin: true)
     lingering_l = destroy_specific_bin_contents(now_bin: false)
-    binding.pry
     lingering = lingering_n.nil? ? 0 : lingering_n
     lingering += lingering_l.nil? ? 0 : lingering_l
     lingering == 0
@@ -160,7 +163,14 @@ class CartChassis
     true
   end
 
+  def update_to_waiting_for_check
+    @now_bin.status = Cart::AWAITING_CHEQUE
+    @now_bin.save
+    @now_bin = nil
+  end
+
   private
+
   def all_bins_present?
     @now_bin.present? && @later_bin.present?
   end
@@ -212,14 +222,12 @@ class CartChassis
   end
 
   def move_entire_bin_contents(moving_to_saved:)
-    binding.pry
     return -1 unless all_bins_present?
 
     target_bin = moving_to_saved ? @later_bin : @now_bin
     origin_bin = moving_to_saved ? @now_bin : @later_bin
 
     return 0 unless origin_bin.cart_items.present?
-    binding.pry
     origin_bin.cart_items.each do |i|
       i.cart = target_bin
       i.later = (i.cart == @later_bin) ? true : false
@@ -227,13 +235,11 @@ class CartChassis
     end
 
     self.full_reload
-    binding.pry
     return origin_bin.cart_items.count
   end
 
   def move_specific_cart_item(item:, moving_to_saved:)
     return unless all_bins_present?
-    binding.pry
     destination_bin = moving_to_saved ? @later_bin : @now_bin
     item.cart = destination_bin
     item.later = (item.cart == @later_bin) ? true : false
@@ -251,12 +257,10 @@ class CartChassis
   # end
 
   def destroy_specific_bin_contents(now_bin: true)
-    binding.pry
     target_bin = now_bin ? @now_bin : @later_bin
     return unless target_bin.present?
     return 0 if target_bin.cart_items.blank?
     target_bin.cart_items.each {|i| i.destroy}
-    binding.pry
     target_bin.reload
     target_bin.cart_items.count
   end

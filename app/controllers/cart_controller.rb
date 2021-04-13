@@ -26,12 +26,9 @@ class CartController < ApplicationController
 
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 
-  #before_action :verify_all_cart_contents, only: [:move_all_saved_items_to_cart]
+  #before_action :verify_all_cart_contents, only: [:show]
 
-  #before_action :all_contents_confirmed_ready_for_payment?, only:[:pay_with_cheque]
-  #before_action :now_items_confirmed_ready_for_payment?, only:[:submit_online_payment, :pay_with_cheque]
-
-  PENDING = "pending"
+  #PENDING = "pending"
   MEMBERSHIP = "membership"
   FOR_LATER = "for_later"
   FOR_NOW = "for_now"
@@ -62,7 +59,6 @@ class CartController < ApplicationController
   end
 
   def destroy
-    binding.pry
     #
     # defacto_cart = @cart if @cart.present?
     # defacto_cart ||= @cart_chassis
@@ -101,7 +97,6 @@ class CartController < ApplicationController
   end
 
   def destroy_active
-    binding.pry
     # defacto_cart = @cart if @cart.present?
     # defacto_cart ||= @cart_chassis
     #
@@ -191,7 +186,6 @@ class CartController < ApplicationController
   def remove_single_item
     # defacto_cart = @cart if @cart.present?
     # defacto_cart ||= @cart_chassis
-    binding.pry
     single_item_remove
     #
     #
@@ -327,17 +321,17 @@ class CartController < ApplicationController
       redirect_to cart_path and return
     end
 
-    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart_chassis.now_bin, current_user).call
-    @cart_chassis.full_reload
-
-    if recovereds > 0
-      flash[:notice] = "There were #{recovereds} goobered-up items found.  What?? That's not supposed to happen anymore."
-      prep_bins
-      redirect_to cart_path and return
-    end
+    # recovereds = CartServices::RecoverFailedProcessingItems.new(@cart_chassis.now_bin, current_user).call
+    # @cart_chassis.full_reload
+    #
+    # if recovereds > 0
+    #   flash[:notice] = "There were #{recovereds} goobered-up items found.  What?? That's not supposed to happen anymore."
+    #   prep_bins
+    #   redirect_to cart_path and return
+    # end
 
     if !now_items_confirmed_ready_for_payment?
-      flash[:notice] = "You've got at least one baffed-up item. Go back and figure it out."
+      flash[:notice] = "Please review your cart."
       prep_bins
       redirect_to cart_path and return
     end
@@ -387,71 +381,74 @@ class CartController < ApplicationController
   ###REFACTORING_STARTS
 
   def submit_online_payment
-    confirm_ready_to_proceed
+    # confirm_ready_to_proceed
+    # cart_prep_results = CartServices::PrepCartForPayment.new(@cart_chassis).call
+    #
+    # if transaction_results[:amount_to_charge] == 0
+    #   flash[:notice] = "None of your items require payment."
+    #   redirect_to reservations_path and return
+    # end
+    #
+    # if !transaction_results[:good_to_go]
+    #   flash[:alert] = "There was a problem with one or more of your items!"
+    #   #
+    #   # recovery_cart = @cart_chassis.now_bin
+    #   # CartServices::RecoverFailedProcessingItems.new(recovery_cart, current_user).call
+    #   # @cart_chassis.full_reload
+    #   # #TODO:  Maybe use the _payment_problem.html.erb partial here
+    #   prep_bins
+    #   redirect_to cart_path and return
+    # end
 
-    defacto_cart = @cart if @cart.present?
-    defacto_cart ||= @cart_chassis
-
-    transaction_results = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
-      prep_service = CartServices::PrepCartForPayment.new(@cart)
-      our_results = prep_service.call
-    end
-
-    if transaction_results[:amount_to_charge] == 0
-      flash[:notice] = "None of your items require payment."
-      redirect_to reservations_path and return
-    end
-
-    if !transaction_results[:good_to_go]
-      flash[:alert] = "There was a problem with one or more of your items!"
-
-      recovery_cart = @cart_chassis.now_bin
-      CartServices::RecoverFailedProcessingItems.new(recovery_cart, current_user).call
-      @cart_chassis.full_reload
-      #TODO:  Maybe use the _payment_problem.html.erb partial here
-      prep_bins
-      redirect_to cart_path and return
-    end
-
-    @processing_cart = transaction_results[:processing_cart]
-    @prospective_charge_formatted = transaction_results[:amount_to_charge]
-    @prospective_charge_cents = transaction_results[:amount_to_charge].cents
-    #TODO: Refine this message.
+    check_for_paid
+    prep_results = prepare_cart_for_payment
+    #return if !prep_results || !prep_results[:good_to_go]
+    binding.pry
+    @cart_chassis.full_reload
+    binding.pry
+    @transaction_cart = @cart_chassis.purchase_bin
+    @prospective_charge_formatted = Money.new(@cart_chassis.purchase_subtotal_cents)
+    @prospective_charge_cents = @cart_chassis.purchase_subtotal_cents
     flash[:notice] = "Your requested reservations have been created."
     prep_bins
   end
 
   def pay_with_cheque
-    #TODO: fix Ready to Proceed issue
-    confirm_ready_to_proceed
-    cart_prep_results = CartServices::PrepCartForPayment.new(@cart_chassis).call
-
-
-    if !cart_prep_results[:good_to_go]
-      flash[:alert] = "There was a problem with one or more of your items!"
-      #CartServices::RecoverFailedProcessingItems.new(@cart_chassis, current_user).call
-      #@cart.reload
-      #TODO:  Maybe use the _payment_problem.html.erb partial here
-      prep_bins
-      redirect_to cart_path and return
-    end
-
-    if cart_prep_results[:amount_to_charge] == 0
-      flash[:notice] = "None of your items require payment."
-      redirect_to reservations_path and return
-    end
+    prep_results = prepare_cart_for_payment
+    #
+    # confirm_ready_to_proceed
+    # cart_prep_results = CartServices::PrepCartForPayment.new(@cart_chassis).call
+    #
+    #
+    # if !cart_prep_results[:good_to_go]
+    #   flash[:alert] = "There was a problem with one or more of your items!"
+    #   #CartServices::RecoverFailedProcessingItems.new(@cart_chassis, current_user).call
+    #   #@cart.reload
+    #   #TODO:  Maybe use the _payment_problem.html.erb partial here
+    #   prep_bins
+    #   redirect_to cart_path and return
+    # end
+    #
+    # if cart_prep_results[:amount_to_charge] == 0
+    #   flash[:notice] = "None of your items require payment."
+    #   redirect_to reservations_path and return
+    # end
+    #return if !prep_results[:good_to_go]
 
     flash[:notice] = "Your requested reservations have been created. See your email for instructions on payment by cheque."
 
-    @cart_chassis.now_bin.status = Cart::AWAITING_CHEQUE
+    # @cart_chassis.now_bin.status = Cart::AWAITING_CHEQUE
+    # @cart_chassis.now_bin.save
+    # @cart_chassis.now_bin = nil
 
-    @cart_chassis.now_bin.save
 
-    owed_for_mailer = cart_prep_results[:amount_to_charge].kind_of?(Integer) ? cart_prep_results[:amount_to_charge] : cart_prep_results[:amount_to_charge].cents
 
-    trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, owed_for_mailer)
 
-    prep_bins
+    trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, @cart_chassis.subtotal_cents)
+
+    @cart_chassis.update_to_waiting_for_check
+
+    #prep_bins
     redirect_to reservations_path
   end
 
@@ -623,7 +620,7 @@ class CartController < ApplicationController
     veri = @cart_chassis.verify_avail_for_all_items
 
     if !veri[:verified]
-      flash[:alert] = "The following items are no longer available: #{veri[:problem_items]..join(', ')}"
+      flash[:alert] = "The following items are no longer available: #{veri[:problem_items].join(', ')}"
     else
       flash[:notice] = "Good news! Everything in your cart is still available."
     end
@@ -633,10 +630,8 @@ class CartController < ApplicationController
 
   def now_items_confirmed_ready_for_payment?
     ready = @cart_chassis.can_proceed_to_payment?
-    # defacto_cart = @cart if @cart.present?
-    # defacto_cart ||= @cart_chassis
     unless ready[:verified]
-      flash[:error] = "There are problems with the following items: #{ready[:problem_items].join(', ')}"
+      flash[:alert] = "There are problems with the following items: #{ready[:problem_items].join(', ')}" if ready[:problem_items].present?
       @cart_chassis.full_reload
     end
     ready[:verified]
@@ -653,21 +648,23 @@ class CartController < ApplicationController
     available
   end
 
-  def confirm_ready_to_proceed
-    recovereds = CartServices::RecoverFailedProcessingItems.new(@cart_chassis, current_user).call
-    if recovereds > 0
-      flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding."
-      prep_bins
-      redirect_to cart_path and return
-    end
-    if !now_items_confirmed_ready_for_payment?
-      flash[:notice] = "Please review your cart before proceeding."
-      prep_bins
-      redirect_to cart_path and return
-    end
-  end
+  # def confirm_ready_to_proceed
+  #   # recovereds = CartServices::RecoverFailedProcessingItems.new(@cart_chassis, current_user).call
+  #   # if recovereds > 0
+  #   #   flash[:notice] = "#{recovereds} previously-added item(s) found.  Please review them before proceeding."
+  #   #   prep_bins
+  #   #   redirect_to cart_path and return
+  #   # end
+  #   if !now_items_confirmed_ready_for_payment?
+  #     flash[:notice] = "Please review your cart before proceeding."
+  #     prep_bins
+  #     redirect_to cart_path and return
+  #   end
+  # end
 
   def trigger_cart_waiting_for_cheque_payment_mailer(cart, amount_outstanding)
+    amt_owed = amount_outstanding.kind_of?(Integer) ? amount_outstanding : amount_outstanding.cents
+
     item_descs = CartContentsDescription.new(
       cart,
       with_layperson_uniq_id: true,
@@ -678,7 +675,7 @@ class CartController < ApplicationController
     PaymentMailer.cart_waiting_for_cheque(
       user: current_user,
       item_count: cart.cart_items.size,
-      outstanding_amount: amount_outstanding,
+      outstanding_amount: amt_owed,
       item_descriptions: item_descs,
       transaction_date: Time.now,
       cart_number: cart.id
@@ -728,23 +725,53 @@ class CartController < ApplicationController
   end
 
   def single_item_remove
-    binding.pry
     removed = false
     if @target_item
-      binding.pry
       target_item_name = @target_item.item_display_name
       target_item_kind = @target_item.kind
       if @target_item.destroy
-        binding.pry
         removed = true
         flash[:notice] = "#{target_item_name} #{target_item_kind} was successfully deleted"
       else
-        binding.pry
         flash[:alert] = "#{target_item_name} #{target_item_kind} could not be removed from your cart."
       end
     end
-    binding.pry
     removed
+  end
+
+  def prepare_cart_for_payment
+    check_for_paid
+    if !now_items_confirmed_ready_for_payment?
+      flash[:notice] = "Please review your cart before proceeding."
+      prep_bins
+      redirect_to cart_path and return
+    end
+
+    cart_prep_results = CartServices::PrepCartForPayment.new(@cart_chassis).call
+
+
+    if !cart_prep_results[:good_to_go]
+      flash[:alert] = "There was a problem with one or more of your items!"
+      #CartServices::RecoverFailedProcessingItems.new(@cart_chassis, current_user).call
+      #@cart.reload
+      #TODO:  Maybe use the _payment_problem.html.erb partial here
+      prep_bins
+      redirect_to cart_path and return
+    end
+
+    if cart_prep_results[:amount_to_charge] == 0
+      flash[:notice] = "None of your items require payment."
+      redirect_to reservations_path and return
+    end
+
+    cart_prep_results
+  end
+
+  def check_for_paid
+    @cart_chassis.full_reload
+    if @cart_chassis.purchase_bin.paid?
+      redirect_to reservations_path, notice: "You've paid for this already." and return
+    end
   end
 
   def prep_bins

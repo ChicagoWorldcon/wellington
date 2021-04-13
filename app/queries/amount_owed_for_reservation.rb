@@ -27,7 +27,7 @@ class AmountOwedForReservation
 
   def amount_owed
     # TODO: Figure out if this is adequate
-    return 0 if fully_paid_by_cart?
+    return Money.new(0) if fully_paid_by_cart?
 
     paid_so_far = reservation.charges.successful.sum(&:amount)
     reservation.membership.price - paid_so_far

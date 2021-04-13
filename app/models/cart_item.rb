@@ -127,7 +127,7 @@ class CartItem < ApplicationRecord
     case self.kind
     when MEMBERSHIP
       if self.item_reservation
-        AmountOwedForReservation.new(self.holdable).amount_owed
+        AmountOwedForReservation.new(self.holdable).amount_owed.cents
       else
         membership_price_in_cents
       end

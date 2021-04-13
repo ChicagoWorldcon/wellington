@@ -36,18 +36,18 @@ class ChargesController < ApplicationController
     end
   end
 
-  def new_group_charge
-    @cart_for_charge = Cart.find_by(id: params[:processing_cart])
-    @amount_to_charge = params[:total_cents]
-    @items_to_buy = @cart_for_charge.cart_items
-
-    if @amount_to_charge > 0 && !@cart_for_charge.cart_items.empty
-      render :new_group_charge and return
-    else
-      redirect_to reservations_path, notice: "There is no balancing owing for any of your items"
-      return
-    end
-  end
+  # def new_group_charge
+  #   @cart_for_charge = Cart.find_by(id: params[:processing_cart])
+  #   @amount_to_charge = @cart_for_charge.subtotal_cents
+  #   @items_to_buy = @cart_for_charge.cart_items
+  #
+  #   if @amount_to_charge > 0 && @cart_for_charge.cart_items.present?
+  #     render :new_group_charge and return
+  #   else
+  #     redirect_to reservations_path, notice: "There is no balancing owing for any of your items"
+  #     return
+  #   end
+  # end
 
   def create
     charge_amount = Money.new(params[:amount].to_i)
@@ -85,13 +85,13 @@ class ChargesController < ApplicationController
   end
 
   def create_group_charge
-    charge_amount = Money.new(params[:amount].to_i)
-    @processing_cart = Cart.find_by(id: params[:buyable])
+    @transaction_cart = Cart.find_by(id: params[:buyable])
+    charge_amount = Money.new(@transaction_cart.subtotal_cents)
 
     successful = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
 
       service = Money::ChargeCustomer.new(
-        @processing_cart,
+        @transaction_cart,
         current_user,
         params[:stripeToken],
         charge_amount,
@@ -104,8 +104,8 @@ class ChargesController < ApplicationController
         flash[:error] = service.error_message
         raise ActiveRecord::Rollback
       else
-        CartServices::AfterPaymentHousekeeping.new(@processing_cart, current_user).call
-        trigger_cart_payment_mailer(service.charge, charge_amount, @processing_cart)
+        CartServices::AfterPaymentHousekeeping.new(@transaction_cart, current_user).call
+        trigger_cart_payment_mailer(service.charge, charge_amount, @transaction_cart)
       end
 
       charge_succeeded
@@ -115,7 +115,7 @@ class ChargesController < ApplicationController
       redirect_to cart_preview_online_purchase_path and return
     end
 
-    redirect_to group_charge_confirmation_path(processed_cart: @processing_cart, charge: @processing_cart.charges.order("created_at").last)
+    redirect_to group_charge_confirmation_path(processed_cart: @transaction_cart, charge: @transaction_cart.charges.order("created_at").last)
   end
 
   def group_charge_confirmation
