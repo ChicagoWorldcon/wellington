@@ -54,6 +54,7 @@ class CartContentsDescription
   end
 
   def describe_cart_contents
+    binding.pry
     cart_description_string_array = []
     cart_description_char_tally = 0
 
@@ -138,7 +139,7 @@ class CartContentsDescription
   def terminate_item_description_and_check_remaining_room(i_desc_obj, i_index, prospective_overall_char_count)
     conjunction_for_last_item = "and "
     finish_description_early = false
-    space_remaining = @max_chars = prospective_overall_char_count
+    space_remaining = @max_chars - prospective_overall_char_count
     steps_from_end = @cart_size - i_index - 1
 
     termination_string = ""
@@ -151,7 +152,7 @@ class CartContentsDescription
       end
     elsif space_remaining < @item_size_estimate
       #Special behavior for when we're running out of space before the last item:
-      termination_string = " and #{steps_from_end} other item(s)" if room_remaining >= 25
+      termination_string = " and #{steps_from_end} other item(s)" if space_remaining >= 25
       finish_description_early = true
     else
       termination_string = ", "

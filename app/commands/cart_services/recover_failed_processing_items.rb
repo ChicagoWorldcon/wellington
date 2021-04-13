@@ -23,13 +23,13 @@ class CartServices::RecoverFailedProcessingItems
 
   attr_reader :our_cart, :our_user
 
-  def initialize(cart_object, user)
-    @our_cart = identify_our_cart(cart_object)
+  def initialize(cart_obj, user)
+    @our_cart = identify_our_cart(cart_obj)
     @our_user = user
   end
 
   def call
-    return -1 if !@our_cart.present? || !@our_user.present?
+    return -1 if !@our_cart.present?
     recovered = 0
     fail_carts = Cart.active_processing.where(user: @our_user).where.not(id: @our_cart.id)
 
@@ -55,12 +55,7 @@ class CartServices::RecoverFailedProcessingItems
   private
 
   def identify_our_cart(c_obj)
-    case
-    when c_obj.kind_of?(Cart)
-      return c_obj
-    when c_obj.kind_of?(CartChassis)
-      return c_obj.now_cart
-    end
+    c_obj.now_bin
   end
 
   def unprocessed_reservation_item?(cart, item)

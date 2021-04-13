@@ -59,23 +59,13 @@ class Cart < ApplicationRecord
   validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
 
   def subtotal_cents
-    subtotal = 0
-    talliables = self.items_for_now
-    talliables.each { |t|
-      subtotal += t.item_price_in_cents if t.item_still_available? }
-    subtotal
+    self.cart_items.reduce(0) { |sum, i| sum + i.item_price_in_cents }
+    # self.cart_items.each { |i| subtotal += i.item_price_in_cents}
+    # subtotal
   end
 
   def subtotal_display
     Money.new(self.subtotal_cents, "USD").format(with_currency: true)
-  end
-
-  def items_for_now
-    CartItemsHelper.cart_items_for_now(self)
-  end
-
-  def items_for_later
-    CartItemsHelper.cart_items_for_later(self)
   end
 
   def active_and_pending

@@ -23,24 +23,14 @@ class CartItemLocator
 
   attr_accessor :our_user, :our_item_id
 
-  def initialize(our_user: curr_user, item_id: nil)
-    binding.pry
+  def initialize(our_user: curr_user, our_item_id: nil)
     @our_user = our_user
-    @our_item_id = item_id
+    @our_item_id = our_item_id
   end
 
   def locate_current_cart_item_for_user
-    #Checks the user and the carts so as to prevent shenanigans
-    binding.pry
-    # r_item = CartItem.find_by(id: @our_item_id)
-    # return nil if r_item.blank?
-    # binding.pry
-    # return nil if r_item.user != @our_user
-    # binding.pry
-    # (r_item.cart == our_now_bin || r_item.cart == our_later_bin) ? r_item : nil
-
+    #Checks the carts (and also thereby checks the user) so as to prevent shenanigans
     r_item = CartItem.where(cart: [our_now_bin, our_later_bin], id: @our_item_id)
-    binding.pry
     r_item.length == 1 ? r_item[0] : nil
   end
 
@@ -70,18 +60,15 @@ class CartItemLocator
   end
 
   def all_reservations_from_cart_items_for_now
-    binding.pry
     CartItem.where(cart: our_now_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_cart_items_for_later
-    binding.pry
     CartItem.where(cart: our_later_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 
   def all_reservations_from_current_cart_items
     # all_reservations_from_cart_items_for_now.concat(all_reservations_from_cart_items_for_later)
-    binding.pry
     CartItem.where(cart: [our_now_bin, our_later_bin], holdable_type: RESERVATION).select('holdable').map(&:holdable)
   end
 

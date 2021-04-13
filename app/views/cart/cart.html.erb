@@ -36,7 +36,7 @@
 
         <div class="active-admin-container">
           <div class="btn-group payment-buttons" role="group">
-            <% if cart_contents_ready_for_payment?(@shopping_cart, now_items_only: true) %>
+            <% if ready_for_payment?(@cart_chassis) %>
               <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
               <% end %>
@@ -53,8 +53,8 @@
     <% end %>
 
     <% if @later_bin.present? %>
-      <h2 style="color:maroon">Items Saved for Later:</h2>
       <div class="later-items" style="background-color:thistle">
+        <h2 class="bg-warning" style="color:maroon">Items Saved for Later:</h2>
         <div class="row d-inline-flex align-items-stretch">
           <% @later_bin.each do |later_item| %>
             <div class="row row-cols-auto mb-3 ml-2" style="background-color:darkslategray">
@@ -63,18 +63,19 @@
           <% end %>
         </div>
 
-        <div class="btn-group later-buttons" role="group">
-          <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
-          <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
+        <div class="saved-admin-container">
+          <div class="btn-group later-buttons" role="group">
+            <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
+            <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
+          </div>
         </div>
       </div>
     <% end %>
 
-
     <div class="all-cart-admin-container" style="background-color:mediumvioletred">
       <div class="btn-group overall-buttons" role="group">
-        <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-warning" %>
-        <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-warning" %>
+        <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-success" %>
+        <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-success" %>
       </div>
     </div>
 

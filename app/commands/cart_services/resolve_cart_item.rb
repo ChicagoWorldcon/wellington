@@ -31,7 +31,6 @@ class CartServices::ResolveCartItem
   end
 
   def call
-    binding.pry
     our_acquirable = resolve_acquirable
     return if our_acquirable.blank?
 
@@ -40,7 +39,6 @@ class CartServices::ResolveCartItem
 
     our_benefitable.valid?  ?  our_benefitable.save : (export_validation_errors_to_flash(our_benefitable) and return)
 
-    binding.pry
     create_cart_item(our_acquirable, benefitable: our_benefitable)
   end
 
@@ -95,15 +93,12 @@ class CartServices::ResolveCartItem
   end
 
   def create_cart_item(acquirbl, benefitable: nil)
-    binding.pry
     return if benefitable.blank? && @benefitable_required
-    binding.pry
     cart_item_attributes = {
       :acquirable => acquirbl,
       :cart => @now_bin,
       :kind => @item_kind
     }
-    binding.pry
     cart_item_attributes[:benefitable] = benefitable if benefitable.present?
     CartItem.create(cart_item_attributes)
   end

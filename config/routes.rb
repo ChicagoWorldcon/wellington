@@ -81,10 +81,6 @@ Rails.application.routes.draw do
       delete 'remove_single_item', :on => :member, to: 'cart#remove_single_item', as: 'remove_single'
       patch 'save_item_for_later', :on => :member, to: 'cart#save_item_for_later', as: 'save_single'
       patch 'move_item_to_cart', :on => :member, to: 'cart#move_item_to_cart', as: 'move_single'
-      delete 'remove_single_checkout_item', :on => :member, to:
-      'cart#remove_single_checkout_item', as: 'remove_single_checkout'
-      patch 'save_single_checkout_item_for_later', :on => :member, to: 'cart#save_single_checkout_item_for_later', as: 'save_single_checkout'
-      patch 'confirm_single_checkout_item_availability', :on => :member, to: 'cart#check_single_checkout_item_availability', as: 'availability_for_single_checkout'
     end
   end
 

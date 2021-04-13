@@ -108,6 +108,12 @@ class CartItem < ApplicationRecord
     end
   end
 
+  def quick_description
+    subj_str = "#{self.item_display_name} #{self.kind}"
+    obj_str = self.benefitable ? " for #{self.shortened_item_beneficiary_name}" : ""
+    subj_str + obj_str
+  end
+
   def item_display_price
     case self.kind
     when MEMBERSHIP

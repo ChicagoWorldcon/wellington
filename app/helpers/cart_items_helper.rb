@@ -41,337 +41,375 @@ module CartItemsHelper
     CartItemsHelper.locate_offer(offer_params)
   end
 
-  def self.locate_cart_item(item_id)
-    CartItem.find_by(id: item_id)
+  # def self.locate_cart_item(item_id)
+  #   CartItem.find_by(id: item_id)
+  # end
+  #
+  # def locate_cart_item(item_id)
+  #   CartItemsHelper.locate_cart_item(item_id)
+  # end
+  #
+  # def self.locate_cart_item_with_cart(item_id, c_object)
+  #   binding.pry
+  #   CartItem.find_by(id: item_id, cart: c_object)
+  # end
+  #
+  # def locate_cart_item_with_cart(cart_item_id, c_object)
+  #   binding.pry
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     binding.pry
+  #     CartItemsHelper.locate_cart_item_with_cart(cart_item_id, c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     binding.pry
+  #     locator = CartItemLocator.new(our_user: current_user, item_id: cart_item_id)
+  #     locator.locate_current_cart_item_for_user
+  #   end
+  # end
+
+  def self.locate_cart_item(user, cart_item_id)
+    locator = CartItemLocator.new(our_user: user, our_item_id: cart_item_id)
+    locator.locate_current_cart_item_for_user
   end
 
-  def locate_cart_item(item_id)
-    CartItemsHelper.locate_cart_item(item_id)
+  def locate_cart_item(cart_item_id)
+    CartItemsHelper.locate_cart_item(cart_item_id)
   end
 
-  def self.locate_cart_item_with_cart(item_id, c_object)
-    binding.pry
-    CartItem.find_by(id: item_id, cart: c_object)
+  # def self.cart_items_for_now(cart)
+  #   if cart
+  #     cart.cart_items.select {|i| !i.later}
+  #   else
+  #     return nil
+  #   end
+  # end
+
+  # def cart_items_for_now(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     CartItemsHelper.cart_items_for_now(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     binding.pry
+  #     locator = CartItemLocator.new(our_user: current_user)
+  #     binding.pry
+  #     locator.cart_items_for_now
+  #   end
+  # end
+  #
+  # def self.cart_items_for_later(cart)
+  #   if cart.present?
+  #     cart.cart_items.select {|i| i.later}
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def cart_items_for_later(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     CartItemsHelper.cart_items_for_now(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     CartItemLocator.new(our_user: current_user).cart_items_for_later
+  #   end
+  # end
+  #
+  # def self.cart_contents_verifier(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     verify_availability_of_cart_contents(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     now_v = verify_availability_of_cart_contents(c_object.now_cart)
+  #     later_v = verify_availability_of_cart_contents(c_object.later_cart)
+  #     return now_v && later_v
+  #   end
+  # end
+  #
+  # def self.verify_availability_of_cart_contents(cart)
+  #   if cart.present?
+  #     all_contents_available = true;
+  #     cart.cart_items.each do |item|
+  #       if item.item_still_available? == false
+  #         all_contents_available = false
+  #       end
+  #     end
+  #     cart.reload
+  #     return all_contents_available
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def verify_availability_of_cart_contents(cart)
+  #   CartItemsHelper.verify_availability_of_cart_contents(cart)
+  # end
+  #
+  # def self.cart_contents_readiness_machine(c_object, for_now_only: false)
+  #
+  # end
+  #
+  def self.ready_for_payment?(c_chassis)
+    c_chassis.can_proceed_to_payment?
   end
 
-  def locate_cart_item_with_cart(cart_item_id, c_object)
-    binding.pry
-    case
-    when c_object.kind_of?(Cart)
-      binding.pry
-      CartItemsHelper.locate_cart_item_with_cart(cart_item_id, c_object)
-    when c_object.kind_of?(CartChassis)
-      binding.pry
-      locator = CartItemLocator.new(our_user: current_user, item_id: cart_item_id)
-      locator.locate_current_cart_item_for_user
-    end
+  def ready_for_payment?(c_chassis)
+    CartItemsHelper.ready_for_payment?(c_chassis)
   end
 
-  def self.cart_items_for_now(cart)
-    if cart
-      cart.cart_items.select {|i| !i.later}
-    else
-      return nil
-    end
-  end
+  # def self.cart_contents_destroyer(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     destroy_cart_contents(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     destroy_cart_contents(c_object.now_cart)
+  #     destroy_cart_contents(c_object.later_cart)
+  #   end
+  # end
+  #
+  # def self.destroy_cart_contents(cart)
+  #   if cart
+  #     cart.cart_items.each {|i| i.destroy}
+  #     cart.reload
+  #     return cart.cart_items.empty?
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def destroy_cart_contents(cart)
+  #   cart.reload
+  #   CartItemsHelper.destroy_cart_contents(cart)
+  # end
 
-  def cart_items_for_now(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      CartItemsHelper.cart_items_for_now(c_object)
-    when c_object.kind_of?(CartChassis)
-      binding.pry
-      locator = CartItemLocator.new(our_user: current_user)
-      binding.pry
-      locator.cart_items_for_now
-    end
-  end
+  # def destroy_complete_cart_contents(our_cart)
+  #   if cart
+  #     nows_gone = destroy_specific_bin_contents(cart: our_cart, now_bin: true)
+  #     laters_gone = destroy_specific_bin_contents(cart: our_cart, now_bin: false)
+  #     return nows_gone && laters_gone
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def destroy_cart_items_for_now(our_cart)
+  #   if cart
+  #     return destroy_specific_bin_contents(cart: our_cart, now_bin: true)
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def destroy_cart_items_for_later(our_cart)
+  #   if cart
+  #     return destroy_specific_bin_contents(cart: our_cart, now_bin: false)
+  #   else
+  #     return nil
+  #   end
+  # end
 
-  def self.cart_items_for_later(cart)
-    if cart.present?
-      cart.cart_items.select {|i| i.later}
-    else
-      return nil
-    end
-  end
 
-  def cart_items_for_later(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      CartItemsHelper.cart_items_for_now(c_object)
-    when c_object.kind_of?(CartChassis)
-      CartItemLocator.new(our_user: current_user).cart_items_for_later
-    end
-  end
+  # def self.destroy_for_now_cart_items(cart)
+  #   if cart
+  #     cart.reload
+  #     now_items = cart_items_for_now(cart)
+  #     now_items.each {|i| i.destroy}
+  #     cart.reload
+  #     return cart_items_for_now(cart).empty?
+  #   else
+  #     return nil
+  #   end
+  #
+  #
+  # end
 
-  def self.cart_contents_verifier(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      verify_availability_of_cart_contents(c_object)
-    when c_object.kind_of?(CartChassis)
-      now_v = verify_availability_of_cart_contents(c_object.now_cart)
-      later_v = verify_availability_of_cart_contents(c_object.later_cart)
-      return now_v && later_v
-    end
-  end
+  # def destroy_for_now_cart_items(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.destroy_for_now_cart_items(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.destroy_all_cart_contents
+  #   end
+  # end
+  #
+  # def self.destroy_cart_items_for_later(cart)
+  #   if cart
+  #     later_items = cart_items_for_later(cart)
+  #     later_items.each {|i| i.destroy}
+  #     cart.reload
+  #     return cart_items_for_later(cart).empty?
+  #   end
+  # end
+  #
+  # def destroy_cart_items_for_later(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.destroy_cart_items_for_later(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.destroy_all_items_for_later
+  #   end
+  # end
 
-  def self.verify_availability_of_cart_contents(cart)
-    if cart.present?
-      all_contents_available = true;
-      cart.cart_items.each do |item|
-        if item.item_still_available? == false
-          all_contents_available = false
-        end
-      end
-      cart.reload
-      return all_contents_available
-    else
-      return nil
-    end
-  end
+  # def self.save_all_cart_items_for_later(cart)
+  #   if cart
+  #     cart.cart_items.each do  |i|
+  #       i.later = true
+  #       i.save
+  #     end
+  #     cart.reload
+  #     return cart_items_for_now(cart).empty?
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def save_all_cart_items_for_later(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.save_all_cart_items_for_later(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.save_all_items_for_later
+  #   end
+  # end
+  #
+  # def self.unsave_all_cart_items(cart)
+  #   if cart
+  #     cart.cart_items.each do |i|
+  #       i.later = false
+  #       unless i.save
+  #         flash[:error] = "unable to move #{i.item_display_name} to cart"
+  #         flash[:messages] = i.errors.messages
+  #         all_movable = false
+  #       end
+  #     end
+  #     cart.reload
+  #     return cart_items_for_later(cart).empty?
+  #   else
+  #     return -1
+  #   end
+  # end
+  #
+  # def unsave_all_cart_items(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.unsave_all_cart_items(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.move_all_saved_to_cart
+  #   end
+  # end
 
-  def verify_availability_of_cart_contents(cart)
-    CartItemsHelper.verify_availability_of_cart_contents(cart)
-  end
-
-  def self.cart_contents_readiness_machine(c_object, for_now_only: false)
-
-  end
-
-  def self.cart_contents_ready_for_payment?(cart, now_items_only: false)
-    return false if cart.cart_items.blank?
-    return false if now_items_only && cart_items_for_now(cart).blank?
-    all_contents_ready = true
-    cart.cart_items.each do |i|
-      if (now_items_only && !i.later) || !now_items_only
-        all_contents_ready = false if !i.item_ready_for_payment?
-      end
-    end
-    all_contents_ready
-  end
-
-  def cart_contents_ready_for_payment?(c_object, now_items_only: false)
-    case
-    when c_object.kind_of?(Cart)
-      CartItemsHelper.cart_items_ready_for_payment?(c_object, now_items_only: false)
-    when c_object.kind_of?(CartChassis)
-      return c_object.can_proceed_to_payment?
-    end
-  end
-
-  def self.cart_contents_destroyer(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      destroy_cart_contents(c_object)
-    when c_object.kind_of?(CartChassis)
-      destroy_cart_contents(c_object.now_cart)
-      destroy_cart_contents(c_object.later_cart)
-    end
-  end
-
-  def self.destroy_cart_contents(cart)
-    if cart
-      cart.cart_items.each {|i| i.destroy}
-      cart.reload
-      return cart.cart_items.empty?
-    else
-      return nil
-    end
-  end
-
-  def destroy_cart_contents(cart)
-    cart.reload
-    CartItemsHelper.destroy_cart_contents(cart)
-  end
-
-  def self.destroy_for_now_cart_items(cart)
-    if cart
-      cart.reload
-      now_items = cart_items_for_now(cart)
-      now_items.each {|i| i.destroy}
-      cart.reload
-      return cart_items_for_now(cart).empty?
-    else
-      return nil
-    end
-  end
-
-  def destroy_for_now_cart_items(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.destroy_for_now_cart_items(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.destroy_all_cart_contents
-    end
-  end
-
-  def self.destroy_cart_items_for_later(cart)
-    if cart
-      later_items = cart_items_for_later(cart)
-      later_items.each {|i| i.destroy}
-      cart.reload
-      return cart_items_for_later(cart).empty?
-    end
-  end
-
-  def destroy_cart_items_for_later(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.destroy_cart_items_for_later(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.destroy_all_items_for_later
-    end
-  end
-
-  def self.save_all_cart_items_for_later(cart)
-    if cart
-      cart.cart_items.each do  |i|
-        i.later = true
-        i.save
-      end
-      cart.reload
-      return cart_items_for_now(cart).empty?
-    else
-      return nil
-    end
-  end
-
-  def save_all_cart_items_for_later(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.save_all_cart_items_for_later(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.save_all_items_for_later
-    end
-  end
-
-  def self.unsave_all_cart_items(cart)
-    if cart
-      cart.cart_items.each do |i|
-        i.later = false
-        unless i.save
-          flash[:error] = "unable to move #{i.item_display_name} to cart"
-          flash[:messages] = i.errors.messages
-          all_movable = false
-        end
-      end
-      cart.reload
-      return cart_items_for_later(cart).empty?
-    else
-      return -1
-    end
-  end
-
-  def unsave_all_cart_items(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.unsave_all_cart_items(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.move_all_saved_to_cart
-    end
-  end
-
-  def self.locate_all_membership_items(cart)
-    if cart.present?
-      cart.cart_items.select {|i| i.kind == MEMBERSHIP}
-    else
-      return nil
-    end
-  end
-
-  def locate_all_membership_items(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.locate_all_membership_items(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.all_membership_items
-    end
-  end
-
-  def self.locate_all_membership_items_for_now(cart)
-    if cart.present?
-      cart.cart_items.select {|i| i.kind == MEMBERSHIP && i.later == false}
-    else
-      return nil
-    end
-  end
-
-  def locate_all_membership_items_for_now(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.locate_all_membership_items(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.all_membership_items_for_now
-    end
-  end
-
-  def self.locate_all_cart_item_reservations(cart)
-    res_ary = []
-    if !cart.cart_items.empty?
-      cart.cart_items.each do |i|
-        res_ary << i.item_reservation if i.item_reservation
-      end
-    end
-    res_ary
-  end
-
-  def locate_all_cart_item_reservations(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.locate_cart_item_reservations(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return c_object.all_reservations_from_current_cart_items
-    end
-  end
-
-  def self.now_items_include_only_memberships?(cart)
-    CartItem.where({cart: cart, later: false}).where.not(kind: CartItem::MEMBERSHIP).count == 0
-  end
-
-  def now_items_include_only_memberships?(c_object)
-    case
-    when c_object.kind_of?(Cart)
-      c_object.reload
-      return CartItemsHelper.now_items_include_only_memberships?(c_object)
-    when c_object.kind_of?(CartChassis)
-      c_object.full_reload
-      return CartItemLocator.new(our_user: current_user).all_items_for_now_are_memberships?
-    end
-  end
+  # def self.locate_all_membership_items(cart)
+  #   if cart.present?
+  #     cart.cart_items.select {|i| i.kind == MEMBERSHIP}
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def locate_all_membership_items(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.locate_all_membership_items(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.all_membership_items
+  #   end
+  # end
+  #
+  # def self.locate_all_membership_items_for_now(cart)
+  #   if cart.present?
+  #     cart.cart_items.select {|i| i.kind == MEMBERSHIP && i.later == false}
+  #   else
+  #     return nil
+  #   end
+  # end
+  #
+  # def locate_all_membership_items_for_now(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.locate_all_membership_items(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.all_membership_items_for_now
+  #   end
+  # end
+  #
+  # def self.locate_all_cart_item_reservations(cart)
+  #   res_ary = []
+  #   if !cart.cart_items.empty?
+  #     cart.cart_items.each do |i|
+  #       res_ary << i.item_reservation if i.item_reservation
+  #     end
+  #   end
+  #   res_ary
+  # end
+  #
+  # def locate_all_cart_item_reservations(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.locate_cart_item_reservations(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return c_object.all_reservations_from_current_cart_items
+  #   end
+  # end
+  #
+  # def self.now_items_include_only_memberships?(cart)
+  #   CartItem.where({cart: cart, later: false}).where.not(kind: CartItem::MEMBERSHIP).count == 0
+  # end
+  #
+  # def now_items_include_only_memberships?(c_object)
+  #   case
+  #   when c_object.kind_of?(Cart)
+  #     c_object.reload
+  #     return CartItemsHelper.now_items_include_only_memberships?(c_object)
+  #   when c_object.kind_of?(CartChassis)
+  #     c_object.full_reload
+  #     return CartItemLocator.new(our_user: current_user).all_items_for_now_are_memberships?
+  #   end
+  # end
 
   def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true)
     [].tap do |buttons|
       if deletion
-        buttons << button_to("Delete", remove_single_checkout_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
+        buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
       end
 
       if saving
         if cart_item.later == true
           buttons << button_to("Move to Cart", move_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
         else
-          buttons << button_to("Save for Later", save_single_checkout_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
+          buttons << button_to("Save for Later", save_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
         end
       end
 
       if availability
-        buttons << button_to("Check Availability", availability_for_single_checkout_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
+        buttons << button_to("Check Availability", verify_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
       end
     end
   end
+
+  private
+
+  # def destroy_specific_bin_contents(cart: our_cart, now_bin: true)
+  #   all_destroyed = true
+  #   target_bin = now_bin ? cart.now_bin : cart.later_bin
+  #   if cart.present? && target_bin.present? && target_bin.cart_items.present?
+  #     target_bin.cart_items.each {|i| i.destroy}
+  #     target_bin.reload
+  #     all_destroyed = target_bin.cart_items.blank?
+  #   end
+  #   all_destroyed
+  # end
 
   #TODO: Figure out how much of this failed processing recovery stuff we need or want.
   # def self.recover_failed_processing_items(cart, user)
