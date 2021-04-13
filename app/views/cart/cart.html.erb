@@ -41,7 +41,7 @@
               <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
               <% end %>
             <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
-            <%= button_to "Clear All Active Items", cart_clear_all_active_path, method: :delete, class: "btn btn-outline-warning" %>
+            <%= group_deletion_button(@cart_chassis.now_bin) %>
           </div>
           <div class="subtotal-container" style="background-color:darkorange">
             <h5 style="color:indigo"> Cart Subtotal: <%= @now_subtotal %></h5>
@@ -66,7 +66,7 @@
         <div class="saved-admin-container">
           <div class="btn-group later-buttons" role="group">
             <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
-            <%= button_to "Delete All Saved Items", cart_clear_all_saved_path, method: :delete, class: "btn btn-outline-warning" %>
+            <%= group_deletion_button(@cart_chassis.later_bin) %>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
     <div class="all-cart-admin-container" style="background-color:mediumvioletred">
       <div class="btn-group overall-buttons" role="group">
         <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-success" %>
-        <%= button_to "Delete All Cart Contents", cart_empty_path, method: :delete, class: "btn btn-outline-success" %>
+        <%= group_deletion_button(@cart_chassis) %>
       </div>
     </div>
 

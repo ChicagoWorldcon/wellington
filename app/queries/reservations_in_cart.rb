@@ -21,10 +21,10 @@ class ReservationsInCart
   MEMBERSHIP = CartItem::MEMBERSHIP
   RESERVATION = "Reservation"
 
-  attr_accessor :reservations_found
+  attr_accessor :reservations_gathered
 
   def initialize(our_cart)
-    @reservations_found = associated_reservations(our_cart)
+    @reservations_gathered = associated_reservations(our_cart)
   end
 
   private

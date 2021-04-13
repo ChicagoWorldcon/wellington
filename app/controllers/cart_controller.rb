@@ -441,7 +441,7 @@ class CartController < ApplicationController
 
 
 
-    trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, @cart_chassis.subtotal_cents)
+    trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, @cart_chassis.purchase_subtotal_cents)
 
     @cart_chassis.update_to_waiting_for_check
 

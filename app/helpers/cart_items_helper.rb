@@ -27,7 +27,6 @@ module CartItemsHelper
   NONE = "none"
   NO_RESERVATION = "no_reservation"
 
-
   # TODO: See if this can be eliminated.  There's a new method
   # in MembershipOffer that should handle this. Currently, all
   # it's doing is getting tested.
@@ -173,6 +172,36 @@ module CartItemsHelper
   def ready_for_payment?(c_chassis)
     CartItemsHelper.ready_for_payment?(c_chassis)
   end
+
+  def self.items_with_reservations_present?(cart_bin)
+    ReservationsInCart.new(cart_bin).reservations_gathered.present?
+  end
+
+  def items_with_reservations_present?(cart_bin)
+    CartItemsHelper.items_with_reservations_present?(cart_bin)
+  end
+
+  def group_deletion_button(cart_object)
+    reservation_warning_needed = false
+    confirm_hash = {
+      confirm: "At least one membership in your cart has already been reserved. When you delete it from your cart, it will not be cancelled, and you will still be able to review and update it from your Membership Page. Delete anyway?" }
+
+    if cart_object.kind_of?(CartChassis)
+      reservation_warning_needed = ReservationsInCart.new(cart_object.now_bin).reservations_gathered.present?
+      reservation_warning_needed ||= ReservationsInCart.new(cart_object.later_bin).reservations_gathered.present?
+      button_text = "Delete All Cart Contents"
+      button_route = cart_empty_path
+    else
+      reservation_warning_needed = ReservationsInCart.new(cart_object).reservations_gathered.present?
+      button_text = (cart_object.status == Cart::FOR_LATER) ? "Delete All Saved Items" : "Delete All Items for Now"
+      button_route = (cart_object.status == Cart::FOR_LATER) ? cart_clear_all_saved_path : cart_clear_all_active_path
+    end
+
+    data_object = reservation_warning_needed ? confirm_hash : {}
+    our_button = button_to(button_text, button_route, method: "delete", data: data_object, class: "btn btn-outline-info")
+  end
+
+
 
   # def self.cart_contents_destroyer(c_object)
   #   case
@@ -400,7 +429,11 @@ module CartItemsHelper
   def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true)
     [].tap do |buttons|
       if deletion
-        buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
+        if cart_item.item_reservation.present?
+          buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", data: {confirm: "This membership has already been reserved. When you delete it from your cart, it will not be cancelled, and you will still be able to review and update it from your Membership Page. Delete anyway?" }, class: "btn btn-outline-info")
+        else
+          buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
+        end
       end
 
       if saving
