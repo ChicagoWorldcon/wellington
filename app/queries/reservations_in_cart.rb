@@ -30,7 +30,6 @@ class ReservationsInCart
   private
 
   def associated_reservations(r_cart)
-    binding.pry
     Reservation.where(id: CartItem.where(cart: r_cart, kind: "membership").where.not(holdable: nil).select('holdable_id').map(&:holdable_id)).to_ary
   end
 end

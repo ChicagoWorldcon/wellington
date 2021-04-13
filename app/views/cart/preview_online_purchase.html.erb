@@ -33,9 +33,6 @@
             <div class="form-group">
               <div class="btn-group w-100">
                 <%= submit_tag("Reserve and Pay Online Now", id: "cart-proceed-to-pay-button", class: "btn btn-m-full-width") %>
-                <% if @check_button %>
-                  <div class="col"><input type="submit" value="Reserve and Pay with Cheque" class="btn" formaction="<%= cart_pay_with_cheque_path %>"></div>
-                <% end %>
               </div>
             </div>
           </div>

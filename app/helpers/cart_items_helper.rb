@@ -20,9 +20,13 @@ module CartItemsHelper
   MAX_CHARS_FOR_ONSCREEN_CART_DESCRIPTION = 10000
 
   MEMBERSHIP = "membership"
-  PENDING = "pending"
-  PROCESSING = "processing"
   PAID = "paid"
+
+  FULL = "full"
+  PARTIAL = "partial"
+  NONE = "none"
+  NO_RESERVATION = "no_reservation"
+
 
   # TODO: See if this can be eliminated.  There's a new method
   # in MembershipOffer that should handle this. Currently, all
@@ -39,6 +43,21 @@ module CartItemsHelper
 
   def locate_offer(offer_params)
     CartItemsHelper.locate_offer(offer_params)
+  end
+
+  def self.reservation_payment_status(c_item)
+    return {payment_status: NO_RESERVATION, status_desc: "Not yet reserved."} if !c_item.item_reservation.present?
+
+    owed = AmountOwedForReservation.new(c_item.item_reservation).amount_owed.cents
+    payment_recorded = ReservationPaymentHistory.new(c_item.item_reservation).any_successful_charges?
+
+    return {payment_status: FULL, status_desc: "Reserved and paid in full."} if owed <= 0
+    return {payment_status: PARTIAL, status_desc: "Reserved and paid in part."} if payment_recorded
+    {payment_status: NONE, status_desc: "Reserved but not yet paid"}
+  end
+
+  def reservation_payment_status(c_item)
+    CartItemsHelper.reservation_payment_status(c_item)
   end
 
   # def self.locate_cart_item(item_id)

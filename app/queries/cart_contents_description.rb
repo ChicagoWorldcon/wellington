@@ -54,7 +54,6 @@ class CartContentsDescription
   end
 
   def describe_cart_contents
-    binding.pry
     cart_description_string_array = []
     cart_description_char_tally = 0
 

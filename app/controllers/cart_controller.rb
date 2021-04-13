@@ -336,7 +336,7 @@ class CartController < ApplicationController
       redirect_to cart_path and return
     end
 
-    @check_button = @cart_chassis.payment_by_check_allowed?
+    #@check_button = @cart_chassis.payment_by_check_allowed?
     @expected_charge = @cart_chassis.purchase_subtotal
     @items_for_purchase = @cart_chassis.now_items
     prep_bins
@@ -402,10 +402,7 @@ class CartController < ApplicationController
 
     check_for_paid
     prep_results = prepare_cart_for_payment
-    #return if !prep_results || !prep_results[:good_to_go]
-    binding.pry
     @cart_chassis.full_reload
-    binding.pry
     @transaction_cart = @cart_chassis.purchase_bin
     @prospective_charge_formatted = Money.new(@cart_chassis.purchase_subtotal_cents)
     @prospective_charge_cents = @cart_chassis.purchase_subtotal_cents
