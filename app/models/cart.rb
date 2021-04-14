@@ -66,14 +66,14 @@ class Cart < ApplicationRecord
   def paid?
     self.subtotal_cents <= 0
   end
-
-  def active_and_pending
-    self.active? && self.status == PENDING
-  end
-
-  def active_and_processing
-    self.active? && self.status == PROCESSING
-  end
+  # 
+  # def active_and_pending
+  #   self.active? && self.status == PENDING
+  # end
+  #
+  # def active_and_processing
+  #   self.active? && self.status == PROCESSING
+  # end
 
   def active_and_for_later
     self.active? && self.status == FOR_LATER

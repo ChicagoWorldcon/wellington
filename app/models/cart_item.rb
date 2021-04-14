@@ -66,16 +66,13 @@ class CartItem < ApplicationRecord
   has_one :user, through: :cart
 
   attribute :available, :boolean, default: true
-  attribute :later, :boolean, default: false
-  attribute :incomplete, :boolean, default: false
-  #attribute :processed, :boolean, default: false
 
   before_validation :note_acquirable_details, if: :new_record?
   before_validation :set_kind_value, if: :new_record?
 
   validates :available, :inclusion => {in: [true, false]}
   validates :benefitable, presence: true, if: Proc.new { |item| item.kind == MEMBERSHIP }
-  validates :incomplete, :inclusion => {in: [true, false]}
+
   # :item_name_memo and :item_price_memo exist to record the
   # name and price of an acquirable at the time it was added to the
   # cart by the user.  Stripe and the like should not use these.
@@ -180,9 +177,11 @@ class CartItem < ApplicationRecord
     valid
   end
 
-  private
+  def item_saved_for_later?
+    self.cart.status == Cart::FOR_LATER
+  end
 
-  # TODO: Go through all this display stuff and make sure it still makes sense.
+  private
 
   def membership_display_name
     self.acquirable.name_for_cart if self.kind == MEMBERSHIP
@@ -232,22 +231,14 @@ class CartItem < ApplicationRecord
     # never becomes available again.   That, of course, is something
     # that could be changed easily later on, as requirements change.
 
-
-    # TODO: See if this can be better accomplished
-    # with the ActiveScopes concern. NB-- right now,
-    # I feel like it's kind of good the way it is.
-  confirmed = (
-    self.available &&
-    self.item_display_name != UNKNOWN &&
-    self.acquirable.active? &&
-    self.acquirable_type.constantize.active.where(
-      id: self.acquirable_id,
-      name: self.item_name_memo,
-      price_cents: self.item_price_memo
-      ).present?
+    confirmed = (
+      self.available &&
+      self.acquirable_matches_memo? &&
+      self.item_display_name != UNKNOWN &&
+      self.acquirable.active?
     )
-    self.available = confirmed
-    self.save
+
+    self.update(available: confirmed)
     self.available
   end
 
@@ -275,5 +266,12 @@ class CartItem < ApplicationRecord
   def membership_unique_for_laypeeps
     return nil if self.kind != MEMBERSHIP
     self.item_reservation ? self.item_reservation.membership_number : nil
+  end
+
+  def acquirable_matches_memo?
+    matchfail = false
+    matchfail ||= self.item_price_memo != self.acquirable.price_cents
+    matchfail ||= self.item_name_memo != self.acquirable.name
+    !matchfail
   end
 end

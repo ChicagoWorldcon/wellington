@@ -16,12 +16,6 @@
 
 module CartItemsHelper
 
-  MAX_CHARS_FOR_EMAIL_CART_DESCRIPTION = 10000
-  MAX_CHARS_FOR_ONSCREEN_CART_DESCRIPTION = 10000
-
-  MEMBERSHIP = "membership"
-  PAID = "paid"
-
   FULL = "full"
   PARTIAL = "partial"
   NONE = "none"
@@ -76,7 +70,7 @@ module CartItemsHelper
     reservation_warning_needed = false
 
     confirm_hash = {
-      confirm: "At least one membership in your cart has already been reserved. When you delete it from your cart, it will not be cancelled, and you will still be able to review, update, and make payments on it from your Membership Page. Delete anyway?" }
+      confirm: confirm_text(true) }
 
     if cart_object.kind_of?(CartChassis)
       reservation_warning_needed = ReservationsInCart.new(cart_object.now_bin).reservations_gathered.present?
@@ -97,7 +91,7 @@ module CartItemsHelper
     [].tap do |buttons|
       if deletion
         if cart_item.item_reservation.present?
-          buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", data: {confirm: "This membership has already been reserved. When you delete it from your cart, it will not be cancelled, and you will still be able to review, update, and make payments on it from your Membership Page. Delete anyway?" }, class: "btn btn-outline-info")
+          buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", data: {confirm: confirm_text(false) }, class: "btn btn-outline-info")
         else
           buttons << button_to("Delete", remove_single_cart_item_path(cart_item), method: "delete", class: "btn btn-outline-info")
         end
@@ -115,5 +109,15 @@ module CartItemsHelper
         buttons << button_to("Check Availability", verify_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
       end
     end
+  end
+
+  private
+
+  def confirm_text(for_group)
+    lagging_text = " has already been reserved. When you delete it from your cart, it will not be cancelled, and you will still be able to review, update, and make payments on it from your Membership Page. Delete anyway?"
+
+    leading_text = for_group ? "One or more memberships"  : "This membership"
+
+    leading_text + lagging_text
   end
 end
