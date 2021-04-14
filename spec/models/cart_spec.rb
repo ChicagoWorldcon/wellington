@@ -46,12 +46,6 @@ RSpec.describe Cart, type: :model do
         expect(basic_items_cart.cart_items.count).to be > 0
       end
 
-      it "has no items that are saved for later" do
-        saved_for_later_seen = false
-        basic_items_cart.cart_items.each { |i| saved_for_later_seen = true if i.later == true }
-        expect(saved_for_later_seen).to eql(false)
-      end
-
       it "has no items that are marked unavailable" do
         unavailable_seen = false
         basic_items_cart.cart_items.each { |i| unavailable_seen = true if i.available == false}
@@ -72,20 +66,18 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_items_for_later factory" do
-      let(:saved_only_cart) { create(:cart, :with_items_for_later)}
+      let(:cart_for_later_basic) { create(:cart, :for_later_with_basic_items)}
 
       it "is valid" do
-        expect(saved_only_cart).to be_valid
+        expect(cart_for_later_basic).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(saved_only_cart.cart_items.count).to be > 0
+        expect(cart_for_later_basic.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
-        for_now_seen = false
-        saved_only_cart.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(cart_for_later_basic.status).to eql("for_later")
       end
     end
 
@@ -154,24 +146,6 @@ RSpec.describe Cart, type: :model do
         unexpired_seen = false
         expired_only_cart.cart_items.each { |i| unexpired_seen = true if i.acquirable.active? == true }
         expect(unexpired_seen).to eql(false)
-      end
-    end
-
-    describe "cart with_incomplete_items factory" do
-      let(:incomplete_only_cart) {create(:cart, :with_incomplete_items)}
-
-      it "is valid" do
-        expect(incomplete_only_cart).to be_valid
-      end
-
-      it "has at least one cart item" do
-        expect(incomplete_only_cart.cart_items.count).to be > 0
-      end
-
-      it "has no items that are not marked incomplete" do
-        complete_seen = false
-        incomplete_only_cart.cart_items.each { |i| complete_seen = true if !i.incomplete}
-        expect(complete_seen).to eql(false)
       end
     end
 
@@ -260,13 +234,13 @@ RSpec.describe Cart, type: :model do
         expect(cart_with_10_mixed.cart_items.count).to eql(10)
       end
 
-      it "has 2 items marked as unavailable" do
+      it "has 3 items marked as unavailable" do
         unavailable_seen = 0
         cart_with_10_mixed.cart_items.each { |i| unavailable_seen += 1 if !i.available}
-        expect(unavailable_seen).to eql(2)
+        expect(unavailable_seen).to eql(3)
       end
 
-      it "has 1 free item" do
+      it "has 3 free items" do
         free_seen = 0
         cart_with_10_mixed.cart_items.each { |i| free_seen += 1 if i.acquirable.price_cents == 0 }
         expect(free_seen).to eql(1)
@@ -276,20 +250,6 @@ RSpec.describe Cart, type: :model do
         expired_seen = 0
         cart_with_10_mixed.cart_items.each {|i| expired_seen += 1 if i.acquirable.active? == false}
         expect(expired_seen).to eql(2)
-      end
-
-      it "has 2 saved-for-later items" do
-        later_seen = 0
-        cart_with_10_mixed.cart_items.each {|i|
-          later_seen += 1 if i.later}
-        expect(later_seen).to eql(2)
-      end
-
-      it "has 1 incomplete item" do
-        incomplete_seen = 0
-        cart_with_10_mixed.cart_items.each {|i|
-          incomplete_seen += 1 if i.incomplete}
-        expect(incomplete_seen).to eql(1)
       end
     end
 
@@ -304,127 +264,84 @@ RSpec.describe Cart, type: :model do
         expect(cart_with_100_mixed.cart_items.count).to eql(100)
       end
 
-      it "has 15 items marked as unavailable" do
+      it "has 20 items marked as unavailable" do
         unavailable_seen = 0
         cart_with_100_mixed.cart_items.each { |i| unavailable_seen += 1 if !i.available}
-        expect(unavailable_seen).to eql(15)
+        expect(unavailable_seen).to eql(20)
       end
 
-      it "has 15 free items" do
+      it "has 20 free items" do
         free_seen = 0
         cart_with_100_mixed.cart_items.each { |i| free_seen += 1 if i.acquirable.price_cents == 0 }
-        expect(free_seen).to eql(15)
+        expect(free_seen).to eql(20)
       end
 
-      it "has 15 expired items" do
+      it "has 20 expired items" do
         expired_seen = 0
         cart_with_100_mixed.cart_items.each {|i| expired_seen += 1 if i.acquirable.active? == false}
-        expect(expired_seen).to eql(15)
-      end
-
-      it "has 15 saved-for-later items" do
-        later_seen = 0
-        cart_with_100_mixed.cart_items.each {|i|
-          later_seen += 1 if i.later}
-        expect(later_seen).to eql(15)
-      end
-
-      it "has 15 incomplete items" do
-        incomplete_seen = 0
-        cart_with_100_mixed.cart_items.each {|i|
-          incomplete_seen += 1 if i.incomplete}
-        expect(incomplete_seen).to eql(15)
+        expect(expired_seen).to eql(20)
       end
     end
 
-    describe "cart with_unknown_kind_saved_for_later factory" do
-      let(:cart_with_unknown_kind_saved) { create(:cart, :with_unknown_kind_saved_for_later_items)}
+    describe "cart for later with unknown kind items factory" do
+      let(:unknown_kind_for_later_cart) { create(:cart, :for_later_with_unknown_kind_items)}
 
       it "is valid" do
-        expect(cart_with_unknown_kind_saved).to be_valid
+        expect(unknown_kind_for_later_cart).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_unknown_kind_saved.cart_items.count).to be > 0
+        expect(unknown_kind_for_later_cart.cart_items.count).to be > 0
       end
 
-      it "only inlcudes items that are saved-for-later" do
-        for_now_seen = false
-        cart_with_unknown_kind_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(unknown_kind_for_later_cart.status).to eql("for_later")
       end
 
       it "only has items where kind = 'unknown'" do
         known_seen = false
-        cart_with_unknown_kind_saved.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
+        nknown_kind_for_later_cart.cart_items.each { |i| known_seen = true if i.kind != "unknown" }
         expect(known_seen).to eql(false)
       end
     end
 
     describe "cart with_unavailable_saved_for_later factory" do
-      let(:cart_with_unavailable_saved) { create(:cart, :with_unavailable_saved_for_later_items)}
+      let(:cart_with_unavailable_for_later) { create(:cart, :for_later_with_unavailable_items)}
 
       it "is valid" do
-        expect(cart_with_unavailable_saved).to be_valid
+        expect(cart_with_unavailable_for_later).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_unavailable_saved.cart_items.count).to be > 0
+        expect(cart_with_unavailable_for_later.cart_items.count).to be > 0
       end
 
-      it "has no items that are not saved for later" do
-        for_now_seen = false
-        cart_with_unavailable_saved.cart_items.each { |i| for_now_seen = true if i.later == false }
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(cart_with_unavailable_for_later.status).to eql("for_later")
       end
 
       it "has no items that are marked as available" do
         available_seen = 0
-        cart_with_unavailable_saved.cart_items.each { |i| available_seen += 1 if i.available}
+        cart_with_unavailable_for_later.cart_items.each { |i| available_seen += 1 if i.available}
         expect(available_seen).to eql(0)
       end
     end
 
-    describe "cart with_incomplete_saved_for_later factory" do
-      let(:cart_with_incomplete_saved) { create(:cart, :with_incomplete_saved_for_later_items)}
-
-      it "is valid" do
-        expect(cart_with_incomplete_saved).to be_valid
-      end
-
-      it "has at least one cart item" do
-        expect(cart_with_incomplete_saved.cart_items.count).to be > 0
-      end
-
-      it "only includes items that are saved-for-later" do
-        for_now_seen = false
-        cart_with_incomplete_saved.cart_items.each { |i| for_now_seen = true if !i.later }
-        expect(for_now_seen).to eql(false)
-      end
-
-      it "only includes items that are marked incomplete" do
-        complete_seen = false
-        cart_with_incomplete_saved.cart_items.each {|i| complete_seen = true if !i.incomplete}
-        expect(complete_seen).to eql(false)
-      end
-    end
-
     describe "cart with_price_altered_saved_for_later factory" do
-      let(:cart_with_price_altered_saved) { create(:cart, :with_price_altered_saved_for_later_items)}
+      let(:cart_with_price_altered_for_later) { create(:cart, :for_later_with_price_altered_items)}
 
       it "is valid" do
-        expect(cart_with_price_altered_saved).to be_valid
+        expect(cart_with_price_altered_for_later).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_price_altered_saved.cart_items.count).to be > 0
+        expect(cart_with_price_altered_for_later.cart_items.count).to be > 0
       end
 
-      it "contains only items that are saved-for-later" do
-        for_now_seen = false
-        cart_with_price_altered_saved.cart_items.each { |i| for_now_seen = true if !i.later}
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(cart_with_price_altered_for_later.status).to eql("for_later")
       end
+
 
       it "has no items where the item_price_memo field matches the acquirable's price_cents field" do
         match_seen = false
@@ -434,50 +351,68 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "cart with_name_altered_saved_for_later factory" do
-      let(:cart_with_name_altered_saved) { create(:cart, :with_name_altered_saved_for_later_items)}
+      let(:cart_with_name_altered_for_later) { create(:cart, :for_later_with_name_altered_items)}
 
       it "is valid" do
-        expect(cart_with_name_altered_saved).to be_valid
+        expect(cart_with_name_altered_for_later).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_name_altered_saved.cart_items.count).to be > 0
+        expect(cart_with_name_altered_for_later.cart_items.count).to be > 0
       end
 
-      it "contains only items that are saved-for-later" do
-        for_now_seen = false
-        cart_with_name_altered_saved.cart_items.each { |i| for_now_seen = true if !i.later}
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(cart_with_name_altered_for_later.status).to eql("for_later")
       end
 
       it "has no items where the item_name_memo field matches the acquirable's name field" do
         match_seen = false
-        cart_with_name_altered_saved.cart_items.each { |i| match_seen = true if i.item_name_memo == i.acquirable.name}
+        cart_with_name_altered_for_later.cart_items.each { |i| match_seen = true if i.item_name_memo == i.acquirable.name}
         expect(match_seen).to eql(false)
       end
     end
 
-    describe "cart with_expired_saved_for_later factory" do
-      let(:cart_with_expired_saved) { create(:cart, :with_expired_saved_for_later_items)}
+    describe "cart for_later_with_expired_items factory" do
+      let(:cart_with_expired_for_later) { create(:cart, :for_later_with_expired_items)}
 
       it "is valid" do
-        expect(cart_with_expired_saved).to be_valid
+        expect(cart_with_expired_for_later).to be_valid
       end
 
       it "has at least one cart item" do
-        expect(cart_with_expired_saved.cart_items.count).to be > 0
+        expect(cart_with_expired_for_later.cart_items.count).to be > 0
       end
 
-      it "contains only items that are saved-for-later" do
-        for_now_seen = false
-        cart_with_expired_saved.cart_items.each { |i| for_now_seen = true if !i.later}
-        expect(for_now_seen).to eql(false)
+      it "has the status 'for_later'" do
+        expect(cart_with_expired_for_later.status).to eql("for_later")
       end
 
       it "contains only items that are expired" do
         active_seen = false
-        cart_with_expired_saved.cart_items.each { |i| active_seen += 1 if i.acquirable.active? }
+        cart_with_expired_for_later.cart_items.each { |i| active_seen += 1 if i.acquirable.active? }
         expect(active_seen).to eql(false)
+      end
+    end
+
+    describe "cart for_later_with_partially_paid_reservation_items factory" do
+      let(:cart_with_partially_paid_for_later) { create(:cart, :for_later_with_partially_paid_reservation_items)}
+
+      it "is valid" do
+        expect(cart_with_partially_paid_for_later).to be_valid
+      end
+
+      it "has at least one cart item" do
+        expect(cart_with_partially_paid_for_later.cart_items.count).to be > 0
+      end
+
+      it "has the status 'for_later'" do
+        expect(cart_with_partially_paid_for_later.status).to eql("for_later")
+      end
+
+      it "contains only items that have recieved partial payment" do
+        part_pd_holdable_seen = false
+        cart_with_partially_paid_for_later.cart_items.each { |i| part_pd_holdable_seen += 1 if (ReservationPaymentHistory.new(i.holdable).any_successful_charges? && (AmountOwedForReservation.new(i.holdable).amount_owed > 0)) }
+        expect(part_pd_holdable_seen).to eql(cart_with_partially_paid_for_later.cart_items.count)
       end
     end
   end
@@ -489,6 +424,10 @@ RSpec.describe Cart, type: :model do
 
     it "has many CartItems" do
       expect(base_model).to have_many(:cart_items)
+    end
+
+    it "has many charges" do
+      expect(base_model).to have_many(:charges)
     end
   end
 

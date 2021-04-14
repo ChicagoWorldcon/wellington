@@ -94,19 +94,7 @@ class CartChassis
 
   def move_all_saved_to_cart
     move_entire_bin_contents(moving_to_saved: false)
-    # return -1 unless @now_bin && @later_bin
-    # @later_bin.cart_items.each do |i|
-    #   i.later = false
-    #   i.cart = @now_bin
-    #   i.save
-    # end
-    # self.full_reload
-    # return @later_bin.cart_items.count
   end
-
-  # def destroy_specific_item(target_item_id:, user:)
-  #   destroy_specific_cart_item(item_id: target_item_id, user: user)
-  # end
 
   def destroy_all_items_for_now
     lingering = destroy_specific_bin_contents(now_bin: true)
@@ -156,18 +144,12 @@ class CartChassis
   end
 
   def can_proceed_to_payment?
-    # return false if (@now_cart.blank? || @now_bin.cart_items.size == 0)
-    # all_ready = true
-    # @now_bin.cart_items.each {|i| all_ready = false if !i.item_ready_for_payment?}
-    # all_ready
     verify_bin_ready_for_payment
   end
 
   def payment_by_check_allowed?
     true
   end
-
-
 
   private
 
@@ -176,29 +158,10 @@ class CartChassis
   end
 
   def verify_availability_of_bin_contents(now_bin:)
-    # target_bin = now_bin ? @now_bin : @later_bin
-    # return unless target_bin && target_bin.cart_items.present?
-    # prob_items = []
-    # target_bin.cart_items.each do |item|
-    #   if !item.item_ready_for_payment?
-    #     prob_items << "#{item.quick_description}, "
-    #   end
-    # end
-    # prob_items
-
     bin_verifier(now_bin: now_bin, verification: AVAILABILITY)
   end
 
   def verify_bin_ready_for_payment
-    # target_bin = now_bin ? @now_bin : @later_bin
-    # return false unless target_bin && target_bin.cart_items.present?
-    # prob_items = []
-    # target_bin.cart_items.each do |item|
-    #   if !item.item_still_available?
-    #     prob_items << "#{item.quick_description}, "
-    #   end
-    # end
-    # prob_items
     bin_verifier(now_bin: true, verification: PAYMENT_READY)
   end
 
@@ -246,15 +209,6 @@ class CartChassis
     item.save
     item.cart == destination_bin
   end
-
-  # def destroy_specific_cart_item(item_id:, user: )
-  #   target_item = locate_specific_cart_item(user: user, item_id: item_id)
-  #   return unless target_item
-  #   ex_kind = target_item.kind
-  #   ex_name = target_item.item_display_name
-  #   destroyed = target_item.destroy
-  #   return {item_kind: ex_kind, item_name: ex_name, destroyed_ok: destroyed}
-  # end
 
   def destroy_specific_bin_contents(now_bin: true)
     target_bin = now_bin ? @now_bin : @later_bin

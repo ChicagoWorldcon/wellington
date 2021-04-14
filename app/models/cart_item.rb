@@ -152,11 +152,7 @@ class CartItem < ApplicationRecord
   end
 
   def item_ready_for_payment?
-    ready = confirm_availability
-    if self.kind == MEMBERSHIP
-      ready = ready && confirm_beneficiary
-    end
-    ready
+    item_still_available? && confirm_beneficiary
   end
 
   def item_reservation
@@ -167,24 +163,37 @@ class CartItem < ApplicationRecord
     confirm_availability
   end
 
-  def membership_cart_item_is_valid?
-    #TODO: Maybe make some kind of informative error situation here.
-    valid = self.acquirable.kind_of?(Membership)
-    if valid
-      valid = false unless self.benefitable.present? && self.benefitable.valid?
-      valid = false unless self.acquirable.present? && self.acquirable.active?
-    end
-    valid
-  end
+  # def membership_cart_item_is_valid?
+  #   #TODO: Maybe make some kind of informative error situation here.
+  #   valid = self.acquirable.kind_of?(Membership)
+  #   if valid
+  #     valid = false unless self.benefitable.present? && self.benefitable.valid?
+  #     valid = false unless self.acquirable.present? && self.acquirable.active?
+  #   end
+  #   valid
+  # end
 
   def item_saved_for_later?
     self.cart.status == Cart::FOR_LATER
+  end
+
+  def item_user
+    self.cart.user
   end
 
   private
 
   def membership_display_name
     self.acquirable.name_for_cart if self.kind == MEMBERSHIP
+  end
+
+  def benefitable_required?
+    case self.kind
+    when MEMBERSHIP
+      true
+    else
+      false
+    end
   end
 
   def membership_display_price
@@ -218,11 +227,7 @@ class CartItem < ApplicationRecord
   end
 
   def confirm_beneficiary
-    confirmed_beneficiary = false
-    if self.benefitable.present?
-      confirmed_beneficiary = self.benefitable.valid?
-    end
-    confirmed_beneficiary
+      !self.benefitable_required? || (self.benefitable.present? && self.benefitable.valid?)
   end
 
   def confirm_availability
@@ -235,7 +240,8 @@ class CartItem < ApplicationRecord
       self.available &&
       self.acquirable_matches_memo? &&
       self.item_display_name != UNKNOWN &&
-      self.acquirable.active?
+      self.acquirable.active? &&
+      self.acquirable.valid? &&
     )
 
     self.update(available: confirmed)

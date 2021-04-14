@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-class CreateReservationFromCartItem
+class CartServices::CreateReservationFromCartItem
   attr_reader :cart_item, :customer
 
   def initialize(cart_item, customer)
@@ -26,8 +26,8 @@ class CreateReservationFromCartItem
   def call
     return nil if !@cart_item.acquirable.kind_of?(Membership)
 
-    unless @cart_item.membership_cart_item_is_valid?
-      raise StandardError.new "CartItem #{@cart_item.id} is not valid"
+    unless @cart_item.item_ready_for_payment?
+      raise StandardError.new "CartItem #{@cart_item.id} cannot be purchased at this time"
     end
 
     new_reservation = ActiveRecord::Base.transaction(joinable: false, requires_new: true) do

@@ -51,6 +51,7 @@ FactoryBot.define do
       transient do
         acquirable { create(:membership, :kidit)}
       end
+
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
@@ -92,18 +93,70 @@ FactoryBot.define do
       end
     end
 
+    trait :with_reservation_for_a_attending do
+      transient do
+        holdable { create(:reservation)}
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.acquirable = evaluator.holdable.membership
+        cart_item.holdable = evaluator.holdable
+      end
+    end
+
+    trait :with_installment_res_for_a_attending do
+      transient do
+        holdable { create(:reservation, :instalment)}
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.acquirable = evaluator.holdable.membership
+        cart_item.holdable = evaluator.holdable
+      end
+    end
+
+    trait :with_partially_paid_reservation do
+      transient do
+        holdable { create(:reservation, :instalment)}
+        charge_amount { Money.new(10_00) }
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.acquirable = evaluator.holdable.membership
+        cart_item.holdable = evaluator.holdable
+      end
+
+      after(:create) do |cart_item, evaluator|
+        create(:charge, :generate_description, user: cart_item.holdable.user, buyable: cart_item.holdable, amount: evaluator.charge_amount)
+      end
+    end
+
+    trait :in_a_cart_for_later do
+      transient do
+        cart { create(:cart, :for_later_bin)}
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.cart = evaluator.cart
+      end
+    end
+
+    trait :in_a_cart_for_now do
+      transient do
+        cart { create(:cart, :for_now_bin)}
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.cart = evaluator.cart
+      end
+    end
+
     trait :unavailable do
       after(:build) do |cart_item, evaluator|
         cart_item.available = false;
       end
     end
-
-    trait :incomplete do
-      after(:build) do |cart_item, evaluator|
-        cart_item.incomplete = true
-      end
-    end
-
+ß
     trait :price_altered do
       after(:create) do |cart_item, evaluator|
         cart_item.item_price_memo += 100
@@ -131,61 +184,6 @@ FactoryBot.define do
         cart_item.save
         cart_item.update_attribute(:benefitable, nil)
         cart_item.save
-      end
-    end
-
-    trait :saved_for_later do
-      after(:build) do |cart_item, evaluator|
-        cart_item.later = true
-      end
-    end
-
-    trait :unknown_kind_saved_for_later do
-      after(:create) do |cart_item, evaluator|
-        cart_item.update_attribute(:kind, "unknown")
-        cart_item.update_attribute(:later, true)
-        cart_item.save
-      end
-    end
-
-    trait :unavailable_saved_for_later do
-      after(:build) do |cart_item, evaluator|
-        cart_item.later = true
-        cart_item.available = false
-      end
-    end
-
-    trait :incomplete_saved_for_later do
-      after(:build) do |cart_item, evaluator|
-        cart_item.later = true
-        cart_item.incomplete = true
-      end
-    end
-
-    trait :price_altered_saved_for_later do
-      after(:create) do |cart_item, evaluator|
-        cart_item.item_price_memo += 100
-        cart_item.later = true
-        cart_item.save
-      end
-    end
-
-    trait :name_altered_saved_for_later do
-      after(:create) do |cart_item, evaluator|
-        cart_item.item_name_memo = "altered"
-        cart_item.later = true
-        cart_item.save
-      end
-    end
-
-    trait :expired_saved_for_later do
-      transient do
-        acquirable { create(:membership, :silver_fern)}
-      end
-
-      after(:build) do |cart_item, evaluator|
-        cart_item.acquirable = evaluator.acquirable
-        cart_item.later = true
       end
     end
   end

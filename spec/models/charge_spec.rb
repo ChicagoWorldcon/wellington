@@ -20,4 +20,10 @@ RSpec.describe Charge, type: :model do
   subject(:model) { create(:charge) }
 
   it { is_expected.to be_valid }
+
+  describe "associations" do
+    it "belongs to buyable" do
+      expect(model).to belong_to(:buyable)
+    end
+  end
 end
