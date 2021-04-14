@@ -68,7 +68,7 @@ class PaymentMailer < ApplicationMailer
     @worldcon_public_name_spaceless = worldcon_public_name_spaceless
 
     @charge = charge
-    @reservation = charge.reservation
+    @reservation = charge.buyable
     @contact = @reservation.active_claim.contact
     @outstanding_amount = outstanding_amount
 

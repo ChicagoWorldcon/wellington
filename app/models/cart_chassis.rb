@@ -72,6 +72,14 @@ class CartChassis
     @now_bin.subtotal_cents
   end
 
+  def items_to_purchase_count
+    @now_bin.cart_items.count
+  end
+
+  def blank_out_purchase_bin
+    @now_bin = nil
+  end
+
   def move_item_to_saved(our_item)
     self.move_specific_cart_item(item: our_item, moving_to_saved: true)
   end
@@ -159,9 +167,7 @@ class CartChassis
     true
   end
 
-  def blank_out_purchase_bin
-    @now_bin = nil
-  end
+
 
   private
 

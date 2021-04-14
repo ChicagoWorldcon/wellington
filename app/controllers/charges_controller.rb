@@ -36,19 +36,6 @@ class ChargesController < ApplicationController
     end
   end
 
-  # def new_group_charge
-  #   @cart_for_charge = Cart.find_by(id: params[:processing_cart])
-  #   @amount_to_charge = @cart_for_charge.subtotal_cents
-  #   @items_to_buy = @cart_for_charge.cart_items
-  #
-  #   if @amount_to_charge > 0 && @cart_for_charge.cart_items.present?
-  #     render :new_group_charge and return
-  #   else
-  #     redirect_to reservations_path, notice: "There is no balancing owing for any of your items"
-  #     return
-  #   end
-  # end
-
   def create
     charge_amount = Money.new(params[:amount].to_i)
 

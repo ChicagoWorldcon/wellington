@@ -17,10 +17,6 @@
 class CartServices::PrepCartForPayment
 
   MEMBERSHIP = CartItem::MEMBERSHIP
-  # PENDING = Cart::PENDING
-  # PROCESSING = Cart::PROCESSING
-  # CHASSIS = "chassis"
-  # VANILLA_CART = "vanilla_cart"
 
   attr_reader :our_cart, :amount_to_charge, :good_to_go, :processing_cart
 
@@ -31,7 +27,6 @@ class CartServices::PrepCartForPayment
     @amount_to_charge = 0
     @good_to_go = false
     @initial_item_count = initial_purchasable_item_count(cart_obj)
-    #@processing_cart = get_processing_cart
   end
 
   def call
@@ -56,31 +51,7 @@ class CartServices::PrepCartForPayment
 
   def initial_purchasable_item_count(cart_o)
     cart_o.now_bin.cart_items.count
-    #CartItemsHelper.locate_all_membership_items_for_now(@our_cart).count
   end
-
-  # def get_processing_cart
-  #   return @processing_cart if @processing_cart
-  #   if @cart_type == VANILLA_CART
-  #     our_p_cart ||=  Cart.new(
-  #       status: PROCESSING,
-  #        user: @user,
-  #       active_from: Time.now
-  #     )
-  #     our_p_cart.save!
-  #     return our_p_cart
-  #   elsif @cart_type == CHASSIS
-  #     @our_cart.status == PROCESSING
-  #     @our_cart.save!
-  #     @original_cart_object.now_cart = Cart.new(
-  #       status: PROCESSING,
-  #        user: @user,
-  #       active_from: Time.now
-  #     )
-  #     return @our_cart
-  #   end
-  # end
-
 
   def prep_cart_items
     @transaction_bin.reload
@@ -102,7 +73,6 @@ class CartServices::PrepCartForPayment
       cart_item.holdable = new_res
       cart_item.cart = @transaction_bin
       @amount_to_charge += AmountOwedForReservation.new(cart_item.item_reservation).amount_owed if cart_item.save!
-        #@amount_to_charge += AmountOwedForReservation.new(cart_item.item_reservation).amount_owed
     end
   end
 

@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 class CartServices::ResolveCartChassis
 
   FOR_NOW = Cart::FOR_NOW
@@ -47,12 +46,10 @@ class CartServices::ResolveCartChassis
 
     if @curr_c_c.present?
       our_bin = (for_later && @curr_c_c.later_bin.present? && @curr_c_c.later_bin.active? ) ? @curr_c_c.later_bin : nil
-
       our_bin ||= (!for_later && @curr_c_c.now_bin.present? && @curr_c_c.now_bin.active?) ? @curr_c_c.now_bin : nil
     end
 
     our_bin ||= for_later ? Cart.active_for_later.find_by(user: @our_user) : Cart.active_for_now.find_by(user: @our_user)
-
     our_bin ||= for_later ? create_cart_bin(with_status: FOR_LATER) : create_cart_bin(with_status: FOR_NOW)
   end
 

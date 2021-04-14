@@ -44,11 +44,10 @@
         <% end %>
       </div>
       <div class="card-footer">
-        <% if cart_item.item_reservation %>
-          <div class="container res-payment-status" style="background-color:darkseagreen; color:rebeccapurple">
-            <h6><%= reservation_payment_status(cart_item)[:status_desc] %></h6>
-          </div>
-        <% end %>
+        <% reservation_status_info = reservation_payment_status(cart_item) %>
+        <div class="container res-payment-status" style="background-color:darkseagreen; color:rebeccapurple" >
+          <h6><%= reservation_status_info[:status_desc] %></h6>
+        </div>
       </div>
     </div>
     <% if cart_item.benefitable.present? %>

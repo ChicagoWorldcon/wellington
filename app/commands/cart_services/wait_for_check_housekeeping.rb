@@ -33,14 +33,6 @@ class CartServices::WaitForCheckHousekeeping
 
   private
 
-  # def mark_cart_items_processed(now_items_only = false)
-  #   @our_cart.cart_items.each do |i|
-  #     i.processed = true if (!i.later || !now_items_only)
-  #     i.save!
-  #   end
-  #   @our_cart.reload
-  # end
-
   def transaction_cart_housekeeping
     @transaction_cart.update!(status: Cart::AWAITING_CHEQUE)
     @transaction_cart.update!(active_to: Time.now)
@@ -51,7 +43,6 @@ class CartServices::WaitForCheckHousekeeping
   end
 
   def trigger_cart_waiting_for_cheque_payment_mailer
-    binding.pry
     amt_owed = @amount_owed.kind_of?(Integer) ? @amount_owed : @amount_owed.cents
 
     item_descs = CartContentsDescription.new(

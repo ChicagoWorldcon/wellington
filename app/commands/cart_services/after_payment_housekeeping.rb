@@ -26,20 +26,9 @@ class CartServices::AfterPaymentHousekeeping
 
   def call
     transaction_cart_housekeeping
-    #@our_cart.reload
-    #mark_cart_items_processed(@our_cart)
-    #stamp_cart_inactive
   end
 
   private
-
-  # def mark_cart_items_processed(now_items_only = false)
-  #   @our_cart.cart_items.each do |i|
-  #     i.processed = true if (!i.later || !now_items_only)
-  #     i.save!
-  #   end
-  #   @our_cart.reload
-  # end
 
   def transaction_cart_housekeeping
     @transaction_cart.update!(active_to: Time.now)
