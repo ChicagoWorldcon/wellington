@@ -68,7 +68,7 @@ class CartItem < ApplicationRecord
   attribute :available, :boolean, default: true
   attribute :later, :boolean, default: false
   attribute :incomplete, :boolean, default: false
-  attribute :processed, :boolean, default: false
+  #attribute :processed, :boolean, default: false
 
   before_validation :note_acquirable_details, if: :new_record?
   before_validation :set_kind_value, if: :new_record?
@@ -85,7 +85,7 @@ class CartItem < ApplicationRecord
   validates_numericality_of :item_price_memo
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   validates :later, :inclusion => {in: [true, false]}
-  validates :processed, :inclusion => {in: [true, false]}
+  #validates :processed, :inclusion => {in: [true, false]}
 
 
   # TODO: Figure out how these should interact with the

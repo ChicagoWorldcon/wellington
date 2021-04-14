@@ -439,11 +439,11 @@ class CartController < ApplicationController
     # @cart_chassis.now_bin = nil
 
 
+    CartServices::WaitForCheckHousekeeping.new(@cart_chassis).call
 
-
-    trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, @cart_chassis.purchase_subtotal_cents)
-
-    @cart_chassis.update_to_waiting_for_check
+    # trigger_cart_waiting_for_cheque_payment_mailer(@cart_chassis.now_bin, @cart_chassis.purchase_subtotal_cents)
+    #
+    # @cart_chassis.update_to_waiting_for_check
 
     #prep_bins
     redirect_to reservations_path

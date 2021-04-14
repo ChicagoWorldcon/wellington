@@ -35,13 +35,10 @@ class Cart < ApplicationRecord
   STATUS_OPTIONS = [
     FOR_LATER,
     FOR_NOW,
-    PENDING,
-    PROCESSING,
     AWAITING_CHEQUE,
     PAID
   ].freeze
 
-  attribute :status, :string, default: PENDING
   validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
   belongs_to :user
   has_many :charges, :as => :buyable
@@ -53,8 +50,8 @@ class Cart < ApplicationRecord
   # --OR AFTER REVISION--
   # One active, for_now cart, one active, for_later cart, and infinite
   # paid or awaiting_cheque carts
-  validates :user, uniqueness: { conditions: -> { active_pending } }, if: :active_and_pending
-  validates :user, uniqueness: { conditions: -> { active_processing } }, if: :active_and_processing
+  # validates :user, uniqueness: { conditions: -> { active_pending } }, if: :active_and_pending
+  # validates :user, uniqueness: { conditions: -> { active_processing } }, if: :active_and_processing
   validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
   validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
 
@@ -67,7 +64,7 @@ class Cart < ApplicationRecord
   end
 
   def paid?
-    self.status == PAID
+    self.subtotal_cents <= 0
   end
 
   def active_and_pending

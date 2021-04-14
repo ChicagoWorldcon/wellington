@@ -16,6 +16,7 @@
 
 
 class CartServices::ResolveCartChassis
+
   FOR_NOW = Cart::FOR_NOW
   FOR_LATER = Cart::FOR_LATER
 
@@ -45,9 +46,9 @@ class CartServices::ResolveCartChassis
     our_bin = nil
 
     if @curr_c_c.present?
-      our_bin = (for_later && @curr_c_c.later_bin.present?) ? @curr_c_c.later_bin : nil
+      our_bin = (for_later && @curr_c_c.later_bin.present? && @curr_c_c.later_bin.active? ) ? @curr_c_c.later_bin : nil
 
-      our_bin ||= (!for_later && @curr_c_c.now_bin.present?) ? @curr_c_c.now_bin : nil
+      our_bin ||= (!for_later && @curr_c_c.now_bin.present? && @curr_c_c.now_bin.active?) ? @curr_c_c.now_bin : nil
     end
 
     our_bin ||= for_later ? Cart.active_for_later.find_by(user: @our_user) : Cart.active_for_now.find_by(user: @our_user)

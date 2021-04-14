@@ -17,30 +17,32 @@
 
 class CartServices::AfterPaymentHousekeeping
 
-  attr_reader :our_cart
+  attr_reader :transaction_cart
 
-  def initialize(cart, user)
-    @our_cart = cart
+  def initialize(trans_cart)
+    @transaction_cart = trans_cart
+    @our_user = trans_cart.user
   end
 
   def call
-    @our_cart.reload
-    mark_cart_items_processed(@our_cart)
-    stamp_cart_inactive
+    transaction_cart_housekeeping
+    #@our_cart.reload
+    #mark_cart_items_processed(@our_cart)
+    #stamp_cart_inactive
   end
 
   private
 
-  def mark_cart_items_processed(now_items_only = false)
-    @our_cart.cart_items.each do |i|
-      i.processed = true if (!i.later || !now_items_only)
-      i.save!
-    end
-    @our_cart.reload
-  end
+  # def mark_cart_items_processed(now_items_only = false)
+  #   @our_cart.cart_items.each do |i|
+  #     i.processed = true if (!i.later || !now_items_only)
+  #     i.save!
+  #   end
+  #   @our_cart.reload
+  # end
 
-  def stamp_cart_inactive
-    @our_cart.active_to = Time.now
-    @our_cart.save!
+  def transaction_cart_housekeeping
+    @transaction_cart.update!(active_to: Time.now)
+    @transaction_cart.update!(status: Cart::PAID) if @transaction_cart.subtotal_cents <= 0
   end
 end

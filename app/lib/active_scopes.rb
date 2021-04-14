@@ -21,6 +21,7 @@ module ActiveScopes
   # PROCESSING = "processing"
   FOR_LATER = "for_later"
   FOR_NOW = "for_now"
+  PAID = "paid"
 
   def self.included(base)
     base.after_initialize do
@@ -57,13 +58,17 @@ module ActiveScopes
     # }
 
 
-    # :active_for_later, and :active_for_now are cart-specific scopes.
+    # :active_for_later, :active_for_now, and :active_unpaid are cart-specific scopes.
     base.scope :active_for_later, ->() {
       active_at(Time.now).where(status: FOR_LATER)
     }
 
     base.scope :active_for_now, ->() {
       active_at(Time.now).where(status: FOR_NOW)
+    }
+
+    base.scope :active_unpaid, ->() {
+      active_at(Time.now).where.not(status: PAID)
     }
 
     def active?

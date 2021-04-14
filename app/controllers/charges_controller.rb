@@ -104,7 +104,7 @@ class ChargesController < ApplicationController
         flash[:error] = service.error_message
         raise ActiveRecord::Rollback
       else
-        CartServices::AfterPaymentHousekeeping.new(@transaction_cart, current_user).call
+        CartServices::AfterPaymentHousekeeping.new(@transaction_cart).call
         trigger_cart_payment_mailer(service.charge, charge_amount, @transaction_cart)
       end
 

@@ -27,7 +27,7 @@ Your order includes:
     <%= i + 1 %>.  <%= desc %>
   <% end %>
 
-You still need to pay a total of <%= number_to_currency(@outstanding_amount) %> to cover this order.  In order to fully claim your <%= pluralize(@item_count, 'item') %>, please send us a cheque or other non-cash payment in USD at:
+You still need to pay a total of <%= number_to_currency(@outstanding_amount/100.0) %> to cover this order.  In order to fully claim your <%= pluralize(@item_count, 'item') %>, please send us a cheque or other non-cash payment in USD at:
 
 <%= worldcon_registration_mailing_address %>
 

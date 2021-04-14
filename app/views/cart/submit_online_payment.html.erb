@@ -22,7 +22,6 @@
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        binding.pry
         <%= form_tag(create_group_charge_path, "id" => "charge-form", "data-stripe" => stripe_config(@transaction_cart, @prospective_charge_cents)) do %>
           <article>
             <div id="error_explanation"></div>

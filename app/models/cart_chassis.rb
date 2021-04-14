@@ -52,13 +52,9 @@ class CartChassis
     (@later_bin.present? && @later_bin.cart_items.present?) ? @later_bin.cart_items : []
   end
 
-  # def has_now_items?
-  #   @now_bin.present? && @now_bin.cart_items.present?
-  # end
-  #
-  # def has_later_items?
-  #   @later_bin.present? && @later_bin.cart_items.present?
-  # end
+  def user
+    @now_bin.user || @later_bin.user || nil
+  end
 
   def purchase_bin
     @now_bin
@@ -163,9 +159,7 @@ class CartChassis
     true
   end
 
-  def update_to_waiting_for_check
-    @now_bin.status = Cart::AWAITING_CHEQUE
-    @now_bin.save
+  def blank_out_purchase_bin
     @now_bin = nil
   end
 
