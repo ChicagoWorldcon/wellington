@@ -26,7 +26,7 @@
           <article>
             <div id="error_explanation"></div>
             <h2>
-              The total due for this order is  <%= @prospective_charge_formatted %>.
+              The total due for this order is  <%= number_to_currency(@prospective_charge_cents/100.0) %>.
             </h2>
           </article>
           <article>

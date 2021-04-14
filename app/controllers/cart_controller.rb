@@ -23,7 +23,7 @@ class CartController < ApplicationController
   before_action :require_nonsupport_login
   before_action :get_cart_chassis
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
-  before_action :verify_all_cart_contents, only: [:show]
+  #before_action :verify_all_cart_contents, only: [:show]
 
   MEMBERSHIP = "membership"
   FOR_LATER = "for_later"
@@ -140,7 +140,7 @@ class CartController < ApplicationController
     when 0
       flash[:notice] = "All items have now been moved to the cart."
     else
-      flash[:alert] = "One or more items could not be moved to teh cart"
+      flash[:alert] = "One or more items could not be moved to the cart"
     end
 
     prep_bins
@@ -184,7 +184,6 @@ class CartController < ApplicationController
     prep_results = prepare_cart_for_payment
     @cart_chassis.full_reload
     @transaction_cart = @cart_chassis.purchase_bin
-    @prospective_charge_formatted = Money.new(@cart_chassis.purchase_subtotal_cents)
     @prospective_charge_cents = @cart_chassis.purchase_subtotal_cents
     flash[:notice] = "Your requested reservations have been created."
     prep_bins

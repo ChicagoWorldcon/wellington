@@ -28,7 +28,7 @@ module CartItemsHelper
   NO_RESERVATION = "no_reservation"
 
   def self.reservation_payment_status(c_item)
-    return {payment_status: NO_RESERVATION, status_desc: "Not reserved.", style:"background-color:paleturquoise; color:crimson"} if !c_item.item_reservation.present?
+    return {payment_status: NO_RESERVATION, status_desc: "Not reserved."} if !c_item.item_reservation.present?
 
     owed = AmountOwedForReservation.new(c_item.item_reservation).amount_owed.cents
     payment_recorded = ReservationPaymentHistory.new(c_item.item_reservation).any_successful_charges?
