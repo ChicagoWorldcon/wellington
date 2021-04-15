@@ -59,7 +59,7 @@ FactoryBot.define do
 
     trait :with_expired_membership do
       transient do
-        acquirable { create(:membership, :tuatara)}
+        acquirable { create(:membership, :silver_fern)}
       end
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable

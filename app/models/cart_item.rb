@@ -20,6 +20,8 @@
 class CartItem < ApplicationRecord
   include ThemeConcern
 
+  self.belongs_to_required_by_default = false
+
   # Support for donations and upgrades is coming later.  This is just
   # meant as a hint for the future about how to make that happen.
   MEMBERSHIP = "membership"
@@ -46,7 +48,7 @@ class CartItem < ApplicationRecord
   # attribute. T-shirts, etc., will not. Note also that it
   # has a special, funky validator below to prevent that choice
   # from ushering in the reign of chaos.
-  belongs_to :benefitable, :polymorphic => true, required: false
+  belongs_to :benefitable, :polymorphic => true, optional: true
 
   # :acquirable, here, is a polymorphic association
   # with whatever the item that's being bought is.
@@ -60,7 +62,7 @@ class CartItem < ApplicationRecord
   # Reservations are the only Holdables we have, but other examples
   # might include site-selection tokens, tickets for special events,
   # etc.
-  belongs_to :holdable, :polymorphic => true, required: false
+  belongs_to :holdable, :polymorphic => true, optional: true
 
   belongs_to :cart
   has_one :user, through: :cart
@@ -79,6 +81,7 @@ class CartItem < ApplicationRecord
   # Those should, instead, use the information from the acquirable object
   validates :item_name_memo, presence: true
   validates :item_price_memo, presence: true
+  validates_with PriceAndNameMemoValidator
   validates_numericality_of :item_price_memo
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   # validates :later, :inclusion => {in: [true, false]}

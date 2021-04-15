@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+#
 # Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :cart_chassis do
+class PriceAndNameMemoValidator < ActiveModel::Validator
+  def validate(record)
 
-    transient do
-      now_bin { create(:cart, :with_basic_items, status: "for_now")}
-      later_bin { create(:cart, :with_basic_items, status: "for_now")}
+    if record.acquirable.name != record.item_name_memo
+      record.errors.add(:item_name_memo, :item_identity_divergence, message: "This #{record.kind} has changed materially since you added it to your cart, and has now expired.")
     end
 
-    after(:build) do |cart_chassis, evaluator|
-      cart_chassis.now_bin = evaluator.now_bin
-      cart_chassis.later_bin = evaluator.later_bin
+    if record.acquirable.price_cents != record.item_price_memo
+      binding.pry
+      record.errors.add(:item_price_memo, :item_price_divergence, message: "This #{record.kind} has changed its price since you added it to your cart, and has now expired.")
     end
-
-    skip_create
   end
 end
