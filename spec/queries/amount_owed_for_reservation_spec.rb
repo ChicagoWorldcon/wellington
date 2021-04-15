@@ -57,4 +57,7 @@ RSpec.describe AmountOwedForReservation do
       end
     end
   end
+
+  xdescribe "#fully_paid_by_cart?" do
+  end
 end

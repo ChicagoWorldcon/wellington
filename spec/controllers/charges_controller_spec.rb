@@ -187,4 +187,8 @@ RSpec.describe ChargesController, type: :controller do
       end
     end
   end
+
+  xdescribe "#create_group_charge" do
+    
+  end
 end

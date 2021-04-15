@@ -34,7 +34,7 @@ RSpec.describe CartItemsHelper, type: :helper do
   # let!(:ten_mixed_item_shared_cart) {create(:cart, :with_10_mixed_items)}
   # let!(:hundred_mixed_item_shared_cart) {create(:cart, :with_100_mixed_items)}
 
-  describe "#self.locate_offer(offer_params)" do
+  xdescribe "#self.reservation_payment_status(c_item)" do
     pending
   end
 
@@ -84,6 +84,15 @@ RSpec.describe CartItemsHelper, type: :helper do
       end
     end
   end
+
+
+
+
+
+
+
+
+
 
   describe "#self.locate_cart_item_with_cart(item_id, cart_id)" do
 
@@ -1552,5 +1561,32 @@ RSpec.describe CartItemsHelper, type: :helper do
         expect { subject }.not_to raise_error
       end
     end
+  end
+
+
+
+
+
+
+
+
+  xdescribe "#self.ready_for_payment?(c_chassis)" do
+    pending
+  end
+
+  xdescribe "#self.items_with_reservations_present?(c_chassis)" do
+    pending
+  end
+
+  xdescribe "#reserve_and_pay_button_text" do
+    pending
+  end
+
+  xdescribe "#group_deletion_button" do
+    pending
+  end
+
+  xdescribe "#admin_buttons" do
+    pending
   end
 end

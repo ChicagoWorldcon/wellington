@@ -17,6 +17,15 @@
 # *Adapted from the Thoughtbot docs for FactoryBot at:
 # https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#linting-factories
 
+
+# IMPORTANT NOTE:  If you're in the dev environment, before
+# doing this, you'll want to run:
+#
+# rake db:test:prepare
+# rake db:test:load
+#
+# Otherwise, FactoryBot won't be able to find your tables.
+
 namespace :factory_bot do
   desc "Verify that all FactoryBot factories are valid"
   task lint: :environment do

@@ -68,7 +68,7 @@ class CartServices::PrepCartForPayment
   def prep_membership_item(cart_item)
     return if cart_item.kind != MEMBERSHIP
     new_res = cart_item.item_reservation
-    new_res ||= CreateReservationFromCartItem.new(cart_item, @user).call
+    new_res ||= CartServices::CreateReservationFromCartItem.new(cart_item, @user).call
     if new_res.save!
       cart_item.holdable = new_res
       cart_item.cart = @transaction_bin

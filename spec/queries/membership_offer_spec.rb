@@ -52,6 +52,10 @@ RSpec.describe MembershipOffer do
     end
   end
 
+  xdescribe "#self.locate_active_offer_by_hashcode(hashcode)" do
+    
+  end
+
   describe "#dob_required?" do
     subject(:dob_required?) { model.dob_required? }
 

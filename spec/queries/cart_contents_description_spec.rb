@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+#
 # Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :cart_chassis do
+require "rails_helper"
 
-    transient do
-      now_bin { create(:cart, status: "for_now")}
-      later_bin { create(:cart, status: "for_now")}
-    end
+RSpec.describe CartContentsDescription do
 
-    after(:build) do |cart_chassis, evaluator|
-      cart_chassis.now_bin = evaluator.now_bin
-      cart_chassis.later_bin = evaluator.later_bin
-    end
+  subject(:query) { described_class.new(cart) }
 
-    skip_create
+  xdescribe "#locate_current_cart_item_for_user" do
   end
 end

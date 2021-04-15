@@ -81,7 +81,7 @@ class CartItem < ApplicationRecord
   validates :item_price_memo, presence: true
   validates_numericality_of :item_price_memo
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
-  validates :later, :inclusion => {in: [true, false]}
+  # validates :later, :inclusion => {in: [true, false]}
   #validates :processed, :inclusion => {in: [true, false]}
 
 
@@ -241,7 +241,7 @@ class CartItem < ApplicationRecord
       self.acquirable_matches_memo? &&
       self.item_display_name != UNKNOWN &&
       self.acquirable.active? &&
-      self.acquirable.valid? &&
+      self.acquirable.valid?
     )
 
     self.update(available: confirmed)

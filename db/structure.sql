@@ -73,7 +73,7 @@ ALTER SEQUENCE public.cart_items_id_seq OWNED BY public.cart_items.id;
 CREATE TABLE public.carts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
-    status character varying DEFAULT 'pending'::character varying NOT NULL,
+    status character varying NOT NULL,
     active_from timestamp without time zone NOT NULL,
     active_to timestamp without time zone,
     created_at timestamp(6) without time zone NOT NULL,

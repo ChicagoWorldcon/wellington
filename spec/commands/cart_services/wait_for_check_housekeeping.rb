@@ -14,19 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FactoryBot.define do
-  factory :cart_chassis do
+require "rails_helper"
 
-    transient do
-      now_bin { create(:cart, status: "for_now")}
-      later_bin { create(:cart, status: "for_now")}
-    end
+RSpec.describe CartServices::WaitForCheckHousekeeping do
+  subject(:command) { described_class.new }
 
-    after(:build) do |cart_chassis, evaluator|
-      cart_chassis.now_bin = evaluator.now_bin
-      cart_chassis.later_bin = evaluator.later_bin
-    end
+  xdescribe "#call" do
 
-    skip_create
   end
 end

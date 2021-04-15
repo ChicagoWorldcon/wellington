@@ -16,6 +16,10 @@
 
 require "rails_helper"
 
-RSpec.describe CartItemsController, type: :controller do
-  render_views
+RSpec.describe CartServices::CreateReservationFromCartItem do
+  subject(:command) { described_class.new }
+
+  xdescribe "#call" do
+
+  end
 end

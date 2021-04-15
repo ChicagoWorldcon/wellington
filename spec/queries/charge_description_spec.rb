@@ -138,4 +138,8 @@ RSpec.describe ChargeDescription do
       expect(for_users(Charge.last)).to include "Upgrade Fully Paid with Credit Card for Unicorn member #{membership_number}"
     end
   end
+
+  xdescribe "#for_cart_transactions" do
+
+  end
 end

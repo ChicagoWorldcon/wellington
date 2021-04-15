@@ -431,15 +431,6 @@ RSpec.describe Cart, type: :model do
     end
   end
 
-  describe "attributes" do
-    describe "status" do
-      let(:naive_cart) { create(:cart)}
-      it "has a default status of 'pending'" do
-        expect(naive_cart).to have_attributes(:status => "pending")
-      end
-    end
-  end
-
   describe "public instance methods" do
     describe "subtotal_cents" do
       context "empty cart" do
