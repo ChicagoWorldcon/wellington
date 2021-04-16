@@ -16,13 +16,12 @@
 
 class PriceAndNameMemoValidator < ActiveModel::Validator
   def validate(record)
-
+    return if record.acquirable.blank?
     if record.acquirable.name != record.item_name_memo
       record.errors.add(:item_name_memo, :item_identity_divergence, message: "This #{record.kind} has changed materially since you added it to your cart, and has now expired.")
     end
 
     if record.acquirable.price_cents != record.item_price_memo
-      binding.pry
       record.errors.add(:item_price_memo, :item_price_divergence, message: "This #{record.kind} has changed its price since you added it to your cart, and has now expired.")
     end
   end

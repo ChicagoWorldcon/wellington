@@ -64,7 +64,7 @@ class CartItem < ApplicationRecord
   # etc.
   belongs_to :holdable, :polymorphic => true, optional: true
 
-  belongs_to :cart
+  belongs_to :cart, required: true
   has_one :user, through: :cart
 
   attribute :available, :boolean, default: true
@@ -81,8 +81,8 @@ class CartItem < ApplicationRecord
   # Those should, instead, use the information from the acquirable object
   validates :item_name_memo, presence: true
   validates :item_price_memo, presence: true
-  validates_with PriceAndNameMemoValidator
   validates_numericality_of :item_price_memo
+  validates_with PriceAndNameMemoValidator
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   # validates :later, :inclusion => {in: [true, false]}
   #validates :processed, :inclusion => {in: [true, false]}

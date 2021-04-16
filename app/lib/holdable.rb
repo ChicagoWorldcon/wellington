@@ -15,10 +15,10 @@
 # limitations under the License.
 
 module Holdable
-  # Buyable is  a module that needs to be included in
+  # Holdable is  a module that needs to be included in
   # the model for any kind of possessable digital object
   # that comes into being pursuant to the purchase of a
-  # CartItem. 
+  # CartItem.
   #
   # At this time, the only Holdable is Reservation, but we
   # expect that others (such as Site Selection Tokens) are

@@ -32,8 +32,6 @@ RSpec.describe CartItem, type: :model do
       :with_unpaid_reservation,
       :with_paid_reservation,
       :unavailable,
-      :price_altered,
-      :name_altered,
       :unknown_kind,
       :nonmembership_without_benefitable
     ].each do |factory_trait|
@@ -184,6 +182,10 @@ RSpec.describe CartItem, type: :model do
     describe "factory outputs :price_altered" do
       let(:price_altered_cart_item) { create(:cart_item, :price_altered)}
 
+      it "is invalid" do
+        expect(price_altered_cart_item.valid?).to eql(false)
+      end
+
       it "has a value for its 'item_price_memo' attribute that does not match its acquirable's price" do
         price_difference = price_altered_cart_item.item_price_memo - price_altered_cart_item.acquirable.price_cents
 
@@ -193,6 +195,10 @@ RSpec.describe CartItem, type: :model do
 
     describe "factory outputs :name_altered" do
       let(:name_altered_cart_item) { create(:cart_item, :name_altered)}
+
+      it "is invalid" do
+        expect(name_altered_cart_item.valid?).to eql(false)
+      end
 
       it "has a string value for its 'item_name_memo' attribute that does not match its acquirable's name" do
         expect(name_altered_cart_item.item_name_memo).to be_an_instance_of(String)
@@ -223,14 +229,13 @@ RSpec.describe CartItem, type: :model do
   end
 
   describe "associations" do
-    let(:item_with_holdable) { create(:cart_item, :with_paid_reservation)}
 
     it "belongs to 'acquirable'" do
       expect(base_model).to belong_to(:acquirable)
     end
 
     it "belongs to 'holdable'" do
-      expect(item_with_holdable).to belong_to(:holdable)
+      expect(base_model).to belong_to(:holdable).without_validating_presence
     end
 
     it "belongs to 'benefitable'" do
@@ -378,26 +383,17 @@ RSpec.describe CartItem, type: :model do
         expect(base_model.quick_description).to be_a_kind_of(String)
       end
 
-      it "Has a number of characters equal to the length of its item's display name, kind, and shortened beneficiary name, plus five" do
+      it "Has a number of characters equal to the length of its item's display name, kind, and shortened beneficiary name, plus six" do
         expected_length = (
           base_model.item_display_name.length + base_model.kind.length + base_model.shortened_item_beneficiary_name.length + 6)
 
         expect(base_model.quick_description.length).to eql(expected_length)
       end
 
-      it "Has a length that varies when the length of the elements that compose it vary" do
-
-        binding.pry
-        og_quick_desc_length = base_model.quick_description.length
-        og_kind_length = base_model.kind.length
-
-        binding.pry
-        new_kind = String.new(base_model.kind + base_model.kind + base_model.kind)
-        base_model.update_attribute(:kind, new_kind)
-
-        binding.pry
-        expect(base_model.kind).to eql(new_kind)
-        expect(base_model.kind.length - og_kind_length).to eql(base_model.quick_description.length - og_quick_desc_length)
+      it "Contains the kind, display name, and shortened beneficiary name for each item" do
+        expect(base_model.quick_description).to match(/#{Regexp.escape(base_model.kind)}/)
+        expect(base_model.quick_description).to match(/#{Regexp.escape(base_model.item_display_name)}/)
+        expect(base_model.quick_description).to match(/#{Regexp.escape(base_model.shortened_item_beneficiary_name)}/)
       end
     end
 
@@ -492,7 +488,6 @@ RSpec.describe CartItem, type: :model do
       context "when kind == 'membership'" do
 
         it "is a string shorter than its benefitable's display_name_for_cart" do
-
           expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
           expect(base_model.shortened_item_beneficiary_name).to be_kind_of(String)
           expect(base_model.shortened_item_beneficiary_name.length).to be < base_model.benefitable.name_for_cart.length
@@ -515,42 +510,42 @@ RSpec.describe CartItem, type: :model do
 
       context "when its kind is 'unknown'" do
         context "when its benefitable is nominal" do
-          it "returns true" do
+          it "returns false" do
             #Arrange
             base_model.update_attribute(:kind, CartItem::UNKNOWN)
             #Validate
             expect(base_model.kind).to eql(CartItem::UNKNOWN)
             expect(base_model.benefitable).to be_valid
             #Test
-            expect(base_model.item_ready_for_payment?).to eql(true)
+            expect(base_model.item_ready_for_payment?).to eql(false)
           end
         end
 
-        context "when its benefitable is invalid" do
-          it "returns true" do
-            #Arrange
-            base_model.update_attribute(:kind, CartItem::UNKNOWN)
-            base_model.update_attribute(:first_name, "")
-            #Validate
-            expect(base_model.kind).to eql(CartItem::UNKNOWN)
-            expect(base_model.benefitable).not_to be_valid
-            #Test
-            expect(base_model.item_ready_for_payment?).to be_true
-          end
-        end
-
-        context "when its benefitable is missing" do
-          it "returns true" do
-            #Arrange
-            base_model.update_attribute(:kind, CartItem::UNKNOWN)
-            base_model.benefitable.update_attribute(:benefitable, nil)
-            #Validate
-            expect(base_model.kind).to eql(CartItem::UNKNOWN)
-            expect(base_model.benefitable.blank?).to eql(true)
-            #Test
-            expect(base_model.item_ready_for_payment?).to eql(true)
-          end
-        end
+        # context "when its benefitable is invalid" do
+        #   it "returns true" do
+        #     #Arrange
+        #     base_model.update_attribute(:kind, CartItem::UNKNOWN)
+        #     base_model.benefitable.update_attribute(:first_name, "")
+        #     #Validate
+        #     expect(base_model.kind).to eql(CartItem::UNKNOWN)
+        #     expect(base_model.benefitable).not_to be_valid
+        #     #Test
+        #     expect(base_model.item_ready_for_payment?).to be_true
+        #   end
+        # end
+        #
+        # context "when its benefitable is missing" do
+        #   it "returns true" do
+        #     #Arrange
+        #     base_model.update_attribute(:kind, CartItem::UNKNOWN)
+        #     base_model.update_attribute(:benefitable, nil)
+        #     #Validate
+        #     expect(base_model.kind).to eql(CartItem::UNKNOWN)
+        #     expect(base_model.benefitable.blank?).to eql(true)
+        #     #Test
+        #     expect(base_model.item_ready_for_payment?).to eql(true)
+        #   end
+        # end
       end
 
       context "when its kind is 'membership'" do
@@ -560,7 +555,7 @@ RSpec.describe CartItem, type: :model do
             expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
             expect(base_model.benefitable).to be_valid
             #Test
-            expect(base_model.item_ready_for_payment?).to be_true
+            expect(base_model.item_ready_for_payment?).to eql(true)
           end
         end
 
@@ -568,12 +563,12 @@ RSpec.describe CartItem, type: :model do
           it "returns false" do
             #Arrange
             base_model.update_attribute(:kind, CartItem::MEMBERSHIP)
-            base_model.update_attribute(:first_name, "")
+            base_model.benefitable.update_attribute(:first_name, "")
             #Validate
             expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
             expect(base_model.benefitable).not_to be_valid
             #Test
-            expect(base_model.item_ready_for_payment?).to be_false
+            expect(base_model.item_ready_for_payment?).to eql(false)
           end
         end
 
@@ -581,12 +576,12 @@ RSpec.describe CartItem, type: :model do
           it "returns false" do
             #Arrange
             base_model.update_attribute(:kind, CartItem::MEMBERSHIP)
-            base_model.benefitable.update_attribute(:benefitable, nil)
+            base_model.update_attribute(:benefitable, nil)
             #Validate
             expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
-            expect(base_model.benefitable.blank?).to be_true
+            expect(base_model.benefitable.blank?).to eql(true)
             #Test
-            expect(base_model.item_ready_for_payment?).to be_false
+            expect(base_model.item_ready_for_payment?).to eql(false)
           end
         end
       end
@@ -619,7 +614,7 @@ RSpec.describe CartItem, type: :model do
         it "returns nil" do
           weird_res_item.update_attribute(:holdable, membership_holdable)
           #validate
-          expect(weird_res_item.holdable.blank?).to be_false
+          expect(weird_res_item.holdable.blank?).to eql(false)
           expect(weird_res_item.holdable).to be_kind_of(Membership)
           #Test
           expect(weird_res_item.item_reservation).to be_nil
@@ -733,7 +728,7 @@ RSpec.describe CartItem, type: :model do
           expect(base_model.item_still_available?).to eql(true)
 
           #Arrange(perturb)
-          base_model.acquirable.update_attribute(:price, -10)
+          base_model.acquirable.update_attribute(:price_cents, -10)
           #Validate
           expect(base_model).not_to be_valid
           #Test
