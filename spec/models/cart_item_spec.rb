@@ -76,7 +76,7 @@ RSpec.describe CartItem, type: :model do
         expect(strings_match).to eql(true)
       end
 
-      it "has a value for its 'item_price_memo' attribute that does not match its acquirable's price" do
+      it "has a value for its 'item_price_memo' attribute that matches its acquirable's price" do
         price_difference = base_model.item_price_memo - base_model.acquirable.price_cents
 
         expect(price_difference).to eql(0)
@@ -266,12 +266,9 @@ RSpec.describe CartItem, type: :model do
         let(:callback_item_1) {build(:cart_item)}
         let(:callback_item_2) {build(:cart_item)}
 
-        it "Has a nil value for item_name_memo and a value of zero for item_price_memo and until after validation" do
+        it "Naively has a nil value for item_name_memo and a value of zero for item_price_memo and until after validation" do
           expect(callback_item_1.item_price_memo).to eql(0)
           expect(callback_item_1.item_name_memo).to be_nil
-          callback_item_1.save
-          expect(callback_item_1.item_price_memo).to be > 0
-          expect(callback_item_1.item_name_memo).not_to be_nil
         end
 
         it "Has values for item_price_memo and item_name_memo that match its acquirable's price_cents and name attributes after saving" do
@@ -300,7 +297,7 @@ RSpec.describe CartItem, type: :model do
           # Demonstrate that the new acquirable has successfully associated.
           expect(callback_item_3.acquirable_id).to eql(new_acquirable.id)
           if original_acquirable_id != new_acquirable.id
-            expect(callback_item_3.acquirable_id).to_not eql(original_acquirable_id)
+            expect(callback_item_3.acquirable_id).not_to eql(original_acquirable_id)
           end
           #Show that the item_name_memo will keep its original value, rather than taking on that of the new acquirable
           expect(callback_item_3.item_name_memo).to eql(original_name_memo)
@@ -314,27 +311,28 @@ RSpec.describe CartItem, type: :model do
   end
 
   describe "public instance methods" do
+
     describe "#item_display_name" do
       it "does not equal 'unknown' when CartItem.kind == 'membership'" do
         # Arrangement:
-        base_model.update_attribute(:kind, "membership")
+        base_model.update_attribute(:kind, CartItem::MEMBERSHIP)
         # Test validation:
-        expect(base_model.kind).to eql("membership")
+        expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
         # Actual test
-        expect(base_model.item_display_name).not_to eql("unknown")
+        expect(base_model.item_display_name).not_to eql(CartItem::UNKNOWN)
       end
 
       it "equals 'unknown' when the CartItem.kind != 'membership'" do
         #Arrangement:
-        base_model.update_attribute(:kind, "unknown")
+        base_model.update_attribute(:kind, CartItem::UNKNOWN)
         #Test validation:
-        expect(base_model.kind).to eql("unknown")
+        expect(base_model.kind).to eql(CartItem::UNKNOWN)
         # Actual test
-        expect(base_model.item_display_name).to be == "unknown"
+        expect(base_model.item_display_name).to be == CartItem::UNKNOWN
       end
     end
 
-    describe "item_unique_id_for_laypeople" do
+    describe "#item_unique_id_for_laypeople" do
 
       let(:uniq_item_with_res) {create(:cart_item, :with_unpaid_reservation)}
       let(:uniq_item_without_res) {create(:cart_item)}
@@ -353,7 +351,7 @@ RSpec.describe CartItem, type: :model do
         end
       end
 
-      context "When the CartItem is a Membership item not associated with a reservation" do
+      context "When the CartItem is a Membership item NOT associated with a reservation" do
         it "Is nil" do
           # Test validation:
           expect(uniq_item_without_res.kind).to eql(CartItem::MEMBERSHIP)
@@ -367,9 +365,9 @@ RSpec.describe CartItem, type: :model do
       context "When the CartItem has an unknown kind, but it associated with a reservation" do
         it "Is nil" do
           # Arrangement:
-          uniq_item_with_res.update_attribute(:kind, "unknown")
+          uniq_item_with_res.update_attribute(:kind, CartItem::UNKNOWN)
           # Test validation:
-          expect(uniq_item_with_res.kind).to eql("unknown")
+          expect(uniq_item_with_res.kind).to eql(CartItem::UNKNOWN)
           expect(uniq_item_with_res.holdable).to be
           # Actual test
           expect(uniq_item_with_res.item_unique_id_for_laypeople).to be_nil
@@ -377,15 +375,17 @@ RSpec.describe CartItem, type: :model do
       end
     end
 
-    describe "quick_description" do
+    describe "#quick_description" do
 
-      it "Is a string" do
+      it "is a string" do
         expect(base_model.quick_description).to be_a_kind_of(String)
       end
 
       it "Has a number of characters equal to the length of its item's display name, kind, and shortened beneficiary name, plus six" do
+        spacing_and_grammar_chars_added = 6
+
         expected_length = (
-          base_model.item_display_name.length + base_model.kind.length + base_model.shortened_item_beneficiary_name.length + 6)
+          base_model.item_display_name.length + base_model.kind.length + base_model.shortened_item_beneficiary_name.length + spacing_and_grammar_chars_added )
 
         expect(base_model.quick_description.length).to eql(expected_length)
       end
@@ -397,18 +397,19 @@ RSpec.describe CartItem, type: :model do
       end
     end
 
-    describe "item_display_price" do
+    describe "#item_display_price" do
       it "is a string" do
         expect(base_model.item_display_price).to be_kind_of(String)
       end
 
-      it "does not show a nonzero value when the CartItem.kind == 'unknown'" do
+      it "Show a zero value when the CartItem.kind == 'unknown'" do
         # Arrangement:
         base_model.update_attribute(:kind, CartItem::UNKNOWN)
         #Test validation:
         expect(base_model.kind).to eql(CartItem::UNKNOWN)
         #Actual test:
         expect(base_model.item_display_price).not_to match(/[1-9]/)
+        expect(base_model.item_display_price).to match(/0/)
       end
 
       it "Shows a nonzero value when CartItem.kind == 'membership' and its acquirable has a positive value" do
@@ -421,7 +422,7 @@ RSpec.describe CartItem, type: :model do
       end
     end
 
-    describe "item_price_in_cents" do
+    describe "#item_price_in_cents" do
 
       context "When the item has an unknown kind" do
         it "equals zero" do
@@ -461,14 +462,14 @@ RSpec.describe CartItem, type: :model do
       end
     end
 
-    describe "item_beneficiary_name" do
+    describe "#item_beneficiary_name" do
     #let(:beneficiary_name_item) {create(:cart_item)}
       context "when kind == 'membership'" do
 
         it "matches its benefitable's display_name_for_cart" do
           #Test Validations
           expect(base_model.acquirable).to be_an_instance_of(Membership)
-          expect(base_model.kind).to eql("membership")
+          expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
           #Actual Test:
           expect(base_model.item_beneficiary_name).to eql(base_model.benefitable.name_for_cart)
         end
@@ -476,8 +477,8 @@ RSpec.describe CartItem, type: :model do
 
       context "when kind != 'membership'" do
         it "is an empty string" do
-          base_model.update_attribute(:kind, "unknown")
-          expect(base_model.kind).to eql("unknown")
+          base_model.update_attribute(:kind, CartItem::UNKNOWN)
+          expect(base_model.kind).to eql(CartItem::UNKNOWN)
           expect(base_model.item_beneficiary_name).to eql("")
         end
       end
@@ -487,17 +488,17 @@ RSpec.describe CartItem, type: :model do
     #let(:beneficiary_name_item) {create(:cart_item)}
       context "when kind == 'membership'" do
 
-        it "is a string shorter than its benefitable's display_name_for_cart" do
+        it "is a string shorter than or equal to its benefitable's display_name_for_cart" do
           expect(base_model.kind).to eql(CartItem::MEMBERSHIP)
           expect(base_model.shortened_item_beneficiary_name).to be_kind_of(String)
-          expect(base_model.shortened_item_beneficiary_name.length).to be < base_model.benefitable.name_for_cart.length
+          expect(base_model.shortened_item_beneficiary_name.length).to be <= base_model.benefitable.name_for_cart.length
         end
       end
 
       context "when kind != 'membership'" do
         it "is an empty string" do
-          base_model.update_attribute(:kind, "unknown")
-          expect(base_model.kind).to eql("unknown")
+          base_model.update_attribute(:kind, CartItem::UNKNOWN)
+          expect(base_model.kind).to eql(CartItem::UNKNOWN)
           expect(base_model.shortened_item_beneficiary_name).to eql("")
         end
       end
@@ -520,32 +521,6 @@ RSpec.describe CartItem, type: :model do
             expect(base_model.item_ready_for_payment?).to eql(false)
           end
         end
-
-        # context "when its benefitable is invalid" do
-        #   it "returns true" do
-        #     #Arrange
-        #     base_model.update_attribute(:kind, CartItem::UNKNOWN)
-        #     base_model.benefitable.update_attribute(:first_name, "")
-        #     #Validate
-        #     expect(base_model.kind).to eql(CartItem::UNKNOWN)
-        #     expect(base_model.benefitable).not_to be_valid
-        #     #Test
-        #     expect(base_model.item_ready_for_payment?).to be_true
-        #   end
-        # end
-        #
-        # context "when its benefitable is missing" do
-        #   it "returns true" do
-        #     #Arrange
-        #     base_model.update_attribute(:kind, CartItem::UNKNOWN)
-        #     base_model.update_attribute(:benefitable, nil)
-        #     #Validate
-        #     expect(base_model.kind).to eql(CartItem::UNKNOWN)
-        #     expect(base_model.benefitable.blank?).to eql(true)
-        #     #Test
-        #     expect(base_model.item_ready_for_payment?).to eql(true)
-        #   end
-        # end
       end
 
       context "when its kind is 'membership'" do
@@ -711,12 +686,12 @@ RSpec.describe CartItem, type: :model do
 
         it "Even when it would otherwise return true, a display name of 'unknown' will cause it to return false" do
           #Test validations:
-          expect(failed_display_item.item_display_name).not_to eql("unknown")
+          expect(failed_display_item.item_display_name).not_to eql(CartItem::UNKNOWN)
           expect(failed_display_item.item_still_available?).to eql(true)
           # Arrangement
-          failed_display_item.update_attribute(:kind, "unknown")
+          failed_display_item.update_attribute(:kind, CartItem::UNKNOWN)
           # Secondary validation
-          expect(failed_display_item.item_display_name).to eql("unknown")
+          expect(failed_display_item.item_display_name).to eql(CartItem::UNKNOWN)
           expect(failed_display_item.item_still_available?).to eql(false)
         end
       end
@@ -736,43 +711,42 @@ RSpec.describe CartItem, type: :model do
         end
       end
     end
-  end
 
-  describe "item_saved_for_later?" do
-    context "when the item is in a cart for later" do
-      let(:later_cart) { create(:cart, :for_later_bin)}
-
-      it "Returns true" do
-        #Arrangement:
-        base_model.update_attribute(:cart, later_cart)
-        #test validation:
-        expect(base_model.cart.status).to eql("for_later")
-        #Actual test
-        expect(base_model.item_saved_for_later?).to eql(true)
+    describe "#item_user" do
+      let(:cart_for_now) {create(:cart, :for_now_bin)}
+      it "Returns the user associated with the item's cart" do
+        base_model.update_attribute(:cart, cart_for_now)
+        expect(base_model.item_user).to be_kind_of(User)
+        expect(base_model.item_user).to eql(base_model.cart.user)
       end
     end
 
-    context "when the item is in a cart for now" do
-      let(:now_cart) { create(:cart, :for_now_bin)}
+    describe "item_saved_for_later?" do
+      context "when the item is in a cart for later" do
+        let(:later_cart) { create(:cart, :for_later_bin)}
 
-      it "Returns false" do
-        #Arrangement:
-        base_model.update_attribute(:cart, now_cart)
-        #test validation:
-        expect(base_model.cart.status).to eql("for_now")
-        #Actual test
-        expect(base_model.item_saved_for_later?).to eql(false)
+        it "Returns true" do
+          #Arrangement:
+          base_model.update_attribute(:cart, later_cart)
+          #test validation:
+          expect(base_model.cart.status).to eql("for_later")
+          #Actual test
+          expect(base_model.item_saved_for_later?).to eql(true)
+        end
       end
-    end
 
-  end
+      context "when the item is in a cart for now" do
+        let(:now_cart) { create(:cart, :for_now_bin)}
 
-  describe "item_user" do
-    let(:cart_for_now) {create(:cart, :for_now_bin)}
-    it "Returns the user associated with the item's cart" do
-      base_model.update_attribute(:cart, cart_for_now)
-      expect(base_model.item_user).to be_kind_of(User)
-      expect(base_model.item_user).to eql(base_model.cart.user)
+        it "Returns false" do
+          #Arrangement:
+          base_model.update_attribute(:cart, now_cart)
+          #test validation:
+          expect(base_model.cart.status).to eql("for_now")
+          #Actual test
+          expect(base_model.item_saved_for_later?).to eql(false)
+        end
+      end
     end
   end
 
