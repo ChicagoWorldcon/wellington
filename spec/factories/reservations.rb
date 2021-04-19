@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     transient do
-      instalment_paid { Money.new(75_00) }
+      instalment_paid { Money.new(15_00) }
       number_of_charges {1}
       charge_state { Charge::STATE_SUCCESSFUL }
       charge_transfer { Charge::TRANSFER_STRIPE }
@@ -45,30 +45,39 @@ FactoryBot.define do
       state { Reservation::DISABLED }
     end
 
-    trait :with_failed_charge do
+    trait :with_any_charges_failing do
       transient do
         charge_state { Charge::STATE_FAILED }
       end
+    end
+
+    trait :with_any_charges_pending do
+      transient do
+        charge_state { Charge::STATE_PENDING }
+      end
+    end
+
+    trait :with_any_charges_in_cash do
+      transient do
+        charge_state { Charge::STATE_PENDING }
+      end
+    end
+
+    trait :with_two_charges_if_any do
+      transient do
+        number_of_charges { 2 }
+      end
+    end
+
+    trait :with_seven_charges_if_any do
+      transient do
+        number_of_charges { 7 }
+      end
+    end
+
+    trait :with_charge_creation do
       with_order_against_membership
       with_claim_from_user
-    end
-
-    trait :with_pending_charge do
-      after(:build) do |new_res, evaluator|
-        evaluator.charge_state = Charge::STATE_PENDING
-      end
-    end
-
-    trait :with_cash_charge do
-      after(:build) do |new_res, evaluator|
-        evaluator.charge_transfer = Charge::TRANSFER_CASH
-      end
-    end
-
-    trait :with_several_charges do
-      after(:build) do |new_res, evaluator|
-        evaluator.number_of_charges = 3
-      end
     end
 
     after(:create) do |new_reservation, evaluator|
@@ -78,9 +87,7 @@ FactoryBot.define do
       binding.pry
 
       if new_reservation.paid? || ( new_reservation.instalment? && evaluator.instalment_paid > 0 )
-        cents_to_charge = new_reservation.instalment? ? evaluator.instalment_paid : new_reservation.membership.price_cents
-        charges_remaining = evaluator.number_of_charges
-
+        cents_to_charge = new_reservation.instalment? ? evaluator.instalment_paid.cents : new_reservation.membership.price_cents
         create_list(:charge, evaluator.number_of_charges, :generate_description,
           state: evaluator.charge_state,
           transfer: evaluator.charge_transfer,
@@ -88,11 +95,14 @@ FactoryBot.define do
           buyable: new_reservation,
           # amount: new_reservation.membership.price
         ) do |charge, i|
-          unless charges_remaining <= 0
+          charges_left_to_make = evaluator.number_of_charges - i
+          binding.pry
+          unless charges_left_to_make == 0
+            current_charge = (cents_to_charge / charges_left_to_make ) + (cents_to_charge % charges_left_to_make)
             binding.pry
-            charge.amount_cents = (cents_to_charge / charges_remaining ) + (cents_to_charge % charges_remaining)
-            charges_remaining -= 1
-            cents_to_charge -= charge.amount_cents
+            cents_to_charge = cents_to_charge - current_charge
+            charge.amount_cents = current_charge
+            charge.save
           end
         end
       #

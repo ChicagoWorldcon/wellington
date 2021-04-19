@@ -34,7 +34,20 @@ class AmountOwedForReservation
   end
 
   def fully_paid_by_cart?
-    return false unless reservation.state == PAID
-    ReservationPaymentHistory.new(reservation).successful_cart_charges.size > 0
+    cents_owed_for_associated_carts <= 0
+  end
+
+  private
+
+  def carts_related_to_reservation
+    Cart.joins(:cart_items).where(cart_items: {holdable: @reservation})
+  end
+
+  def cents_owed_for_associated_carts
+    owed = 0
+    carts_related_to_reservation.to_ary.each do |c|
+      owed += CentsOwedForCartContents.new(c).owed_cents
+    end
+    owed
   end
 end
