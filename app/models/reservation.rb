@@ -21,6 +21,7 @@
 # Membership details like display name are associated to Reservation through Order which is a join table to Membership
 class Reservation < ApplicationRecord
   include Holdable
+  include Buyable
 
   PAID = "paid"
   DISABLED = "disabled"

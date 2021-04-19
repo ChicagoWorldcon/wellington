@@ -56,6 +56,7 @@ class CartItem < ApplicationRecord
   # but we expect that eventually there may be t-shirts and the
   # like.  Donations and upgrades would also be forms of :acquirable, if we made them addable to the cart.
   belongs_to :acquirable, :polymorphic => true, required: true
+  delegate :price_cents, to: :acquirable 
 
   # :holdable refers to a piece of digital property created
   # through purchase of the cart item. As of this writing,
@@ -63,6 +64,7 @@ class CartItem < ApplicationRecord
   # might include site-selection tokens, tickets for special events,
   # etc.
   belongs_to :holdable, :polymorphic => true, optional: true
+  has_many :charges, through: :holdable
 
   belongs_to :cart, required: true
   has_one :user, through: :cart
@@ -83,6 +85,7 @@ class CartItem < ApplicationRecord
   validates :item_price_memo, presence: true
   validates_numericality_of :item_price_memo
   validates_with PriceAndNameMemoValidator
+
   validates :kind, presence: true, :inclusion => { in: KIND_OPTIONS }
   # validates :later, :inclusion => {in: [true, false]}
   #validates :processed, :inclusion => {in: [true, false]}

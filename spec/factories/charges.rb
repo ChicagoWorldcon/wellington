@@ -33,6 +33,14 @@ FactoryBot.define do
       state { Charge::STATE_FAILED }
     end
 
+    trait(:pending) do
+      state { Charge::STATE_PENDING }
+    end
+
+    trait(:cash) do
+      transfer { Charge::TRANSFER_CASH}
+    end
+
     trait :generate_description do
       after(:create) do |new_charge, _evaluator|
         new_charge.update!(comment: ChargeDescription.new(new_charge).for_users)

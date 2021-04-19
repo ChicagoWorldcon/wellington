@@ -32,6 +32,9 @@ FactoryBot.define do
 
     transient do
       instalment_paid { Money.new(75_00) }
+      number_of_charges {1}
+      charge_state { Charge::STATE_SUCCESSFUL }
+      charge_transfer { Charge::TRANSFER_STRIPE }
     end
 
     trait :instalment do
@@ -42,24 +45,64 @@ FactoryBot.define do
       state { Reservation::DISABLED }
     end
 
+    trait :with_failed_charge do
+      transient do
+        charge_state { Charge::STATE_FAILED }
+      end
+      with_order_against_membership
+      with_claim_from_user
+    end
+
+    trait :with_pending_charge do
+      after(:build) do |new_res, evaluator|
+        evaluator.charge_state = Charge::STATE_PENDING
+      end
+    end
+
+    trait :with_cash_charge do
+      after(:build) do |new_res, evaluator|
+        evaluator.charge_transfer = Charge::TRANSFER_CASH
+      end
+    end
+
+    trait :with_several_charges do
+      after(:build) do |new_res, evaluator|
+        evaluator.number_of_charges = 3
+      end
+    end
+
     after(:create) do |new_reservation, evaluator|
       next unless new_reservation.membership.present?
       next unless new_reservation.user.present?
 
-      if new_reservation.paid?
-        create(:charge, :generate_description,
+      binding.pry
+
+      if new_reservation.paid? || ( new_reservation.instalment? && evaluator.instalment_paid > 0 )
+        cents_to_charge = new_reservation.instalment? ? evaluator.instalment_paid : new_reservation.membership.price_cents
+        charges_remaining = evaluator.number_of_charges
+
+        create_list(:charge, evaluator.number_of_charges, :generate_description,
+          state: evaluator.charge_state,
+          transfer: evaluator.charge_transfer,
           user: new_reservation.user,
           buyable: new_reservation,
-          # reservation: new_reservation,
-          amount: new_reservation.membership.price
-        )
-      elsif new_reservation.instalment? && evaluator.instalment_paid > 0
-        create(:charge, :generate_description,
-          user: new_reservation.user,
-          buyable: new_reservation,
-          # reservation: new_reservation,
-          amount: evaluator.instalment_paid,
-        )
+          # amount: new_reservation.membership.price
+        ) do |charge, i|
+          unless charges_remaining <= 0
+            binding.pry
+            charge.amount_cents = (cents_to_charge / charges_remaining ) + (cents_to_charge % charges_remaining)
+            charges_remaining -= 1
+            cents_to_charge -= charge.amount_cents
+          end
+        end
+      #
+      # elsif new_reservation.instalment? && evaluator.instalment_paid > 0
+      #   create(:charge, :generate_description,
+      #     user: new_reservation.user,
+      #     buyable: new_reservation,
+      #     # reservation: new_reservation,
+      #     amount: evaluator.instalment_paid,
+      #   )
       end
     end
 

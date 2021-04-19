@@ -37,10 +37,13 @@ class Cart < ApplicationRecord
     PAID
   ].freeze
 
-  validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
-  belongs_to :user
+
+  belongs_to :user, required: true
   has_many :charges, :as => :buyable
   has_many :cart_items
+
+  validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
+  validates_with CartPaymentStatusValidator
 
   # A user has one active cart at a time
   # TODO:  WRITE A CUSTOM VALIDATOR SO THAT A USER CAN HAVE:

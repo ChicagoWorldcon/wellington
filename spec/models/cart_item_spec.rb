@@ -247,6 +247,18 @@ RSpec.describe CartItem, type: :model do
     it "belongs to 'cart'" do
       expect(base_model).to belong_to(:cart)
     end
+
+    it "has many :charges :through :holdable" do
+      expect(base_model).to eql("Needs red-green-refactor-process")
+      expect(base_model).to have_many(:charges).through(:holdable).without_validating_presence
+    end
+
+    describe "delegations" do
+      it "delegates :price_cents to :acquirable" do
+        expect(base_model).to eql("Needs red-green-refactor quality control.")
+        expect(base_model).to delegate_method(:price_cents).to(:acquirable)
+      end
+    end
   end
 
   describe "attributes" do

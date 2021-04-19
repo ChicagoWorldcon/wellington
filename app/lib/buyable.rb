@@ -27,7 +27,11 @@ module Buyable
     has_many :charges, :as => :buyable
   end
 
-  def buyable_class
-    self.buyable_type
+  def successful_direct_charges?
+    BuyableChargeHistoryInfo.new(self).any_direct_charges_succeeded?
+  end
+
+  def successful_direct_charge_total
+    BuyableChargeHistoryInfo.new(self).successful_direct_charge_tally
   end
 end

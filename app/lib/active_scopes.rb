@@ -17,8 +17,6 @@
 # TODO Extract to gem, move tests from Claim to this gem
 # TODO Better tests, most of this is integration tested by Claim
 module ActiveScopes
-  # PENDING = "pending"
-  # PROCESSING = "processing"
   FOR_LATER = "for_later"
   FOR_NOW = "for_now"
   PAID = "paid"

@@ -17,7 +17,7 @@
 
 # ReservationPaymentHistory outputs an array of ordered enums that show the history of payments on a reservation.
 class ReservationPaymentHistory
-  attr_reader :reservation
+  attr_reader :our_reservation
 
   def initialize(reservation)
     @our_reservation = reservation
