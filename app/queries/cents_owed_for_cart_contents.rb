@@ -27,15 +27,20 @@ class CentsOwedForCartContents
     @total_owed_for_cart_items - @total_successful_cart_charges
   end
 
+  def owed_cents_before_credits
+    @cart.cart_items.sum(&:price_cents)
+  end
+
   private
 
   def accumulate_cart_item_amounts_owing(cart)
-    cart.cart_items.inject(0){|a, i| } i + amount_owed_for_cart_item(i)
+    cart.cart_items.inject(0){|a, i| a + amount_owed_for_cart_item(i) }
   end
 
   def amount_owed_for_cart_item(item)
     return 0 if !item.price_cents
-    item.price_cents - item.charges.successful.sum(:amount_cents)
+    return item.price_cents if (item.holdable.blank? || item.holdable.charges.blank? || item.holdable.charges.successful.blank?)
+    item.price_cents - item.holdable.charges.successful.sum(:amount_cents)
   end
 
   def total_paid_for_cart(cart)

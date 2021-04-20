@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -89,6 +90,7 @@ class Money::ChargeCustomer
         @buyable.update!(status: Cart::PAID, active_to: Time.now)
         @buyable.reload
       else
+        #TODO:  THIS SHOULD RAISE AN ERROR!!!!!
         reservations_in_cart.each {|res| res.update!(state: Reservation::INSTALMENT)} if reservations_in_cart.present?
         @buyable.reload
       end

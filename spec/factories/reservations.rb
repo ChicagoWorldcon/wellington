@@ -84,22 +84,18 @@ FactoryBot.define do
       next unless new_reservation.membership.present?
       next unless new_reservation.user.present?
 
-      binding.pry
-
       if new_reservation.paid? || ( new_reservation.instalment? && evaluator.instalment_paid > 0 )
         cents_to_charge = new_reservation.instalment? ? evaluator.instalment_paid.cents : new_reservation.membership.price_cents
         create_list(:charge, evaluator.number_of_charges, :generate_description,
           state: evaluator.charge_state,
           transfer: evaluator.charge_transfer,
           user: new_reservation.user,
-          buyable: new_reservation,
+          buyable: new_reservation
           # amount: new_reservation.membership.price
         ) do |charge, i|
           charges_left_to_make = evaluator.number_of_charges - i
-          binding.pry
           unless charges_left_to_make == 0
             current_charge = (cents_to_charge / charges_left_to_make ) + (cents_to_charge % charges_left_to_make)
-            binding.pry
             cents_to_charge = cents_to_charge - current_charge
             charge.amount_cents = current_charge
             charge.save

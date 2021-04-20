@@ -43,7 +43,7 @@ class Cart < ApplicationRecord
   has_many :cart_items
 
   validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
-  validates_with CartPaymentStatusValidator
+  #validates_with CartPaymentStatusValidator
 
   # A user has one active cart at a time
   # TODO:  WRITE A CUSTOM VALIDATOR SO THAT A USER CAN HAVE:
@@ -56,16 +56,29 @@ class Cart < ApplicationRecord
   validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
   validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
 
+  def cart_items_raw_price_cents_combined
+    #This is the price before deductions for
+    # succesful charges to the cart-items or cart.
+    CentsOwedForCartContents.new(self).owed_cents_before_credits
+  end
+
   def subtotal_cents
+    #TODO: Rename to show that this reflects charges to
+    # cart_items but not to the actual cart.
     self.cart_items.reduce(0) { |sum, i| sum + i.item_price_in_cents }
   end
 
   def subtotal_display
+    #TODO: Rename along with subtotal_cents
     Money.new(self.subtotal_cents, "USD").format(with_currency: true)
   end
 
-  def paid?
+  def items_paid?
     self.subtotal_cents <= 0
+  end
+
+  def cents_owed_for_cart_less_all_credits
+    CentsOwedForCartContents.new(self).owed_cents
   end
 
   def active_and_for_later

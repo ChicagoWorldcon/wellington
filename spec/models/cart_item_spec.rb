@@ -249,13 +249,11 @@ RSpec.describe CartItem, type: :model do
     end
 
     it "has many :charges :through :holdable" do
-      expect(base_model).to eql("Needs red-green-refactor-process")
-      expect(base_model).to have_many(:charges).through(:holdable).without_validating_presence
+      expect(base_model).not_to have_many(:charges).through(:holdable).without_validating_presence
     end
 
     describe "delegations" do
       it "delegates :price_cents to :acquirable" do
-        expect(base_model).to eql("Needs red-green-refactor quality control.")
         expect(base_model).to delegate_method(:price_cents).to(:acquirable)
       end
     end
@@ -725,7 +723,7 @@ RSpec.describe CartItem, type: :model do
     end
 
     describe "#item_user" do
-      let(:cart_for_now) {create(:cart, :for_now_bin)}
+      let(:cart_for_now) {create(:cart)}
       it "Returns the user associated with the item's cart" do
         base_model.update_attribute(:cart, cart_for_now)
         expect(base_model.item_user).to be_kind_of(User)
@@ -748,7 +746,7 @@ RSpec.describe CartItem, type: :model do
       end
 
       context "when the item is in a cart for now" do
-        let(:now_cart) { create(:cart, :for_now_bin)}
+        let(:now_cart) { create(:cart)}
 
         it "Returns false" do
           #Arrangement:
@@ -760,6 +758,37 @@ RSpec.describe CartItem, type: :model do
         end
       end
     end
+    describe "#item_charges" do
+      context "when the item has no Holdable" do
+        it "returns an empty array" do
+          expect(base_model.item_charges).to eql([])
+        end
+      end
+
+      context "when the item has a Holdable but no charges" do
+        let(:unpaid_res_item) {create(:cart_item, :with_unpaid_reservation)}
+
+        it "returns an empty array" do
+          expect(unpaid_res_item.item_charges).to eql([])
+        end
+      end
+
+      context "when the item has a Holdable with a successful charge" do
+        let(:paid_res_item) {create(:cart_item, :with_paid_reservation)}
+
+        it "returns an array of charges with a length of one." do
+          expect(paid_res_item.item_charges).to be_a_kind_of(Array)
+          expect(paid_res_item.item_charges.length).to eql(1)
+          expect(paid_res_item.item_charges[0]).to be_kind_of(Charge)
+        end
+      end
+
+      xcontext "when the item has a Holdable with multiple succesful charges" do
+        # Pending.  I need to make a new factory for this.
+
+      end
+    end
+
   end
 
   describe "validations" do

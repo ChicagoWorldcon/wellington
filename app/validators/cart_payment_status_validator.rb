@@ -14,33 +14,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class CartPaymentStatusValidator < ActiveModel::Validator
-  def validate(record)
-
-    case record.status
-    when Cart::FOR_NOW
-
-      # some stuff happens
-      record.errors.add(:status, :sucky_status, message: "")
-
-    when Cart::FOR_LATER
-
-      # some stuff happens
-      record.errors.add(:status, :sucky_status, message: "")
-    when Cart::AWAITING_CHEQUE
-
-      # some stuff happens
-      record.errors.add(:status, :sucky_status, message: "")
-    when Cart::PAID
-
-      # some stuff happens
-      record.errors.add(:status, :sucky_status, message: "")
-    else
-
-      # some stuff happens
-      record.errors.add(:status, :unrecognized_status, message: "#{record.status} is not a recognized status for a #{record.class}")
-    end
-
-
-  end
+# class CartPaymentStatusValidator < ActiveModel::Validator
+#   def validate(record)
+#     case record.status
+#     when Cart::FOR_NOW
+#       # some stuff happens
+#       return
+#       # Maybe there should be an error if the cart is fully paid?
+#       # I don't know.  That's a lot for a model validator to do.
+#     when Cart::FOR_LATER
+#       if record.charges.present?
+#         record.errors.add(:status, :cart_with_charges_cant_be_later_bin, message: "A cart that has recieved charges can't be the bin for later")
+#
+#     when Cart::AWAITING_CHEQUE
+#
+#       # some stuff happens
+#       record.errors.add(:status, :sucky_status, message: "")
+#
+#       if record.cart_items.blank?
+#         record.errors.add(:status, :an_empty_cart_cannot_recieve_payment, message: "You cannot mark this cart as 'awaiting_cheque' because there is nothing here to pay for.")
+#       end
+#
+#     when Cart::PAID
+#       if record.cart_items.blank?
+#         record.errors.add(:status, :an_empty_cart_cannot_recieve_payment, message: "")
+#       end
+#
+#     else
+#       record.errors.add(:status, :unrecognized_status, message: "#{record.status} is not a recognized status for a #{record.class}")
+#     end
+#   end
 end

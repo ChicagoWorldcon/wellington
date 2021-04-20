@@ -56,7 +56,8 @@ class CartItem < ApplicationRecord
   # but we expect that eventually there may be t-shirts and the
   # like.  Donations and upgrades would also be forms of :acquirable, if we made them addable to the cart.
   belongs_to :acquirable, :polymorphic => true, required: true
-  delegate :price_cents, to: :acquirable 
+  delegate :price_cents, to: :acquirable
+
 
   # :holdable refers to a piece of digital property created
   # through purchase of the cart item. As of this writing,
@@ -64,7 +65,9 @@ class CartItem < ApplicationRecord
   # might include site-selection tokens, tickets for special events,
   # etc.
   belongs_to :holdable, :polymorphic => true, optional: true
-  has_many :charges, through: :holdable
+  # delegate :charges, to: :holdable
+  # delegate :successful_direct_charge_total, to: :holdable
+  # delegate :successful_direct_charges?, to: :holdable
 
   belongs_to :cart, required: true
   has_one :user, through: :cart
@@ -127,6 +130,7 @@ class CartItem < ApplicationRecord
   end
 
   def item_price_in_cents
+    #Todo: rename this so it's obbious that this is an adjusted price.
     case self.kind
     when MEMBERSHIP
       if self.item_reservation
@@ -185,6 +189,12 @@ class CartItem < ApplicationRecord
 
   def item_user
     self.cart.user
+  end
+
+  def item_charges
+    # Note: Only renders up successful charges
+    return [] if self.holdable.blank? || self.holdable.charges.blank? || self.holdable.charges.successful.blank?
+    self.holdable.charges.successful.to_ary
   end
 
   private
