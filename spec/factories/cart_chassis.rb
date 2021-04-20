@@ -18,15 +18,67 @@ FactoryBot.define do
   factory :cart_chassis do
 
     transient do
-      now_bin { create(:cart, :with_basic_items, status: "for_now")}
-      later_bin { create(:cart, :with_basic_items, status: "for_now")}
+      chassis_user { create(:user)}
+      now_bin { create(:cart)}
+      later_bin { create(:cart, :for_later_bin)}
     end
 
-    after(:build) do |cart_chassis, evaluator|
-      cart_chassis.now_bin = evaluator.now_bin
-      cart_chassis.later_bin = evaluator.later_bin
+    after(:build) do |cart_chassis, eval|
+      cart_chassis.now_bin = eval.now_bin
+      cart_chassis.later_bin = eval.later_bin
+      cart_chassis.now_bin.update_attribute(:user, eval.chassis_user)
+      cart_chassis.later_bin.update_attribute(:user, eval.chassis_user)
     end
 
     skip_create
+
+    trait :with_basic_items_cart_for_now do
+
+      transient do
+        now_bin { create(:cart, :with_basic_items)}
+      end
+
+      # after(:build) do |cart_chassis, eval|
+      #   cart_chassis.now_bin.update_attribute(:active_to, 1.day.ago)
+      #   cart_chassis.now_bin = eval.trait_now_bin
+      #   cart_chassis.now_bin.update_attribute(:user, eval.chassis_user)
+      # end
+    end
+
+    trait :with_basic_items_cart_for_later do
+      transient do
+        later_bin { create(:cart, :with_basic_items, :for_later_bin)}
+      end
+
+      # after(:build) do |cart_chassis, eval|
+      #   cart_chassis.later_bin.update_attribute(:active_to, 1.day.ago)
+      #   cart_chassis.later_bin = eval.trait_later_bin
+      #   cart_chassis.now_bin.update_attribute(:user, eval.chassis_user)
+      # end
+    end
+
+    trait :with_unpaid_reservations_cart_for_now do
+      transient do
+        now_bin { create(:cart, :with_unpaid_reservation_items)}
+      end
+
+      # after(:build) do |cart_chassis, eval|
+      #   cart_chassis.now_bin.update_attribute(:active_to, 1.day.ago)
+      #   cart_chassis.now_bin = eval.trait_now_bin
+      #   cart_chassis.now_bin.update_attribute(:user, eval.chassis_user)
+      # end
+    end
+
+    trait :with_unpaid_reservations_cart_for_later do
+      transient do
+        later_bin { create(:cart, :with_unpaid_reservation_items, :for_later_bin )}
+      end
+
+      # after(:build) do |cart_chassis, eval|
+      #   cart_chassis.later_bin.update_attribute(:active_to, 1.day.ago)
+      #   cart_chassis.later_bin = eval.trait_later_bin
+      #   cart_chassis.later_bin.update_attribute(:user, eval.chassis_user)
+      # end
+    end
   end
 end

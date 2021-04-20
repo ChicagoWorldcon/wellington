@@ -152,6 +152,5 @@ FactoryBot.define do
         num_charges { 1 }
       end
     end
-
   end
 end

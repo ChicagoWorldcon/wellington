@@ -21,23 +21,163 @@ RSpec.describe CartChassis, type: :model do
   subject(:base_chassis) {build(:cart_chassis)}
 
   describe "#factories" do
-    context "basic factory" do
+    context "base factory" do
+      let(:base_chassis) { build(:cart_chassis)}
 
-      let(:basic_chassis) { build(:cart_chassis)}
-
-      it "can create a valid, basic object" do
-        expect(basic_chassis).to be
-        expect(basic_chassis).to be_kind_of(CartChassis)
+      it "can create a basic object" do
+        expect(base_chassis).to be
+        expect(base_chassis).to be_kind_of(CartChassis)
       end
 
-      it "has now_bin and later_bin attributes that are both Carts" do
-        expect(basic_chassis.now_bin).not_to be_nil
-        expect(basic_chassis.now_bin).to be_kind_of(Cart)
-        expect(basic_chassis.now_bin.status).to eql("for_now")
+      it "has a now_bin that is an empty cart" do
+        expect(base_chassis.now_bin).to be
+        expect(base_chassis.now_bin).to be_kind_of(Cart)
+        expect(base_chassis.now_bin.cart_items.blank?).to eql(true)
+        expect(base_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+      end
 
-        expect(basic_chassis.later_bin).not_to be_nil
-        expect(basic_chassis.later_bin).to be_kind_of(Cart)
-        expect(basic_chassis.now_bin.status).to eql("for_later")
+      it "has a later_bin that is an empty cart" do
+        expect(base_chassis.later_bin).to be
+        expect(base_chassis.later_bin).to be_kind_of(Cart)
+        expect(base_chassis.later_bin.cart_items.blank?).to eql(true)
+        expect(base_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+      end
+
+      it "has the same user for its now_bin and its later_bin" do
+        expect(base_chassis.now_bin.user).to eql(base_chassis.later_bin.user)
+      end
+    end
+
+    context "cart_chassis :with_basic_items_cart_for_now" do
+      let(:basic_now_chassis) { build(:cart_chassis, :with_basic_items_cart_for_now)}
+
+      it "can create a basic object" do
+        expect(basic_now_chassis).to be
+        expect(basic_now_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "has a now_bin that is a cart with at least one cart_item" do
+        expect(basic_now_chassis.now_bin).to be
+        expect(basic_now_chassis.now_bin).to be_kind_of(Cart)
+        expect(basic_now_chassis.now_bin.cart_items.count).to be > 0
+        expect(basic_now_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+      end
+
+      it "has a later_bin that is an empty cart" do
+        expect(basic_now_chassis.later_bin).to be
+        expect(basic_now_chassis.later_bin).to be_kind_of(Cart)
+        expect(basic_now_chassis.later_bin.cart_items.blank?).to eql(true)
+        expect(basic_now_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+      end
+
+      it "has the same user for its now_bin and its later_bin" do
+        expect(basic_now_chassis.now_bin.user).to eql(basic_now_chassis.later_bin.user)
+      end
+    end
+
+    context "cart_chassis :with_basic_items_cart_for_later" do
+      let(:basic_later_chassis) { build(:cart_chassis, :with_basic_items_cart_for_later)}
+
+      it "can create a basic object" do
+        expect(basic_later_chassis).to be
+        expect(basic_later_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "has a now_bin that is an empty cart" do
+        expect(basic_later_chassis.now_bin).to be
+        expect(basic_later_chassis.now_bin).to be_kind_of(Cart)
+        expect(basic_later_chassis.now_bin.cart_items.blank?).to eql(true)
+        expect(basic_later_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+      end
+
+      it "has a later_bin that is a cart with at least one cart_item" do
+        expect(basic_later_chassis.later_bin).to be
+        expect(basic_later_chassis.later_bin).to be_kind_of(Cart)
+        expect(basic_later_chassis.later_bin.cart_items.count).to be > 0
+        expect(basic_later_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+      end
+
+      it "has the same user for its now_bin and its later_bin" do
+        expect(basic_later_chassis.now_bin.user).to eql(basic_later_chassis.later_bin.user)
+      end
+    end
+
+    context "cart_chassis :with_unpaid_reservations_cart_for_now" do
+      let(:unpaid_res_now_chassis) { build(:cart_chassis, :with_unpaid_reservations_cart_for_now)}
+
+      it "can create a basic object" do
+        expect(unpaid_res_now_chassis).to be
+        expect(unpaid_res_now_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "has a now_bin that is a cart with at least one cart_item" do
+        expect(unpaid_res_now_chassis.now_bin).to be
+        expect(unpaid_res_now_chassis.now_bin).to be_kind_of(Cart)
+        expect(unpaid_res_now_chassis.now_bin.cart_items.count).to be > 0
+        expect(unpaid_res_now_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+      end
+
+      it "has a now_bin that contains only cart_items with unpaid reservations" do
+        unpaid_res_seen_count = 0
+        unpaid_res_now_chassis.now_bin.cart_items.each do |i|
+          if i.holdable.present?  && i.holdable.kind_of?(Reservation)
+            unpaid_res_seen_count += 1 if (i.holdable.charges.blank? || !i.holdable.successful_direct_charges?)
+          end
+        end
+
+        expect(unpaid_res_seen_count).to be > 0
+        expect(unpaid_res_seen_count).to eql(unpaid_res_now_chassis.now_bin.cart_items.count)
+      end
+
+      it "has a later_bin that is an empty cart" do
+        expect(unpaid_res_now_chassis.later_bin).to be
+        expect(unpaid_res_now_chassis.later_bin).to be_kind_of(Cart)
+        expect(unpaid_res_now_chassis.later_bin.cart_items.blank?).to eql(true)
+        expect(unpaid_res_now_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+      end
+
+      it "has the same user for its now_bin and its later_bin" do
+        expect(unpaid_res_now_chassis.now_bin.user).to eql(unpaid_res_now_chassis.later_bin.user)
+      end
+    end
+
+    context "cart_chassis :with_unpaid_reservations_cart_for_later" do
+      let(:unpaid_res_later_chassis) { build(:cart_chassis, :with_unpaid_reservations_cart_for_later)}
+
+      it "can create a basic object" do
+        expect(unpaid_res_later_chassis).to be
+        expect(unpaid_res_later_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "has a now_bin that is an empty cart" do
+        expect(unpaid_res_later_chassis.now_bin).to be
+        expect(unpaid_res_later_chassis.now_bin).to be_kind_of(Cart)
+        expect(unpaid_res_later_chassis.now_bin.cart_items.count).not_to be > 0 #inverted
+        expect(unpaid_res_later_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+      end
+
+      it "has a later_bin that is cart with at least one cart_item" do
+        expect(unpaid_res_later_chassis.later_bin).to be
+        expect(unpaid_res_later_chassis.later_bin).to be_kind_of(Cart)
+        expect(unpaid_res_later_chassis.later_bin.cart_items.count).to be > 0
+        expect(unpaid_res_later_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+      end
+
+      it "has a later_bin that contains only cart_items with unpaid reservations" do
+        unpaid_res_seen_count = 0
+
+        unpaid_res_later_chassis.later_bin.cart_items.each do |i|
+          if i.holdable.present?  && i.holdable.kind_of?(Reservation)
+            unpaid_res_seen_count += 1 if (i.holdable.charges.blank? || !i.holdable.successful_direct_charges?)
+          end
+        end
+
+        expect(unpaid_res_seen_count).to be > 0
+        expect(unpaid_res_seen_count).to eql(unpaid_res_later_chassis.later_bin.cart_items.count)
+      end
+
+      it "has the same user for its now_bin and its later_bin" do
+        expect(unpaid_res_later_chassis.now_bin.user).to eql(unpaid_res_later_chassis.later_bin.user)
       end
     end
   end
@@ -123,15 +263,15 @@ RSpec.describe CartChassis, type: :model do
       pending
     end
 
-    xdescribe "#verify_avil_for_saved_items" do
+    xdescribe "#verify_avail_for_saved_items" do
       pending
     end
 
-    xdescribe "#verify_avil_for_all_items" do
+    xdescribe "#verify_avail_for_all_items" do
       pending
     end
 
-    xdescribe "#can_proceed_to_payment" do
+    xdescribe "#can_proceed_to_payment?" do
       pending
     end
 
