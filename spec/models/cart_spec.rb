@@ -143,12 +143,15 @@ RSpec.describe Cart, type: :model do
       it "is valid" do
         expect(unavailable_only_cart).to be_valid
       end
+
       it "has at least one cart item" do
         expect(unavailable_only_cart.cart_items.count).to be > 0
       end
+
       it "has no items that are marked available" do
         available_seen = false
         unavailable_only_cart.cart_items.each { |i| available_seen = true if i.available == true }
+
         expect(available_seen).to eql(false)
       end
     end
@@ -239,6 +242,7 @@ RSpec.describe Cart, type: :model do
       it "contains only items that have recieved partial payment" do
         part_pd_holdable_seen = 0
         cart_with_partially_paid.cart_items.each { |i| part_pd_holdable_seen += 1 if (ReservationPaymentHistory.new(i.holdable).any_successful_charges? && (AmountOwedForReservation.new(i.holdable).amount_owed > 0)) }
+
         expect(part_pd_holdable_seen).to eql(cart_with_partially_paid.cart_items.count)
       end
     end
@@ -257,6 +261,7 @@ RSpec.describe Cart, type: :model do
       it "contains only items that have recieved full payment" do
         fully_pd_holdable_seen = 0
         cart_with_paid.cart_items.each { |i| fully_pd_holdable_seen += 1 if (ReservationPaymentHistory.new(i.holdable).any_successful_charges? && (AmountOwedForReservation.new(i.holdable).amount_owed <= 0)) }
+
         expect(fully_pd_holdable_seen).to eql(cart_with_paid.cart_items.count)
       end
     end
@@ -274,14 +279,16 @@ RSpec.describe Cart, type: :model do
 
       it "does not contain any cart_items without holdables" do
         missing_h = false
-
         cart_with_unpaid.cart_items.each {|i| missing_h = true if i.holdable.blank?}
+
         expect(missing_h).to eql(false)
       end
 
       it "does not contain any cart_items with holdables that have charges" do
         holdable_charge_seen = false
+
         cart_with_unpaid.cart_items.each { |i| holdable_charge_seen = true if i.holdable.charges.present? }
+
         expect(holdable_charge_seen).to eql(false)
       end
     end
@@ -352,7 +359,9 @@ RSpec.describe Cart, type: :model do
 
       it "has successful direct charges that, in total, are less than the combined price of the cart_items" do
         successful_cart_charges = cart_part_pd_direct.charges.successful.present? ? cart_part_pd_direct.charges.successful.sum(:amount_cents) : 0
-        combined_cart_item_price = cart_part_pd_direct.cart_items.inject(0){|a, i| a + i.acquirable.price_cents}
+
+        combined_cart_item_price = cart_part_pd_direct.cart_items.sum(&:price_cents)
+
         expect(successful_cart_charges).to be < combined_cart_item_price
       end
     end
@@ -369,7 +378,13 @@ RSpec.describe Cart, type: :model do
       end
 
       it "has at least one cart item with a successful charge" do
-        successful_seen = cart_fully_pd_combo.cart_items.inject(0){|a, i| a = true if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?)}
+        successful_seen = false
+
+        cart_fully_pd_combo.cart_items.each do |i|
+          successful_seen = true if (i.holdable.present? && i.holdable.successful_direct_charges?)
+        end
+
+        expect(successful_seen).to eql(true)
       end
 
       it "has at least one successful direct charge" do
@@ -380,7 +395,7 @@ RSpec.describe Cart, type: :model do
         successful_cart_charges = cart_fully_pd_combo.successful_direct_charge_total
 
         successful_cart_item_charges = cart_fully_pd_combo.cart_items.sum{|i| i.holdable.present? ? i.holdable.successful_direct_charge_total : 0 }
-        #successful_cart_item_charges = cart_fully_pd_combo.cart_items.inject(0) {|a, i| a + i.holdable.charges.successful.amount_cents if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?) }
+
         combined_cart_item_price = cart_fully_pd_combo.cart_items.sum(&:price_cents)
 
         expect(successful_cart_charges + successful_cart_item_charges).to eql(combined_cart_item_price)
@@ -480,73 +495,95 @@ RSpec.describe Cart, type: :model do
     end
 
     describe "validation of 'User'" do
+      let(:starting_cart) { create(:cart)}
+      let(:validation_cart) { create(:cart)}
+
       context "when the cart's status is 'for_now' " do
         context "when the cart's scope is 'active'" do
+          before do
+            validation_cart.update_attribute(:user, starting_cart.user)
+          end
+
           it "Validates user's uniquenesss" do
-            expect(base_model).to validate_uniqueness_of(:user)
+            expect(validation_cart.user).to eql(starting_cart.user)
+            validation_cart.valid?
+            expect(validation_cart).not_to be_valid
           end
         end
 
         context "when the cart's scope is 'inactive'" do
-          let(:inactive_now_cart) {create(:cart, :inactive)}
+          before do
+            starting_cart.update_attribute(:active_to, 1.day.ago)
+            validation_cart.update_attribute(:active_to, 1.day.ago)
+            validation_cart.update_attribute(:user, starting_cart.user)
+          end
 
           it "Doesn't validate User's uniqueness" do
-            expect(inactive_now_cart).not_to validate_uniqueness_of(:user)
+            expect(validation_cart.user).to eql(starting_cart.user)
+            validation_cart.valid?
+            expect(validation_cart).to be_valid
           end
         end
       end
 
       context "when cart's status is 'for_later'" do
+        before do
+          starting_cart.update_attribute(:status, Cart::FOR_LATER)
+          validation_cart.update_attribute(:status, Cart::FOR_LATER)
+        end
+
         context "when the cart's scope is 'active'" do
-          let(:active_later_cart) {create(:cart, :for_later_bin)}
+          before do
+            validation_cart.update_attribute(:user, starting_cart.user)
+          end
 
           it "Validates User's uniqueness" do
-            expect(active_later_cart).to validate_uniqueness_of(:user)
+            expect(validation_cart.user).to eql(starting_cart.user)
+            validation_cart.valid?
+            expect(validation_cart).not_to be_valid
           end
         end
 
         context "when the cart's scope is 'inactive'" do
-          let(:inactive_now_cart) {create(:cart, :for_later_bin, :inactive)}
+          before do
+            starting_cart.update_attribute(:active_to, 1.day.ago)
+            validation_cart.update_attribute(:active_to, 1.day.ago)
+            validation_cart.update_attribute(:user, starting_cart.user)
+          end
 
           it "Doesn't validate User's uniqueness" do
-            expect(inactive_now_cart).not_to validate_uniqueness_of(:user)
+            expect(validation_cart.user).to eql(starting_cart.user)
+            validation_cart.valid?
+            expect(validation_cart).to be_valid
           end
         end
       end
 
       context "when the cart's status is 'awaiting_cheque' " do
-        context "when the cart's scope is 'active'" do
-          let(:active_cheque_cart) {create(:cart, :awaiting_cheque)}
-
-          it "Doesn't validate User's uniqueness" do
-            expect(active_cheque_cart).not_to validate_uniqueness_of(:user)
-          end
+        before do
+          starting_cart.update_attribute(:status, Cart::AWAITING_CHEQUE)
+          validation_cart.update_attribute(:status, Cart::AWAITING_CHEQUE)
+          validation_cart.update_attribute(:user, starting_cart.user)
         end
 
-        context "when the cart's scope is 'inactive'" do
-          let(:inactive_cheque_cart) {create(:cart, :awaiting_cheque, :inactive)}
-
-          it "Doesn't validate User's uniqueness" do
-            expect(inactive_cheque_cart).not_to validate_uniqueness_of(:user)
-          end
+        it "Doesn't validate User's uniqueness" do
+          expect(validation_cart.user).to eql(starting_cart.user)
+          validation_cart.valid?
+          expect(validation_cart).to be_valid
         end
       end
 
       context "when cart's status is 'paid'" do
-        context "when the cart's scope is 'active'" do
-          let(:active_paid_cart) {create(:cart, :paid)}
-
-          it "Doesn't validate User's uniqueness" do
-            expect(active_paid_cart).not_to validate_uniqueness_of(:user)
-          end
+        before do
+          starting_cart.update_attribute(:status, Cart::PAID)
+          validation_cart.update_attribute(:status, Cart::PAID)
+          validation_cart.update_attribute(:user, starting_cart.user)
         end
 
-        context "when the cart's scope is 'inactive'" do
-          let(:inactive_paid_cart) {create(:cart, :paid, :inactive)}
-
-          it "doesn't validate User's uniqueness" do
-            expect(inactive_paid_cart).not_to validate_uniqueness_of(:user)
-          end
+        it "Doesn't validate User's uniqueness" do
+          expect(validation_cart.user).to eql(starting_cart.user)
+          validation_cart.valid?
+          expect(validation_cart).to be_valid
         end
       end
     end
@@ -650,7 +687,7 @@ RSpec.describe Cart, type: :model do
         end
 
         it "returns the sum of the prices of all the CartItems' Acquirables" do
-          cart_subtotal = basic_items_cart.cart_items.inject(0) { |s, i| s + i.acquirable.price_cents }
+          cart_subtotal = basic_items_cart.cart_items.sum(&:price_cents)
           expect(cart_subtotal).to eql(basic_items_cart.subtotal_cents)
         end
       end
@@ -667,7 +704,7 @@ RSpec.describe Cart, type: :model do
         end
 
         it "returns an amount less than the sum of the CartItems' acquirables" do
-          cart_acquirable_subtotal = paid_reservation_cart.cart_items.inject(0) { |s, i| s + i.acquirable.price_cents }
+          cart_acquirable_subtotal = paid_reservation_cart.cart_items.sum(&:price_cents)
           expect(paid_reservation_cart.subtotal_cents).to be < cart_acquirable_subtotal
         end
 
@@ -676,6 +713,7 @@ RSpec.describe Cart, type: :model do
           paid_reservation_cart.cart_items.each do |i|
             cart_total_due += AmountOwedForReservation.new(i.holdable).amount_owed.cents
           end
+
           expect(paid_reservation_cart.subtotal_cents).to eql(cart_total_due)
         end
       end
@@ -692,7 +730,7 @@ RSpec.describe Cart, type: :model do
         end
 
         it "returns an amount less than the sum of the CartItems' Acquirables' prices" do
-          cart_acquirable_subtotal = part_paid_reservation_cart.cart_items.inject(0) { |s, i| s + i.acquirable.price_cents }
+          cart_acquirable_subtotal = part_paid_reservation_cart.cart_items.sum(&:price_cents)
           expect(part_paid_reservation_cart.subtotal_cents).to be < cart_acquirable_subtotal
         end
 
@@ -835,8 +873,6 @@ RSpec.describe Cart, type: :model do
 
               cart_item_comb_succ_charges = part_paid_items_cart.cart_items.sum{|i| i.holdable.present? ? i.holdable.successful_direct_charge_total : 0 }
 
-              # cart_item_comb_succ_charges = part_paid_items_cart.cart_items.holdable.charges.successful.sum(:amount_cents)
-
               expect(part_paid_items_cart.cents_owed_for_cart_less_all_credits).to eql(cart_item_comb_price - cart_item_comb_succ_charges)
             end
           end
@@ -851,8 +887,7 @@ RSpec.describe Cart, type: :model do
             end
 
             it "returns the combined price of the cart_items in cents, less the sum of the cart's successful charges" do
-              cart_item_comb_price = part_pd_dir_cart.cart_items.inject(0){|a, i| a + i.acquirable.price_cents }
-              # cart_item_successful_charges = part_pd_dir_cart.cart_items.inject(0) {|a, i| a + i.holdable.charges.successful.sum(:amount_cents) if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?)}
+              cart_item_comb_price = part_pd_dir_cart.cart_items.sum(&:price_cents)
 
               cart_successful_charges = (part_pd_dir_cart.charges.present? && part_pd_dir_cart.charges.successful.present?) ? part_pd_dir_cart.charges.sum(:amount_cents) : 0
 
@@ -870,11 +905,7 @@ RSpec.describe Cart, type: :model do
             it "returns the combined price of the cart_items in cents, less the sum of the cart's successful charges, and less the sum of the cart_items' succesful charges" do
               cart_item_comb_price = full_combo_cart.cart_items.sum(&:price_cents)
 
-
               cart_item_success_ch = full_combo_cart.cart_items.sum{|i| i.holdable.present? ? i.holdable.successful_direct_charge_total : 0 }
-
-
-              # cart_item_success_ch = full_combo_cart.cart_items.inject(0){|a, i| i.holdable.charges.successful.sum(:amount_cents) if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?)}
 
               cart_success_ch = full_combo_cart.successful_direct_charge_total
               expect(full_combo_cart.cents_owed_for_cart_less_all_credits).to eql(cart_item_comb_price - cart_success_ch - cart_item_success_ch)
@@ -962,6 +993,7 @@ RSpec.describe Cart, type: :model do
             end
           end
         end
+
         context "when the cart's status is 'awaiting_cheque'" do
           context "when the cart is active" do
             let(:active_cheque_cart) { create(:cart, :awaiting_cheque)}

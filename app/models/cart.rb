@@ -53,8 +53,11 @@ class Cart < ApplicationRecord
   # paid or awaiting_cheque carts
   # validates :user, uniqueness: { conditions: -> { active_pending } }, if: :active_and_pending
   # validates :user, uniqueness: { conditions: -> { active_processing } }, if: :active_and_processing
-  validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
-  validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
+
+  #validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
+  #validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
+  validates_uniqueness_of :user, if: :active_and_for_now
+  validates_uniqueness_of :user, if: :active_and_for_later
 
   def cart_items_raw_price_cents_combined
     #This is the price before deductions for
