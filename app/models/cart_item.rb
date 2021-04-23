@@ -251,7 +251,7 @@ class CartItem < ApplicationRecord
     # permanent condition. Once something has become unavailable, it
     # never becomes available again.   That, of course, is something
     # that could be changed easily later on, as requirements change.
-
+    
     confirmed = (
       self.available &&
       self.acquirable_matches_memo? &&
@@ -260,7 +260,7 @@ class CartItem < ApplicationRecord
       self.acquirable.valid?
     )
 
-    self.update(available: confirmed)
+    self.update_attribute(:available, confirmed)
     self.available
   end
 

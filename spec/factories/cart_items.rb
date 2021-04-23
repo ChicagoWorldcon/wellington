@@ -113,7 +113,6 @@ FactoryBot.define do
       after(:create) do |cart_item, evaluator|
         altered_price = cart_item.item_price_memo + 100
         cart_item.update_attribute(:item_price_memo, altered_price)
-        #cart_item.save
       end
     end
 

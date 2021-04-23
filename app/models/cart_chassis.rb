@@ -34,6 +34,10 @@ class CartChassis
   AVAILABILITY = "availability"
   PAYMENT_READY = "payment_ready"
 
+  NOW_BIN = "now_bin"
+  LATER_BIN = "later_bin"
+  BIN_FOR_PURCHASES = NOW_BIN
+
   def initialize(now_bin: nil, later_bin: nil)
     @now_bin = now_bin
     @later_bin = later_bin
@@ -42,42 +46,53 @@ class CartChassis
   def full_reload
     @now_bin.reload if @now_bin.present?
     @later_bin.reload if @later_bin.present?
+    return
   end
 
   def now_items
-    (@now_bin.present? && @now_bin.cart_items.present?) ? @now_bin.cart_items : []
+    (@now_bin.present? && @now_bin.cart_items.present?) ? @now_bin.cart_items.to_ary : []
   end
 
   def later_items
-    (@later_bin.present? && @later_bin.cart_items.present?) ? @later_bin.cart_items : []
+    (@later_bin.present? && @later_bin.cart_items.present?) ? @later_bin.cart_items.to_ary : []
   end
 
   def user
-    @now_bin.user || @later_bin.user || nil
+    if @now_bin && @now_bin.user
+      return @now_bin.user
+    elsif
+      @later_bin && @later_bin.user
+      return @later_bin.user
+    end
   end
 
   def purchase_bin
-    @now_bin
+    bin_chooser(BIN_FOR_PURCHASES)
   end
 
-  def purchase_bin_paid?
-    @now_bin.paid?
+  def purchase_bin_items_paid?
+    purchase_bin.items_paid? if purchase_bin.present?
   end
 
   def purchase_subtotal
-    @now_bin.subtotal_display
+    purchase_bin.subtotal_display if purchase_bin.present?
   end
 
   def purchase_subtotal_cents
-    @now_bin.subtotal_cents
+    purchase_bin.subtotal_cents if purchase_bin.present?
   end
 
   def items_to_purchase_count
-    @now_bin.cart_items.count
+    purchase_bin.cart_items.count if purchase_bin.present?
   end
 
   def blank_out_purchase_bin
-    @now_bin = nil
+    case BIN_FOR_PURCHASES
+    when NOW_BIN
+      @now_bin = nil
+    when LATER_BIN
+      @later_bin = nil
+    end
   end
 
   def move_item_to_saved(our_item)
@@ -135,12 +150,24 @@ class CartChassis
   end
 
   def verify_avail_for_all_items
-    now_avail = verify_availability_of_bin_contents(now_bin: true)
-    later_avail = verify_availability_of_bin_contents(now_bin: false)
-    {
-      verified: now_avail[:verified] && later_avail[:verified],
-      problem_items: now_avail[:problem_items].concat(later_avail[:problem_items])
-    }
+
+    no_now_items = @now_bin.blank? || now_items_count == 0
+    no_later_items = @later_bin.blank? || later_items_count == 0
+    return {verified: false, problem_items: []} if (no_now_items && no_later_items)
+
+    ver_result = {}
+    if no_now_items
+      ver_result =  verify_availability_of_bin_contents(now_bin: false)
+    elsif no_later_items
+      ver_result = verify_availability_of_bin_contents(now_bin: true)
+    else
+      now_result = verify_availability_of_bin_contents(now_bin: true)
+      later_result = verify_availability_of_bin_contents(now_bin: false)
+      ver_result[:verified] = now_result[:verified] && later_result[:verified]
+      ver_result[:problem_items] = now_result[:problem_items].concat(later_result[:problem_items])
+    end
+
+    ver_result
   end
 
   def can_proceed_to_payment?
@@ -148,6 +175,8 @@ class CartChassis
   end
 
   def payment_by_check_allowed?
+    # Placeholder-- there may be policies or practicalities
+    # that we need to encode.
     true
   end
 
@@ -157,62 +186,76 @@ class CartChassis
     @now_bin.present? && @later_bin.present?
   end
 
+  def supply_any_bin_missing
+    @now_bin ||= supply_missing_bin(NOW_BIN)
+    @later_bin ||= supply_missing_bin(LATER_BIN)
+  end
+
   def verify_availability_of_bin_contents(now_bin:)
     bin_verifier(now_bin: now_bin, verification: AVAILABILITY)
   end
 
   def verify_bin_ready_for_payment
-    bin_verifier(now_bin: true, verification: PAYMENT_READY)
+    bin_verifier(now_bin: purchase_bin == @now_bin, verification: PAYMENT_READY)
   end
 
   def bin_verifier(now_bin:, verification: )
+    #TODO: Move this to Cart.  It makes more sense there, OO-wise
     target_bin = now_bin ? @now_bin : @later_bin
+
+    return {verified: false, problem_items: []} unless target_bin.present? && target_bin.cart_items.present?
+
 
     case verification
     when AVAILABILITY
-      return {verified: true, problem_items: []} unless target_bin && target_bin.cart_items.present?
       v_lambda = -> (item) { item.item_still_available? }
     when PAYMENT_READY
-      return {verified: false, problem_items: []} unless target_bin && target_bin.cart_items.present?
       v_lambda = -> (item) { item.item_ready_for_payment? }
     end
 
     prob_items = []
     target_bin.cart_items.each do |i|
-      prob_items << i.quick_description if !v_lambda.call(i)
+      if !v_lambda.call(i)
+        prob_items << i.quick_description
+      end
     end
-    {verified: prob_items.blank?, problem_items: prob_items}
+
+    {verified: prob_items.blank?, problem_items: prob_items
+    }
   end
 
   def move_entire_bin_contents(moving_to_saved:)
+    supply_any_bin_missing
     return -1 unless all_bins_present?
-
     target_bin = moving_to_saved ? @later_bin : @now_bin
     origin_bin = moving_to_saved ? @now_bin : @later_bin
 
     return 0 unless origin_bin.cart_items.present?
+    moved = 0
     origin_bin.cart_items.each do |i|
       i.cart = target_bin
-      i.later = (i.cart == @later_bin) ? true : false
       i.save
+      moved += 1
     end
 
     self.full_reload
-    return origin_bin.cart_items.count
+    return moved
   end
 
   def move_specific_cart_item(item:, moving_to_saved:)
+    supply_any_bin_missing
     return unless all_bins_present?
+    return unless confirm_original_chassis_for_item(item)
     destination_bin = moving_to_saved ? @later_bin : @now_bin
     item.cart = destination_bin
-    item.later = (item.cart == @later_bin) ? true : false
     item.save
+    self.full_reload
     item.cart == destination_bin
   end
 
   def destroy_specific_bin_contents(now_bin: true)
     target_bin = now_bin ? @now_bin : @later_bin
-    return unless target_bin.present?
+    return -1 unless target_bin.present?
     return 0 if target_bin.cart_items.blank?
     target_bin.cart_items.each {|i| i.destroy}
     target_bin.reload
@@ -222,5 +265,41 @@ class CartChassis
   def locate_specific_cart_item(user:, item_id:)
     locator = CartItemLocator.new(our_user: user, our_item_id: item_id)
     locator.locate_current_cart_item_for_user
+  end
+
+  def confirm_original_chassis_for_item(item)
+    now_bin_item = (item.cart == @now_bin ? true : false )
+    later_bin_item = (item.cart == @later_bin ? true : false )
+    now_bin_item || later_bin_item
+  end
+
+  def bin_chooser(choice_str)
+    chooser = {
+      NOW_BIN => @now_bin,
+      LATER_BIN => @later_bin
+    }
+
+    chooser[choice_str]
+  end
+
+  def status_chooser(choice_str)
+    chooser = {
+      NOW_BIN => Cart::FOR_NOW,
+      LATER_BIN => Cart::FOR_LATER
+    }
+
+    chooser[choice_str]
+  end
+
+  def supply_missing_bin(missing_bin_str)
+    missing_bin = nil
+    if bin_chooser(missing_bin_str).nil? && self.user.present?
+      missing_bin_status = status_chooser(missing_bin_str)
+      missing_bin = Cart.active.find_by(user: self.user, status: missing_bin_status)
+      unless missing_bin.present? && missing_bin.kind_of?(Cart)
+        missing_bin = Cart.create(status: missing_bin_status, user: self.user)
+      end
+    end
+    missing_bin
   end
 end

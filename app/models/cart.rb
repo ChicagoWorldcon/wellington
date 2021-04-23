@@ -54,10 +54,10 @@ class Cart < ApplicationRecord
   # validates :user, uniqueness: { conditions: -> { active_pending } }, if: :active_and_pending
   # validates :user, uniqueness: { conditions: -> { active_processing } }, if: :active_and_processing
 
-  #validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
-  #validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
-  validates_uniqueness_of :user, if: :active_and_for_now
-  validates_uniqueness_of :user, if: :active_and_for_later
+  validates :user, uniqueness: { conditions: -> { active_for_later } }, if: :active_and_for_later
+  validates :user, uniqueness: { conditions: -> { active_for_now } }, if: :active_and_for_now
+
+  before_destroy :check_for_succesful_charges
 
   def cart_items_raw_price_cents_combined
     #This is the price before deductions for
@@ -90,5 +90,10 @@ class Cart < ApplicationRecord
 
   def active_and_for_now
     self.active? && self.status == FOR_NOW
+  end
+
+  def check_for_succesful_direct_charges
+    successes_count = self.charges.inject(0){|a, c| a + ((c.successful? || c.pending?) ? 1 : 0) }
+    throw(:abort) if successes_count > 0
   end
 end
