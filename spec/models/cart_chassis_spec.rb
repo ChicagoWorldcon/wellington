@@ -152,7 +152,7 @@ RSpec.describe CartChassis, type: :model do
       it "has a now_bin that is an empty cart" do
         expect(unpaid_res_later_chassis.now_bin).to be
         expect(unpaid_res_later_chassis.now_bin).to be_kind_of(Cart)
-        expect(unpaid_res_later_chassis.now_bin.cart_items.count).not_to be > 0 #inverted
+        expect(unpaid_res_later_chassis.now_bin.cart_items.count).to eql(0)
         expect(unpaid_res_later_chassis.now_bin.status).to eql(Cart::FOR_NOW)
       end
 
@@ -191,7 +191,7 @@ RSpec.describe CartChassis, type: :model do
 
       it "has a now_bin that is a cart with at least one cart_item" do
         expect(part_paid_now_chassis.now_bin).to be
-        expect(upart_paid_now_chassis.now_bin).to be_kind_of(Cart)
+        expect(part_paid_now_chassis.now_bin).to be_kind_of(Cart)
         expect(part_paid_now_chassis.now_bin.cart_items.count).to be > 0
         expect(part_paid_now_chassis.now_bin.status).to eql(Cart::FOR_NOW)
       end
@@ -206,8 +206,8 @@ RSpec.describe CartChassis, type: :model do
           end
         end
 
-        expect(part_paid_res_seen_count).to be < 0 #inverted
-        expect(part_paid_res_seen_count).to eql(part_paid_now_chassis.now_bin.cart_items.count + 1000) #perturbed
+        expect(part_paid_res_seen_count).to be > 0
+        expect(part_paid_res_seen_count).to eql(part_paid_now_chassis.now_bin.cart_items.count)
       end
 
       it "has the same user for its now_bin and its later_bin" do
@@ -215,7 +215,11 @@ RSpec.describe CartChassis, type: :model do
       end
 
       it "has a later bin that contains no items" do
-        expect(part_paid_now_chassis.later_bin.cart_items.empty?).to eql("trooo") #perturbed
+
+        expect(part_paid_now_chassis.later_bin).to be_kind_of(Cart)
+        expect(part_paid_now_chassis.later_bin.status).not_to eql(Cart::FOR_NOW) #Inverted
+
+        expect(part_paid_now_chassis.later_bin.cart_items.empty?).to eql(true)
       end
     end
 
@@ -231,21 +235,21 @@ RSpec.describe CartChassis, type: :model do
         expect(part_paid_later_chassis.later_bin).to be
         expect(part_paid_later_chassis.later_bin).to be_kind_of(Cart)
         expect(part_paid_later_chassis.later_bin.cart_items.count).to be > 0
-        expect(part_paid_now_chassis.later_bin.status).to eql(Cart::FOR_NOW)
+        expect(part_paid_later_chassis.later_bin.status).to eql(Cart::FOR_LATER)
       end
 
       it "has a now_bin that contains only cart_items with partially paid reservations" do
         part_paid_res_seen_count = 0
 
-        part_paid_now_chassis.later_bin.cart_items.each do |i|
+        part_paid_later_chassis.later_bin.cart_items.each do |i|
           if i.holdable.present?  && i.holdable.kind_of?(Reservation)
             cents_owed =  AmountOwedForReservation.new(i.holdable).amount_owed.cents
             part_paid_res_seen_count += 1 if (cents_owed > 0 && cents_owed < i.price_cents)
           end
         end
 
-        expect(part_paid_res_seen_count).to be < 0 #inverted
-        expect(part_paid_res_seen_count).to eql(part_paid_now_chassis.later_bin.cart_items.count + 1000) #perturbed
+        expect(part_paid_res_seen_count).to be > 0
+        expect(part_paid_res_seen_count).to eql(part_paid_later_chassis.later_bin.cart_items.count)
       end
 
       it "has the same user for its now_bin and its later_bin" do
@@ -253,10 +257,11 @@ RSpec.describe CartChassis, type: :model do
       end
 
       it "has a now_bin that contains no items" do
-        expect(part_paid_later_chassis.now_bin.cart_items.empty?).to eql("trooo") #perturbed
+        expect(part_paid_later_chassis.now_bin).to be_kind_of(Cart)
+        expect(part_paid_later_chassis.now_bin.status).to eql(Cart::FOR_NOW)
+        expect(part_paid_later_chassis.now_bin.cart_items.empty?).to eql(true)
       end
     end
-
 
     context "cart_chassis :with_paid_reservations_cart_for_now " do
       let(:paid_now_chassis) { build(:cart_chassis, :with_paid_reservations_cart_for_now)}
@@ -269,34 +274,36 @@ RSpec.describe CartChassis, type: :model do
       it "has a now_bin that is a cart with at least one cart_item" do
         expect(paid_now_chassis.now_bin).to be
         expect(paid_now_chassis.now_bin).to be_kind_of(Cart)
-        expect(paid_now_chassis.noqw_bin.cart_items.count).to be > 0
+        expect(paid_now_chassis.now_bin.cart_items.count).to be > 0
         expect(paid_now_chassis.now_bin.status).to eql(Cart::FOR_NOW)
       end
 
-      it "has a now_bin that contains only cart_items with partially paid reservations" do
+      it "has a now_bin that contains only cart_items with paid reservations" do
         paid_res_seen_count = 0
 
-        part_paid_now_chassis.later_bin.cart_items.each do |i|
+        paid_now_chassis.now_bin.cart_items.each do |i|
           if i.holdable.present?  && i.holdable.kind_of?(Reservation)
             cents_owed =  AmountOwedForReservation.new(i.holdable).amount_owed.cents
             paid_res_seen_count += 1 if (cents_owed <= 0 && i.holdable.successful_direct_charges?)
           end
         end
 
-        expect(paid_res_seen_count).to be < 0 #inverted
-        expect(paid_res_seen_count).to eql(part_paid_now_chassis.now_bin.cart_items.count + 1000) #perturbed
+        expect(paid_res_seen_count).to be > 0
+        expect(paid_res_seen_count).to eql(paid_now_chassis.now_bin.cart_items.count)
       end
 
       it "has the same user for its now_bin and its later_bin" do
-        expect(paid_later_chassis.now_bin.user).not_to eql(paid_later_chassis.later_bin.user #inverted
+        expect(paid_now_chassis.now_bin.user).to eql(paid_now_chassis.later_bin.user)
       end
 
-      it "has a now_bin that contains no items" do
-        expect(paid_later_chassis.now_bin.cart_items.empty?).to eql("trooo") #perturbed
+      it "has a later_bin that contains no items" do
+        expect(paid_now_chassis.later_bin).to be_kind_of(Cart)
+        expect(paid_now_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+        expect(paid_now_chassis.later_bin.cart_items.empty?).to eql(true)
       end
     end
 
-    xcontext "cart_chassis :with_paid_reservations_cart_for_later " do
+    context "cart_chassis :with_paid_reservations_cart_for_later " do
       let(:paid_res_later_chassis) { build(:cart_chassis, :with_paid_reservations_cart_for_later)}
 
       it "can create a basic object" do
@@ -304,14 +311,14 @@ RSpec.describe CartChassis, type: :model do
         expect(paid_res_later_chassis).to be_kind_of(CartChassis)
       end
 
-      it "has a now_bin that is a cart with at least one cart_item" do
+      it "has a later_bin that is a cart with at least one cart_item" do
         expect(paid_res_later_chassis.later_bin).to be
         expect(paid_res_later_chassis.later_bin).to be_kind_of(Cart)
         expect(paid_res_later_chassis.later_bin.cart_items.count).to be > 0
         expect(paid_res_later_chassis.later_bin.status).to eql(Cart::FOR_LATER)
       end
 
-      it "has a now_bin that contains only cart_items with fully paid reservations" do
+      it "has a later_bin that contains only cart_items with fully paid reservations" do
         paid_res_seen_count = 0
 
         paid_res_later_chassis.later_bin.cart_items.each do |i|
@@ -321,16 +328,54 @@ RSpec.describe CartChassis, type: :model do
           end
         end
 
-        expect(paid_res_seen_count).to be < 0 #inverted
-        expect(paid_res_seen_count).to eql(paid_res_seen_chassis.now_bin.cart_items.count + 1000) #perturbed
+        expect(paid_res_seen_count).to be > 0
+        expect(paid_res_seen_count).to eql(paid_res_later_chassis.later_bin.cart_items.count)
       end
 
       it "has the same user for its now_bin and its later_bin" do
-        expect(paid_res_seen_chassis.now_bin.user).not_to eql(paid_res_seen_chassis.later_bin.user #inverted
+        expect(paid_res_later_chassis.now_bin.user).to eql(paid_res_later_chassis.later_bin.user)
       end
 
       it "has a now_bin that contains no items" do
-        expect(paid_res_seen_chassis.now_bin.cart_items.empty?).to eql("trooo") #perturbed
+        expect(paid_res_later_chassis.now_bin.cart_items.empty?).to eql(true)
+      end
+    end
+
+    context "cart_chassis: :with_nilled_now_bin" do
+      let(:now_nilled_chassis) { build(:cart_chassis, :with_nilled_for_now_bin)}
+
+      it "can create a basic object" do
+        expect(now_nilled_chassis).to be
+        expect(now_nilled_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "does not have a now_bin" do
+        expect(now_nilled_chassis.now_bin).to be_nil
+      end
+
+      it "has a later_bin that contains no items" do
+        expect(now_nilled_chassis.later_bin.present?).to eql(true)
+        expect(now_nilled_chassis.later_bin).to be_kind_of(Cart)
+        expect(now_nilled_chassis.later_bin.status).to eql(Cart::FOR_LATER)
+        expect(now_nilled_chassis.later_bin.cart_items.present?).to eql(false)
+      end
+    end
+
+    context "cart_chassis: :with_nilled_later_bin" do
+      let(:later_nilled_chassis) { build(:cart_chassis, :with_nilled_for_later_bin)}
+
+      it "can create a basic object" do
+        expect(later_nilled_chassis).to be
+        expect(later_nilled_chassis).to be_kind_of(CartChassis)
+      end
+
+      it "does not have a later_bin" do
+        expect(later_nilled_chassis.later_bin).to be_nil
+      end
+
+      it "has a now_bin that contains no items" do
+        expect(later_nilled_chassis.now_bin.present?).to eql(true)
+        expect(later_nilled_chassis.now_bin.cart_items.present?).to eql(false)
       end
     end
   end
@@ -355,7 +400,7 @@ RSpec.describe CartChassis, type: :model do
 
     let(:paid_reservations_chassis) { create(:cart_chassis, :with_paid_reservations_cart_for_now, :with_paid_reservations_cart_for_later)}
 
-    let(:nilled_for_now_chassis) {build(:cart_chassis, :with_nilled_now_bin, :with_basic_items_cart_for_later)}
+    let(:nilled_for_now_chassis) {build(:cart_chassis, :with_nilled_for_now_bin, :with_basic_items_cart_for_later)}
 
 
     describe "#full_reload" do
@@ -889,7 +934,6 @@ RSpec.describe CartChassis, type: :model do
           end
 
           context "when there is no active cart for the user with the status 'for_now' in memory" do
-
 
             before do
               @nilled_f_n_init_laters_ct = nilled_for_now_chassis.later_items.count

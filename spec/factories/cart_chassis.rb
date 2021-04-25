@@ -81,7 +81,7 @@ FactoryBot.define do
       end
     end
 
-    trait :with_nilled_now_bin do
+    trait :with_nilled_for_now_bin do
       transient do
         now_bin { nil }
       end
