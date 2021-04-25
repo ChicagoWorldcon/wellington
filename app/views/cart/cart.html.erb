@@ -58,7 +58,7 @@
         <div class="row d-inline-flex align-items-stretch">
           <% @later_bin.each do |later_item| %>
             <div class="row row-cols-auto mb-3 ml-2" style="background-color:darkslategray">
-              <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item)) %>
+              <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item, in_later_bin: true)) %>
             </div>
           <% end %>
         </div>

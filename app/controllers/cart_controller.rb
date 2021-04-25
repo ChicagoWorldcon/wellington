@@ -35,21 +35,21 @@ class CartController < ApplicationController
   end
 
   def add_reservation_to_cart
-    new_cart_item = CartServices::ResolveCartItem.new(
+    new_cart_item_result = CartServices::ResolveCartItem.new(
       full_params: params,
       bin_for_now: @cart_chassis.now_bin,
-      item_kind: MEMBERSHIP,
-      flash_obj: flash
+      item_kind: MEMBERSHIP
     ).call
 
-    if new_cart_item.present? && new_cart_item.save
+    if new_cart_item_result[:cart_item].present? && new_cart_item_result[:cart_item].save
       flash[:status] = :success
-      flash[:notice] = "Membership successfully added to cart."
+      flash[:notice] = " #{new_cart_item_result[:cart_item].item_display_name} successfully added to your cart."
       prep_bins
       redirect_to cart_path and return
     end
 
-    flash[:messages] = new_cart_item.errors.messages
+    flash[:alert] = new_cart_item_result[:error]
+
     prep_bins
     redirect_back(fallback_location: root_path)
   end
@@ -75,7 +75,7 @@ class CartController < ApplicationController
       flash[:notice] = "Your cart is now empty."
     else
       flash[:status] = :failure
-      flash[:notice] = "Your cart could not be fully emptied."
+      flash[:alert] = "Your cart could not be fully emptied."
     end
 
     prep_bins

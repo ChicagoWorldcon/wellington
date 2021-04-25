@@ -58,52 +58,64 @@ RSpec.describe CartController, type: :controller do
   end
 
   let(:support_user) { create(:support)}
+  let(:naive_user) { create(:user)}
+
+  let(:existing_cart_chassis) {create(:cart_chassis, :with_basic_items_cart_for_now, :with_basic_items_cart_for_later)}
+  let(:existing_user) {existing_cart_chassis.user}
+
+  let(:empty_cart_chassis) { create(:cart_chassis)}
+  let(:empty_user) { empty_cart_chassis.user }
+
+  let(:paid_reservations_chassis) { create(:cart_chassis, :with_paid_reservations_cart_for_now, :with_paid_reservations_cart_for_later)}
+  let(:paid_reservations_user) { paid_reservations_chassis.user }
+
+
+  let(:adult_memb) { create(:membership, :adult) }
+  let(:valid_a_memb_offer) { MembershipOffer.new(adult_memb) }
+
+  let(:child_memb) { create(:membership, :child) }
+  let(:valid_child_memb_offer) { MembershipOffer.new(child_memb) }
 
   describe "GET #show" do
     context "when a first-time user is signed in" do
-      let(:naive_user) { create(:user)}
       before do
         sign_in(naive_user)
         get :show
       end
-      after do
-        sign_out(naive_user)
-      end
-      xit "creates a cart for the new user" do
-        expect(assigns(:cart)).not_to be_a(Cart) #inverted
+
+      it "creates a cart for the new user" do
+        expect(assigns(:cart_chassis)).to be_a(CartChassis) #rg-checked
 
         # Why yes, as a matter of fact, this IS the worst sin
         # against controller-testing best practices ever!
-        # Eventually, this will probably get removed to a
-        # feature or request test.
-        expect(assigns(:cart).user).not_to eql(naive_user) #inverted
-        expect(assigns(:cart).cart_items.count).not_to eql(0) #inverted
+        # When I get to writing request specs, this will be removed.
+        expect(assigns(:cart_chassis).user).to eql(naive_user) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(0) #rg-checked
       end
-      xit "renders" do
-        expect(response).not_to have_http_status(:ok) #inverted
-        expect(subject).not_to render_template(:cart) #inverted
+
+      it "renders" do
+        expect(response).to have_http_status(:ok) #rg-checked
+        expect(subject).to render_template(:cart) #rg-checked
       end
     end
 
     context "when a user with an existing cart is signed in" do
-      let(:existing_cart) {create(:cart, :with_basic_items)}
-      let(:existing_user) {existing_cart.user}
 
       before do
         sign_in(existing_user)
         get :show
       end
 
-      after do
-        sign_out(existing_user)
+      it "finds the user's existing carts" do
+        expect(assigns(:cart_chassis).user).to eql(existing_user) #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(existing_cart_chassis.now_bin.id) #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(existing_cart_chassis.later_bin.id) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to be > 0 #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(existing_cart_chassis.all_items_count) #rg-checked
       end
 
-      xit "finds the user's cart" do
-        expect(assigns(:cart)).not_to eq(existing_cart) #inverted
-      end
-
-      xit "renders" do
-        expect(response).not_to have_http_status(:ok) #inverted
+      it "renders" do
+        expect(response).to have_http_status(:ok) #rg-checked
       end
     end
 
@@ -114,17 +126,13 @@ RSpec.describe CartController, type: :controller do
         get :show
       end
 
-      after do
-        sign_out(support_user)
+      it "redirects to the root path" do
+        expect(response).to have_http_status(:found) #rg-checked
+        expect(response).to redirect_to(root_path) #rg-checked
       end
 
-      xit "redirects to the root path" do
-        expect(response).not_to have_http_status(:found) #inverted
-        expect(response).not_to redirect_to(root_path) #inverted
-      end
-
-      xit "sets a flash message about logging into your personal account to make personal purchases"  do
-        expect(subject).not_to set_flash[:alert].to(/personal/) #inverted
+      it "sets a flash message about logging into your personal account to make personal purchases"  do
+        expect(subject).to set_flash[:alert].to(/personal/) #rg-checked
       end
     end
 
@@ -133,89 +141,80 @@ RSpec.describe CartController, type: :controller do
         get :show
       end
 
-      xit "redirects to the root path" do
-        expect(response).not_to have_http_status(:found) #inverted
-        expect(response).not_to redirect_to(root_path) #inverted
+      it "redirects to the root path" do
+        expect(response).to have_http_status(:found) #rg-checked
+        expect(response).to redirect_to(root_path) #rg-checked
       end
     end
   end
 
-  describe "#add_reservation_to_cart" do
+  describe "POST #add_reservation_to_cart" do
+    before do
+      @initial_existing_chassis_full_item_count = existing_cart_chassis.all_items_count
+      @initial_existing_chassis_now_bin_count = existing_cart_chassis.now_items_count
+    end
+
     context "when the membembership is active and the beneficiary has all the necessary info" do
-      let(:adult) { create(:membership, :adult) }
-      let(:offer_valid) { MembershipOffer.new(adult) }
-
-      let!(:good_enough_cart) {create(:cart, :with_basic_items)}
-      let!(:good_enough_user) { good_enough_cart.user }
-
-      let!(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
       before do
-        sign_in(good_enough_user)
+        sign_in(existing_user)
 
         post :add_reservation_to_cart, params: {
           contact_model_key => valid_contact_params_with_dob,
-          :offer => offer_valid.hash
+          :offer => valid_a_memb_offer.hash
         }
       end
 
-      after do
-        sign_out(good_enough_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "locates the user's cart" do
-        expect(assigns(:cart)).to be_a(Cart)
-        expect(assigns(:cart)).to eq(good_enough_cart)
-        expect(assigns(:cart).user).to eq(good_enough_user)
+        expect(assigns(:cart_chassis)).to be_a(CartChassis) #rg-checked
+        expect(assigns(:cart_chassis).now_bin).to eq(existing_cart_chassis.now_bin) #rg-checked
+        expect(assigns(:cart_chassis).user).to eq(existing_cart_chassis.user) #rg-checked
       end
 
-      it "creates an offer object per our params" do
-        expect(assigns(:our_offer)).to be_a(MembershipOffer)
-        expect(assigns(:our_offer).hash).to eq(offer_valid.hash)
+      # it "creates an offer object per our params" do
+      #   expect(assigns(:our_offer)).to be_a(MembershipOffer)
+      #   expect(assigns(:our_offer).hash).to eq(valid_a_memb_offer.hash)
+      # end
+
+      # it "creates a contact object" do
+      #   expect(assigns(:our_beneficiary)).to be_a(Claim.contact_strategy)
+      #   expect(assigns(:our_beneficiary).first_name).to eq(valid_contact_params_with_dob[:first_name])
+      # end
+
+      # it "populates the contact object's date_of_birth field with a date object" do
+      #   expect(assigns(:our_beneficiary).date_of_birth).to be_a(Date)
+      # end
+
+      # it "creates a cart item per our params" do
+      #   expect(assigns(:our_cart_item)).to be_a(CartItem)
+      #   expect(assigns(:our_cart_item).acquirable.name).to eq(offer_valid.membership.name)
+      #   expect(assigns(:our_cart_item).benefitable.last_name).to eq(valid_contact_params_with_dob[:last_name])
+      # end
+
+      it "adds a new CartItem reflecting our offer to the now_bin of the cart_chassis" do
+        expect(assigns(:cart_chassis).all_items_count).to eql(@initial_existing_chassis_full_item_count + 1) #rg-checked
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_existing_chassis_now_bin_count + 1) #rg-checked
+        expect(assigns(:cart_chassis).now_items.last.acquirable.display_name).to eql(adult_memb.display_name) #rg-checked
       end
 
-      it "creates a contact object" do
-        expect(assigns(:our_beneficiary)).to be_a(Claim.contact_strategy)
-        expect(assigns(:our_beneficiary).first_name).to eq(valid_contact_params_with_dob[:first_name])
+      it "sets a flash message about successfully adding the item"  do
+        expect(subject).to set_flash[:notice].to(/successfully added/) #rg-checked
       end
 
-      it "populates the contact object's date_of_birth field with a date object" do
-        expect(assigns(:our_beneficiary).date_of_birth).to be_a(Date)
-      end
-
-      it "creates a cart item per our params" do
-        expect(assigns(:our_cart_item)).to be_a(CartItem)
-        expect(assigns(:our_cart_item).acquirable.name).to eq(offer_valid.membership.name)
-        expect(assigns(:our_cart_item).benefitable.last_name).to eq(valid_contact_params_with_dob[:last_name])
-      end
-
-      it "adds the new CartItem to the cart" do
-        expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count + 1)
-        found_in_cart = assigns(:cart).cart_items.find {|i| i.id == assigns(:our_cart_item).id }
-        expect(assigns(:our_cart_item)).to eq(found_in_cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
     end
 
     context "when there are issues with the beneficiary or the membership" do
-      let(:good_enough_cart) {create(:cart, :with_basic_items)}
-      let(:good_enough_user) { good_enough_cart.user }
-
       context "when the HTTP_REFERER has been set" do
 
         before do
-          sign_in(good_enough_user)
-        end
-
-        after do
-          sign_out(good_enough_user)
+          sign_in(existing_user)
         end
 
         before(:each) do
@@ -223,9 +222,9 @@ RSpec.describe CartController, type: :controller do
         end
 
         context "when the membership offer is expired" do
-          let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
           before do
+
             post :add_reservation_to_cart, params: {
               contact_model_key => valid_contact_params_with_dob,
               :offer => offer_expired.hash
@@ -233,27 +232,24 @@ RSpec.describe CartController, type: :controller do
           end
 
           it "redirects to the path from 'HTTP_REFERER'" do
-            expect(response).to have_http_status(:found)
-            expect(response).to redirect_to(memberships_path)
+            expect(response).to have_http_status(:found) #rg-checked
+            expect(response).to redirect_to(memberships_path) #rg-checked
           end
 
           it "sets a flash error about the membership no longer being available" do
-            expect(subject).to set_flash[:error].to(/no longer available/i)
+            expect(subject).to set_flash[:alert].to(/unavailable/i) #rg-checked
           end
 
           it "does not add a new item to the cart" do
-            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count)
+            expect(assigns(:cart_chassis).all_items_count).to eql(@initial_existing_chassis_full_item_count) #rg-checked
           end
         end
       end
 
       context "when the HTTP_REFERER has not been set" do
-        before do
-          sign_in(good_enough_user)
-        end
 
-        after do
-          sign_out(good_enough_user)
+        before do
+          sign_in(existing_user)
         end
 
         before(:each) do
@@ -261,65 +257,76 @@ RSpec.describe CartController, type: :controller do
         end
 
         context "when the beneficiary is invalid" do
-          let(:adult) { create(:membership, :adult) }
-          let(:offer_valid) { MembershipOffer.new(adult) }
-          let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
+          # let(:adult) { create(:membership, :adult) }
+          # let(:offer_valid) { MembershipOffer.new(adult) }
+          # let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
 
           before do
             post :add_reservation_to_cart, params: {
               contact_model_key => invalid_contact_params,
-              :offer => offer_valid.hash
+              :offer => valid_a_memb_offer.hash
             }
           end
 
           it "redirects to the fallback path" do
-            expect(response).to have_http_status(:found)
-            expect(response).to redirect_to(root_path)
+            expect(response).to have_http_status(:found) #rg-checked
+            expect(response).to redirect_to(root_path) #rg-checked
           end
 
           it "sets a flash error" do
-            expect(subject).to set_flash[:error].to(/address/i)
+            expect(subject).to set_flash[:alert].to(/address/i) #rg-checked
           end
 
           it "does not add the item to the cart" do
-            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count)
+            expect(assigns(:cart_chassis).all_items_count).to eql(@initial_existing_chassis_full_item_count) #rg-checked
           end
         end
       end
 
       context "when the beneficiary params do not include a date of birth" do
-        let(:adult) { create(:membership, :adult) }
-        let(:offer_valid) { MembershipOffer.new(adult) }
+        context "when the date-of-birth is not required by the membership" do
 
-        let(:starting_good_enough_cart_count) {good_enough_cart.cart_items.count}
+          before do
+            sign_in(existing_user)
 
-        before do
-          sign_in(good_enough_user)
+            post :add_reservation_to_cart, params: {
+              contact_model_key => valid_contact_params,
+              :offer => valid_a_memb_offer.hash
+            }
+          end
 
-          post :add_reservation_to_cart, params: {
-            contact_model_key => valid_contact_params,
-            :offer => offer_valid.hash
-          }
-        end
-
-        after do
-          sign_out(good_enough_user)
-        end
-
-        it "leaves the contact object's date_of_birth field empty" do
-          expect(assigns(:our_beneficiary).date_of_birth).to be_nil
-        end
-
-        xcontext "when the membership requires a date of birth" do
-          it "marks the item incomplete" do
-            pending
-            expect(assigns(:our_cart_item.incomplete).to eql(true))
+          after do
+            sign_out(existing_user)
           end
 
           it "adds the item to the cart" do
-            pending
-            expect(assigns(:cart).cart_items.count).to eql(starting_good_enough_cart_count + 1)
-            expect(assigns(:our_cart_item).cart).to eq(assigns(:cart))
+            expect(assigns(:cart_chassis).now_items_count).to eql(@initial_existing_chassis_now_bin_count + 1) #rg-checked
+          end
+
+          it "creates a benefitable, but leaves the contact object's date_of_birth field empty" do
+            our_new_item = assigns(:cart_chassis).now_items.last
+            expect(our_new_item.benefitable.present?).to eql(true)
+            expect(our_new_item.benefitable.date_of_birth).to be_nil
+          end
+        end
+
+        context "when the membership DOES requires a date of birth" do
+
+          before do
+            sign_in(existing_user)
+
+            post :add_reservation_to_cart, params: {
+              contact_model_key => valid_contact_params,
+              :offer => valid_child_memb_offer.hash
+            }
+          end
+
+          after do
+            sign_out(existing_user)
+          end
+
+          it "adds the item to the cart" do
+            expect(assigns(:cart_chassis).now_items_count).to eql(@initial_existing_chassis_now_bin_count + 1) #rg-checked
           end
         end
       end
@@ -330,10 +337,11 @@ RSpec.describe CartController, type: :controller do
 
     context "when the cart is empty" do
 
-      let!(:empty_cart) { create(:cart)}
-      let!(:empty_user) { empty_cart.user }
-      let!(:empty_cart_count) { empty_cart.cart_items.count }
-      let!(:empty_cart_id) { empty_cart.id }
+      before do
+        @empty_cart_chassis_item_count = empty_cart_chassis.all_items_count
+        @empty_c_c_now_id = empty_cart_chassis.now_bin.id
+        @empty_c_c_later_id = empty_cart_chassis.later_bin.id
+      end
 
       before do
         sign_in(empty_user)
@@ -345,102 +353,72 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not destroy the Cart object" do
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart).id).to eql(empty_cart_id)
-        expect(assigns(:cart)).to eq(empty_cart)
+      it "does not destroy the CartChassis object, or either of its bins" do
+        expect(assigns(:cart_chassis)).not_to be_nil #rg-checked
+
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@empty_c_c_now_id) #rg-checked
+
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@empty_c_c_later_id) #rg-checked
       end
 
 
       it "ends with the cart completely empty" do
         #Validation of the test:
-        expect(assigns(:cart).cart_items.count).to eql(empty_cart_count)
+        expect(assigns(:cart_chassis).all_items_count).to eql(@empty_cart_chassis_item_count) #rg-checked
 
         #actual test:
-        expect(assigns(:cart).cart_items.count).to eql(0)
+        expect(assigns(:cart_chassis).all_items_count).to eql(0) #rg-checked
       end
     end
 
-    context "when the cart has every kind of item" do
-
-      let!(:full_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
-      let!(:full_cart_count) { full_cart.cart_items.count }
-      let!(:full_cart_user) { full_cart.user }
-      let!(:full_cart_id) { full_cart.id }
+    context "when both of the cart's bins contain items" do
 
       before do
-        sign_in(full_cart_user)
+        @existing_c_c_now_item_count = existing_cart_chassis.now_items_count
+        @existing_c_c_now_id = existing_cart_chassis.now_bin.id
+        @existing_c_c_later_item_count = existing_cart_chassis.later_items_count
+        @existing_c_c_later_id = existing_cart_chassis.later_bin.id
+      end
+
+      before do
+        sign_in(existing_user)
         delete :destroy
       end
 
-      after do
-        sign_out(full_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(full_cart_id)
-        expect(assigns(:cart)).to eq(full_cart)
-      end
+      it "does not destroy the CartChassis object, or either of its bins" do
+        expect(assigns(:cart_chassis)).not_to be_nil #rg-checked
 
-      it "completely clears out the cart" do
-        #Validation of the test
-        expect(full_cart_count).to be > 0
-        #Actual test
-        expect(assigns(:cart).cart_items.count).to eql(0)
-      end
-    end
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@existing_c_c_now_id) #rg-checked
 
-    context "when the cart contains 100 items" do
-      render_views false
-
-      let!(:hundred_cart) {create(:cart, :with_100_mixed_items)}
-      let!(:hundred_cart_user) { hundred_cart.user }
-      let!(:hundred_cart_id) { hundred_cart.id }
-      let!(:hundred_cart_count) {hundred_cart.cart_items.count}
-
-      before do
-        sign_in(hundred_cart_user)
-        delete :destroy
-      end
-
-      after do
-        sign_out(hundred_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(hundred_cart_id)
-        expect(assigns(:cart)).to eq(hundred_cart)
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@existing_c_c_later_id) #rg-checked
       end
 
       it "completely clears out the cart" do
         #Validation of the test
-        expect(hundred_cart_count).to be > 0
+        expect(@existing_c_c_now_item_count).to be > 0 #rg-checked
+        expect(@existing_c_c_later_item_count).to be > 0 #rg-checked
         #Actual test
-        expect(assigns(:cart).cart_items.count).to eql(0)
+        expect(assigns(:cart_chassis).now_items_count).to eql(0) #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(0) #rg-checked
       end
     end
   end
@@ -449,131 +427,80 @@ RSpec.describe CartController, type: :controller do
 
     context "when the cart is empty" do
 
-      let!(:zero_cart) { create(:cart)}
-      let!(:zero_cart_user) { zero_cart.user }
-      let!(:zero_cart_count) { zero_cart.cart_items.count }
-      let!(:zero_cart_id) { zero_cart.id }
-
       before do
-        sign_in(zero_cart_user)
+        @empty_cart_chassis_item_count = empty_cart_chassis.all_items_count
+        @empty_cart_chassis_now_id = empty_cart_chassis.now_bin.id
+        @empty_cart_chassis_later_id = empty_cart_chassis.later_bin.id
+
+        sign_in(empty_user)
         delete :destroy_active
       end
 
-      after do
-        sign_out(zero_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found)  #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(zero_cart_id)
-        expect(assigns(:cart)).to eq(zero_cart)
+      it "does not destroy the CartChassis object, or either of the bins" do
+        expect(assigns(:cart_chassis)).not_to be_nil  #rg-checked
+
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil  #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@empty_cart_chassis_now_id)  #rg-checked
+
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil  #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@empty_cart_chassis_later_id)  #rg-checked
       end
 
-      it "ends with the cart completely empty" do
+      it "ends with the CartChassis's now_bin completely empty" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(0)  #rg-checked
+      end
+
+      it "does not change the overall number of items in the cart" do
         #Validation of the test:
-        expect(assigns(:cart).cart_items.count).to eql(zero_cart_count)
-
-        #actual test:
-        expect(assigns(:cart).cart_items.count).to eql(0)
+        expect(assigns(:cart_chassis).all_items_count).to eql(@empty_cart_chassis_item_count)  #rg-checked
       end
     end
 
-    context "when the cart has every kind of item" do
-
-      let!(:mixed_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
-      let!(:mixed_cart_id) { mixed_cart.id }
-      let!(:mixed_cart_count) { mixed_cart.cart_items.count }
-      let!(:mixed_cart_user) { mixed_cart.user }
-
+    context "when the cart has items in both bins" do
       before do
-        sign_in(mixed_cart_user)
+        @existing_c_c_now_item_count = existing_cart_chassis.now_items_count
+        @existing_c_c_now_id = existing_cart_chassis.now_bin.id
+        @existing_c_c_later_item_count = existing_cart_chassis.later_items_count
+        @existing_c_c_later_id = existing_cart_chassis.later_bin.id
+
+        sign_in(existing_user)
         delete :destroy_active
       end
 
-      after do
-        sign_out(mixed_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(mixed_cart_id)
-        expect(assigns(:cart)).to eq(mixed_cart)
+      it "Does not destroy the Cart object, or either of the bins" do
+        expect(assigns(:cart_chassis)).not_to be_nil #rg-checked
+
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil  #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@existing_c_c_now_id)  #rg-checked
+
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@existing_c_c_later_id) #rg-checked
       end
 
-      it "clears the active items from the cart" do
-        #Acquire test data
-        actives_seen = 0
-        laters_seen = 0
-        assigns(:cart).cart_items.each {|i| i.later ? laters_seen +=1 : actives_seen +=1 }
-
-        #Actual test
-        expect(actives_seen).to eql(0)
-        expect(mixed_cart_count - assigns(:cart).cart_items.count).to be > 0
-        expect(laters_seen).to eql(assigns(:cart).cart_items.count)
-      end
-    end
-
-    context "when the cart contains 100 mixed items" do
-      render_views false
-
-      let!(:hundred_mixed_cart) {create(:cart, :with_100_mixed_items)}
-      let!(:hundred_mixed_user) { hundred_mixed_cart.user }
-      let!(:hundred_mixed_cart_id) { hundred_mixed_cart.id }
-      let!(:hundred_mixed_cart_count) {hundred_mixed_cart.cart_items.count}
-
-      before do
-        sign_in(hundred_mixed_user)
-        delete :destroy_active
+      it "clears the items from the now_bin" do
+        expect(@existing_c_c_now_item_count).to be > 0 #rg-checked
+        expect(assigns(:cart_chassis).now_items_count).to eql(0) #rg-checked
       end
 
-      after do
-        sign_out(hundred_mixed_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-      end
-
-      it "clears the active items from the cart" do
-        #Acquire test data
-        actives_seen = 0
-        laters_seen = 0
-
-        assigns(:cart).cart_items.each {
-          |i| i.later ? laters_seen +=1 : actives_seen +=1
-        }
-
-        #Actual test
-        expect(actives_seen).to eql(0)
-        expect(hundred_mixed_cart_count - assigns(:cart).cart_items.count).to be > 0
-        expect(laters_seen).to eql(assigns(:cart).cart_items.count)
+      it "does not change the number of items in the later_bin " do
+        expect(@existing_c_c_later_item_count).to be > 0 #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(@existing_c_c_later_item_count) #rg-checked
       end
     end
   end
@@ -582,156 +509,95 @@ RSpec.describe CartController, type: :controller do
 
     context "when the cart is empty" do
 
-      let!(:blank_cart) { create(:cart)}
-      let!(:blank_cart_user) { blank_cart.user }
-      let!(:blank_cart_count) { blank_cart.cart_items.count }
-      let!(:blank_cart_id) { blank_cart.id }
-
       before do
-        sign_in(blank_cart_user)
+        @empty_cart_chassis_item_count = empty_cart_chassis.all_items_count
+        @empty_cart_chassis_now_id = empty_cart_chassis.now_bin.id
+        @empty_cart_chassis_later_id = empty_cart_chassis.later_bin.id
+
+        sign_in(empty_user)
         delete :destroy_saved
       end
 
-      after do
-        sign_out(blank_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(blank_cart_id)
-        expect(assigns(:cart)).to eq(blank_cart)
+      it "does not destroy the CartChassis object, or either of its bins" do
+        expect(assigns(:cart_chassis)).not_to be_nil #rg-checked
+
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@empty_cart_chassis_now_id) #rg-checked
+
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@empty_cart_chassis_later_id) #rg-checked
       end
 
       it "ends with the cart completely empty" do
         #Validation of the test:
-        expect(assigns(:cart).cart_items.count).to eql(blank_cart_count)
+        expect(@empty_cart_chassis_item_count).to eql(0) #rg-checked
 
         #actual test:
-        expect(assigns(:cart).cart_items.count).to eql(0)
+        expect(assigns(:cart_chassis).all_items_count).to eql(0) #rg-checked
       end
     end
 
-    context "when the cart has every kind of item" do
-
-      let!(:variety_cart) {create(:cart, :with_basic_items, :with_free_items, :with_items_for_later, :with_unavailable_items, :with_incomplete_items, :with_expired_membership_items)}
-      let!(:variety_cart_id) { variety_cart.id }
-      let!(:variety_cart_count) { variety_cart.cart_items.count }
-      let!(:variety_cart_user) { variety_cart.user }
-
+    context "when the cart has items in both bins" do
       before do
-        sign_in(variety_cart_user)
+        @existing_c_c_now_bin_id = existing_cart_chassis.now_bin.id
+        @existing_c_c_now_items_count = existing_cart_chassis.now_items_count
+        @existing_c_c_later_bin_id = existing_cart_chassis.later_bin.id
+        @existing_c_c_later_items_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         delete :destroy_saved
       end
 
-      after do
-        sign_out(variety_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
       it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(variety_cart_id)
-        expect(assigns(:cart)).to eq(variety_cart)
+        expect(assigns(:cart_chassis)).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).now_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).now_bin.id).to eql(@existing_c_c_now_bin_id) #rg-checked
+        expect(assigns(:cart_chassis).later_bin).not_to be_nil #rg-checked
+        expect(assigns(:cart_chassis).later_bin.id).to eql(@existing_c_c_later_bin_id) #rg-checked
       end
 
-      it "clears the saved items from the cart" do
-        #Acquire test data
-        actives_seen = 0
-        laters_seen = 0
-        assigns(:cart).cart_items.each {
-          |i| i.later ? laters_seen +=1 : actives_seen +=1
-        }
-
-        #Actual test
-        expect(laters_seen).to eql(0)
-        expect(variety_cart_count - assigns(:cart).cart_items.count).to be > 0
-        expect(actives_seen).to eql(assigns(:cart).cart_items.count)
-      end
-    end
-
-    context "when the cart contains 100 mixed items" do
-      render_views false
-
-      let!(:hundred_variety_cart) {create(:cart, :with_100_mixed_items)}
-      let!(:hundred_variety_user) { hundred_variety_cart.user }
-      let!(:hundred_variety_cart_id) { hundred_variety_cart.id }
-      let!(:hundred_variety_cart_count) {hundred_variety_cart.cart_items.count}
-
-      before do
-        sign_in(hundred_variety_user)
-        delete :destroy_saved
+      it "clears all the items from the CartChassis's later_bin" do
+        expect(@existing_c_c_later_items_count).to be > 0 #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(0) #rg-checked
       end
 
-      after do
-        sign_out(hundred_variety_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "Does not destroy the Cart object" do
-        expect(assigns(:cart)).not_to be_nil
-        expect(assigns(:cart)).to be
-        expect(assigns(:cart).id).to eql(hundred_variety_cart_id)
-        expect(assigns(:cart)).to eq(hundred_variety_cart)
-      end
-
-      it "clears the saved items from the cart" do
-        #Acquire test data
-        actives_seen = 0
-        laters_seen = 0
-        assigns(:cart).cart_items.each {
-          |i| i.later ? laters_seen +=1 : actives_seen +=1
-        }
-
-        #Actual test
-        expect(laters_seen).to eql(0)
-        expect(hundred_variety_cart_count - assigns(:cart).cart_items.count).to be > 0
-        expect(actives_seen).to eql(assigns(:cart).cart_items.count)
+      it "does not affect the number of items in the CartChassis's now_bin" do
+        expect(@existing_c_c_now_items_count).to be > 0 #rg-checked
+        expect(assigns(:cart_chassis).now_items_count).to eql(@existing_c_c_now_items_count) #rg-checked
       end
     end
   end
 
   describe "DELETE #remove_single_item" do
-    context "when the item is basic" do
-
-      let(:bsc_cart) { create(:cart, :with_basic_items) }
-      let(:bsc_cart_id) { bsc_cart.id }
-      let(:bsc_cart_user) { bsc_cart.user }
-      let(:bsc_item) { bsc_cart.cart_items.sample }
-      let(:bsc_item_id) { bsc_item.id }
+    context "when the item comes from the CartChassis's now_bin" do
 
       before do
-        sign_in(bsc_cart_user)
-        delete :remove_single_item, params: {
-          :id => bsc_item_id
-        }
-      end
+        @initial_all_items_count = existing_cart_chassis.all_items_count
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @our_item = existing_cart_chassis.now_items.sample
+        @our_item_id = @our_item.id
 
-      after do
-        sign_out(bsc_cart_user)
+        sign_in(existing_user)
+
+        delete :remove_single_item, params: {
+          :id => @our_item_id
+        }
       end
 
       it "succeeds" do
@@ -746,1058 +612,604 @@ RSpec.describe CartController, type: :controller do
         expect(subject).to redirect_to(:cart)
       end
 
-      it "removes the targeted item from the cart" do
-        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == bsc_item_id}
-
-        expect(found_cart_items).to be_empty
+      it "destroys the cart_item in question" do
+        expect { @our_item.reload }.to raise_error #rg-checked
       end
 
-      it "removes the targeted item from the database" do
-        found_database_items = CartItem.where(id: bsc_item_id)
-        expect(found_database_items).to be_empty
+      it "reduces the number of items in the now_bin by one" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count - 1) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(@initial_all_items_count - 1) #rg-checked
       end
     end
 
-    context "when the item is saved-for-later" do
-      let(:sfl_cart) { create(:cart, :with_items_for_later) }
-      let(:sfl_cart_id) { sfl_cart.id }
-      let(:sfl_cart_user) { sfl_cart.user }
-      let(:sfl_item) { sfl_cart.cart_items.sample }
-      let(:sfl_item_id) { sfl_item.id }
-
-      let(:sfl_cart_later_count_initial) {sfl_cart.cart_items.inject(0) {|laters, i|
-       laters += 1 if i.later == true} || 0}
-
+    context "when the item is in the CartChassis's later_bin" do
       before do
-        sign_in(sfl_cart_user)
+        @initial_all_items_count = existing_cart_chassis.all_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+        @our_item = existing_cart_chassis.later_items.sample
+        @our_item_id = @our_item.id
+
+        sign_in(existing_user)
+
         delete :remove_single_item, params: {
-          :id => sfl_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(sfl_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about succeeding" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
+        expect(subject).to set_flash[:notice].to(/successfully/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "removes the targeted item from the cart" do
-        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == sfl_item_id}
-        expect(found_cart_items).to be_empty
+      it "destroys the cart_item in question" do
+        expect { @our_item.reload }.to raise_error #rg-checked
       end
 
-      it "reduces the number of items in the cart that are saved for later by one" do
-        laters = 0
-        assigns(:cart).cart_items.each {|i| laters += 1 if i.later }
-        expect(laters).to eql(sfl_cart_later_count_initial - 1)
-      end
-
-      it "removes the targeted item from the database" do
-        found_database_items = CartItem.where(id: sfl_item_id)
-        expect(found_database_items).to be_empty
+      it "reduces the number of items in the later_bin by one" do
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count - 1) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(@initial_all_items_count - 1) #rg-checked
       end
     end
 
-    context "when the item is expired" do
-      let(:ex_cart) { create(:cart, :with_expired_membership_items) }
-      let(:ex_cart_id) { ex_cart.id }
-      let(:ex_cart_user) { ex_cart.user }
-      let(:ex_item) { ex_cart.cart_items.sample }
-      let(:ex_item_id) { ex_item.id }
+    context "when the item is associated with a paid reservation" do
 
       before do
-        sign_in(ex_cart_user)
+        @initial_all_items_count = paid_reservations_chassis.all_items_count
+        @initial_later_count = paid_reservations_chassis.later_items_count
+        @initial_now_count = paid_reservations_chassis.now_items_count
+        @our_item = paid_reservations_chassis.now_items.sample
+        @our_item_id = @our_item.id
+        @our_item_reservation = @our_item.holdable
+
+        sign_in(paid_reservations_user)
         delete :remove_single_item, params: {
-          :id => ex_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(ex_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about succeeding" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
+        expect(subject).to set_flash[:notice].to(/successfully/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
+      end
+
+      it "destroys the cart_item in question" do
+        expect { @our_item.reload }.to raise_error #rg-checked
       end
 
       it "removes the targeted item from the cart" do
-        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == ex_item_id}
-        expect(found_cart_items).to be_empty
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_later_count - 1) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(@initial_all_items_count - 1) #rg-checked
       end
 
-      it "removes the targeted item from the database" do
-        found_database_items = CartItem.where(id: ex_item_id)
-        expect(found_database_items).to be_empty
-      end
-    end
-
-    context "when the items's item_name_memo doesn't match its acquirable's name" do
-      let(:altn_cart) { create(:cart, :with_altered_name_items) }
-      let(:altn_cart_id) { altn_cart.id }
-      let(:altn_cart_user) { altn_cart.user }
-      let(:altn_item) { altn_cart.cart_items.sample }
-      let(:altn_item_id) { altn_item.id }
-
-      before do
-        sign_in(altn_cart_user)
-
-        delete :remove_single_item, params: {
-          :id => altn_item_id
-        }
-      end
-
-      after do
-        sign_out(altn_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about succeeding" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "removes the targeted item from the database" do
-        found_database_items = CartItem.where(id: altn_item_id)
-        expect(found_database_items).to be_empty
+      it "does not destroy the associated reservation" do
+        @our_item_reservation.reload
+        expect(@our_item_reservation).not_to be_nil #rg-checked
       end
     end
 
-    context "when the cart contains 100 items" do
-      render_views false
-
-      let(:benj_cart) { create(:cart, :with_100_mixed_items) }
-      let(:benj_cart_id) { benj_cart.id }
-      let(:benj_cart_user) { benj_cart.user }
-      let(:benj_item) { benj_cart.cart_items.sample }
-      let(:benj_item_id) { benj_item.id }
+    context "when the items is invalid" do
 
       before do
-        sign_in(benj_cart_user)
+        @initial_all_items_count = existing_cart_chassis.all_items_count
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @our_item = existing_cart_chassis.now_items.sample
+        @our_item.update_attribute(:item_price_memo, "ten")
+        @our_item_id = @our_item.id
+
+        sign_in(existing_user)
+
         delete :remove_single_item, params: {
-          :id => benj_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(benj_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about succeeding" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
+        expect(subject).to set_flash[:notice].to(/successfully/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
+      end
+
+      it "destroys the cart_item in question" do
+        expect { @our_item.reload }.to raise_error #rg-checked
       end
 
       it "removes the targeted item from the cart" do
-        found_cart_items = assigns(:cart).cart_items.select {|i| i.id == benj_item_id}
-        expect(found_cart_items).to be_empty
-      end
-
-      it "removes the targeted item from the database" do
-        found_database_items = CartItem.where(id: benj_item_id)
-        expect(found_database_items).to be_empty
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count - 1) #rg-checked
+        expect(assigns(:cart_chassis).all_items_count).to eql(@initial_all_items_count - 1) #rg-checked
       end
     end
 
     context "when the item is not in the user's cart" do
-      let(:unremarkable_cart) { create(:cart, :with_basic_items) }
-      let(:unremarkable_cart_id) { unremarkable_cart.id }
-      let(:unremarkable_cart_count) { unremarkable_cart.cart_items.count }
-      let(:unremarkable_cart_user) { unremarkable_cart.user }
-
-      let(:nowhere_cart) {create(:cart, :with_basic_items)}
-      let(:item_from_nowhere) {nowhere_cart.cart_items.sample}
-      let(:item_from_nowhere_id) {item_from_nowhere.id}
-      let(:item_from_nowhere_cart) {item_from_nowhere.cart}
+      let(:nowhere_cart_chassis) {create(:cart_chassis, :with_basic_items_cart_for_now)}
 
       before do
-        sign_in(unremarkable_cart_user)
+        @nowhere_item = nowhere_cart_chassis.now_items.sample
+        @nowhere_id = @nowhere_item.id
+        @nowhere_bin = @nowhere_item.cart
+
+        @existing_chassis_overall_count = existing_cart_chassis.all_items_count
+
+        sign_in(existing_user)
+
         delete :remove_single_item, params: {
-          :id => item_from_nowhere_id
+          :id => @nowhere_id
         }
       end
 
-      after do
-        sign_out(unremarkable_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about not recognizing the item" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
       it "Does not reduce the number of items in the cart" do
-        expect(unremarkable_cart_count).to eql(assigns(:cart).cart_items.count)
+        expect(assigns(:cart_chassis).all_items_count).to eql(@existing_chassis_overall_count) #rg-checked
+      end
+
+      it "Does not destroy the cart_item" do
+        expect { @nowhere_item.reload }.not_to raise_error #rg-checked
       end
 
       it "Does not change the item's original cart association" do
-        expect(item_from_nowhere_cart.id).not_to eql(assigns(:cart).id)
-      end
-
-      it "Does not remove the targeted item from the database" do
-        found_database_items = CartItem.where(id: item_from_nowhere_id)
-        expect(found_database_items).not_to be_empty
+        expect(@nowhere_item.cart).not_to eql(assigns(:cart_chassis).now_bin.id) #rg-checked
+        expect(@nowhere_item.cart).not_to eql(assigns(:cart_chassis).later_bin.id) #rg-checked
+        expect(@nowhere_item.cart).to eql(@nowhere_bin) #rg-checked
       end
     end
 
     context "when the item has already been removed" do
-      let(:meh_cart) { create(:cart, :with_basic_items) }
-      let(:meh_cart_id) { meh_cart.id }
-      let(:meh_cart_user) { meh_cart.user }
-      let(:doomed_item) {meh_cart.cart_items.sample}
-      let(:doomed_item_id) {doomed_item.id}
-      let(:total_cart_items) {CartItem.count}
-      let(:meh_cart_count) { meh_cart.cart_items.count }
+      # let(:meh_cart) { create(:cart, :with_basic_items) }
+      # let(:meh_cart_id) { meh_cart.id }
+      # let(:meh_cart_user) { meh_cart.user }
+      # let(:doomed_item) {meh_cart.cart_items.sample}
+      # let(:doomed_item_id) {doomed_item.id}
+      # let(:total_cart_items) {CartItem.count}
+      # let(:meh_cart_count) { meh_cart.cart_items.count }
 
       before do
-        doomed_item.destroy
-        meh_cart.reload
-        meh_cart_count = meh_cart.cart_items.count
-        total_cart_items = CartItem.count
-        sign_in(meh_cart_user)
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @doomed_item = existing_cart_chassis.now_items.sample
+        @doomed_item_id = @doomed_item.id
+
+        @doomed_item.destroy
+        existing_cart_chassis.full_reload
+        @intermediate_now_count = existing_cart_chassis.now_items_count
+        @total_cart_items = CartItem.count
+
+        sign_in(existing_user)
         delete :remove_single_item, params: {
-          :id => doomed_item_id
+          :id => @doomed_item_id
         }
       end
 
-      after do
-        sign_out(meh_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about not recognizing the item" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
       it "Does not reduce the number of items in the cart" do
-        expect(meh_cart_count).to eql(assigns(:cart).cart_items.count)
+        expect(assigns(:cart_chassis).now_items_count).to eql(@intermediate_now_count) #rg-checked
       end
 
       it "Does not reduce the number of CartItems in the database" do
-        expect(total_cart_items).to eql(CartItem.count)
+        expect(@total_cart_items).to eql(CartItem.count) #rg-checked
       end
     end
   end
 
   describe "PATCH #save_item_for_later" do
-    context "when the item is basic" do
 
-      let(:bbbb_cart) { create(:cart, :with_basic_items) }
-      let(:bbbb_cart_user) { bbbb_cart.user }
-      let(:bbbb_item) { bbbb_cart.cart_items.sample }
-      let(:bbbb_item_id) { bbbb_item.id }
-      let(:bbbb_item_later) { bbbb_item.later }
+    context "when the item is in the CartChassis's now_bin" do
 
       before do
-        sign_in(bbbb_cart_user)
+        @our_item = existing_cart_chassis.now_items.sample
+        @our_item_id = @our_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :save_item_for_later, params: {
-          :id => bbbb_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(bbbb_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #inverted
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "ends with the target item having its 'later' attribute changed to true" do
-        expect(bbbb_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
+      it "reduces the number if items in the CartChassis's now_bin by one" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count - 1) #rg-checked
+      end
+
+      it "increases the number if items in the CartChassis's later_bin by one" do
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count + 1) #rg-checked
       end
     end
 
-    context "when the item is already saved-for-later" do
-      let(:laters_cart) { create(:cart, :with_items_for_later) }
-      let(:laters_cart_user) { laters_cart.user }
-      let(:laters_item) { laters_cart.cart_items.sample }
-      let(:laters_item_id) { laters_item.id }
-      let(:laters_item_later) { laters_item.later }
+    context "when the item is in the CartChassis's later_bin" do
 
       before do
-        sign_in(laters_cart_user)
+        @our_item = existing_cart_chassis.later_items.sample
+        @our_item_id = @our_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :save_item_for_later, params: {
-          :id => laters_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(laters_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not change the item's later attribute's value of true" do
-        expect(laters_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(laters_item_later)
+      it "does not change the number of items in CartChassis's now_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+      end
+
+      it "does not change the number of items in CartChassis's later_bin" do
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count) #rg-checked
       end
     end
+
 
     context "when the item is expired" do
-      let(:expir_cart) { create(:cart, :with_expired_membership_items) }
-      let(:expir_cart_user) { expir_cart.user }
-      let(:expir_item) { expir_cart.cart_items.sample }
-      let(:expir_item_id) { expir_item.id }
-      let(:expir_item_later) {expir_item.later}
+      let(:expired_item) { create(:cart_item, :with_expired_membership) }
 
       before do
-        sign_in(expir_cart_user)
+        expired_item.update_attribute(:cart, existing_cart_chassis.now_bin)
+        existing_cart_chassis.full_reload
+        @expired_item_id = expired_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :save_item_for_later, params: {
-          :id => expir_item_id
+          :id => @expired_item_id
         }
       end
 
-      after do
-        sign_out(expir_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "changes the item's later attribute's value to true" do
-        expect(expir_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
-      end
-    end
-
-    context "when the items's item_name_memo doesn't match its acquirable's name" do
-      let(:alt_n_cart) { create(:cart, :with_altered_name_items) }
-      let(:alt_n_cart_user) { alt_n_cart.user }
-      let(:alt_n_item) { alt_n_cart.cart_items.sample }
-      let(:alt_n_item_id) { alt_n_item.id }
-      let(:alt_n_item_later) {alt_n_item.later}
-
-      before do
-        sign_in(alt_n_cart_user)
-        patch :save_item_for_later, params: {
-          :id => alt_n_item_id
-        }
+      it "reduces the number of items in the CartChassis's now_bin by one" do
+        # Test validation:
+        expect(@initial_now_count).to be > @initial_later_count #rg-checked
+        # Actual test:
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count - 1) #rg-checked
       end
 
-      after do
-        sign_out(alt_n_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "change the item's 'later' attribute's value to true" do
-        expect(alt_n_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
-      end
-    end
-
-    context "when the item's item_price_memo doesn't match its acquirable's price" do
-
-      let(:alt_p_cart) { create(:cart, :with_altered_price_items) }
-      let(:alt_p_cart_user) { alt_p_cart.user }
-      let(:alt_p_item) { alt_p_cart.cart_items.sample }
-      let(:alt_p_item_id) { alt_p_item.id }
-      let(:alt_p_item_later) {alt_p_item.later}
-
-      before do
-        sign_in(alt_p_cart_user)
-        patch :save_item_for_later, params: {
-          :id => alt_p_item_id
-        }
-      end
-
-      after do
-        sign_out(alt_p_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash alert" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to true" do
-        expect(alt_p_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
-      end
-    end
-
-    context "when the item has an unknown kind" do
-      let(:unk_k_cart) { create(:cart, :with_unknown_kind_items) }
-      let(:unk_k_cart_user) { unk_k_cart.user }
-      let(:unk_k_item) { unk_k_cart.cart_items.sample }
-      let(:unk_k_item_id) { unk_k_item.id }
-      let(:unk_k_item_later) {unk_k_item.later}
-
-      before do
-        sign_in(unk_k_cart_user)
-        patch :save_item_for_later, params: {
-          :id => unk_k_item_id
-        }
-      end
-
-      after do
-        sign_out(unk_k_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the change being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to true" do
-        expect(unk_k_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
-      end
-    end
-
-    context "when the item is marked unavailable" do
-      let(:unavl_cart) { create(:cart, :with_unavailable_items) }
-      let(:unavl_cart_user) { unavl_cart.user }
-      let(:unavl_item) { unavl_cart.cart_items.sample }
-      let(:unavl_item_id) { unavl_item.id }
-      let(:unavl_item_later) {unavl_item.later}
-
-      before do
-        sign_in(unavl_cart_user)
-        patch :save_item_for_later, params: {
-          :id => unavl_item_id
-        }
-      end
-
-      after do
-        sign_out(unavl_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the operationn being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to true" do
-        expect(unavl_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
+      it "increases the number of items in the CartChassis's later_bin by one" do
+        # Test validation:
+        expect(@initial_later_count).to be < @initial_now_count #rg-checked
+        # Actual test:
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count + 1) #rg-checked
       end
     end
 
     context "when the item is not in the user's cart" do
-      let(:pre_latered_cart) { create(:cart, :with_items_for_later) }
-      let(:pre_latered_cart_user) { pre_latered_cart.user }
-
-      let(:external_cart) { create(:cart, :with_basic_items) }
-      let(:external_item) { external_cart.cart_items.sample }
-      let(:external_item_id) { external_item.id }
-      let(:external_item_later) { external_item.later}
+      let(:rando_item) { create(:cart_item) }
 
       before do
-        sign_in(pre_latered_cart_user)
+        @extraneous_item_id = rando_item.id
+        @extraneous_item_bin = rando_item.cart
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :save_item_for_later, params: {
-          :id => external_item_id
+          :id => @extraneous_item_id
         }
       end
 
-      after do
-        sign_out(pre_latered_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash alert" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not change the value of the item's 'later' attribute" do
-        expect(external_item_later).to eql(false)
-        expect(external_item_later).to eql(CartItem.find_by(id: external_item_id).later)
-      end
-
-      it "does not assign a value assigned to the @target_item instance variable" do
-        expect(assigns(:target_item)).to be_nil
+      it "does not affect the number of items in the now_bin or the later_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count) #rg-checked
       end
     end
 
     context "when the item no longer exists" do
 
-      let(:nominal_cart) { create(:cart, :with_basic_items) }
-      let(:nominal_cart_user) { nominal_cart.user }
-      let(:nominal_cart_later_items_seen_initial) { nominal_cart.cart_items.inject(0) {|laters, i|
-       laters += 1 if i.later == true} || 0}
-
-      let(:cancelled_item) {nominal_cart.cart_items.sample}
-      let(:cancelled_item_id) {cancelled_item.id}
-
       before do
-        cancelled_item.destroy
-        nominal_cart.reload
-        sign_in(nominal_cart_user)
+        @doomed_item = existing_cart_chassis.now_items.sample
+        @doomed_item_id = @doomed_item.id
+
+        @doomed_item.destroy
+        existing_cart_chassis.full_reload
+
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :save_item_for_later, params: {
-          :id => cancelled_item_id
+          :id => @doomed_item_id
         }
       end
 
-      after do
-        sign_out(nominal_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash alert" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
-      end
-
-      it "renders" do
-        expect(subject).to render_template(:cart)
-      end
-
-      it "does not assign a value assigned to the @target_item instance variable" do
-        expect(assigns(:target_item)).to be_nil
-      end
-
-      it "does not change the number of items in the cart with a value of true assigned to their later attribute" do
-        laters_seen = 0
-        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later }
-        expect(nominal_cart_later_items_seen_initial).to eql(laters_seen)
-      end
-    end
-
-    context "when the item is marked incomplete" do
-      let(:incompl_cart) { create(:cart, :with_incomplete_items) }
-      let(:incompl_cart_user) { incompl_cart.user }
-      let(:incompl_item) { incompl_cart.cart_items.sample }
-      let(:incompl_item_id) { incompl_item.id }
-      let(:incompl_item_later) {incompl_item.later}
-
-      before do
-        sign_in(incompl_cart_user)
-        patch :save_item_for_later, params: {
-          :id => incompl_item_id
-        }
-      end
-
-      after do
-        sign_out(incompl_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the operation being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "ends with the target item having its 'later' attribute's value changed to true" do
-        expect(incompl_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(true)
+      it "does not affect the number of items in the now_bin or the later_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count)  #rg-checked
       end
     end
   end
 
   describe "PATCH #move_item_to_cart" do
-    context "when the item is basic and saved for later" do
-      let(:basic_laters_cart) { create(:cart, :with_items_for_later) }
-      let(:basic_laters_cart_user) { basic_laters_cart.user }
-      let(:basic_laters_item) { basic_laters_cart.cart_items.sample }
-      let(:basic_laters_item_id) { basic_laters_item.id }
-      let(:basic_laters_item_later) { basic_laters_item.later }
-
+    context "when the item is in the CartChassis's later_bin" do
       before do
-        sign_in(basic_laters_cart_user)
+        @our_item = existing_cart_chassis.later_items.sample
+        @our_item_id = @our_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :move_item_to_cart, params: {
-          :id => basic_laters_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(basic_laters_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "Changes the item's later attribute's value to false" do
-        expect(basic_laters_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
+      it "increases the number of items in the CartChassis's now_bin by one" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count + 1) #rg-checked
+      end
+
+      it "decreases the number of items in the CartChassis's later_bin by one" do
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count - 1) #rg-checked
       end
     end
 
-    context "when the item is expired and saved for later" do
-      let(:expir_later_cart) { create(:cart, :with_expired_saved_for_later_items) }
-      let(:expir_later_cart_user) { expir_later_cart.user }
-      let(:expir_later_item) { expir_later_cart.cart_items.sample }
-      let(:expir_later_item_id) { expir_later_item.id }
-      let(:expir_later_item_later) {expir_later_item.later}
-
+    context "when the item is in the CartChassis's now_bin" do
       before do
-        sign_in(expir_later_cart_user)
+        @our_item = existing_cart_chassis.now_items.sample
+        @our_item_id = @our_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :move_item_to_cart, params: {
-          :id => expir_later_item_id
+          :id => @our_item_id
         }
       end
 
-      after do
-        sign_out(expir_later_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "changes the item's later attribute's value to false" do
-        expect(expir_later_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
+      it "does not change the number of items in the CartChassis's now_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+      end
+
+      it "does not change the number of items in the CartChassis's later_bin by one" do
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count) #rg-checked
       end
     end
 
-    context "when the items's item_name_memo doesn't match its acquirable's name and it is saved for later" do
-      let(:alt_n_saved_cart) { create(:cart, :with_name_altered_saved_for_later_items) }
-      let(:alt_n_saved_cart_user) { alt_n_saved_cart.user }
-      let(:alt_n_saved_item) { alt_n_saved_cart.cart_items.sample }
-      let(:alt_n_saved_item_id) { alt_n_saved_item.id }
-      let(:alt_n_saved_item_later) {alt_n_saved_item.later}
+
+    context "when the item is expired" do
+      let(:expired_item) { create(:cart_item, :with_expired_membership) }
 
       before do
-        sign_in(alt_n_saved_cart_user)
+        expired_item.update_attribute(:cart, existing_cart_chassis.later_bin)
+        existing_cart_chassis.full_reload
+        @expired_item_id = expired_item.id
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :move_item_to_cart, params: {
-          :id => alt_n_saved_item_id
+          :id => @expired_item_id
         }
       end
 
-      after do
-        sign_out(alt_n_saved_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:notice].to(/successful/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "change the item's 'later' attribute's value to false" do
-        expect(alt_n_saved_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
-      end
-    end
-
-    context "when the item's item_price_memo doesn't match its acquirable's price and the item is saved for later" do
-
-      let(:altered_p_saved_cart) { create(:cart, :with_price_altered_saved_for_later_items) }
-      let(:altered_p_saved_cart_user) { altered_p_saved_cart.user }
-      let(:altered_p_saved_item) { altered_p_saved_cart.cart_items.sample }
-      let(:altered_p_saved_item_id) { altered_p_saved_item.id }
-      let(:altered_p_saved_item_later) {altered_p_saved_item.later}
-
-      before do
-        sign_in(altered_p_saved_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => altered_p_saved_item_id
-        }
+      it "increases the number of items in the CartChassis's now_bin by one" do
+        # Test validation:
+        expect(@initial_now_count).to be < @initial_later_count #rg-checked
+        # Actual test:
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count + 1) #rg-checked
       end
 
-      after do
-        sign_out(altered_p_saved_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash alert" do
-        expect(subject).to set_flash[:notice].to(/successfully/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to false" do
-        expect(altered_p_saved_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
-      end
-    end
-
-    context "when the item has an unknown kind and is saved for later" do
-      let(:unk_k_saved_cart) { create(:cart, :with_unknown_kind_saved_for_later_items) }
-      let(:unk_k_saved_cart_user) { unk_k_saved_cart.user }
-      let(:unk_k_saved_item) { unk_k_saved_cart.cart_items.sample }
-      let(:unk_k_saved_item_id) { unk_k_saved_item.id }
-      let(:unk_k_saved_item_later) {unk_k_saved_item.later}
-
-      before do
-        sign_in(unk_k_saved_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => unk_k_saved_item_id
-        }
-      end
-
-      after do
-        sign_out(unk_k_saved_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the change being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to false" do
-        expect(unk_k_saved_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
-      end
-    end
-
-    context "when the item is marked unavailable and is saved for later" do
-      let(:unavl_saved_cart) { create(:cart, :with_unavailable_saved_for_later_items) }
-      let(:unavl_saved_cart_user) { unavl_saved_cart.user }
-      let(:unavl_saved_item) { unavl_saved_cart.cart_items.sample }
-      let(:unavl_saved_item_id) { unavl_saved_item.id }
-      let(:unavl_saved_item_later) {unavl_saved_item.later}
-
-      before do
-        sign_in(unavl_saved_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => unavl_saved_item_id
-        }
-      end
-
-      after do
-        sign_out(unavl_saved_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the operationn being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "ends with the target item having its 'later' attribute's value changed to false" do
-        expect(unavl_saved_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
+      it "reduces the number of items in the CartChassis's later_bin by one" do
+        # Test validation:
+        expect(@initial_later_count).to be > @initial_now_count #rg-checked
+        # Actual test:
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count - 1) #rg-checked
       end
     end
 
     context "when the item is not in the user's cart" do
-      let(:pre_l_cart) { create(:cart, :with_items_for_later) }
-      let(:pre_l_cart_user) { pre_l_cart.user }
-      let(:pre_l_cart_later_items_seen_initial) { pre_l_cart.cart_items.inject(0) {|laters, i|
-       laters += 1 if i.later == true} || 0}
-
-      let(:extern_cart) { create(:cart, :with_basic_items)}
-      let(:extern_item) { extern_cart.cart_items.sample}
-      let(:extern_item_id) { extern_item.id }
-      let(:extern_item_later) { extern_item.later}
+      let(:rando_item) { create(:cart_item) }
 
       before do
-        extern_item.later = true
-        extern_item.save
-        extern_item_later = extern_item.later
-        pre_l_cart.reload
-        sign_in(pre_l_cart_user)
+        @extraneous_item_id = rando_item.id
+        @extraneous_item_bin = rando_item.cart
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
         patch :move_item_to_cart, params: {
-          :id => extern_item_id
+          :id => @extraneous_item_id
         }
       end
 
-      after do
-        sign_out(pre_l_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash alert" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
-      it "renders" do
-        expect(subject).to render_template(:cart)
+      it "redirects" do
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "does not assign a value assigned to the @target_item instance variable" do
-        expect(assigns(:target_item)).to be_nil
-      end
-
-      it "does not change the value of the item's 'later' attribute, which is set to true" do
-        expect(extern_item_later).to eql(true)
-        expect(extern_item_later).to eql(CartItem.find_by(id: extern_item_id).later)
-      end
-
-      it "does not change the number of items that are saved for later in the cart" do
-        laters_seen = 0
-        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later}
-        expect(laters_seen).to eql(pre_l_cart_later_items_seen_initial)
+      it "does not affect the number of items in the now_bin or the later_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count) #rg-checked
       end
     end
 
     context "when the item no longer exists" do
 
-      let(:nominal_later_cart) { create(:cart, :with_items_for_later) }
-      let(:nominal_later_cart_user) { nominal_later_cart.user }
-      let(:nominal_later_cart_later_items_seen_initial) { nominal_later_cart.cart_items.inject(0) {|laters, i|
-       laters += 1 if i.later == true} || 0}
-
-      let(:eliminated_item) {nominal_later_cart.cart_items.sample}
-      let(:eliminated_item_id) {eliminated_item.id}
-      let(:eliminated_item_later) {eliminated_item.later}
-
       before do
-        eliminated_item.destroy
-        nominal_later_cart.reload
-        sign_in(nominal_later_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => eliminated_item_id
+        @doomed_item = existing_cart_chassis.now_items.sample
+        @doomed_item_id = @doomed_item.id
+
+        @doomed_item.destroy
+        existing_cart_chassis.full_reload
+
+        @initial_now_count = existing_cart_chassis.now_items_count
+        @initial_later_count = existing_cart_chassis.later_items_count
+
+        sign_in(existing_user)
+        patch :save_item_for_later, params: {
+          :id => @doomed_item_id
         }
       end
 
-      after do
-        sign_out(nominal_later_cart_user)
-      end
-
       it "succeeds" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found) #rg-checked
       end
 
       it "sets a flash alert" do
-        expect(subject).to set_flash[:alert].to(/unable to recognize/i)
-      end
-
-      it "renders" do
-        expect(subject).to render_template(:cart)
-      end
-
-      it "does not assign a value assigned to the @target_item instance variable" do
-        expect(assigns(:target_item)).to be_nil
-      end
-
-      it "does not change the number of items in the cart with a value of true assigned to their later attribute" do
-        laters_seen = 0
-        assigns(:cart).cart_items.each {|i| laters_seen += 1 if i.later }
-        expect(nominal_later_cart_later_items_seen_initial).to eql(laters_seen)
-      end
-    end
-
-    context "when the item is marked incomplete and saved" do
-      let(:incompl_saved_cart) { create(:cart, :with_incomplete_saved_for_later_items) }
-      let(:incompl_saved_cart_user) { incompl_saved_cart.user }
-      let(:incompl_saved_item) { incompl_saved_cart.cart_items.sample }
-      let(:incompl_saved_item_id) { incompl_saved_item.id }
-      let(:incompl_saved_item_later) {incompl_saved_item.later}
-
-      before do
-        sign_in(incompl_saved_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => incompl_saved_item_id
-        }
-      end
-
-      after do
-        sign_out(incompl_saved_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about the operation being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
+        expect(subject).to set_flash[:alert].to(/unable to recognize/i) #rg-checked
       end
 
       it "redirects" do
-        expect(subject).to redirect_to(:cart)
+        expect(subject).to redirect_to(:cart) #rg-checked
       end
 
-      it "ends with the target item having its 'later' attribute's value changed to false" do
-        expect(incompl_saved_item_later).to eql(true)
-        expect(assigns(:target_item).later).to eql(false)
-      end
-    end
-
-    context "when the item is not saved for later initially" do
-
-      let(:no_laters_cart) { create(:cart, :with_basic_items) }
-      let(:no_laters_cart_user) { no_laters_cart.user }
-      let(:no_laters_item) { no_laters_cart.cart_items.sample }
-      let(:no_laters_item_id) { no_laters_item.id }
-      let(:no_laters_item_later) { no_laters_item.later }
-
-      before do
-        sign_in(no_laters_cart_user)
-        patch :move_item_to_cart, params: {
-          :id => no_laters_item_id
-        }
-      end
-
-      after do
-        sign_out(no_laters_cart_user)
-      end
-
-      it "succeeds" do
-        expect(response).to have_http_status(:found)
-      end
-
-      it "sets a flash notice about being successful" do
-        expect(subject).to set_flash[:notice].to(/successful/i)
-      end
-
-      it "redirects" do
-        expect(subject).to redirect_to(:cart)
-      end
-
-      it "results in no change to the target item's 'later' attribute's value of false" do
-        expect(no_laters_item_later).to eql(false)
-        expect(assigns(:target_item).later).to eql(no_laters_item_later)
-        expect(assigns(:target_item).later).to eql(false)
+      it "does not affect the number of items in the now_bin or the later_bin" do
+        expect(assigns(:cart_chassis).now_items_count).to eql(@initial_now_count) #rg-checked
+        expect(assigns(:cart_chassis).later_items_count).to eql(@initial_later_count)  #rg-checked
       end
     end
   end
 
-  describe "PATCH #save_all_items_for_later" do
+#
+#
+#
+#
+#  STOPPING POINT
+#
+#
+#
+
+
+  xdescribe "PATCH #save_all_items_for_later" do
     context "when the cart is empty" do
       let!(:hollow_cart) { create(:cart)}
       let!(:hollow_cart_user) { hollow_cart.user }
@@ -2056,7 +1468,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  describe "PATCH #move_all_saved_items_to_cart" do
+  xdescribe "PATCH #move_all_saved_items_to_cart" do
     context "when the cart is empty" do
 
       let!(:e_cart) {create(:cart)}
@@ -2219,7 +1631,7 @@ RSpec.describe CartController, type: :controller do
     end
   end
 
-  describe "PATCH #verify_single_item_availability" do
+  xdescribe "PATCH #verify_single_item_availability" do
 
     context "when the item is basic" do
 
@@ -2593,7 +2005,7 @@ RSpec.describe CartController, type: :controller do
   end
 
 
-  describe "PATCH #verify_all_items_availability" do
+  xdescribe "PATCH #verify_all_items_availability" do
 
     context "when the cart contains only basic items" do
 

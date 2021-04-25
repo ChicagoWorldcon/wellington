@@ -20,25 +20,24 @@ class CartServices::ResolveCartItem
   MEMBERSHIP = CartItem::MEMBERSHIP
   UNKNOWN = CartItem::UNKNOWN
 
-  def initialize(full_params: f_params, bin_for_now: n_cart, item_kind: i_kind, flash_obj: flash_object)
+  def initialize(full_params: f_params, bin_for_now: n_cart, item_kind: i_kind)
     @full_params = full_params
     @now_bin = bin_for_now
     @item_kind = item_kind
     @benefitable_required = benefitable_required?(item_kind)
-    @flash_object = flash_obj
+    @error = ""
     @offer_param = full_params[:offer]
   end
 
   def call
     our_acquirable = resolve_acquirable
-    return if our_acquirable.blank?
+    return {cart_item: nil, error: @error} if our_acquirable.blank?
 
     our_benefitable = resolve_benefitable
-    return if (our_benefitable.blank? && @benefitable_required)
+    return {cart_item: nil, error: @error} if ((our_benefitable.blank? && @benefitable_required) || !our_benefitable.valid?)
 
-    our_benefitable.valid?  ?  our_benefitable.save : (export_validation_errors_to_flash(our_benefitable) and return)
-
-    create_cart_item(our_acquirable, benefitable: our_benefitable)
+    our_item = create_cart_item(our_acquirable, benefitable: our_benefitable)
+    return {cart_item: our_item, error: @error}
   end
 
   private
@@ -57,7 +56,7 @@ class CartServices::ResolveCartItem
     when MEMBERSHIP
       extract_membership_info_from_params
     else
-      UNKNOWN
+      nil
     end
   end
 
@@ -72,7 +71,9 @@ class CartServices::ResolveCartItem
 
   def extract_membership_info_from_params
     membership_offer = MembershipOffer.locate_active_offer_by_hashcode(@offer_param)
-    export_membership_errors_to_flash if membership_offer.blank?
+    if (membership_offer.blank? || membership_offer.membership.blank?)
+      format_membership_error(@offer_param) and return
+    end
     membership_offer.membership
   end
 
@@ -87,26 +88,30 @@ class CartServices::ResolveCartItem
     d_of_b = DateOfBirthParamsHelper.generate_dob_from_params(@full_params)
     bfry.date_of_birth = d_of_b if (bfry.present? && d_of_b.present?)
 
-    export_beneficiary_errors_to_flash(bfry) if !bfry.save
+    format_beneficiary_errors(bfry) if !bfry.save
     bfry.present? ? bfry : nil
   end
 
   def create_cart_item(acquirbl, benefitable: nil)
-    return if benefitable.blank? && @benefitable_required
+    if benefitable.blank? && @benefitable_required
+      @error = "You must set a recipient for this item" and return
+    end
+
     cart_item_attributes = {
       :acquirable => acquirbl,
       :cart => @now_bin,
       :kind => @item_kind
     }
+
     cart_item_attributes[:benefitable] = benefitable if benefitable.present?
     CartItem.create(cart_item_attributes)
   end
 
-  def export_beneficiary_errors_to_flash(bf_iary)
-    @flash_object[:error] = bf_iary.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
+  def format_beneficiary_errors(bf_iary)
+    @error = bf_iary.errors.full_messages.to_sentence(words_connector: ", and ").humanize.concat(".")
   end
 
-  def export_membership_errors_to_flash
-    @flash_object[:error] = t("errors.offer_unavailable", offer: @offer_params)
+  def format_membership_error(offer)
+    @error =  "#{offer} is unavailable"
   end
 end

@@ -87,7 +87,7 @@ module CartItemsHelper
     our_button = button_to(button_text, button_route, method: "delete", data: data_object, class: "btn btn-outline-info")
   end
 
-  def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true)
+  def add_admin_buttons(cart_item, deletion: true, availability: true, saving: true, in_later_bin: false)
     [].tap do |buttons|
       if deletion
         if cart_item.item_reservation.present?
@@ -98,7 +98,7 @@ module CartItemsHelper
       end
 
       if saving
-        if cart_item.later == true
+        if in_later_bin == true
           buttons << button_to("Move to Cart", move_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
         else
           buttons << button_to("Save for Later", save_single_cart_item_path(cart_item), method: "patch", class: "btn btn-outline-info")
