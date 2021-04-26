@@ -70,6 +70,10 @@ class CartChassis
     bin_chooser(BIN_FOR_PURCHASES)
   end
 
+  def any_money_owing?
+    purchase_bin.cents_owed_for_cart_less_all_credits <= 0
+  end
+
   def purchase_bin_items_paid?
     purchase_bin.items_paid? if purchase_bin.present?
   end
@@ -130,11 +134,11 @@ class CartChassis
   end
 
   def now_items_count
-    @now_bin.present? && @now_bin.cart_items.present? ? @now_bin.cart_items.count : 0
+    (@now_bin.present? && @now_bin.cart_items.present?) ? @now_bin.cart_items.count : 0
   end
 
   def later_items_count
-    @later_bin.present? && @later_bin.cart_items.present? ? @later_bin.cart_items.count : 0
+    (@later_bin.present? && @later_bin.cart_items.present?) ? @later_bin.cart_items.count : 0
   end
 
   def all_items_count
@@ -233,9 +237,7 @@ class CartChassis
     return 0 unless origin_bin.cart_items.present?
     moved = 0
     origin_bin.cart_items.each do |i|
-      i.cart = target_bin
-      i.save
-      moved += 1
+      moved += 1 if i.update_attribute(:cart, target_bin)
     end
 
     self.full_reload

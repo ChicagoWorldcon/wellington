@@ -111,7 +111,7 @@ FactoryBot.define do
 
     trait :fully_paid_through_direct_charges do
       transient do
-        num_charges { 3 }
+        num_charges { 1 }
       end
 
       after(:create) do |new_cart, evaluator|

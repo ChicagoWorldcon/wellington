@@ -106,8 +106,14 @@ class ChargesController < ApplicationController
   end
 
   def group_charge_confirmation
-    @amount_charged = Money.new(Charge.find_by(id: params[:charge]).amount_cents).format(with_currency: true)
+    our_charge = Charge.find_by(id: params[:charge])
+    @amount_charged = Money.new(our_charge.amount_cents).format(with_currency: true) if our_charge.present?
     @processed_cart = Cart.find_by(id: params[:processed_cart])
+    
+    if (!@amount_charged || !@processed_cart)
+      error_str = "Unable to create your confirmation! Please review your reservations!"
+      redirect_to reservations_path, alert: error_str and return
+    end
   end
 
   private
@@ -128,7 +134,7 @@ class ChargesController < ApplicationController
       item_descriptions: item_description_array,
       purchase_date: processing_cart.active_to,
       cart_number: processing_cart.id
-    )
+    ).deliver_later
   end
 
   def trigger_reservation_payment_mailer(charge, outstanding_before_charge, charge_amount)

@@ -116,15 +116,16 @@ class CartController < ApplicationController
   end
 
   def save_all_items_for_later
-    lingering_n = @cart_chassis.save_all_items_for_later
+    starting_now_count = @cart_chassis.now_items_count
+    successfully_moved = @cart_chassis.save_all_items_for_later
 
-    case lingering_n
-    when -1
+    case
+    when  successfully_moved == -1
       flash[:alert] = "There was a problem with your cart. Some items may not have been saved."
-    when 0
+    when starting_now_count - successfully_moved == 0
       flash[:notice] = "All active items have now been saved for later."
-    else
-      flash[:alert] = "One or more items could not be saved for later"
+    when starting_now_count - successfully_moved > 0
+      flash[:alert] = "One or more items could not be saved for later. Please check your cart and delete any invalid items."
     end
 
     prep_bins
@@ -132,15 +133,16 @@ class CartController < ApplicationController
   end
 
   def move_all_saved_items_to_cart
-    lingering_l = @cart_chassis.move_all_saved_to_cart
+    starting_later_count = @cart_chassis.later_items_count
+    successfully_moved = @cart_chassis.move_all_saved_to_cart
 
-    case lingering_l
-    when -1
+    case
+    when successfully_moved == -1
       flash[:alert] = "There was a problem with your cart. Some items may not have been moved."
-    when 0
+    when starting_later_count - successfully_moved == 0
       flash[:notice] = "All items have now been moved to the cart."
-    else
-      flash[:alert] = "One or more items could not be moved to the cart"
+    when starting_now_count - successfully_moved > 0
+      flash[:alert] = "One or more items could not be moved to the cart. Please check your cart and delete any invalid items."
     end
 
     prep_bins
@@ -162,14 +164,13 @@ class CartController < ApplicationController
   end
 
   def preview_online_purchase
-
     if @cart_chassis.now_items_count == 0
       flash[:notice] = "There is nothing in your cart to purchase! (Hint: check to see if you've saved the thing(s) you want for later.)"
       redirect_to cart_path and return
     end
 
     if !now_items_confirmed_ready_for_payment?
-      flash[:notice] = "Please review your cart."
+      flash[:alert] = "There is a problem with one or more of your items. Please review your cart."
       prep_bins
       redirect_to cart_path and return
     end
@@ -180,22 +181,34 @@ class CartController < ApplicationController
   end
 
   def submit_online_payment
-    check_for_paid
-    prep_results = prepare_cart_for_payment
+    prep_results = prepare_cart_for_payment(holdables_finalized: false)
+
+    if prep_results.blank? || prep_results[:amount_to_charge] <= 0
+      prep_bins and return
+    end
+
     @cart_chassis.full_reload
     @transaction_cart = @cart_chassis.purchase_bin
     @prospective_charge_cents = @cart_chassis.purchase_subtotal_cents
-    flash[:notice] = "Your requested reservations have been created."
+
+    if (prep_results[:good_to_go] && prep_results[:holdable_types_made][:reservation])
+      flash[:notice] = "All requested reservations have been created."
+    end
+
     prep_bins
   end
 
   def pay_with_cheque
     prep_results = prepare_cart_for_payment
+    return if prep_results.blank?
+    notice_str = nil
+
     if prep_results[:good_to_go]
       CartServices::WaitForCheckHousekeeping.new(@cart_chassis).call
-      flash[:notice] = "Your requested reservations have been created. See your email for instructions on payment by cheque."
+      notice_str = "Your requested reservations have been created. See your email for instructions on payment by cheque."
     end
-    redirect_to reservations_path
+
+    redirect_to reservations_path, notice: notice_str
   end
 
   private
@@ -235,21 +248,16 @@ class CartController < ApplicationController
     veri = @cart_chassis.verify_avail_for_all_items
 
     if !veri[:verified]
-      flash[:alert] = "The following items are no longer available: #{veri[:problem_items].join(', ')}"
+      if veri[:problem_items].present?
+        flash[:alert] = "The following items are no longer available: #{veri[:problem_items].join(', ')}"
+      else
+        flash[:alert] = "No items were detected, so we couldn't check availability."
+      end
     else
       flash[:notice] = "Good news! Everything in your cart is still available."
     end
 
     veri[:verified]
-  end
-
-  def now_items_confirmed_ready_for_payment?
-    ready = @cart_chassis.can_proceed_to_payment?
-    unless ready[:verified]
-      flash[:alert] = "There are problems with the following items: #{ready[:problem_items].join(', ')}" if ready[:problem_items].present?
-      @cart_chassis.full_reload
-    end
-    ready[:verified]
   end
 
   def single_item_availability_check
@@ -302,8 +310,12 @@ class CartController < ApplicationController
     removed
   end
 
-  def prepare_cart_for_payment
-    check_for_paid
+  def prepare_cart_for_payment(holdables_finalized: false)
+    nothing_owed_str = check_for_payable(all_holdables_finalized: holdables_finalized)
+
+    if nothing_owed_str.present?
+      redirect_to reservations_path, notice: nothing_owed_str and return
+    end
 
     if !now_items_confirmed_ready_for_payment?
       flash[:notice] = "Please review your cart before proceeding."
@@ -320,18 +332,35 @@ class CartController < ApplicationController
     end
 
     if cart_prep_results[:amount_to_charge] == 0
-      flash[:notice] = "None of your items require payment."
-      redirect_to reservations_path and return
+      redirect_to reservations_path, notice: "No payment is required for any of your items!" and return
     end
 
     cart_prep_results
   end
 
-  def check_for_paid
+  def check_for_payable(all_holdables_finalized: true)
+    # If the holdables aren't finalized, we don't want to check the balance owing for
+    # individual items at this stage, because free items could still need holdable creation.
+
     @cart_chassis.full_reload
-    if @cart_chassis.purchase_bin.paid?
-      redirect_to reservations_path, notice: "You've paid for this order already." and return
+    notice_str = nil
+
+    if @cart_chassis.purchase_bin.cart_items.blank?
+      notice_str = "There's nothing in your cart to pay for!"
+    elsif (all_holdables_finalized && !@cart_chassis.any_money_owing?)
+      notice_str = "Everything in this order is either free or has already been paid for."
     end
+
+    notice_str
+  end
+
+  def now_items_confirmed_ready_for_payment?
+    ready = @cart_chassis.can_proceed_to_payment?
+    unless ready[:verified]
+      flash[:alert] = "There are problems with the following items: #{ready[:problem_items].join(', ')}" if ready[:problem_items].present?
+      @cart_chassis.full_reload
+    end
+    ready[:verified]
   end
 
   def prep_bins

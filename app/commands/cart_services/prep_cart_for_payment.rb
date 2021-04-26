@@ -27,6 +27,7 @@ class CartServices::PrepCartForPayment
     @amount_to_charge = 0
     @good_to_go = false
     @initial_item_count = initial_purchasable_item_count(cart_obj)
+    @holdable_types_created = {reservation: false}
   end
 
   def call
@@ -36,7 +37,7 @@ class CartServices::PrepCartForPayment
     else
       @amount_to_charge = 0
     end
-    {good_to_go: @good_to_go, amount_to_charge: @amount_to_charge}
+    {good_to_go: @good_to_go, amount_to_charge: @amount_to_charge, holdable_types_made: @holdable_types_created }
   end
 
   private
@@ -70,6 +71,7 @@ class CartServices::PrepCartForPayment
     new_res = cart_item.item_reservation
     new_res ||= CartServices::CreateReservationFromCartItem.new(cart_item, @user).call
     if new_res.save!
+      @holdable_types_created[:reservation] = true
       cart_item.holdable = new_res
       cart_item.cart = @transaction_bin
       @amount_to_charge += AmountOwedForReservation.new(cart_item.item_reservation).amount_owed if cart_item.save!
