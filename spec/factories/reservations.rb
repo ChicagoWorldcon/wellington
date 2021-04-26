@@ -101,14 +101,6 @@ FactoryBot.define do
             charge.save
           end
         end
-      #
-      # elsif new_reservation.instalment? && evaluator.instalment_paid > 0
-      #   create(:charge, :generate_description,
-      #     user: new_reservation.user,
-      #     buyable: new_reservation,
-      #     # reservation: new_reservation,
-      #     amount: evaluator.instalment_paid,
-      #   )
       end
     end
 

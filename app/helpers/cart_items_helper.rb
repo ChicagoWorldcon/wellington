@@ -21,6 +21,15 @@ module CartItemsHelper
   NONE = "none"
   NO_RESERVATION = "no_reservation"
 
+  def self.locate_cart_item(user, cart_item_id)
+    locator = CartItemLocator.new(our_user: user, our_item_id: cart_item_id)
+    locator.locate_current_cart_item_for_user
+  end
+
+  def locate_cart_item(user, cart_item_id)
+    CartItemsHelper.locate_cart_item(user, cart_item_id)
+  end
+
   def self.reservation_payment_status(c_item)
     return {payment_status: NO_RESERVATION, status_desc: "Not reserved."} if !c_item.item_reservation.present?
 
@@ -34,15 +43,6 @@ module CartItemsHelper
 
   def reservation_payment_status(c_item)
     CartItemsHelper.reservation_payment_status(c_item)
-  end
-
-  def self.locate_cart_item(user, cart_item_id)
-    locator = CartItemLocator.new(our_user: user, our_item_id: cart_item_id)
-    locator.locate_current_cart_item_for_user
-  end
-
-  def locate_cart_item(cart_item_id)
-    CartItemsHelper.locate_cart_item(cart_item_id)
   end
 
   def self.ready_for_payment?(c_chassis)

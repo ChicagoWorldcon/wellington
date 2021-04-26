@@ -111,7 +111,18 @@ FactoryBot.define do
 
     trait :fully_paid_through_direct_charges do
       transient do
+        num_charges { 3 }
+      end
+
+      after(:create) do |new_cart, evaluator|
+        create_list(:cart_item, 3, cart: new_cart)
+      end
+    end
+
+    trait :fully_paid_through_single_direct_charge do
+      transient do
         num_charges { 1 }
+        adult_memb_charge_cents {370_00 * 3 }
       end
 
       after(:create) do |new_cart, evaluator|
