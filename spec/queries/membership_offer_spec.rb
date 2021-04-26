@@ -53,7 +53,7 @@ RSpec.describe MembershipOffer do
   end
 
   xdescribe "#self.locate_active_offer_by_hashcode(hashcode)" do
-    
+
   end
 
   describe "#dob_required?" do
@@ -68,7 +68,7 @@ RSpec.describe MembershipOffer do
     end
   end
 
-  describe "#locate_active_offer_by_hashcode" do
+  xdescribe "#locate_active_offer_by_hashcode" do
     context "when the hashcode matches an active offer" do
       it "is not empty" do
         pending
