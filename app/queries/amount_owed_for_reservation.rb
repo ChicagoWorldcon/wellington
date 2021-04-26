@@ -26,7 +26,6 @@ class AmountOwedForReservation
   end
 
   def amount_owed
-    # TODO: Figure out if this is adequate
     return Money.new(0) if fully_paid_by_cart?
 
     paid_so_far = reservation.charges.successful.sum(&:amount)
@@ -34,6 +33,7 @@ class AmountOwedForReservation
   end
 
   def fully_paid_by_cart?
+    return false if carts_related_to_reservation.blank?
     cents_owed_for_associated_carts <= 0
   end
 
