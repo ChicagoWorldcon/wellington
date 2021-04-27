@@ -32,6 +32,18 @@ FactoryBot.define do
 
     skip_create
 
+    trait :with_empty_now_bin do
+      transient do
+        now_bin { create(:cart)}
+      end
+    end
+
+    trait :with_empty_later_bin do
+      transient do
+        later_bin { create(:cart, :for_later_bin)}
+      end
+    end
+
     trait :with_basic_items_cart_for_now do
 
       transient do
