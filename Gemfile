@@ -32,7 +32,7 @@ gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON
 gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
-gem "puma"                 # http server for rack
+gem "puma", "~> 5.0"       # http server for rack
 gem 'rack-pratchett'       # say his name
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
@@ -65,6 +65,7 @@ group :development, :test do
   gem "selenium-webdriver"                            # brower based full stack testing
   gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing.
   gem "simplecov"                                     # tracks test coverage
+  gem "solargraph"                                    # language server support
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
   gem "timecop"                                       # time travel for specs
 end

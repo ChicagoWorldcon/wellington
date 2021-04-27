@@ -19,30 +19,36 @@ schedule:
   sync_nominations_to_dave:
     cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: NominationsTdsSync
+    enabled: false
 
   email_nomination_reports:
     cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: SendNominationReports
+    enabled: false
 
   email_membership_reports:
-    cron: "0 1 * * 6 Pacific/Auckland" # At 01:00 on Saturday
+    cron: "0 1 * * 6 America/Los_Angeles" # At 01:00 on Saturday
     class: SendMembershipReports
 
   # TODO maybe it would have been better to use this http://localhost:3000/sidekiq/scheduled
   # This job returns early if you're not close to 72 hours of nomination close
   # It runs a lot so that the reminder is timely
   email_nomination_reminder_3_days:
-    cron: "0 * * * * Pacific/Auckland" # Every hour on the hour
+    cron: "0 * * * * America/Los_Angeles" # Every hour on the hour
     class: NominationReminderMassMailout
+    enabled: false
 
   email_nomination_ballot_summaries:
-    cron: "*/30 * * * * Pacific/Auckland" # Runs every half an hour
+    cron: "*/30 * * * * America/Los_Angeles" # Runs every half an hour
     class: SendNominationSummaries
+    enabled: false
 
   email_voting_reminder_3_days:
-    cron: "0 * * * * Pacific/Auckland" # Every hour on the hour
+    cron: "0 * * * * America/Los_Angeles" # Every hour on the hour
     class: RankReminderMassMailout
+    enabled: false
 
   email_voting_summaries:
-    cron: "*/15 * * * * Pacific/Auckland" # Runs every half an hour
+    cron: "*/15 * * * * America/Los_Angeles" # Runs every half an hour
     class: SendRankSummaries
+    enabled: false

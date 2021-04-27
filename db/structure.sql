@@ -619,6 +619,38 @@ ALTER SEQUENCE public.ranks_id_seq OWNED BY public.ranks.id;
 
 
 --
+-- Name: report_recipients; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.report_recipients (
+    id bigint NOT NULL,
+    report character varying,
+    email_address character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: report_recipients_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.report_recipients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: report_recipients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.report_recipients_id_seq OWNED BY public.report_recipients.id;
+
+
+--
 -- Name: reservations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -852,6 +884,13 @@ ALTER TABLE ONLY public.ranks ALTER COLUMN id SET DEFAULT nextval('public.ranks_
 
 
 --
+-- Name: report_recipients id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.report_recipients ALTER COLUMN id SET DEFAULT nextval('public.report_recipients_id_seq'::regclass);
+
+
+--
 -- Name: reservations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -998,6 +1037,14 @@ ALTER TABLE ONLY public.orders
 
 ALTER TABLE ONLY public.ranks
     ADD CONSTRAINT ranks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_recipients report_recipients_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.report_recipients
+    ADD CONSTRAINT report_recipients_pkey PRIMARY KEY (id);
 
 
 --
@@ -1428,6 +1475,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201218101337'),
 ('20201218101654'),
 ('20210105055602'),
-('20210224001734');
+('20210224001734'),
+('20210224034724'),
+('20210224035800');
 
 

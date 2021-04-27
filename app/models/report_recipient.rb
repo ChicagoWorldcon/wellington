@@ -1,0 +1,2 @@
+class ReportRecipient < ApplicationRecord
+end
