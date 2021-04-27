@@ -142,7 +142,6 @@ users_with_active_carts.each.with_index(1) do |u, i|
   FactoryBot.build(:cart_chassis, now_type, later_type, chassis_user: u)
 end
 puts
-puts
 
 users_with_paid_carts = User.last(users_to_create /5)
 paid_cart_types = [:fully_paid_through_single_direct_charge, :fully_paid_through_direct_charge_and_paid_item_combo]

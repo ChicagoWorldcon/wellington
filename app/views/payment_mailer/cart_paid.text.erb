@@ -25,10 +25,9 @@ Your order number is <%= @order_number %>.
 
 The <%= pluralize(@item_count, 'item') %> purchased include:
 
-<ol class="list-group text-dark">
-  <% @item_descs.each do |desc| %>
-    <li class="list-group-item"><%= desc %></li>
-</ol>
+  <% @item_descs.each.with_index(1) do |desc, i| %>
+    <%=i%>     <%=desc %>
+  <% end %>
 
 You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
 identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".

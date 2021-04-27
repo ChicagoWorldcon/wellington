@@ -13,39 +13,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
+<div class="purchase-preview">
+  <h1>
+    Purchase Preview (<%= @items_for_purchase.count %> items)
+  </h1>
 
-<h1 style="color:cyan">
-  Purchase Preview (<%= @items_for_purchase.count %> items)
-</h1>
-
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-lg-8">
-      <div class="l-panel">
-        <%= form_tag(cart_pay_online_path, "id" => "cart-charge-preview-form") do %>
-          <article>
-            <div id="error_explanation"></div>
-            <h2>
-              The total due for this order is  <%= @expected_charge %>.
-            </h2>
-          </article>
-          <div class="l-v-spacing-both">
-            <div class="form-group">
-              <div class="btn-group w-100">
-                <%= submit_tag(reserve_and_pay_button_text(@cart_chassis), id: "cart-proceed-to-pay-button", class: "btn btn-m-full-width") %>
+  <section class="l-section">
+    <div class="row">
+      <div class="col-12 col-lg-8">
+        <div class="l-panel">
+          <%= form_tag(cart_pay_online_path, "id" => "cart-charge-preview-form") do %>
+            <article>
+              <div id="error_explanation"></div>
+              <h2>
+                The total due for this order is  <%= @expected_charge %>.
+              </h2>
+            </article>
+            <div class="l-v-spacing-both">
+              <div class="form-group">
+                <div class="btn-group w-100">
+                  <%= submit_tag(reserve_and_pay_button_text(@cart_chassis), id: "cart-proceed-to-pay-button", class: "btn btn-m-full-width") %>
+                </div>
               </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
-    </div>
 
-    <div class="col-12 col-lg-4">
-      <div class="l-v-spacing">
-        <% @items_for_purchase.each do |cart_item| %>
-          <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item, saving: false)) %>
-        <% end %>
+      <div class="col-12 col-lg-4">
+        <div class="l-v-spacing">
+          <% @items_for_purchase.each do |cart_item| %>
+            <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item, saving: false)) %>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>

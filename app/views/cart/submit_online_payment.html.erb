@@ -13,54 +13,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 %>
+<div class="pay-online-now">
+  <h1>  Place Order (<%= pluralize(@transaction_cart.cart_items.count, "item")%>) </h1>
 
-<h1 style="color:orangered">
-  Place Order (<%= @transaction_cart.cart_items.count %> items)
-</h1>
+  <section class="l-section">
+    <div class="row">
+      <div class="col-12 col-lg-8">
+        <div class="l-panel">
+          <%= form_tag(create_group_charge_path, "id" => "charge-form", "data-stripe" => stripe_config(@transaction_cart, @prospective_charge_cents)) do %>
+            <article>
+              <div id="error_explanation"></div>
+              <h2>
+                The total due for this order is  <%= number_to_currency(@prospective_charge_cents/100.0) %>.
+              </h2>
+            </article>
+            <article>
+              <p>
+                This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in <%= worldcon_country %>, and use Stripe as our
+                payment processor.
+              </p>
 
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-lg-8">
-      <div class="l-panel">
-        <%= form_tag(create_group_charge_path, "id" => "charge-form", "data-stripe" => stripe_config(@transaction_cart, @prospective_charge_cents)) do %>
-          <article>
-            <div id="error_explanation"></div>
-            <h2>
-              The total due for this order is  <%= number_to_currency(@prospective_charge_cents/100.0) %>.
-            </h2>
-          </article>
-          <article>
-            <p>
-              This charge will show as being from '<%= worldcon_public_name_spaceless %>'. We are based in <%= worldcon_country %>, and use Stripe as our
-              payment processor.
-            </p>
-
-            <p>We do not store your credit card information.</p>
-          </article>
-          <%= hidden_field_tag(:stripeToken) %>
-          <%= hidden_field_tag(:stripeEmail) %>
-          <%= hidden_field_tag(:buyable, @transaction_cart.id) %>
-          <%= hidden_field_tag(:amount, @prospective_charge_cents) %>
-          <div class="l-v-spacing-both">
-            <div class="form-group">
-              <%= submit_tag("Pay Now", id: "payment-button", class: "btn btn-m-full-width") %>
+              <p>We do not store your credit card information.</p>
+            </article>
+            <%= hidden_field_tag(:stripeToken) %>
+            <%= hidden_field_tag(:stripeEmail) %>
+            <%= hidden_field_tag(:buyable, @transaction_cart.id) %>
+            <%= hidden_field_tag(:amount, @prospective_charge_cents) %>
+            <div class="l-v-spacing-both">
+              <div class="form-group">
+                <%= submit_tag("Pay Now", id: "payment-button", class: "btn btn-m-full-width") %>
+              </div>
             </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="col-12 col-lg-4">
-      <div class="l-v-spacing">
-        <% @transaction_cart.cart_items.each do |cart_item| %>
-          <% # TODO: This is excessively entangled.  Put this in a view helper. %>
-          <% if cart_item.item_reservation.present? %>
-            <%= render("reservation_card", reservation: cart_item.item_reservation) %>
-          <% else %>
-            <%= render("cart_item_card", cart_item: cart_item) %>
           <% end %>
-        <% end %>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="l-v-spacing">
+          <% @transaction_cart.cart_items.each do |cart_item| %>
+            <% # TODO: This is excessively entangled.  Put this in a view helper. %>
+            <% if cart_item.item_reservation.present? %>
+              <%= render("reservation_card", reservation: cart_item.item_reservation) %>
+            <% else %>
+              <%= render("cart_item_card", cart_item: cart_item) %>
+            <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>

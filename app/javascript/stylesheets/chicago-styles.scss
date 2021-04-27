@@ -155,6 +155,177 @@ h6, .h6-like {
     margin-bottom: 0.9375em;
 }
 
+// // ===================
+// // CART=SPECIFIC STYLES
+// // ===================
+#cart-header {
+  background-color: purple;
+  color:cyan;
+}
+
+.all-cart-admin-container {
+  background-color: thistle;
+  color: maroon;
+}
+
+.cart-body .no-contents {
+  background-color: lightcoral;
+  color: darkslategrey;
+}
+
+div.subtotal-container {
+  padding: $spacer;
+}
+
+div.subtotal-container > h5 {
+  background-color: hotpink;
+  color: dimgrey;
+}
+
+#overall-buttons {
+  padding: $spacer;
+}
+
+#now-header  {
+  background-color: mistyrose;
+  color: teal;
+}
+
+div.now-items {
+  background-color: aquamarine;
+}
+
+div.now-items .item-cards .row {
+  background-color: lightgreen;
+  color: navy;
+}
+
+div.now-items .card-header {
+  background-color: seagreen;
+  color: white;
+}
+
+div.now-items .acquirable-card .card-header {
+  background-color: yellowgreen;
+  color: black;
+}
+
+div.now-items .benefitable-card .card-header {
+  background-color: teal;
+  color: white;
+}
+
+div.now-items .acquirable-card .card-footer {
+  background-color: yellowgreen;
+  color: black;
+}
+
+div.now-items .benefitable-card .card-footer {
+  background-color: teal;
+  color: white;
+}
+
+div.now-items .card-footer {
+  background-color: lawngreen;
+  color: black;
+}
+
+div.now-items .card-footer .res-payment-status {
+  background-color: darkmagenta;
+  color: white;
+}
+
+div.now-items .no-contents {
+  color: chocolate;
+}
+
+div.now-items .admin-container {
+
+}
+
+div.now-items .subtotal-container {
+  color:indigo;
+}
+
+#later-header {
+  background-color: rosybrown;
+  color:maroon;
+}
+
+div.later-items {
+  background-color: violet;
+}
+
+div.later-items .item-cards .row {
+  background-color: darkslategray;
+}
+
+div.later-items .card-header {
+  background-color: brown;
+  color: blanchedalmond;
+}
+
+div.later-items .acquirable-card .card-header {
+  background-color: coral;
+  color: black;
+}
+
+div.later-items .benefitable-card .card-header {
+  background-color: darkkhaki;
+  color: black;
+}
+
+div.later-items .acquirable-card .card-footer {
+  background-color: coral;
+  color: black;
+}
+
+div.later-items .benefitable-card .card-footer {
+  background-color: darkkhaki;
+  color: black;
+}
+
+div.later-items .card-footer {
+  background-color: firebrick;
+  color: wheat;
+}
+
+div.later-items .card-footer .res-payment-status {
+  background-color: indigo;
+  color: yellow;
+}
+
+div.later-items .admin-container {
+  background-color: saddlebrown;
+  color: peachpuff;
+}
+
+div.later-items .subtotal-container {
+  background-color: salmon;
+  color: sienna;
+}
+
+div.purchase-preview h1 {
+  color: darkcyan;
+  background-color: cornsilk;
+}
+
+div.purchase-preview .card-header {
+  font-size: 2vmin;
+}
+
+div.pay-online-now h1 {
+  color: orangered;
+  background-color: lemonchiffon;
+}
+
+div.group-payment-confirmation h1 {
+  color: wheat;
+  background-color: tomato;
+}
+
+
+
 // =========================================================================
 // COMPONENTS
 // =========================================================================

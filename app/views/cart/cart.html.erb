@@ -16,25 +16,21 @@
   TODO: figure out if we need to disable some or all buttons for  unavailable items.
 %>
 
-<h1 style="background-color:purple; color:cyan">SHOPPING CART</h1>
-<div class="container text-center">
+<h1 id="cart-header">SHOPPING CART</h1>
+<div class="container text-center cart-body">
   <% if @now_bin.present? || @later_bin.present? %>
-    <h2 style=
-    "color:yellow">Items to Purchase Now:</h2>
-
+    <h2 id="now-header">Items to Purchase Now:</h2>
     <% if @now_bin.present? %>
-      <div class="now-items" style="background-color:violet">
-
-
-        <div class="row d-inline-flex align-items-stretch">
+      <div class="now-items">
+        <div class="row d-inline-flex align-items-stretch item-cards">
           <% @now_bin.each do |cart_item| %>
-            <div class="row row-cols-auto mb-3 ml-2" style="background-color:violet">
+            <div class="row row-cols-auto mb-3 ml-2">
               <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item))%>
             </div>
           <% end %>
         </div>
 
-        <div class="active-admin-container">
+        <div class="admin-container">
           <div class="btn-group payment-buttons" role="group">
             <% if ready_for_payment?(@cart_chassis) %>
               <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
@@ -43,27 +39,27 @@
             <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
             <%= group_deletion_button(@cart_chassis.now_bin) %>
           </div>
-          <div class="subtotal-container" style="background-color:darkorange">
-            <h5 style="color:indigo"> Cart Subtotal: <%= @now_subtotal %></h5>
+          <div class="subtotal-container p-3 m-2">
+            <h5> Cart Subtotal: <%= @now_subtotal %></h5>
           </div>
         </div>
       </div>
     <% else %>
-      <h4 style="color:chocolate"> All your items are saved for later.  </h4>
+      <h4 class="no-contents"> All your items are saved for later.  </h4>
     <% end %>
 
     <% if @later_bin.present? %>
-      <div class="later-items" style="background-color:thistle">
-        <h2 class="bg-warning" style="color:maroon">Items Saved for Later:</h2>
-        <div class="row d-inline-flex align-items-stretch">
+      <div class="later-items">
+        <h2 id="later-header" class="bg-warning">Items Saved for Later:</h2>
+        <div class="row d-inline-flex align-items-stretch item-cards">
           <% @later_bin.each do |later_item| %>
-            <div class="row row-cols-auto mb-3 ml-2" style="background-color:darkslategray">
+            <div class="row row-cols-auto mb-3 ml-2">
               <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item, in_later_bin: true)) %>
             </div>
           <% end %>
         </div>
 
-        <div class="saved-admin-container">
+        <div class="admin-container">
           <div class="btn-group later-buttons" role="group">
             <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
             <%= group_deletion_button(@cart_chassis.later_bin) %>
@@ -72,14 +68,14 @@
       </div>
     <% end %>
 
-    <div class="all-cart-admin-container" style="background-color:mediumvioletred">
-      <div class="btn-group overall-buttons" role="group">
+    <div class="admin-container">
+      <div class="btn-group" id="overall-buttons" role="group">
         <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-success" %>
         <%= group_deletion_button(@cart_chassis) %>
       </div>
     </div>
 
   <% else %>
-    <h4 style="background-color:lightsteelblue; color:olive"> Your cart is empty! </h4>
+    <h4 class = "no-contents"> Your cart is empty! </h4>
   <% end %>
 </div>

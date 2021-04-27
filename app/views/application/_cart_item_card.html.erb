@@ -14,12 +14,12 @@
   limitations under the License.
 %>
 <div class = "container cart-item-card-pair-container h-100">
-  <div class="card-header" style="background-color:darkgreen">
+  <div class="card-header">
     <h2><%= cart_item.kind.capitalize %></h2>
   </div>
   <div class = "card-group">
     <div class="card acquirable-card">
-      <div class = "card-header text-nowrap">
+      <div class = "card-header">
         <h4 class= "acquirable-name"><%= cart_item.item_display_name %></h4>
       </div>
       <div class="card-body">
@@ -45,7 +45,7 @@
       </div>
       <div class="card-footer">
         <% reservation_status_info = reservation_payment_status(cart_item) %>
-        <div class="container res-payment-status" style="background-color:darkseagreen; color:rebeccapurple" >
+        <div class="container res-payment-status" >
           <h6><%= reservation_status_info[:status_desc] %></h6>
         </div>
       </div>
@@ -70,7 +70,7 @@
       </div>
     <% end %>
   </div>
-  <div class="card-footer" style="background-color:firebrick">
+  <div class="card-footer">
     <% if !!defined?(admin_buttons) && admin_buttons.present? %>
       <div class="btn-group checkout-item-admin-buttons" role="group">
         <% admin_buttons.each do |a_button| %>

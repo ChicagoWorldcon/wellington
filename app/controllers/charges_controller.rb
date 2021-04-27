@@ -109,7 +109,7 @@ class ChargesController < ApplicationController
     our_charge = Charge.find_by(id: params[:charge])
     @amount_charged = Money.new(our_charge.amount_cents).format(with_currency: true) if our_charge.present?
     @processed_cart = Cart.find_by(id: params[:processed_cart])
-    
+
     if (!@amount_charged || !@processed_cart)
       error_str = "Unable to create your confirmation! Please review your reservations!"
       redirect_to reservations_path, alert: error_str and return
@@ -129,7 +129,7 @@ class ChargesController < ApplicationController
     PaymentMailer.cart_paid(
       user: current_user,
       charge: charge,
-      amount: charge_amount,
+      amount: charge_amount.cents,
       item_count: processing_cart.cart_items.size,
       item_descriptions: item_description_array,
       purchase_date: processing_cart.active_to,
