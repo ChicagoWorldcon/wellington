@@ -257,7 +257,7 @@ RSpec.describe ChargesController, type: :controller do
   end
 
   describe "GET #group_charge_confirmation" do
-    let(:fully_paid_cart) {create(:cart, :fully_paid_through_direct_charges)}
+    let(:fully_paid_cart) {create(:cart, :fully_paid_through_single_direct_charge)}
     let(:f_p_c_charge) {fully_paid_cart.charges.order("created_at").last}
 
     before do

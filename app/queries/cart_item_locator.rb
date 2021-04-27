@@ -34,48 +34,6 @@ class CartItemLocator
     r_item.length == 1 ? r_item[0] : nil
   end
 
-  def cart_items_for_now
-    n_bin = our_now_bin
-    (n_bin.present? && n_bin.cart_items.present?) ? n_bin.cart_items : []
-  end
-
-  def cart_items_for_later
-    l_bin = our_later_bin
-    (l_bin.present? && l_bin.cart_items.present?) ? l_bin.cart_items : []
-  end
-
-  def all_current_cart_items(as_ary: true)
-    currs = CartItem.where(cart: [our_now_bin, our_later_bin])
-    as_ary ? currs.to_ary : currs
-  end
-
-  def all_membership_items_for_now(as_ary: true)
-    m_items = CartItem.where(cart: our_now_bin, kind: MEMBERSHIP)
-    as_ary ? m_items.to_ary : m_items
-  end
-
-  def all_membership_items(as_array: true)
-    all_ms = CartItem.where(cart: [our_now_bin, our_later_bin], kind: MEMBERSHIP)
-    as_array ? all_ms.to_ary : all_ms
-  end
-
-  def all_reservations_from_cart_items_for_now
-    CartItem.where(cart: our_now_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
-  end
-
-  def all_reservations_from_cart_items_for_later
-    CartItem.where(cart: our_later_bin, holdable_type: RESERVATION).select('holdable').map(&:holdable)
-  end
-
-  def all_reservations_from_current_cart_items
-    # all_reservations_from_cart_items_for_now.concat(all_reservations_from_cart_items_for_later)
-    CartItem.where(cart: [our_now_bin, our_later_bin], holdable_type: RESERVATION).select('holdable').map(&:holdable)
-  end
-
-  def all_items_for_now_are_memberships?
-    CartItem.where({cart: our_now_bin, later: false}).where.not(kind: MEMBERSHIP).count == 0
-  end
-
   private
 
   def our_now_bin

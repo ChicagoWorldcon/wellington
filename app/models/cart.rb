@@ -37,9 +37,9 @@ class Cart < ApplicationRecord
     PAID
   ].freeze
 
-
   belongs_to :user, required: true
   has_many :charges, :as => :buyable
+
   has_many :cart_items
 
   validates :status, presence: true, :inclusion => { in: STATUS_OPTIONS }
@@ -66,13 +66,12 @@ class Cart < ApplicationRecord
   end
 
   def subtotal_cents
-    #TODO: Rename to show that this reflects charges to
-    # cart_items but not to the actual cart.
+    #NOTE: Only includes cart-charges when the cart-charges are enough to cover the cost of each item in the cart, less their own direct charges.
     self.cart_items.reduce(0) { |sum, i| sum + i.item_price_in_cents }
   end
 
   def subtotal_display
-    #TODO: Rename along with subtotal_cents
+    #TODO: Possibly rename along with subtotal_cents
     Money.new(self.subtotal_cents, "USD").format(with_currency: true)
   end
 

@@ -293,44 +293,6 @@ RSpec.describe Cart, type: :model do
       end
     end
 
-    describe "cart fully_paid_through_direct_charges" do
-      let(:cart_fully_pd_direct) { create(:cart, :fully_paid_through_direct_charges)}
-
-      it "is valid" do
-        expect(cart_fully_pd_direct).to be_valid
-      end
-
-      it "has at least one cart item" do
-        expect(cart_fully_pd_direct.cart_items.count).to be > 0
-      end
-
-      it "has at least one successful charge" do
-        expect(cart_fully_pd_direct.charges.successful.count).to be > 0
-      end
-
-      it "has the same number of charges and cart_items" do
-        expect(cart_fully_pd_direct.cart_items.count).to eql(cart_fully_pd_direct.charges.count)
-      end
-
-      it "contains no cart_items that have successful charges" do
-
-        scsfl_item_charge_seen = false
-
-        cart_fully_pd_direct.cart_items.each { |i| scsfl_item_charge_seen = true if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?) }
-
-        expect(scsfl_item_charge_seen).to eql(false)
-      end
-
-      it "has successful charges that equal the combined price of the cart-items" do
-        successful_cart_charges = cart_fully_pd_direct.successful_direct_charge_total
-
-        combined_cart_item_price = cart_fully_pd_direct.cart_items.sum{ |i| i.acquirable.price_cents }
-
-        expect(successful_cart_charges).to eql(combined_cart_item_price)
-      end
-    end
-
-
     describe "cart fully_paid_through_single_direct_charge" do
       let(:cart_fully_pd_sing_direct) { create(:cart, :fully_paid_through_single_direct_charge)}
 
@@ -340,6 +302,11 @@ RSpec.describe Cart, type: :model do
 
       it "has three cart_items" do
         expect(cart_fully_pd_sing_direct.cart_items.count).to eql(3)
+      end
+
+      it "only has cart-items with reservations" do
+        reservs_seen = cart_fully_pd_sing_direct.cart_items.select {|i| i.item_reservation.present? }
+        expect(reservs_seen.length).to eql(cart_fully_pd_sing_direct.cart_items.count)
       end
 
       it "has exactly one successful charge" do
@@ -363,12 +330,6 @@ RSpec.describe Cart, type: :model do
         expect(successful_cart_charges).to eql(combined_cart_item_price)
       end
     end
-
-
-
-
-
-
 
     describe "cart fully_paid_through_direct_charge_and_paid_item_combo" do
       let(:cart_fully_pd_combo) { create(:cart, :fully_paid_through_direct_charge_and_paid_item_combo)}
@@ -439,6 +400,27 @@ RSpec.describe Cart, type: :model do
         combined_cart_item_price = cart_part_pd_combo.cart_items.sum(&:price_cents)
 
         expect(successful_cart_charges + successful_cart_item_charges).to be < combined_cart_item_price
+      end
+    end
+
+    describe "cart :with_failed_charges factory" do
+      let(:cart_with_failed_charges) { create(:cart, :with_failed_charges)}
+
+      it "is valid" do
+        expect(cart_with_failed_charges).to be_valid
+      end
+
+      it "has at least one direct charge" do
+        expect(cart_with_failed_charges.charges.length).to be > 0
+      end
+
+      it "has no successful direct charges" do
+        expect(cart_with_failed_charges.successful_direct_charges?).to eql(false)
+      end
+
+      it "has no pending direct charges" do
+        pendings_seen = cart_with_failed_charges.charges.select {|c| c.pending? }
+        expect(pendings_seen.length).to eql(0)
       end
     end
   end
@@ -820,13 +802,15 @@ RSpec.describe Cart, type: :model do
         context "when the cart has successful charges of its own" do
           context "when the cart_items have no charges of their own" do
             context "when the cart's succesful direct charges equal the price of the cart_items" do
-              let(:full_pd_dir_cart) {create(:cart, :fully_paid_through_direct_charges)}
+              let(:full_pd_dir_cart) {create(:cart, :fully_paid_through_single_direct_charge)}
 
-              it "returns true" do
-                expect(full_pd_dir_cart.items_paid?).to eql(false)
+              it "returns false" do
+                expect(full_pd_dir_cart.items_paid?).to eql(true)
               end
             end
           end
+
+
         end
 
         context "when the cart_items have successful charges of their own" do
@@ -834,7 +818,7 @@ RSpec.describe Cart, type: :model do
             let(:full_combo_cart) {create(:cart, :fully_paid_through_direct_charge_and_paid_item_combo)}
 
             it "returns true" do
-              expect(full_combo_cart.items_paid?).to eql(false)
+              expect(full_combo_cart.items_paid?).to eql(true)
             end
           end
         end

@@ -18,8 +18,45 @@ require "rails_helper"
 
 RSpec.describe CartItemLocator do
 
-  subject(:query) { described_class.new(cart) }
+  subject(:query) { described_class.new(our_user: user, our_item_id: item_id) }
 
-  xdescribe "#describe_cart_contents" do
+  xdescribe "#locate_current_cart_item_for_user" do
+    subject(:ct_item_for_user) { query.locate_current_cart_item_for_user }
+    pending
+  end
+
+  xdescribe "#cart_items_for_now" do
+    subject(:ct_items_for_now) { query.cart_items_for_now}
+    pending
+  end
+
+  xdescribe "#cart_items_for_later" do
+    subject(:ct_items_for_later) { query.cart_items_for_later}
+    pending
+  end
+
+  xdescribe "#all_current_cart_items" do
+    subject(:all_curr_ct_items) { query.all_current_cart_items}
+    pending
+  end
+
+  xdescribe "#all_membership_items_for_now" do
+    subject(:all_memb_items_for_n) { query.all_membership_items_for_now}
+    pending
+  end
+
+  xdescribe "#all_reservations_from_cart_items_for_now" do
+    subject(:all_res_for_n) { query.all_reservations_from_cart_items_for_now}
+    pending
+  end
+
+  xdescribe "#all_reservations_from_cart_items_for_later" do
+    subject(:all_res_for_l) { query.all_reservations_from_cart_items_for_later}
+    pending
+  end
+
+  xdescribe "#all_reservations_from_cart_items_for_later" do
+    subject(:all_current_res) { query.all_reservations_from_cart_items_for_later}
+    pending
   end
 end

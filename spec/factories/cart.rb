@@ -109,16 +109,6 @@ FactoryBot.define do
       end
     end
 
-    trait :fully_paid_through_direct_charges do
-      transient do
-        num_charges { 3 }
-      end
-
-      after(:create) do |new_cart, evaluator|
-        create_list(:cart_item, 3, cart: new_cart)
-      end
-    end
-
     trait :fully_paid_through_single_direct_charge do
       transient do
         num_charges { 1 }
@@ -126,7 +116,7 @@ FactoryBot.define do
       end
 
       after(:create) do |new_cart, evaluator|
-        create_list(:cart_item, 3, cart: new_cart)
+        create_list(:cart_item, 3, :with_unpaid_reservation, cart: new_cart)
       end
     end
 
@@ -136,7 +126,7 @@ FactoryBot.define do
       end
 
       transient do
-        num_charges { 2 }
+        num_charges { 1 }
         small_charges { true }
       end
     end
@@ -144,7 +134,7 @@ FactoryBot.define do
     trait :fully_paid_through_direct_charge_and_paid_item_combo do
       after(:create) do |new_cart, evaluator|
         create_list(:cart_item, 2, :with_paid_reservation, cart: new_cart)
-        create(:cart_item, cart: new_cart)
+        create(:cart_item, :with_unpaid_reservation, cart: new_cart)
       end
 
       transient do
@@ -152,15 +142,20 @@ FactoryBot.define do
       end
     end
 
-
     trait :partially_paid_through_direct_charge_and_paid_item_combo do
       after(:create) do |new_cart, evaluator|
-        create_list(:cart_item, 2, cart: new_cart)
-        create_list(:cart_item, 2, :with_paid_reservation, cart: new_cart)
+        create_list(:cart_item, 4, :with_partially_paid_reservation, cart: new_cart)
       end
 
       transient do
         num_charges { 1 }
+      end
+    end
+
+    trait :with_failed_charges do
+      transient do
+        num_charges { 3 }
+        charge_state { Charge::STATE_FAILED }
       end
     end
   end
