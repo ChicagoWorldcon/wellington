@@ -32,6 +32,7 @@ RUN apk add \
       nodejs-npm \
       postgresql-client \
       postgresql-dev \
+      shared-mime-info \
       sqlite-dev \
       tzdata \
     && rm -rf /var/cache/apk/* \
