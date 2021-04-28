@@ -6,13 +6,16 @@
 
   Licensed under the Apache License, Version 2.0 (the "License");
 1-Feb-21 FNB FIx CoC and Privacy policy links
+7-Apr-21 FNB Add CoC affirmation text
 %>
 
 <%= fields_for(@contact) do |contact_form| %>
   <p>
-    For more information about how we handle and use your personal information, please read our
-    <a href="https://discon3.org/about/CoC/#privacy" target="_blank" rel="noopener">Privacy Policy</a> and our
-    <a href="https://discon3.org/about/CoC" target="_blank" rel="noopener">Code of Conduct</a>.
+  <b> By purchasing a membership, the member agrees to abide by our 
+    <a href="https://discon3.org/about/CoC" target="_blank" rel="noopener">Code of Conduct</a></b>.
+    <P>For more information about how we handle and use your personal information, please read our
+    <a href="https://discon3.org/about/CoC/#privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+    <br>
   </p>
 
   <% if !@reservation.persisted? && @current_memberships.present? %>
