@@ -16,8 +16,7 @@
         @change='changeRank()'
         @keyup='changeRank()'
       >
-      <span v-bind:class="{ 'text-danger': invalid }">
-        <div v-html="finalist.name"></div>
+      <span v-bind:class="{ 'text-danger': invalid }" v-html="finalist.name">
       </span>
     </div>
 
