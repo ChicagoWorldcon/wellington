@@ -2656,11 +2656,7 @@ RSpec.describe CartChassis, type: :model do
         end
 
         context "when the purchase_bin also contains a membership item without a reservation" do
-<<<<<<< Updated upstream
-          let(:base_memb_item) { create(:cart_item)}
-=======
           let(:base_memb_item) { create(:cart_item) }
->>>>>>> Stashed changes
 
           before do
             base_memb_item.update_attribute(:cart, unpd_r_n_chassis.purchase_bin)
