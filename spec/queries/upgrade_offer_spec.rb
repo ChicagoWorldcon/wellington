@@ -28,6 +28,14 @@ RSpec.describe UpgradeOffer do
 
   subject(:offer) { UpgradeOffer.new(from: silver_fern, to: adult) }
 
+  before(:all) do
+    puts "#{Membership.all.count} Memberships at the start"
+  end
+
+  after(:all) do
+    puts "#{Membership.all.count} Memberships left after everything"
+  end
+
   it "shows price as the difference of memberships" do
     expect(offer.price).to eq(adult.price - silver_fern.price)
   end
@@ -40,20 +48,23 @@ RSpec.describe UpgradeOffer do
   end
 
   describe "#to_s" do
-    subject(:to_s) { offer.to_s }
-    it { is_expected.to match(/\d+/i) }
-    it { is_expected.to include($currency) }
+    it "reports US currency in string form" do
+      expect(offer.to_s).to match(/\d+/i)
+      expect(offer.to_s).to include($currency)
+    end
   end
 
   describe "#link_text" do
-    subject(:to_s) { offer.link_text }
-    it { is_expected.to match(/Upgrade/i) }
+    it "mentions an upgrade" do
+      expect(offer.link_text).to match(/Upgrade/i)
+    end
   end
 
   describe "#link_description" do
-    subject(:to_s) { offer.link_description }
-    it { is_expected.to match(/\d+/i) }
-    it { is_expected.to include($currency) }
+    it "reports US currency in string form" do
+      expect(offer.link_description).to match(/\d+/i)
+      expect(offer.link_description).to include($currency)
+    end
   end
 
   describe "#from" do
