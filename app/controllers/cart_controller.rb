@@ -23,7 +23,6 @@ class CartController < ApplicationController
   before_action :require_nonsupport_login
   before_action :get_cart_chassis
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
-  #before_action :verify_all_cart_contents, only: [:show]
 
   MEMBERSHIP = "membership"
   FOR_LATER = "for_later"
@@ -312,7 +311,6 @@ class CartController < ApplicationController
 
   def prepare_cart_for_payment
     nothing_owed_str = further_processing_unnecessary?
-
     if nothing_owed_str.present?
       redirect_to reservations_path, notice: nothing_owed_str and return
     end
@@ -341,7 +339,6 @@ class CartController < ApplicationController
   def further_processing_unnecessary?
     # If the holdables aren't made, we don't want to check the
     # balance owing for individual items at this stage, because free # items could still need holdable creation.
-
     @cart_chassis.full_reload
     notice_str = nil
 

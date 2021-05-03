@@ -71,7 +71,7 @@ class CartChassis
   end
 
   def any_money_owing?
-    purchase_bin.cents_owed_for_cart_less_all_credits <= 0
+    purchase_bin.cents_owed_for_cart_less_all_credits > 0
   end
 
   def purchase_bin_items_paid?

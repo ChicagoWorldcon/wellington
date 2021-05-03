@@ -2201,7 +2201,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "sets a flash notice" do
-         expect(subject).to set_flash[:notice].to(/no payment is required/i) #rg-checked
+         expect(subject).to set_flash[:notice].to(/free or has already been paid/i) #rg-checked
       end
 
       it "leaves the cart_items' holdables in place" do
@@ -2462,7 +2462,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "sets a flash notice" do
-         expect(subject).to set_flash[:notice].to(/no payment is required/i) #rg-checked
+         expect(subject).to set_flash[:notice].to(/free or has already been paid/i) #rg-checked
       end
 
       it "leaves the cart_items' holdables in place" do
@@ -2490,7 +2490,7 @@ RSpec.describe CartController, type: :controller do
       end
 
       it "sets a flash notice" do
-         expect(subject).to set_flash[:notice].to(/requested reservations/i)   #rg-checked
+        expect(subject).to set_flash[:notice].to(/requested reservations/i)   #rg-checked
       end
 
       it "leaves the cart_items' holdables in place" do

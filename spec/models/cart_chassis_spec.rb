@@ -2639,6 +2639,11 @@ RSpec.describe CartChassis, type: :model do
         context "when the purchase_bin also contains an item with an unknown kind" do
           let (:unk_k_item) { create(:cart_item, :unknown_kind, cart: unpd_r_n_chassis.purchase_bin)}
 
+          before do
+            unk_k_item.update_attribute(:cart, unpd_r_n_chassis.purchase_bin)
+            unpd_r_n_chassis.full_reload
+          end
+
           it "returns true" do
             unpd_r_n_chassis.full_reload
             expect(unpd_r_n_chassis.all_required_holdables_present?).to eql(true)
@@ -2646,10 +2651,14 @@ RSpec.describe CartChassis, type: :model do
         end
 
         context "when the purchase_bin also contains a membership item without a reservation" do
-          let(:base_memb_item) { create(:cart_item, cart: unpd_r_n_chassis.purchase_bin)}
+          let(:base_memb_item) { create(:cart_item)}
+
+          before do
+            base_memb_item.update_attribute(:cart, unpd_r_n_chassis.purchase_bin)
+            unpd_r_n_chassis.full_reload
+          end
 
           it "returns false" do
-            unpd_r_n_chassis.full_reload
             expect(unpd_r_n_chassis.all_required_holdables_present?).to eql(false)
           end
         end
