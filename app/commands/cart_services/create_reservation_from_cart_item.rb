@@ -25,6 +25,7 @@ class CartServices::CreateReservationFromCartItem
 
   def call
     return nil if !@cart_item.acquirable.kind_of?(Membership)
+    #TODO-- MAKE THIS NOISIER.
 
     unless @cart_item.item_ready_for_payment?
       raise StandardError.new "CartItem #{@cart_item.id} cannot be purchased at this time"

@@ -184,6 +184,16 @@ class CartChassis
     true
   end
 
+  def all_required_holdables_present?
+    binding.pry
+    self.purchase_bin.cart_items.each do |i|
+      binding.pry
+      return false if i.needs_a_holdable_before_payment?
+    end
+    binding.pry
+    true
+  end
+
   private
 
   def all_bins_present?

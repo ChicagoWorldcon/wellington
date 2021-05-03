@@ -14,19 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class CartServices::PrepCartForPayment
+class CartServices::CreateHoldablesAndCalcPrice
 
   MEMBERSHIP = CartItem::MEMBERSHIP
 
   attr_reader :our_cart, :amount_to_charge, :good_to_go, :processing_cart
 
-  def initialize(cart_obj)
-    @original_cart_object = cart_obj
-    @transaction_bin = identify_transaction_bin(cart_obj)
-    @user = note_user(cart_obj)
+  def initialize(cart_chas)
+    @original_cart_object = cart_chas
+    @transaction_bin = identify_transaction_bin(cart_chas)
+    @user = note_user(cart_chas)
     @amount_to_charge = 0
     @good_to_go = false
-    @initial_item_count = initial_purchasable_item_count(cart_obj)
+    @initial_item_count = initial_purchasable_item_count(cart_chas)
     @holdable_types_created = {reservation: false}
   end
 
@@ -42,23 +42,21 @@ class CartServices::PrepCartForPayment
 
   private
 
-  def identify_transaction_bin(cart_o)
-    cart_o.now_bin
+  def identify_transaction_bin(cart_chas)
+    cart_chas.now_bin
   end
 
-  def note_user(cart_o)
-    cart_o.now_bin.user
+  def note_user(cart_chas)
+    cart_chas.now_bin.user
   end
 
-  def initial_purchasable_item_count(cart_o)
-    cart_o.now_bin.cart_items.count
+  def initial_purchasable_item_count(cart_chas)
+    cart_chas.now_bin.cart_items.count
   end
 
   def prep_cart_items
     @transaction_bin.reload
-
     return if @transaction_bin.cart_items.blank?
-
     ActiveRecord::Base.transaction(joinable: false, requires_new: true)  do
       @transaction_bin.cart_items.each do |item|
         prep_membership_item(item)

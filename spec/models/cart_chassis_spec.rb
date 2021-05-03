@@ -2627,5 +2627,34 @@ RSpec.describe CartChassis, type: :model do
         expect(base_full_chassis.payment_by_check_allowed?).to eql(true)
       end
     end
+
+    describe "#all_required_holdables_present?" do
+      context "when the purchase_bin contains items with unpaid reservations" do
+        let(:unpd_r_n_chassis) { build(:cart_chassis, :with_unpaid_reservations_cart_for_now)}
+
+        it "returns true" do
+          expect(unpd_r_n_chassis.all_required_holdables_present?).to eql(true)
+        end
+
+        context "when the purchase_bin also contains an item with an unknown kind" do
+          let (:unk_k_item) { create(:cart_item, :unknown_kind, cart: unpd_r_n_chassis.purchase_bin)}
+
+          it "returns true" do
+            unpd_r_n_chassis.full_reload
+            expect(unpd_r_n_chassis.all_required_holdables_present?).to eql(true)
+          end
+        end
+
+        context "when the purchase_bin also contains a membership item without a reservation" do
+          let(:base_memb_item) { create(:cart_item, cart: unpd_r_n_chassis.purchase_bin)}
+
+          it "returns false" do
+            binding.pry
+            unpd_r_n_chassis.full_reload
+            expect(unpd_r_n_chassis.all_required_holdables_present?).to eql(false)
+          end
+        end
+      end
+    end
   end
 end

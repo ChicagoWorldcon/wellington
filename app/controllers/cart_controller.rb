@@ -181,7 +181,7 @@ class CartController < ApplicationController
   end
 
   def submit_online_payment
-    prep_results = prepare_cart_for_payment(holdables_finalized: false)
+    prep_results = prepare_cart_for_payment
 
     if prep_results.blank? || prep_results[:amount_to_charge] <= 0
       prep_bins and return
@@ -310,8 +310,8 @@ class CartController < ApplicationController
     removed
   end
 
-  def prepare_cart_for_payment(holdables_finalized: false)
-    nothing_owed_str = check_for_payable(all_holdables_finalized: holdables_finalized)
+  def prepare_cart_for_payment
+    nothing_owed_str = further_processing_unnecessary?
 
     if nothing_owed_str.present?
       redirect_to reservations_path, notice: nothing_owed_str and return
@@ -323,32 +323,34 @@ class CartController < ApplicationController
       redirect_to cart_path and return
     end
 
-    cart_prep_results = CartServices::PrepCartForPayment.new(@cart_chassis).call
+    holdable_prep_results = CartServices::CreateHoldablesAndCalcPrice.new(@cart_chassis).call
 
-    if !cart_prep_results[:good_to_go]
+    if !holdable_prep_results[:good_to_go]
       flash[:alert] = "There was a problem with one or more of your items!"
       prep_bins
       redirect_to cart_path and return
     end
 
-    if cart_prep_results[:amount_to_charge] == 0
+    if holdable_prep_results[:amount_to_charge] == 0
       redirect_to reservations_path, notice: "No payment is required for any of your items!" and return
     end
 
-    cart_prep_results
+    holdable_prep_results
   end
 
-  def check_for_payable(all_holdables_finalized: true)
-    # If the holdables aren't finalized, we don't want to check the balance owing for
-    # individual items at this stage, because free items could still need holdable creation.
+  def further_processing_unnecessary?
+    # If the holdables aren't made, we don't want to check the
+    # balance owing for individual items at this stage, because free # items could still need holdable creation.
 
     @cart_chassis.full_reload
     notice_str = nil
 
     if @cart_chassis.purchase_bin.cart_items.blank?
       notice_str = "There's nothing in your cart to pay for!"
-    elsif (all_holdables_finalized && !@cart_chassis.any_money_owing?)
-      notice_str = "Everything in this order is either free or has already been paid for."
+    elsif @cart_chassis.all_required_holdables_present?
+      if !@cart_chassis.any_money_owing?
+        notice_str = "Everything in this order is either free or has already been paid for."
+      end
     end
 
     notice_str

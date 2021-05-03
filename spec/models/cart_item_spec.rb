@@ -758,6 +758,7 @@ RSpec.describe CartItem, type: :model do
         end
       end
     end
+
     describe "#item_charges" do
       context "when the item has no Holdable" do
         it "returns an empty array" do
@@ -789,6 +790,33 @@ RSpec.describe CartItem, type: :model do
       end
     end
 
+    describe "#needs_a_holdable_before_payment?" do
+      context "when the item has an unknown kind" do
+        let(:unknown_k_item) { create(:cart_item, :unknown_kind)}
+
+        it "returns false" do
+          expect(unknown_k_item.needs_a_holdable_before_payment?).to eql(false)
+        end
+      end
+
+      context "when the item is a Membership" do
+        context "when the item has an associated reservation" do
+          let(:unpaid_reserv_item) { create(:cart_item, :with_unpaid_reservation)}
+
+          it "returns false" do
+            expect(unpaid_reserv_item.needs_a_holdable_before_payment?).to eql(false)
+          end
+        end
+
+        context "when the item does not have an associated reservation" do
+          let(:basic_membership_item) { create(:cart_item)}
+
+          it "returns true" do
+            expect(basic_membership_item.needs_a_holdable_before_payment?).to eql(true)
+          end
+        end
+      end
+    end
   end
 
   describe "validations" do

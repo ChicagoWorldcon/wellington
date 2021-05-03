@@ -197,6 +197,15 @@ class CartItem < ApplicationRecord
     self.holdable.charges.successful.to_ary
   end
 
+  def needs_a_holdable_before_payment?
+    case self.kind
+    when MEMBERSHIP
+      return self.item_reservation.blank?
+    else
+      return false
+    end
+  end
+
   private
 
   def membership_display_name
@@ -251,7 +260,7 @@ class CartItem < ApplicationRecord
     # permanent condition. Once something has become unavailable, it
     # never becomes available again.   That, of course, is something
     # that could be changed easily later on, as requirements change.
-    
+
     confirmed = (
       self.available &&
       self.acquirable_matches_memo? &&
