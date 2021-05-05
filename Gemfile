@@ -67,6 +67,14 @@ group :development, :test do
   gem "timecop"                                       # time travel for specs
 end
 
+group :test do
+  gem 'ruby-prof'                                     # profiling tool
+  gem 'ruby-prof-flamegraph'                          # flame graphs
+  gem "test-prof", "~> 1.0"                           # test profile
+  gem 'database_plumber', github: 'brrygrdn/database_plumber'
+  gem 'database_cleaner-active_record'
+end
+
 group :development do
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
