@@ -29,6 +29,7 @@ gem "httparty"             # high level abstraction for rest integrations
 gem "jbuilder"             # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jwt"                  # pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard
 gem "money-rails"          # dealing with money and currency conversion in Rails
+gem "passgen"              # Password generator
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
 gem "puma", "~> 5.0"       # http server for rack
