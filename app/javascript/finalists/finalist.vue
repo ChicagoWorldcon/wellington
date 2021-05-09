@@ -20,7 +20,7 @@
         v-model.number="finalist.rank"
         :class="{ 'text-danger': invalid }"
         @change='changeRank()'
-        @keyup='changeRank()'
+        @keyup='changeRank()' 
       >
       <span v-bind:class="{ 'text-danger': invalid }">
         {{ finalist.name }}
@@ -76,6 +76,7 @@ export default {
   },
   methods: {
     changeRank() {
+ //     this.finalist.rank = this.finalist.rank.replace(/[^1-7]/g, '');
       this.$emit('valid', this.errors.length === 0);
     },
   },
