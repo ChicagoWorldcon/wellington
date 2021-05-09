@@ -59,7 +59,7 @@ class Money::ChargeCustomer
     end
 
     buyable_transaction
-    @charge.successful?
+    @charge.present? && @charge.successful?
   end
 
   def error_message
@@ -81,19 +81,15 @@ class Money::ChargeCustomer
   end
 
   def cart_transaction
+    @charge.comment = ChargeDescription.new(@charge).for_cart_transactions unless errors.any?
+    @charge.save!
+    return unless @charge.state == ::Charge::STATE_SUCCESSFUL
+
     ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
-      @charge.comment = ChargeDescription.new(@charge).for_cart_transactions
-      @charge.save!
       reservations_in_cart = ReservationsInCart.new(@buyable).reservations_gathered
-      if fully_paid?
-        reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)}
-        @buyable.update!(status: Cart::PAID, active_to: Time.now)
-        @buyable.reload
-      else
-        #TODO:  THIS SHOULD RAISE AN ERROR!!!!!
-        reservations_in_cart.each {|res| res.update!(state: Reservation::INSTALMENT)} if reservations_in_cart.present?
-        @buyable.reload
-      end
+      reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)}
+      @buyable.update!(status: Cart::PAID, active_to: Time.now)
+      @buyable.reload
     end
   end
 
@@ -117,7 +113,10 @@ class Money::ChargeCustomer
       errors << "amount must be more than 0 cents"
     end
     if charge_amount > amount_owed
-      errors << "refusing to overpay for reservation"
+      errors << "refusing to overpay"
+    end
+    if @buyable.kind_of?(Cart) && (charge_amount < Money.new(CentsOwedForCartContents.new(@buyable).owed_cents) || charge_amount < amount_owed)
+      errors << "a cart must be paid for in full or not at all"
     end
   end
 
