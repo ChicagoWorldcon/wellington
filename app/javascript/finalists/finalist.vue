@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     changeRank() {
- //     this.finalist.rank = this.finalist.rank.replace(/[^1-7]/g, '');
+      //this.finalist.rank = this.finalist.rank.match(/^[1-7]$/);
       this.$emit('valid', this.errors.length === 0);
     },
   },
