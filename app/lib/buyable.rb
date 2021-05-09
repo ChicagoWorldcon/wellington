@@ -34,4 +34,10 @@ module Buyable
   def successful_direct_charge_total
     BuyableChargeHistoryInfo.new(self).successful_direct_charge_tally
   end
+
+  def email
+    # This works for Reservation and Cart. In the event that we one day
+    # have a buyable where this doesn't work, we can add a case statement here.
+    self.user.email
+  end
 end

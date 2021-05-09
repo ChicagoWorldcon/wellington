@@ -70,6 +70,33 @@ RSpec.describe ChargeDescription do
     end
   end
 
+  describe "#for_cart_transactions" do
+    let(:cart_with_unpaid_rs) { create(:cart, :with_unpaid_reservation_items)}
+    let(:cart_charge) { create(:charge, buyable: cart_with_unpaid_rs) }
+
+    before do
+      @user_email = cart_with_unpaid_rs.user.email
+    end
+
+    context "when it's for a user" do
+      subject(:for_cart_transacts) { ChargeDescription.new(cart_charge).for_cart_transactions }
+
+      it "Is less than or equal to the mysql maximum field length" do
+        expect(for_cart_transacts.length).to be <= (ApplicationHelper::MYSQL_MAX_FIELD_LENGTH)
+      end
+    end
+
+    context "when it's for an account" do
+      subject(:for_cart_transacts) { ChargeDescription.new(cart_charge).for_cart_transactions(for_account: true) }
+
+      it "Is less than or equal to the mysql maximum field length" do
+        expect(for_cart_transacts.length).to be <= (ApplicationHelper::MYSQL_MAX_FIELD_LENGTH)
+      end
+
+      it { is_expected.to include @user_email }
+    end
+  end
+
   context "integration when describing historical records" do
     let(:reserve_horse_date)  { 4.weeks.ago }
     let(:reserve_pony_date)   { 3.weeks.ago }
@@ -137,9 +164,5 @@ RSpec.describe ChargeDescription do
       expect(for_users(Charge.last)).to include "100.00"
       expect(for_users(Charge.last)).to include "Upgrade Fully Paid with Credit Card for Unicorn member #{membership_number}"
     end
-  end
-
-  xdescribe "#for_cart_transactions" do
-    
   end
 end

@@ -68,6 +68,8 @@ class ChargeDescription
       "for_accounts" => [
         formatted_amount,
         "Fully Paid",
+        "by",
+        maybe_chargee_email,
         "for "
       ].compact.join(" ")
     }
@@ -120,26 +122,36 @@ class ChargeDescription
   end
 
   def maybe_member_name
-    #TODO: Make sure a version of this for cart is present
-    return if charge.buyable.kind_of?(Cart)
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" if !charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
     claims = charge.buyable.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.contact
   end
 
   def charged_cart
-    return if !charge.buyable.kind_of?(Cart)
-    @charged_cart ||= charge.buyable
+    raise TypeError, "expected a Cart, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Cart)
+  rescue TypeError
+    return nil
+  else
+    charge.buyable
   end
 
   def membership_type
-    #TODO: Make sure a version of this for cart is present
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
     "#{charged_membership} member #{charge.buyable.membership_number}"
   end
 
   def charged_membership
-    #TODO: Make sure a version of this for cart is present
-    return if !charge.buyable.kind_of?(Reservation)
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
     return @charged_membership if @charged_membership.present?
     orders = charge.buyable.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
@@ -170,5 +182,9 @@ class ChargeDescription
   # that may rise from how Postgres stores dates
   def charge_active_at
     @charge_active_from ||= charge.created_at + 1.second
+  end
+
+  def maybe_chargee_email
+    charge.buyable.email
   end
 end
