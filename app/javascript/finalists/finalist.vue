@@ -77,6 +77,7 @@ export default {
   methods: {
     changeRank() {
       //this.finalist.rank = this.finalist.rank.match(/^[1-7]$/);
+      //check load
       this.$emit('valid', this.errors.length === 0);
     },
   },
