@@ -44,9 +44,6 @@ module ChargesHelper
 
       when prospective_purchase.kind_of?(Cart)
         description_string = cart_contents_description(prospective_purchase)
-
-      when prospective_purchase.kind_of?(CartItem)
-        description_string = cart_item_description(prospective_purchase)
     else
       description_string = "#{worldcon_public_name} item"
     end
@@ -60,10 +57,5 @@ module ChargesHelper
 
   def cart_contents_description(cart)
     description_string = CartContentsDescription.new(cart).describe_cart_contents
-  end
-
-  def cart_item_description(cart_item)
-    beneficiary_info = cart_item.benefitable.present? ? "for #{cart_item.item_beneficiary_name}" : ""
-    return "#{worldcon_public_name} #{cart_item.display_name} #{beneficiary_info}".strip!
   end
 end
