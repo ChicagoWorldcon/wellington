@@ -67,7 +67,7 @@ en:
         * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
         * A lower preference is considered only if all the candidates ranked higher have been eliminated.
         * You are not required to rank all the finalists in any category.
-        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all. A preference of 0 will be ignored.
+        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all. A preference of "0" will be ignored.
         * If you decide not to vote in any given category, leave it blank.
         * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
         * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
