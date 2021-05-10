@@ -1,16 +1,8 @@
 // Copyright 2020 Matthew B. Gray
+// Copyright 2021 Fred Bauer
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// 10-may-21 FNB added check for valid vote, because valid is not a reliable indicator.
 
 <template>
   <div v-if="0 < category.finalists.length" class="category-component l-v-spacing">
@@ -26,7 +18,7 @@
     </ul>
 
     <button
-      v-if="valid"
+      v-if="test(ranks)"
       v-on:click="save(category)"
       v-bind:key="category.id"
       class="btn"
@@ -61,6 +53,12 @@ export default {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
+    },
+    test: (list) => {
+      for (let index = 0; index < list.length; index++) {
+      if (index + 1 != list[index]) {return false}
+      }
+      return true;
     },
   },
 };
