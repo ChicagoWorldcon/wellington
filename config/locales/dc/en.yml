@@ -3,16 +3,6 @@
 # Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 # Files in the config/locales directory are used for internationalization
 # and are automatically loaded by Rails. If you want to use locales other
@@ -77,7 +67,7 @@ en:
         * To vote, mark your choices in each category in order of preference: “1” for first place, “2” for second place, and so on.
         * A lower preference is considered only if all the candidates ranked higher have been eliminated.
         * You are not required to rank all the finalists in any category.
-        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all.
+        * If you leave any preference blank, preferences below that will not be counted, and if you leave your first preference blank, your vote will not be counted in that category at all. A preference of 0 will be ignored.
         * If you decide not to vote in any given category, leave it blank.
         * Note that “No Award” is not an abstention. It means that none of the finalists should be given the award in question.
         * If you give preference votes to finalists below your ranking of No Award, your vote will count for those finalists if all higher-ranked preferences, including No Award, are eliminated.
@@ -186,6 +176,7 @@ en:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2021.
 
+      #Add vote_soon ?
       vote:
         description: Vote in Hugo Awards
         layman:
