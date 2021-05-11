@@ -68,8 +68,8 @@
     <div class="cart-icon container">
       <% if user_signed_in? && !support_signed_in? %>
         <%= link_to cart_path, method: :get do %>
-          <button id="cart-icon">
-            <%= show_svg('icons/cart4.svg') %>
+          <button id="cart-button" aria-label="Shopping Cart">
+            <i id="cart-icon" alt="shopping-cart"><%= show_svg('icons/cart4.svg') %></i>
           </button>
         <% end %>
       <% end %>

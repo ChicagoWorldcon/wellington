@@ -15,7 +15,7 @@
 %>
 <div class="purchase-preview">
   <h1>
-    Purchase Preview (<%= @items_for_purchase.count %> items)
+    Purchase Preview (<%= pluralize(@items_for_purchase.count, 'item') %>)
   </h1>
 
   <section class="l-section">

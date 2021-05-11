@@ -159,9 +159,21 @@ h6, .h6-like {
 // // CART=SPECIFIC STYLES
 // // ===================
 
-#cart-icon   {
-  background-color: $white;
-  color: $orange;
+#cart-button {
+  background-color: Transparent;
+  border: none;
+  outline: none;
+}
+
+#cart-icon .bi {
+  background-color: $light-blue-two;
+  color: $red;
+  height: 250% !important;
+  width: 250% !important;
+  border-style: solid;
+  border-width: 2px;
+  border-color: white;
+  margin: 5px;
 }
 
 #cart-header {
@@ -199,10 +211,12 @@ div.subtotal-container > h5 {
 
 div.now-items {
   background-color: $light-grey;
+  margin: 10px;
 }
 
 div.now-items .item-cards .row {
   background-color: $light-blue;
+  margin: 10px;
 }
 
 div.now-items .card-header {
@@ -259,6 +273,7 @@ div.now-items .subtotal-container {
 
 div.later-items {
   background-color: $mid-grey;
+  margin: 10px;
 }
 
 div.later-items .item-cards .row {
@@ -316,6 +331,14 @@ div.purchase-preview h1 {
 
 div.purchase-preview .card-header {
   font-size: 2vmin;
+  background-color: $dark-blue;
+  color: $white;
+}
+
+div.purchase-preview .card-footer {
+  font-size: 2vmin;
+  background-color: $dark-blue;
+  color: $white;
 }
 
 div.pay-online-now h1 {
@@ -327,8 +350,6 @@ div.group-payment-confirmation h1 {
   background-color: $orange;
   color: $white;
 }
-
-
 
 // =========================================================================
 // COMPONENTS
