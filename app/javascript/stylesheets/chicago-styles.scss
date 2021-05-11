@@ -62,7 +62,7 @@ $light-blue-two: #99D1EF;
 $orange: #F26522;
 
 // Leftover CoNZealand:
-//$light-grey: #e1e1e1;
+$light-grey: #e1e1e1;
 
 // Fonts
 $font-stack: 'Metropolis', sans-serif;
@@ -158,9 +158,15 @@ h6, .h6-like {
 // // ===================
 // // CART=SPECIFIC STYLES
 // // ===================
+
+#cart-icon   {
+  background-color: $white;
+  color: $orange;
+}
+
 #cart-header {
-  background-color: purple;
-  color:cyan;
+  background-color: $light-blue;
+  color:$black;
 }
 
 .all-cart-admin-container {
@@ -169,8 +175,8 @@ h6, .h6-like {
 }
 
 .cart-body .no-contents {
-  background-color: lightcoral;
-  color: darkslategrey;
+  background-color: $light-blue-two;
+  color: $dark-grey;
 }
 
 div.subtotal-container {
@@ -178,8 +184,8 @@ div.subtotal-container {
 }
 
 div.subtotal-container > h5 {
-  background-color: hotpink;
-  color: dimgrey;
+  background-color: $orange;
+  color: $white;
 }
 
 #overall-buttons {
@@ -187,56 +193,55 @@ div.subtotal-container > h5 {
 }
 
 #now-header  {
-  background-color: mistyrose;
-  color: teal;
+  background-color: $dark-blue;
+  color: $white;
 }
 
 div.now-items {
-  background-color: aquamarine;
+  background-color: $light-grey;
 }
 
 div.now-items .item-cards .row {
-  background-color: lightgreen;
-  color: navy;
+  background-color: $light-blue;
 }
 
 div.now-items .card-header {
-  background-color: seagreen;
+  background-color: $dark-blue;
   color: white;
 }
 
 div.now-items .acquirable-card .card-header {
-  background-color: yellowgreen;
-  color: black;
+  background-color: $light-blue-two;
+  color: $black;
 }
 
 div.now-items .benefitable-card .card-header {
-  background-color: teal;
-  color: white;
+  background-color: $light-blue-two;
+  color: $white;
 }
 
 div.now-items .acquirable-card .card-footer {
-  background-color: yellowgreen;
-  color: black;
+  background-color: $light-blue-two;
+  color: $black;
 }
 
 div.now-items .benefitable-card .card-footer {
-  background-color: teal;
-  color: white;
+  background-color:  $light-blue-two;
+  color: $white;
 }
 
 div.now-items .card-footer {
-  background-color: lawngreen;
-  color: black;
+  background-color: $dark-blue;
+  color: $white;
 }
 
 div.now-items .card-footer .res-payment-status {
-  background-color: darkmagenta;
-  color: white;
+  background-color: $red;
+  color: $white;
 }
 
 div.now-items .no-contents {
-  color: chocolate;
+  color: $mid-grey;
 }
 
 div.now-items .admin-container {
@@ -244,70 +249,69 @@ div.now-items .admin-container {
 }
 
 div.now-items .subtotal-container {
-  color:indigo;
+  color:$orange;
 }
 
 #later-header {
-  background-color: rosybrown;
-  color:maroon;
+  background-color: $dark-grey;
+  color:$white;
 }
 
 div.later-items {
-  background-color: violet;
+  background-color: $mid-grey;
 }
 
 div.later-items .item-cards .row {
-  background-color: darkslategray;
+  background-color: $dark-grey;
 }
 
 div.later-items .card-header {
-  background-color: brown;
-  color: blanchedalmond;
+  background-color: $light-blue;
+  color: $black;
 }
 
 div.later-items .acquirable-card .card-header {
-  background-color: coral;
-  color: black;
+  background-color: $black;
+  color: $white;
 }
 
 div.later-items .benefitable-card .card-header {
-  background-color: darkkhaki;
-  color: black;
+  background-color: $dark-grey;
+  color: $white;
 }
 
 div.later-items .acquirable-card .card-footer {
-  background-color: coral;
-  color: black;
+  background-color: $mid-grey;
+  color: $white;
 }
 
 div.later-items .benefitable-card .card-footer {
-  background-color: darkkhaki;
-  color: black;
+  background-color: $dark-grey;
+  color: $white;
 }
 
 div.later-items .card-footer {
-  background-color: firebrick;
-  color: wheat;
+  background-color: $black;
+  color: $white;
 }
 
 div.later-items .card-footer .res-payment-status {
-  background-color: indigo;
-  color: yellow;
+  background-color: $light-blue;
+  color: $black;
 }
 
 div.later-items .admin-container {
-  background-color: saddlebrown;
-  color: peachpuff;
+  background-color: $light-grey;
 }
 
 div.later-items .subtotal-container {
-  background-color: salmon;
-  color: sienna;
+  background-color: $light-blue-two;
+  color: $black;
 }
 
 div.purchase-preview h1 {
-  color: darkcyan;
-  background-color: cornsilk;
+  color: $dark_blue;
+  background-color: $light-grey;
 }
 
 div.purchase-preview .card-header {
@@ -315,13 +319,13 @@ div.purchase-preview .card-header {
 }
 
 div.pay-online-now h1 {
-  color: orangered;
-  background-color: lemonchiffon;
+  background-color: $red;
+  color: $white;
 }
 
 div.group-payment-confirmation h1 {
-  color: wheat;
-  background-color: tomato;
+  background-color: $orange;
+  color: $white;
 }
 
 

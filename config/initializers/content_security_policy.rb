@@ -38,7 +38,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.object_src  :none
 
   policy.script_src  :self, :https, *script_sources
-  policy.style_src   :self, :https
+  policy.style_src   :self, :https, :unsafe_inline
 
 
   policy.connect_src :self, :https, *api_endpoints

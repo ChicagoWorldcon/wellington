@@ -24,8 +24,9 @@ class CartServices::CreateReservationFromCartItem
   end
 
   def call
-    return nil if !@cart_item.acquirable.kind_of?(Membership)
-    #TODO-- MAKE THIS NOISIER.
+    unless @cart_item.acquirable.kind_of?(Membership)
+      raise TypeError.new "Expected a membership cart item, got a #{@cart_item.acquirable.class} item." and return
+    end
 
     unless @cart_item.item_ready_for_payment?
       raise StandardError.new "CartItem #{@cart_item.id} cannot be purchased at this time"
