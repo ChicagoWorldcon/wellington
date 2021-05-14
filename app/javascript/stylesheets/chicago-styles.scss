@@ -209,6 +209,16 @@ div.subtotal-container > h5 {
   color: $white;
 }
 
+.card-header {
+  font-size: 10px; //fallback
+  font-size: 2vmin;
+}
+
+.benefitable-card .card_header {
+  max-height: 5em; overflow-y:scroll;
+  white-space: nowrap;
+}
+
 div.now-items {
   background-color: $light-grey;
   margin: 10px;
