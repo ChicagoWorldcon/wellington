@@ -136,7 +136,8 @@ class ReservationsController < ApplicationController
     end
     if !@my_offer.present?
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
-      redirect_to memberships_path
+      redirect_back(fallback_location: memberships_path)
+      #redirect_to memberships_path
     end
   end
 
