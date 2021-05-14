@@ -24,6 +24,33 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def lookup_current_cart!
+    if !support_signed_in
+      @cart = Cart.active_pending.find_by(user: current_user)
+    end
+    if @cart.nil?
+      head :forbidden
+    end
+  end
+
+  def lookup_processing_cart!
+    if !support_signed_in?
+      @processing_cart = Cart.active_processing.find_by(user: current_user)
+    end
+    if @processing_cart.nil?
+      head :forbidden
+    end
+  end
+
+  def lookup_cart_for_later!
+    if !support_signed_in?
+      @processing_cart = Cart.active_for_later.find_by(user: current_user)
+    end
+    if @processing_cart.nil?
+      head :forbidden
+    end
+  end
+
   def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
 

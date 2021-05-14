@@ -1,0 +1,44 @@
+<%#
+Copyright 2019 AJ Esler
+Copyright 2019 Matthew B. Gray
+Copyright 2019 Chris Rose
+Copyright 2020 Victoria Garcia
+Copyright 2021 Victoria Garcia
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+%>
+<%= worldcon_basic_greeting.capitalize %>!
+
+We've sent you this email to confirm your online order of <%= @transaction_date %>.
+
+Your order includes:
+
+  <% @item_descriptions.each_with_index do |desc, i| %>
+    <%= i + 1 %>.  <%= desc %>
+  <% end %>
+
+You still need to pay a total of <%= number_to_currency(@outstanding_amount/100.0) %> to cover this order.  In order to fully claim your <%= pluralize(@item_count, 'item') %>, please send us a cheque or other non-cash payment in USD at:
+
+<%= worldcon_registration_mailing_address %>
+
+IMPORTANT: Please include the following information with your payment:
+
+1.  Your email address
+2.  Your order number: <%= @order_number %>
+
+You can also do this any time by returning to the members area to pay your membership off completely.
+
+Also, if you are interested, installment plans are currently under development.  The Finance Division will be emailing information about how the plans work as soon as they are finalized.  There will be no installment payments due prior to January 2021.
+
+<%= worldcon_public_name %> - <%= $treasurer_email %>
+<%= worldcon_url_homepage %>

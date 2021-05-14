@@ -26,6 +26,81 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: cart_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cart_items (
+    id bigint NOT NULL,
+    cart_id bigint NOT NULL,
+    item_name_memo character varying NOT NULL,
+    item_price_memo integer DEFAULT 0 NOT NULL,
+    kind character varying NOT NULL,
+    available boolean DEFAULT true NOT NULL,
+    acquirable_type character varying NOT NULL,
+    acquirable_id bigint NOT NULL,
+    benefitable_type character varying,
+    benefitable_id bigint,
+    holdable_type character varying,
+    holdable_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: cart_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.cart_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: cart_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.cart_items_id_seq OWNED BY public.cart_items.id;
+
+
+--
+-- Name: carts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.carts (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    status character varying NOT NULL,
+    active_from timestamp without time zone NOT NULL,
+    active_to timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: carts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.carts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: carts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.carts_id_seq OWNED BY public.carts.id;
+
+
+--
 -- Name: categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -75,10 +150,11 @@ CREATE TABLE public.charges (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id bigint NOT NULL,
-    reservation_id bigint NOT NULL,
     transfer character varying NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    buyable_type character varying,
+    buyable_id bigint
 );
 
 
@@ -107,7 +183,7 @@ ALTER SEQUENCE public.charges_id_seq OWNED BY public.charges.id;
 
 CREATE TABLE public.chicago_contacts (
     id bigint NOT NULL,
-    claim_id bigint NOT NULL,
+    claim_id bigint,
     import_key character varying,
     title character varying,
     first_name character varying,
@@ -703,6 +779,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: cart_items id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items ALTER COLUMN id SET DEFAULT nextval('public.cart_items_id_seq'::regclass);
+
+
+--
+-- Name: carts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts ALTER COLUMN id SET DEFAULT nextval('public.carts_id_seq'::regclass);
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -827,6 +917,22 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: cart_items cart_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT cart_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: carts carts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT carts_pkey PRIMARY KEY (id);
 
 
 --
@@ -974,6 +1080,41 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: index_cart_items_on_acquirable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_acquirable ON public.cart_items USING btree (acquirable_type, acquirable_id);
+
+
+--
+-- Name: index_cart_items_on_benefitable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_benefitable ON public.cart_items USING btree (benefitable_type, benefitable_id);
+
+
+--
+-- Name: index_cart_items_on_cart_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_cart_id ON public.cart_items USING btree (cart_id);
+
+
+--
+-- Name: index_cart_items_on_holdable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cart_items_on_holdable ON public.cart_items USING btree (holdable_type, holdable_id);
+
+
+--
+-- Name: index_carts_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_carts_on_user_id ON public.carts USING btree (user_id);
+
+
+--
 -- Name: index_categories_on_election_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -988,10 +1129,10 @@ CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
 
 
 --
--- Name: index_charges_on_reservation_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_charges_on_buyable; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_charges_on_reservation_id ON public.charges USING btree (reservation_id);
+CREATE INDEX index_charges_on_buyable ON public.charges USING btree (buyable_type, buyable_id);
 
 
 --
@@ -1198,11 +1339,11 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: charges fk_rails_5cd975e78e; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: cart_items fk_rails_6cdb1f0139; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.charges
-    ADD CONSTRAINT fk_rails_5cd975e78e FOREIGN KEY (reservation_id) REFERENCES public.reservations(id);
+ALTER TABLE ONLY public.cart_items
+    ADD CONSTRAINT fk_rails_6cdb1f0139 FOREIGN KEY (cart_id) REFERENCES public.carts(id);
 
 
 --
@@ -1235,6 +1376,14 @@ ALTER TABLE ONLY public.ranks
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT fk_rails_dfb33b2de0 FOREIGN KEY (membership_id) REFERENCES public.memberships(id);
+
+
+--
+-- Name: carts fk_rails_ea59a35211; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.carts
+    ADD CONSTRAINT fk_rails_ea59a35211 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -1323,6 +1472,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200719215504'),
 ('20200720235919'),
 ('20200724003813'),
+('20201218101337'),
+('20201218101654'),
+('20210105055602'),
+('20210224001734'),
 ('20210224034724'),
 ('20210224035800');
 

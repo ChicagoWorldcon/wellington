@@ -77,4 +77,8 @@ module ThemeConcern
   def theme_contact_form
     self.class.theme_contact_form
   end
+
+  def theme_contact_foreign_key
+    self.class.theme_contact_foreign_key
+  end
 end

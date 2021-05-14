@@ -17,6 +17,8 @@
 
 # AmountOwedForReservation compares successful Charge records on the Reservation to the cost of a Membership
 class AmountOwedForReservation
+  PAID = Reservation::PAID
+
   attr_reader :reservation
 
   def initialize(reservation)
@@ -24,7 +26,28 @@ class AmountOwedForReservation
   end
 
   def amount_owed
+    return Money.new(0) if fully_paid_by_cart?
+
     paid_so_far = reservation.charges.successful.sum(&:amount)
     reservation.membership.price - paid_so_far
+  end
+
+  def fully_paid_by_cart?
+    return false if carts_related_to_reservation.blank?
+    cents_owed_for_associated_carts <= 0
+  end
+
+  private
+
+  def carts_related_to_reservation
+    Cart.joins(:cart_items).where(cart_items: {holdable: @reservation})
+  end
+
+  def cents_owed_for_associated_carts
+    owed = 0
+    carts_related_to_reservation.to_ary.each do |c|
+      owed += CentsOwedForCartContents.new(c).owed_cents
+    end
+    owed
   end
 end

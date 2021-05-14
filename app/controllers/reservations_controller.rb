@@ -48,6 +48,7 @@ class ReservationsController < ApplicationController
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
     @notes = Note.joins(user: :claims).where(claims: {reservation_id: @reservation})
     @rights_exhausted = RightsExhausted.new(@reservation).call
+    get_payment_history
   end
 
   def create
@@ -74,7 +75,7 @@ class ReservationsController < ApplicationController
       PaymentMailer.waiting_for_cheque(
         user: current_user,
         reservation: new_reservation,
-        outstanding_amount: AmountOwedForReservation.new(new_reservation).amount_owed.format(with_currency: true)
+        outstanding_amount: AmountOwedForReservation.new(new_reservation).amount_owed.format(with_currrency: true)
       ).deliver_later
 
       new_reservation.state = Reservation::INSTALMENT
@@ -96,6 +97,7 @@ class ReservationsController < ApplicationController
         @contact = @reservation.active_claim.contact || contact_model.new
         @my_offer = MembershipOffer.new(@reservation.membership)
         @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
+        get_payment_history
         flash[:error] = current_contact.errors.full_messages.to_sentence
         render "reservations/show"
       end
@@ -132,10 +134,10 @@ class ReservationsController < ApplicationController
     @my_offer = MembershipOffer.options.find do |offer|
       offer.hash == params[:offer]
     end
-
     if !@my_offer.present?
       flash[:error] = t("errors.offer_unavailable", offer: params[:offer])
-      redirect_to memberships_path
+      redirect_back(fallback_location: memberships_path)
+      #redirect_to memberships_path
     end
   end
 
@@ -161,5 +163,13 @@ class ReservationsController < ApplicationController
   def dob_params_present?
     dob_key_1 = "dob_array(1i)"
     return params[theme_contact_param].key?(dob_key_1)
+  end
+
+  def get_payment_history
+    @reservation ||= lookup_reservation!
+    payment_history_obj = ReservationPaymentHistory.new(@reservation)
+    @any_successful_charges = payment_history_obj.any_charges?
+    @payment_history = payment_history_obj.history_array
+    @successful_charges_found = payment_history_obj.any_successful_charges?
   end
 end

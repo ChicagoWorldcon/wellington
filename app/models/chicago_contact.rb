@@ -24,6 +24,8 @@ require 'time'
 require_relative '../validators/email_for_pubs_validator'
 
 class ChicagoContact < ApplicationRecord
+
+  include Benefitable
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"
@@ -68,6 +70,7 @@ class ChicagoContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items, :as => :benefitable
 
   attr_reader :for_import
   attr_accessor :dob_array
@@ -119,14 +122,42 @@ class ChicagoContact < ApplicationRecord
     end
   end
 
+  def shortened_display_name
+    name_options = [hugo_name, "#{preferred_first_name} #{preferred_last_name}"]
+    maybe_truncation = ""
+
+    case
+    when preferred_first_name.present? ^ preferred_last_name.present?
+      maybe_truncation = preferred_first_name || preferred_last_name
+    when preferred_first_name.present? && preferred_last_name.present?
+      maybe_truncation = "#{preferred_first_name[0, 1]}. #{preferred_last_name}"
+    when first_name.present? ^ last_name.present?
+      # This isn't actually supposed to happen, ActiveRecord-wise, but I know
+      # there are fen with mononyms out there, so...
+      maybe_truncation = first_name || last_name
+    when first_name.present? && last_name.present?
+      # first_name and last_name are required by the model, so this is actually
+      # a constructive default.
+      maybe_truncation = "#{first_name[0, 1]}. #{last_name}"
+    end
+
+    name_options.push(maybe_truncation)
+    truncatedest = name_options.filter {|n| n.strip.length > 0}.max_by {|n| -n.strip.length}
+    truncatedest.strip
+  end
+
+  def name_for_cart
+    self.to_s
+  end
+
   def nickname
     preferred_first_name || first_name || ""
   end
 
   def fun_badge_title?
-    return false if !badge_title.present?        # if you've set one
+    return false if !badge_title.present?  # if you've set one
     return false if badge_title.match(/\s/)      # breif, so doesn't have whitespace
-    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred nam
+    return false if to_s.downcase.include?(badge_title.downcase) # isn't part of your preferred name
     true
   end
 end

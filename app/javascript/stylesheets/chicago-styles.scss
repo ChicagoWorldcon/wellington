@@ -39,7 +39,8 @@
 // https://getbootstrap.com/docs/4.0/getting-started/webpack/
 
 @import 'chicago_fonts';
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
+@import '@fortawesome/fontawesome-free';
 
 // -------------------------------
 // VARIABLES
@@ -61,7 +62,7 @@ $light-blue-two: #99D1EF;
 $orange: #F26522;
 
 // Leftover CoNZealand:
-//$light-grey: #e1e1e1;
+$light-grey: #e1e1e1;
 
 // Fonts
 $font-stack: 'Metropolis', sans-serif;
@@ -152,6 +153,212 @@ h6, .h6-like {
     font-size: 1.0667em;
     line-height: 1.8750em;
     margin-bottom: 0.9375em;
+}
+
+// // ===================
+// // CART=SPECIFIC STYLES
+// // ===================
+
+#cart-button {
+  background-color: Transparent;
+  border: none;
+  outline: none;
+}
+
+#cart-icon .bi {
+  background-color: $light-blue-two;
+  color: $red;
+  height: 200% !important;
+  width: 200% !important;
+  border-style: solid;
+  border-width: 4px;
+  border-color: white;
+  margin: 5px;
+}
+
+#cart-header {
+  background-color: $light-blue;
+  color:$black;
+}
+
+.all-cart-admin-container {
+  background-color: thistle;
+  color: maroon;
+}
+
+.cart-body .no-contents {
+  background-color: $light-blue-two;
+  color: $dark-grey;
+}
+
+div.subtotal-container {
+  padding: $spacer;
+}
+
+div.subtotal-container > h5 {
+  background-color: $orange;
+  color: $white;
+}
+
+#overall-buttons {
+  padding: $spacer;
+}
+
+#now-header  {
+  background-color: $dark-blue;
+  color: $white;
+}
+
+.card-header {
+  font-size: 10px; //fallback
+  font-size: 2vmin;
+}
+
+.benefitable-card .card_header {
+  max-height: 5em; overflow-y:scroll;
+  white-space: nowrap;
+}
+
+div.now-items {
+  background-color: $light-grey;
+  margin: 10px;
+}
+
+div.now-items .item-cards .row {
+  background-color: $light-blue;
+  margin: 10px;
+}
+
+div.now-items .card-header {
+  background-color: $dark-blue;
+  color: white;
+}
+
+div.now-items .acquirable-card .card-header {
+  background-color: $light-blue-two;
+  color: $black;
+}
+
+div.now-items .benefitable-card .card-header {
+  background-color: $light-blue-two;
+  color: $white;
+}
+
+div.now-items .acquirable-card .card-footer {
+  background-color: $light-blue-two;
+  color: $black;
+}
+
+div.now-items .benefitable-card .card-footer {
+  background-color:  $light-blue-two;
+  color: $white;
+}
+
+div.now-items .card-footer {
+  background-color: $dark-blue;
+  color: $white;
+}
+
+div.now-items .card-footer .res-payment-status {
+  background-color: $red;
+  color: $white;
+}
+
+div.now-items .no-contents {
+  color: $mid-grey;
+}
+
+div.now-items .admin-container {
+
+}
+
+div.now-items .subtotal-container {
+  color:$orange;
+}
+
+#later-header {
+  background-color: $dark-grey;
+  color:$white;
+}
+
+div.later-items {
+  background-color: $mid-grey;
+  margin: 10px;
+}
+
+div.later-items .item-cards .row {
+  background-color: $dark-grey;
+}
+
+div.later-items .card-header {
+  background-color: $light-blue;
+  color: $black;
+}
+
+div.later-items .acquirable-card .card-header {
+  background-color: $black;
+  color: $white;
+}
+
+div.later-items .benefitable-card .card-header {
+  background-color: $dark-grey;
+  color: $white;
+}
+
+div.later-items .acquirable-card .card-footer {
+  background-color: $mid-grey;
+  color: $white;
+}
+
+div.later-items .benefitable-card .card-footer {
+  background-color: $dark-grey;
+  color: $white;
+}
+
+div.later-items .card-footer {
+  background-color: $black;
+  color: $white;
+}
+
+div.later-items .card-footer .res-payment-status {
+  background-color: $light-blue;
+  color: $black;
+}
+
+div.later-items .admin-container {
+  background-color: $light-grey;
+}
+
+div.later-items .subtotal-container {
+  background-color: $light-blue-two;
+  color: $black;
+}
+
+div.purchase-preview h1 {
+  color: $dark_blue;
+  background-color: $light-grey;
+}
+
+div.purchase-preview .card-header {
+  font-size: 2vmin;
+  background-color: $dark-blue;
+  color: $white;
+}
+
+div.purchase-preview .card-footer {
+  font-size: 2vmin;
+  background-color: $dark-blue;
+  color: $white;
+}
+
+div.pay-online-now h1 {
+  background-color: $red;
+  color: $white;
+}
+
+div.group-payment-confirmation h1 {
+  background-color: $orange;
+  color: $white;
 }
 
 // =========================================================================

@@ -18,9 +18,20 @@
 require "rails_helper"
 
 RSpec.describe Membership, type: :model do
+
+  before(:all) do
+    puts "#{Membership.all.count} Memberships at the start"
+  end
+
+  after(:all) do
+    puts "#{Membership.all.count} Memberships left after everything"
+  end
+
   subject(:model) { create(:membership, :adult, :with_order_for_reservation) }
 
   it { is_expected.to be_valid }
+
+
 
   describe "#active_reservations" do
     it "can access reservations directly" do
@@ -36,7 +47,7 @@ RSpec.describe Membership, type: :model do
   describe "#active_at" do
     let(:membership_available_at) { 1.month.ago }
     let(:membership_inactive_from) { membership_available_at + 1.week }
-    let!(:our_membership) { create(:membership, :adult, active_from: membership_available_at, active_to: membership_inactive_from) }
+    let(:our_membership) { create(:membership, :adult, active_from: membership_available_at, active_to: membership_inactive_from) }
 
     subject(:scope) { Membership.active_at(time) }
 
@@ -62,21 +73,28 @@ RSpec.describe Membership, type: :model do
   end
 
   describe "#to_s" do
-    subject(:to_s) { model.to_s }
-
     context "when kid-in-tow" do
-      let(:model) { create(:membership, :kidit) }
-      it { is_expected.to eq "Kid-in-Tow" }
+      let(:k_memb) { create(:membership, :kidit) }
+
+      it "reports the correct string" do
+        expect(k_memb.to_s).to eq("Kid-in-Tow")
+      end
     end
 
     context "when YA" do
-      let(:model) { create(:membership, :ya) }
-      it { is_expected.to eq "YA (16-25)" }
+      let(:y_memb) { create(:membership, :ya) }
+
+      it "reports the correct string" do
+        expect(y_memb.to_s).to eq("YA (16-25)")
+      end
     end
 
     context "when supporting" do
-      let(:model) { create(:membership, :supporting) }
-      it { is_expected.to eq "Supporting" }
+      let(:s_memb) { create(:membership, :supporting) }
+
+      it "reports the correct string" do
+        expect(s_memb.to_s).to eq("Supporting")
+      end
     end
   end
 
@@ -119,6 +137,5 @@ RSpec.describe Membership, type: :model do
       let(:model) { create(:membership, :ya) }
       it { is_expected.to equal true }
     end
-
   end
 end

@@ -1,0 +1,38 @@
+<%
+# frozen_string_literal: true
+#
+# Copyright 2021 Victoria Garcia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Preview all emails at http://localhost:3000/rails/mailers/payment_mailer
+%>
+
+<%= @worldcon_basic_greeting.capitalize %>!
+
+We've sent you this email to confirm your online purchase of <%= @purchase_date %>.
+Your order number is <%= @order_number %>.
+
+The <%= pluralize(@item_count, 'item') %> purchased include:
+
+  <% @item_descs.each.with_index(1) do |desc, i| %>
+    <%=i%>     <%=desc %>
+  <% end %>
+
+You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
+identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
+
+You can update your details and access our services any time by returning to the members area.
+
+<%= @worldcon_public_name %> - <%= $member_services_email %>
+<%= @worldcon_url_homepage %>

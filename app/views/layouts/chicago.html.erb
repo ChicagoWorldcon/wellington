@@ -5,7 +5,7 @@
   Copyright 2018 Rosanna Gray
   Copyright 2019 Matthew B. Gray
   Copyright 2019 Jen Zajac (jenofdoom)
-  Copyright 2020 Victoria Garcia
+  Copyright 2020, 2021 Victoria Garcia
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,17 +19,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 <%
-=end %>
+=end
+%>
 
 <html lang="en">
 <head>
   <title><%= worldcon_public_name %> Registration</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-
-  <%# TODO move scripts to the bottom of <body> %>
   <script src="https://checkout.stripe.com/checkout.js"></script>
-
   <%= javascript_pack_tag "chicago-app" %>
   <%= stylesheet_pack_tag "chicago-app", media: "all" %>
   <%= favicon_pack_tag "favicons/Chicon8StandardFavicon.ico" %>
@@ -44,7 +42,6 @@
 </head>
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
-  <%# TODO Style this to flash or something dramatic %>
   <% if support_signed_in? %>
     <div class="alert alert-danger show fixed-top" role="alert">
       NOTICE: You are logged in as support
@@ -67,6 +64,15 @@
           )
         %>
       </a>
+    </div>
+    <div class="cart-icon container">
+      <% if user_signed_in? && !support_signed_in? %>
+        <%= link_to cart_path, method: :get do %>
+          <button id="cart-button" aria-label="Shopping Cart">
+            <i id="cart-icon" alt="shopping-cart"><%= show_svg('icons/cart4.svg') %></i>
+          </button>
+        <% end %>
+      <% end %>
     </div>
 
     <div class="container">

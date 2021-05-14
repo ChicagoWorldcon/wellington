@@ -1,0 +1,82 @@
+<%#
+  Copyright 2021 Victoria Garcia
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+%>
+<div class = "container cart-item-card-pair-container h-100">
+  <div class="card-header">
+    <h2><%= cart_item.kind.capitalize %></h2>
+  </div>
+  <div class = "card-group">
+    <div class="card acquirable-card">
+      <div class = "card-header">
+        <h4 class= "acquirable-name"><%= cart_item.item_display_name %></h4>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title"><%= cart_item.item_display_price %></h5>
+        <% if cart_item.kind == "membership" %>
+          <p><%= t("rights.description") %></p>
+          <ul class="list-group list-group-flush mt-3 mb-4">
+            <% cart_item.acquirable.all_rights.each do |membership_right| %>
+              <li class="list-group-item">
+                <%= t(:description, scope: membership_right ) %>
+                <i class="far fa-question-circle"
+                  title="<%= t(:layman, scope: membership_right, worldcon_public_name: worldcon_public_name, hugo_help_email: email_hugo_help, mailto_hugo_help: mailto_hugo_help ) %>"
+                  data-toggle="tooltip"
+                  aria-label="More information"
+                  height="15px"
+                  data-html="true"
+                  data-placement="right"
+                ></i>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+      <div class="card-footer">
+        <% reservation_status_info = reservation_payment_status(cart_item) %>
+        <div class="container res-payment-status" >
+          <h6><%= reservation_status_info[:status_desc] %></h6>
+        </div>
+      </div>
+    </div>
+    <% if cart_item.benefitable.present? %>
+      <div class="card benefitable-card">
+        <div class = "card-header">
+          <h4 class= "benefitable-name"><%= cart_item.item_beneficiary_name%></h4>
+        </div>
+        <div class="card-body">
+          <div class="card-title">
+            <ul>
+              <h5><% if cart_item.benefitable.address_line_1 %><%= cart_item.benefitable.address_line_1 %><% end %></h5>
+              <h5><% if cart_item.benefitable.postal %><%= cart_item.benefitable.postal %><% end %></h5>
+              <h5><% if cart_item.benefitable.country %><%= cart_item.benefitable.country %><% end %></h5>
+            </ul>
+
+          </div>
+        </div>
+        <div class="card-footer">
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="card-footer">
+    <% if !!defined?(admin_buttons) && admin_buttons.present? %>
+      <div class="btn-group checkout-item-admin-buttons" role="group">
+        <% admin_buttons.each do |a_button| %>
+           <%= a_button %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

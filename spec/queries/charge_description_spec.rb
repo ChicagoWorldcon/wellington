@@ -34,7 +34,7 @@ RSpec.describe ChargeDescription do
     subject(:for_accounts) { ChargeDescription.new(charge).for_accounts }
 
     let(:membership_number) { 5423.to_s }
-    let(:charge) { create(:charge, reservation: unicorn_reservation) }
+    let(:charge) { create(:charge, buyable: unicorn_reservation) }
 
     let(:unicorn_reservation) do
       create(:reservation, :with_claim_from_user, :instalment,
@@ -59,14 +59,41 @@ RSpec.describe ChargeDescription do
 
     context "when charge succeeds" do
       let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, reservation: unicorn_reservation) }
+      let(:charge) { create(:charge, buyable: unicorn_reservation) }
       it { is_expected.to_not match(/failed/i) }
     end
 
     context "when charge fails" do
       let(:unicorn_reservation) { create(:reservation, membership: unicorn_membership, user: owner_1) }
-      let(:charge) { create(:charge, :failed, reservation: unicorn_reservation) }
+      let(:charge) { create(:charge, :failed, buyable: unicorn_reservation) }
       it { is_expected.to match(/failed/i) }
+    end
+  end
+
+  describe "#for_cart_transactions" do
+    let(:cart_with_unpaid_rs) { create(:cart, :with_unpaid_reservation_items)}
+    let(:cart_charge) { create(:charge, buyable: cart_with_unpaid_rs) }
+
+    before do
+      @user_email = cart_with_unpaid_rs.user.email
+    end
+
+    context "when it's for a user" do
+      subject(:for_cart_transacts) { ChargeDescription.new(cart_charge).for_cart_transactions }
+
+      it "Is less than or equal to the mysql maximum field length" do
+        expect(for_cart_transacts.length).to be <= (ApplicationHelper::MYSQL_MAX_FIELD_LENGTH)
+      end
+    end
+
+    context "when it's for an account" do
+      subject(:for_cart_transacts) { ChargeDescription.new(cart_charge).for_cart_transactions(for_account: true) }
+
+      it "Is less than or equal to the mysql maximum field length" do
+        expect(for_cart_transacts.length).to be <= (ApplicationHelper::MYSQL_MAX_FIELD_LENGTH)
+      end
+
+      it { is_expected.to include @user_email }
     end
   end
 

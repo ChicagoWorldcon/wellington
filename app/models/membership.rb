@@ -25,6 +25,7 @@
 # Membership types that were never available for purchase can be made by setting active_from and active_to to the same time in the past, e.g. dublin_2019
 class Membership < ApplicationRecord
   include ActiveScopes
+  include Acquirable
 
   monetize :price_cents
 
@@ -35,6 +36,7 @@ class Membership < ApplicationRecord
   # Date of Birth is required for child and YA memberships
   validates_inclusion_of :dob_required, in: [true, false]
 
+  has_many :cart_items, :as => :acquirable
   has_many :orders
   has_many :active_orders, -> { active }, class_name: "Order"
   has_many :reservations, through: :active_orders
@@ -76,5 +78,22 @@ class Membership < ApplicationRecord
 
   def dob_required?
     dob_required
+  end
+
+  def display_price_for_cart
+    self.price.format(with_currency: true)
+  end
+
+  def price_in_cents_for_cart
+    self.price_cents
+  end
+
+  def name_for_cart
+    self.to_s
+  end
+
+  def name_and_price_hashcode
+    h_price = self.price > 0 ? self.price.format(with_currency: true) : "Free"
+    "#{self.name} #{h_price}"
   end
 end

@@ -139,7 +139,7 @@ class Import::PresupportersRow
         if membership.price > 0
           Charge.cash.successful.create!(
             user: new_user,
-            reservation: new_reservation,
+            buyable: new_reservation,
             amount: membership.price,
             comment: comment,
           )
@@ -148,7 +148,7 @@ class Import::PresupportersRow
         if account_credit.present?
           Charge.cash.successful.create!(
             user: new_user,
-            reservation: new_reservation,
+            buyable: new_reservation,
             amount: account_credit.amount,
             comment: "Account credit: #{account_credit.comment}",
           )

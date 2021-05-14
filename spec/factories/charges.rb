@@ -17,8 +17,10 @@
 
 FactoryBot.define do
   factory :charge do
+
     association :user
-    association :reservation
+    association :buyable, factory: :reservation
+
     amount_currency { $currency }
 
     comment { "Factory Generated Charge" }
@@ -29,6 +31,14 @@ FactoryBot.define do
 
     trait(:failed) do
       state { Charge::STATE_FAILED }
+    end
+
+    trait(:pending) do
+      state { Charge::STATE_PENDING }
+    end
+
+    trait(:cash) do
+      transfer { Charge::TRANSFER_CASH}
     end
 
     trait :generate_description do

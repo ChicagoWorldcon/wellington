@@ -24,6 +24,7 @@
 require 'time'
 
 class DcContact < ApplicationRecord
+  include Benefitable
   # Initially based off https://reg.discon3.org/reg/ <3
 
   # TODO Move this to i18n
@@ -66,6 +67,7 @@ class DcContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items, :as => :benefitable
 
   attr_reader :for_import
 
@@ -83,6 +85,10 @@ class DcContact < ApplicationRecord
 
   def for_user(user)
     self
+  end
+
+  def name_for_cart
+    self.to_s
   end
 
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name

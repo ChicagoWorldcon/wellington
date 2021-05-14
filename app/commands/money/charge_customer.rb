@@ -2,6 +2,7 @@
 
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
+# Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +19,10 @@
 # Money::ChargeCustomer creates a charge record against a User for the Stripe integrations
 # Truthy returns mean the charge succeeded, otherwise check #errors for failure details.
 class Money::ChargeCustomer
-  attr_reader :reservation, :user, :token, :charge_amount, :charge, :amount_owed
+  attr_reader :buyable, :user, :token, :charge_amount, :charge, :amount_owed
 
-  def initialize(reservation, user, token, amount_owed, charge_amount: nil)
-    @reservation = reservation
+  def initialize(buyable, user, token, amount_owed, charge_amount: nil)
+    @buyable = buyable
     @user = user
     @token = token
     @charge_amount = charge_amount || amount_owed
@@ -31,7 +32,7 @@ class Money::ChargeCustomer
   def call
     @charge = ::Charge.stripe.pending.create!(
       user: user,
-      reservation: reservation,
+      buyable: buyable,
       stripe_id: token,
       amount: charge_amount,
       comment: "Pending stripe payment",
@@ -57,17 +58,8 @@ class Money::ChargeCustomer
       @charge.stripe_response = json_to_hash(@stripe_charge.to_json)
     end
 
-    reservation.transaction do
-      @charge.comment = ChargeDescription.new(@charge).for_users
-      @charge.save!
-      if fully_paid?
-        reservation.update!(state: Reservation::PAID)
-      else
-        reservation.update!(state: Reservation::INSTALMENT)
-      end
-    end
-
-    @charge.successful?
+    buyable_transaction
+    @charge.present? && @charge.successful?
   end
 
   def error_message
@@ -80,6 +72,39 @@ class Money::ChargeCustomer
 
   private
 
+  def buyable_transaction
+     if @buyable.kind_of?(Cart)
+       cart_transaction
+     else
+       reservation_transaction
+    end
+  end
+
+  def cart_transaction
+    @charge.comment = ChargeDescription.new(@charge).for_cart_transactions unless errors.any?
+    @charge.save!
+    return unless @charge.state == ::Charge::STATE_SUCCESSFUL
+
+    ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      reservations_in_cart = ReservationsInCart.new(@buyable).reservations_gathered
+      reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)}
+      @buyable.update!(status: Cart::PAID, active_to: Time.now)
+      @buyable.reload
+    end
+  end
+
+  def reservation_transaction
+    ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
+      @charge.comment = ChargeDescription.new(@charge).for_users
+      @charge.save!
+      if fully_paid?
+        @buyable.update!(state: Reservation::PAID)
+      else
+        @buyable.update!(state: Reservation::INSTALMENT)
+      end
+    end
+  end
+
   def check_charge_amount
     if !charge_amount.present?
       errors << "charge amount is missing"
@@ -88,7 +113,10 @@ class Money::ChargeCustomer
       errors << "amount must be more than 0 cents"
     end
     if charge_amount > amount_owed
-      errors << "refusing to overpay for reservation"
+      errors << "refusing to overpay"
+    end
+    if @buyable.kind_of?(Cart) && (charge_amount < Money.new(CentsOwedForCartContents.new(@buyable).owed_cents) || charge_amount < amount_owed)
+      errors << "a cart must be paid for in full or not at all"
     end
   end
 
@@ -106,9 +134,11 @@ class Money::ChargeCustomer
   end
 
   def create_stripe_charge
+    our_description = @buyable.kind_of?(Cart) ? ChargeDescription.new(@charge).for_cart_transactions(for_account: true) : ChargeDescription.new(@charge).for_accounts
+
     # Note, stripe does everything in cents
     @stripe_charge = Stripe::Charge.create(
-      description: ChargeDescription.new(@charge).for_accounts,
+      description: our_description,
       currency: $currency,
       customer: user.stripe_id,
       source: @card_id,

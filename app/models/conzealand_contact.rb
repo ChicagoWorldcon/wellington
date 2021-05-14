@@ -25,6 +25,8 @@
 require 'time'
 
 class ConzealandContact < ApplicationRecord
+
+  include Benefitable
   # TODO Move this to i18n
   PAPERPUBS_ELECTRONIC = "send_me_email"
   PAPERPUBS_MAIL = "send_me_post"
@@ -65,6 +67,7 @@ class ConzealandContact < ApplicationRecord
   ].freeze
 
   belongs_to :claim, required: false
+  has_many :cart_items, :as => :benefitable
 
   attr_reader :for_import
 
@@ -82,6 +85,10 @@ class ConzealandContact < ApplicationRecord
 
   def for_user(user)
     self
+  end
+
+  def name_for_cart
+    self.to_s
   end
 
   # This maps loosely to what we promise on the form, we use preferred name but fall back to legal name

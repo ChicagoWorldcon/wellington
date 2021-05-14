@@ -48,7 +48,7 @@ en:
   hello: "Hello Chicago!"
 
   errors:
-    offer_unavailable: Sorry, but that offer %{offer} is no longer available
+    offer_unavailable: Sorry, but the offer %{offer} is no longer available
 
   rights:
     description: With this membership, you can

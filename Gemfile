@@ -5,6 +5,7 @@
 # Copyright 2019 Steven C Hartley
 # Copyright 2019 Chris Rose
 # Copyright 2020 Matthew B. Gray
+# Copyright 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,8 +53,10 @@ group :development, :test do
   gem "factory_bot_rails"                             # reusable model construction for tests
   gem "faker"                                         # fun common strings fro testing
   gem "guard-rspec", require: false                   # tests that re-run on save are nice
+  #gem 'meta_request'                                  # allows you to use the 'rails panel' browser extension
   gem "pry"                                           # nicer debugger, use 'binding.pry'
   gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
+  gem "rails-controller-testing"                      # adds back deprecated "assigns" and "assert_template" expectations.
   gem "rspec-rails"                                   # testing framework
   gem "rubocop"                                       # linting for idiomatic ruby
   gem "rubocop-performance"                           # performance static analysis
@@ -61,6 +64,7 @@ group :development, :test do
   gem "rubocop-rspec"                                 # linting for idiomatic rspec
   gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
   gem "selenium-webdriver"                            # brower based full stack testing
+  gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing.
   gem "simplecov"                                     # tracks test coverage
   gem "solargraph"                                    # language server support
   gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
@@ -81,6 +85,10 @@ group :development do
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
   gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
+end
+
+group :test do
+  gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

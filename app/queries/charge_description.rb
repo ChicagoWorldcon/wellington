@@ -20,6 +20,7 @@
 # And so that accountants get really nice text in reports
 class ChargeDescription
   include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
 
   attr_reader :charge
 
@@ -52,6 +53,48 @@ class ChargeDescription
     ].compact.join(" ")
   end
 
+  def for_cart_transactions(for_account: false)
+
+    base_charge_description = {
+      "for_users" => [
+        maybe_charge_state,
+        formatted_amount,
+        "Fully Paid",
+        "with",
+        payment_type,
+        "for "
+      ].compact.join(" "),
+
+      "for_accounts" => [
+        formatted_amount,
+        "Fully Paid",
+        "by",
+        maybe_chargee_email,
+        "for "
+      ].compact.join(" ")
+    }
+
+    cart_charge_desc = for_account ? base_charge_description["for_accounts"] : base_charge_description["for_users"]
+
+    max_cart_description_length = ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH - cart_charge_desc.length
+
+    if max_cart_description_length > 0
+      cart_description = CartContentsDescription.new(
+        charged_cart,
+        max_characters: max_cart_description_length
+      ).describe_cart_contents
+      full_cart_desc = cart_charge_desc.concat(cart_description)
+    else
+      full_cart_desc = cart_charge_desc.concat(" #{worldcon_public_name}")
+    end
+
+    if full_cart_desc.length > ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH
+      return full_cart_desc[0, ::ApplicationHelper::MYSQL_MAX_FIELD_LENGTH]
+    end
+
+    full_cart_desc
+  end
+
   private
 
   def maybe_charge_state
@@ -79,19 +122,38 @@ class ChargeDescription
   end
 
   def maybe_member_name
-    claims = charge.reservation.claims
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" if !charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
+    claims = charge.buyable.claims
     active_claim = claims.active_at(charge_active_at).first
     active_claim.contact
   end
 
+  def charged_cart
+    raise TypeError, "expected a Cart, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Cart)
+  rescue TypeError
+    return nil
+  else
+    charge.buyable
+  end
+
   def membership_type
-    "#{charged_membership} member #{charge.reservation.membership_number}"
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
+    "#{charged_membership} member #{charge.buyable.membership_number}"
   end
 
   def charged_membership
+    raise TypeError, "expected a Reservation, got #{charge.buyable.class.name}" unless charge.buyable.kind_of?(Reservation)
+  rescue TypeError
+    return nil
+  else
     return @charged_membership if @charged_membership.present?
-
-    orders = charge.reservation.orders
+    orders = charge.buyable.orders
     @charged_membership = orders.active_at(charge_active_at).first.membership
   end
 
@@ -104,11 +166,11 @@ class ChargeDescription
   end
 
   def orders_so_far
-    charge.reservation.orders.where("created_at <= ?", charge_active_at)
+    charge.buyable.orders.where("created_at <= ?", charge_active_at)
   end
 
   def charges_so_far
-    successful = charge.reservation.charges.successful
+    successful = charge.buyable.charges.successful
     successful.where.not(id: charge.id).where("created_at < ?", charge_active_at)
   end
 
@@ -120,5 +182,9 @@ class ChargeDescription
   # that may rise from how Postgres stores dates
   def charge_active_at
     @charge_active_from ||= charge.created_at + 1.second
+  end
+
+  def maybe_chargee_email
+    charge.buyable.email
   end
 end

@@ -63,7 +63,7 @@ RSpec.describe RightsController, type: :controller do
 
         it "sets to instalment membership is not paid off" do
           reservation.charges.destroy_all
-          create(:charge, user: reservation.user, reservation: reservation, amount: almost_paid)
+          create(:charge, user: reservation.user, buyable: reservation, amount: almost_paid)
           expect { post_create }.to change { reservation.reload.instalment? }.to(true)
         end
 

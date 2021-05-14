@@ -36,6 +36,10 @@ RSpec.describe Money::ChargeCustomer do
     )
   end
 
+  let(:unpaid_res_cart) { create(:cart, :with_unpaid_reservation_items)}
+  let(:unpaid_r_c_user) { unpaid_res_cart.user }
+  let(:owed_for_unpd_cart ) { Money.new(CentsOwedForCartContents.new(unpaid_res_cart).owed_cents) }
+
   describe "#comment" do
     let(:amount_1) { Money.new(1_00) }
     let(:amount_2) { membership.price - amount_1 }
@@ -48,7 +52,7 @@ RSpec.describe Money::ChargeCustomer do
     end
   end
 
-  describe "mocking charge description" do
+  describe "mocking reservation charge description" do
     let(:comment_for_users) { "Fab Zibra is yours" }
     let(:comment_for_accounts) { "Stripey Zibra Paid" }
 
@@ -58,10 +62,11 @@ RSpec.describe Money::ChargeCustomer do
         .and_return(
           instance_double(ChargeDescription,
             for_accounts: comment_for_accounts,
-            for_users: comment_for_users,
+            for_users: comment_for_users
           )
         )
-    end
+      end
+
 
     context "when stripe customer id is already set" do
       subject(:command) { described_class.new(reservation, user, token, amount_owed) }
@@ -238,6 +243,82 @@ RSpec.describe Money::ChargeCustomer do
           command.call
           expect(user.charges.successful.sum(&:amount)).to eq membership.price
         end
+      end
+    end
+  end
+
+  context "when paying for a cart" do
+
+    subject(:our_helper) { described_class.new(unpaid_res_cart, unpaid_r_c_user, token, owed_for_unpd_cart)}
+
+    it "updates the user's stripe id" do
+        expect { our_helper.call }.to change { unpaid_r_c_user.reload.stripe_id }.from(nil)
+    end
+
+    context "when payment in full is attempted" do
+      context "when payment succeeds" do
+        before do
+          expect(our_helper.call).to be_truthy
+        end
+
+        it "creates a new successful charge" do
+          expect(Charge.successful.count).to eq 1
+          expect(Charge.last.stripe_id).to be_present
+        end
+
+        it "updates the payment status of all the reservations in the cart to 'paid'" do
+          paids_seen = unpaid_res_cart.cart_items.inject(0) {|a, i| a += 1 if (i.holdable.state == Reservation::PAID) }
+          expect(paids_seen).to eql(unpaid_res_cart.cart_items.count)
+        end
+
+        it "is linked to our user" do
+          expect(Charge.last.user).to eq unpaid_r_c_user
+        end
+
+        it "delegates the description to our charge description service" do
+          expect(Charge.last.comment).to eq(ChargeDescription.new(Charge.last).for_cart_transactions) 
+        end
+      end
+
+      context "when payment fails" do
+        before do
+          StripeMock.prepare_card_error(:card_declined)
+          expect(our_helper.call).to be_falsey
+        end
+
+        it "does not change the amount paid" do
+          expect { our_helper.call }.not_to change { unpaid_res_cart.reload.charges.successful.sum(&:amount) }
+        end
+
+        it "creates a failed payment on card decline" do
+          expect(Charge.failed.count).to eq 1
+          expect(Charge.last.stripe_id).to be_present
+        end
+
+        it "assigns a message about the card being declined to the charge's comment field" do
+          expect(Charge.last.comment).to match(/declined/i)
+        end
+      end
+    end
+
+    context "when attempting to underpay for a cart" do
+      subject(:our_underpayment_helper) { described_class.new(unpaid_res_cart, unpaid_r_c_user, token, owed_for_unpd_cart, charge_amount: Money.new(200))}
+
+      before do
+        our_underpayment_helper.call
+      end
+
+      it "does not change the amount paid" do
+        expect { our_underpayment_helper.call }.not_to change { unpaid_res_cart.reload.charges.successful.sum(&:amount) }
+      end
+
+      it "creates a failed payment" do
+        expect(Charge.failed.count).to eq 1
+        expect(Charge.last.stripe_id).to be_present
+      end
+
+      it "assingns the error message to the charge's comment field" do
+        expect(Charge.last.comment).to match(/paid for in full or not at all/i)
       end
     end
   end

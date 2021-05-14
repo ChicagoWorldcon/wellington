@@ -1,5 +1,4 @@
 class UsersWhoCanNominateForChicago
-  MINIMUM_WAIT = 10.minutes
 
   def call
     users_with_nominating_chicago_claims.select(:email)

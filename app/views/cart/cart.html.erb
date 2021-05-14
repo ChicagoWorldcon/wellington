@@ -1,0 +1,81 @@
+<%#
+  Copyright 2020 Victoria E. Garcia
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  TODO: figure out if we need to disable some or all buttons for  unavailable items.
+%>
+
+<h1 id="cart-header">SHOPPING CART</h1>
+<div class="container text-center cart-body">
+  <% if @now_bin.present? || @later_bin.present? %>
+    <h2 id="now-header">Items to Purchase Now:</h2>
+    <% if @now_bin.present? %>
+      <div class="now-items">
+        <div class="row d-inline-flex align-items-stretch item-cards">
+          <% @now_bin.each do |cart_item| %>
+            <div class="row row-cols-auto mb-3 ml-2">
+              <%= render("cart_item_card", cart_item: cart_item, admin_buttons: add_admin_buttons(cart_item))%>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="admin-container">
+          <div class="btn-group payment-buttons" role="group">
+            <% if ready_for_payment?(@cart_chassis) %>
+              <%= button_to "Pay Online Now", cart_preview_online_purchase_path, method: :get, class: "btn btn-outline-primary" %>
+              <%= button_to "Pay with Check", cart_pay_with_cheque_path, method: :post, class: "btn btn-outline-primary" %>
+              <% end %>
+            <%= button_to "Save All Items for Later", cart_save_all_path, method: :patch, class: "btn btn-outline-warning" %>
+            <%= group_deletion_button(@cart_chassis.now_bin) %>
+          </div>
+          <div class="subtotal-container p-3 m-2">
+            <h5> Cart Subtotal: <%= @now_subtotal %></h5>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <h4 class="no-contents"> All your items are saved for later.  </h4>
+    <% end %>
+
+    <% if @later_bin.present? %>
+      <div class="later-items">
+        <h2 id="later-header" class="bg-warning">Items Saved for Later:</h2>
+        <div class="row d-inline-flex align-items-stretch item-cards">
+          <% @later_bin.each do |later_item| %>
+            <div class="row row-cols-auto mb-3 ml-2">
+              <%= render("cart_item_card", cart_item: later_item, admin_buttons: add_admin_buttons(later_item, in_later_bin: true)) %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="admin-container">
+          <div class="btn-group later-buttons" role="group">
+            <%= button_to "Move All Items to Cart", cart_activate_all_path, method: :patch, class: "btn btn-outline-warning" %>
+            <%= group_deletion_button(@cart_chassis.later_bin) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="admin-container">
+      <div class="btn-group" id="overall-buttons" role="group">
+        <%= button_to "Check Availability of All Items", cart_verify_all_path, method: :patch, class: "btn btn-outline-success" %>
+        <%= group_deletion_button(@cart_chassis) %>
+      </div>
+    </div>
+
+  <% else %>
+    <h4 class = "no-contents"> Your cart is empty! </h4>
+  <% end %>
+</div>

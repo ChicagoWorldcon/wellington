@@ -68,7 +68,7 @@ RSpec.describe ChargesController, type: :controller do
       create(:charge,
         amount: amount_posted,
         user: user,
-        reservation: reservation,
+        buyable: reservation,
       )
     end
 
@@ -147,7 +147,7 @@ RSpec.describe ChargesController, type: :controller do
           let(:amount_owed) { 0 }
 
           before do
-            create(:charge, amount: 340_00, reservation: reservation, user: user)
+            create(:charge, amount: 340_00, buyable: reservation, user: user)
           end
 
           it "redirects to the reservation" do
@@ -168,8 +168,8 @@ RSpec.describe ChargesController, type: :controller do
           let(:amount_owed) { Money.new(110_00) }
 
           before do
-            create(:charge, amount: 100_00, reservation: reservation, user: user)
-            create(:charge, amount: amount_posted, reservation: reservation, user: user)
+            create(:charge, amount: 100_00, buyable: reservation, user: user)
+            create(:charge, amount: amount_posted, buyable: reservation, user: user)
           end
 
           it "redirects to the reservation" do
@@ -184,6 +184,153 @@ RSpec.describe ChargesController, type: :controller do
             expect(flash[:notice]).to be_present
           end
         end
+      end
+    end
+  end
+
+  describe "POST #create_group_charge" do
+    let(:stripe_token) { "stripe-token" }
+    let(:buyable_cart) {create(:cart, :with_unpaid_reservation_items)}
+    let(:amount_owed) { Money.new(buyable_cart.subtotal_cents) }
+
+    let(:params) do
+      {
+        buyable: buyable_cart.id,
+        stripeToken: stripe_token,
+      }
+    end
+
+    let(:charge) do
+      create(:charge,
+        amount: amount_owed,
+        user: buyable_cart.user,
+        buyable: buyable_cart,
+      )
+    end
+
+    let(:error_service) do
+      instance_double(Money::ChargeCustomer,
+        call: charge_success,
+        charge: charge,
+        error_message: "error"
+     )
+    end
+
+    before do
+      sign_out(user)
+      sign_in(buyable_cart.user)
+
+      allow(PaymentMailer).to receive_message_chain(:cart_paid, :deliver_later).and_return(true)
+
+      expect(Money::ChargeCustomer)
+        .to receive(:new)
+        .and_return(error_service)
+    end
+
+    after do
+      sign_in(user)
+    end
+
+    context "when the charge is unsuccessful" do
+      let(:charge_success) { false }
+      before { post :create_group_charge, params: params }
+
+      it "sets a flash error" do
+        expect(flash[:error]).to be_present
+      end
+
+      it "redirects to the cart's preview_online_purchase path" do
+        expect(response).to redirect_to(cart_preview_online_purchase_path)
+      end
+    end
+
+    context "when the charge is successful" do
+      let(:charge_success) { true }
+      let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: nil) }
+
+      it "redirects to the group_charge_confirmation_path" do
+        post :create_group_charge, params: params
+
+        expect(response).to redirect_to :action => :group_charge_confirmation, :processed_cart => assigns(:transaction_cart), :charge => assigns(:transaction_cart).charges.order("created_at").last
+      end
+    end
+  end
+
+  describe "GET #group_charge_confirmation" do
+    let(:fully_paid_cart) {create(:cart, :fully_paid_through_single_direct_charge)}
+    let(:f_p_c_charge) {fully_paid_cart.charges.order("created_at").last}
+
+    before do
+      sign_in(fully_paid_cart.user)
+    end
+
+    after do
+      sign_out(fully_paid_cart.user)
+      sign_in(user)
+    end
+
+    context "when it doesn't recieve valid params" do
+      let(:params) do
+        {
+          processed_cart: 2147483647,
+          charge: 2147483647,
+        }
+      end
+
+      before do
+        get :group_charge_confirmation, params: params
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:found)
+      end
+
+      it "redirects" do
+        expect(subject).to redirect_to(:reservations)
+      end
+
+      it "sets a flash alert" do
+        expect(subject).to set_flash[:alert].to(/unable/i)
+      end
+
+      it "doesn't assign a value @amount_charged" do
+        expect(assigns(:amount_charged)).to be_nil
+      end
+
+      it "assigns a value to @processed_cart" do
+        expect(assigns(:processed_cart)).to be_nil
+      end
+    end
+
+    context "when it receives valid params" do
+      let(:params) do
+        {
+          processed_cart: fully_paid_cart.id,
+          charge: f_p_c_charge.id,
+        }
+      end
+
+      before do
+        get :group_charge_confirmation, params: params
+      end
+
+      it "succeeds" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders" do
+        expect(subject).to render_template(:group_charge_confirmation)
+      end
+
+      it "assigns a value to @amount_charged" do
+        expect(assigns(:amount_charged)).not_to be_nil
+        expect(assigns(:amount_charged)).to be_a_kind_of(String)
+      end
+
+      it "assigns a value to @processed_cart" do
+        expect(assigns(:processed_cart)).not_to be_nil
+        expect(assigns(:processed_cart)).to be_a_kind_of(Cart)
+        expect(assigns(:processed_cart)).to eql(fully_paid_cart)
       end
     end
   end

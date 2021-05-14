@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Copyright 2019 Matthew B. Gray
-# Copyright 2020 Victoria Garcia
+# Copyright 2020, 2021 Victoria Garcia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,6 +52,10 @@ RSpec.describe MembershipOffer do
     end
   end
 
+  xdescribe "#self.locate_active_offer_by_hashcode(hashcode)" do
+
+  end
+
   describe "#dob_required?" do
     subject(:dob_required?) { model.dob_required? }
 
@@ -64,4 +68,26 @@ RSpec.describe MembershipOffer do
     end
   end
 
+  xdescribe "#locate_active_offer_by_hashcode" do
+    context "when the hashcode matches an active offer" do
+      it "is not empty" do
+        pending
+      end
+      it "is an instance of MembershipOffer" do
+        pending
+      end
+    end
+
+    context "when the hashcode matches an inactive offer" do
+      it "is empty" do
+        pending
+      end
+    end
+
+    context "when the hashcode matches a nonexistent offer" do
+      it "is empty" do
+        pending
+      end
+    end
+  end
 end
