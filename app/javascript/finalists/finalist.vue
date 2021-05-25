@@ -3,6 +3,7 @@
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // 28-APR-21 FNB allow finalist names to contain HTML for nice formatting
+// 25-MAY-21 FNB Accessability updates
 
 // NOTE: Changes to VUE require rails server restart!
 
@@ -11,6 +12,7 @@
     <div>
       <input
         type="text"
+        title="ranking"        
         v-model.number="finalist.rank"
         :class="{ 'text-danger': invalid }"
         @change='changeRank()'

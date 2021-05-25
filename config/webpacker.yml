@@ -29,7 +29,7 @@ default: &default
 
   # Reload manifest.json on all requests so we reload latest compiled packs
   # VEG ALERT:  CHANGE THIS BACK TO FALSE BEFORE PRing.
-  cache_manifest: true
+  cache_manifest: false
 
   # Extract and emit a css file
   extract_css: true

@@ -4,6 +4,8 @@
 // Copyright 2021 Fred Bauer
 //
 // Licensed under the Apache License, Version 2.0
+//
+// 24-May-2021 FNB Added CSS for better contrast on _reservation_card
 
 // Place all the styles related to the Charges controller here.
 // They will automatically be included in application.css.
@@ -42,10 +44,56 @@ $blue: #034acc;
 $charcoal: #505050;
 $header-dark: #343a40;
 $grey: #ccc;
-$light-blue: #6798f7;
+$light-blue: #6798f7; //was #6798f7
 $light-grey: #e1e1e1;
 $red: #e93f36;
 $white: #fff;
+
+// Specific styling for reservation cards, to allow better contrast control for accessability
+
+$light-background: #fff;
+$light-text: #000;
+$light-link: $red;
+$light-focus: blue;
+$dark-background: $charcoal;
+$dark-text: $white;
+$dark-link: $light-blue;
+$dark-focus: $red;
+
+//referenced in reservations_helper.rb 
+
+.light-card {
+  background: rgb(252, 250, 246);
+  color: black;
+  a {
+    color: #cc3300;
+  }
+  a:hover,
+  a:focus {
+    color: blue;
+    text-decoration: underline;
+  }
+  a:focus {
+    outline: 1px black;
+  }
+  }
+
+  .dark-card {
+    background: $charcoal;
+    color: white; //this seems to be ignored
+    a {
+      color: $dark-link;
+    }
+    a:hover,
+    a:focus {
+      color: $dark-focus;
+      text-decoration: underline;
+    }
+    a:focus {
+      outline: 1px dotted $white;
+    }
+    }
+  
 
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
@@ -192,6 +240,17 @@ h6, .h6-like {
 // -------------------------------
 // LINKS
 // -------------------------------
+//from bootstrap
+// a {
+//   color: $link-color;
+//   text-decoration: $link-decoration;
+//   background-color: transparent; // Remove the gray background on active links in IE 10.
+
+//   @include hover() {
+//     color: $link-hover-color;
+//     text-decoration: $link-hover-decoration;
+//   }
+// }
 
 a {
   color: $light-blue;
@@ -418,4 +477,8 @@ footer {
 
 .card.bg-dark svg.octicon {
   fill: #fff;
+}
+
+.card.bg-neutral {
+  background : rgb(235, 189, 163);
 }

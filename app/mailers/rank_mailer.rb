@@ -38,6 +38,15 @@ class RankMailer < ApplicationMailer
 #   end
 
   def rank_ballot(reservation)
+     @wordcon_basic_greeting = worldcon_basic_greeting
+     @worldcon_year = worldcon_year
+     @retro_hugo_75_ago = retro_hugo_75_ago
+     @hugo_vote_deadline = hugo_vote_deadline
+     @worldcon_year = worldcon_year
+     @worldcon_public_name = worldcon_public_name
+     @organizers_names_for_signature = organizers_names_for_signature
+
+
     @detail = reservation.active_claim.contact
     @ranks = reservation.ranks.sort_by{ |rank| [rank.finalist.category.id, rank.position]}
     @wordcon_basic_greeting = worldcon_basic_greeting
