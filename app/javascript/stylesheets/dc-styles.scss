@@ -4,16 +4,7 @@
 // Copyright 2021 Fred Bauer
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// 24-May-2021 FNB Added CSS for better contrast on _reservation_card
 
 // Place all the styles related to the Charges controller here.
 // They will automatically be included in application.css.
@@ -56,6 +47,52 @@ $light-blue: #6798f7;
 $light-grey: #e1e1e1;
 $red: #e93f36;
 $white: #fff;
+
+
+// Specific styling for reservation cards, to allow better contrast control for accessability
+
+$light-background: #fff;
+$light-text: #000;
+$light-link: $red;
+$light-focus: blue;
+$dark-background: $charcoal;
+$dark-text: $white;
+$dark-link: $light-blue;
+$dark-focus: $red;
+
+.light-card {
+  background: rgb(252, 250, 246);
+  color: black;
+  a {
+    color: #cc3300;
+  }
+  a:hover,
+  a:focus {
+    color: blue;
+    text-decoration: underline;
+  }
+  a:focus {
+    outline: 1px black;
+  }
+  }
+
+  .dark-card {
+    background: $charcoal;
+    color: white; //this seems to be ignored
+    a {
+      color: $dark-link;
+    }
+    a:hover,
+    a:focus {
+      color: $dark-focus;
+      text-decoration: underline;
+    }
+    a:focus {
+      outline: 1px dotted $white;
+    }
+    }
+  
+  
 
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&subset=latin-ext');
@@ -104,7 +141,7 @@ html, body {
 }
 body {
     //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //For pretty background
-    background:  #c71d38; //Matches darkest banner color. Solid background
+    background:  #771122da; //Matches darkest banner color. Solid background #a3182fda
 
     // For that test environment feeling
     &.api-test-keys {
@@ -171,7 +208,7 @@ h6, .h6-like {
 // -------------------------------
 
 .btn {
-  background: $light-blue;
+  background: #8bc779;
   color: $black;
   border-radius: 5px;
   border: 0;

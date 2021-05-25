@@ -17,7 +17,9 @@
 module ReservationsHelper
   def card_classes(reservation)
     if !reservation.paid?
-      "text-white bg-dark border-light"
+      "dark-card text-white border-light" # was "text-white bg-dark border-light"
+    else
+      "light-card" #bg-neutral
     end
   end
 
