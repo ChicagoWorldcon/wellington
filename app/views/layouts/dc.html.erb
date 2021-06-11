@@ -32,8 +32,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="CoNZealand is a convention for science fiction enthusiasts.">
-  <meta name="keywords" content="conzealand, science fiction, convention, meet up, sci-fi" />
+  <meta name="description" content="<%= worldcon_public_name %>
+  will be the <%= worldcon_number_digits_only.ordinalize %> World Science Fiction Convention.">
+  <meta name="keywords" content="<%= worldcon_public_name.downcase %>,
+   science fiction, convention, meet up, sci-fi" />
 </head>
 
 <body class="<%= "api-test-keys" if $stripe_test_keys %>">
