@@ -2,18 +2,12 @@
 
 # Copyright 2020 Steven Ensslen
 # Copyright 2020 Matthew B. Gray
+# COpyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 14-May-21 FNB modified for compatibility with Digital Ocean Spaces as a lower-cost alternative to AWS S3
+#               Should may be compatible with AWS, but not tested.
+
 
 require "aws-sdk-s3"
 
@@ -39,7 +33,7 @@ class HugoPacketController < ApplicationController
   before_action :check_access!
 
   def index
-    list_objects = s3_client.list_objects_v2(
+    list_objects = s3_client.list_objects(
       bucket: ENV["HUGO_PACKET_BUCKET"],
       prefix: ENV["HUGO_PACKET_PREFIX"],
     )
@@ -54,14 +48,19 @@ class HugoPacketController < ApplicationController
   def show
     current_user.update!(hugo_download_counter: current_user.hugo_download_counter + 1)
 
-    hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/")
+    #hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/") #S3 version
+    hugo_packet_path = params[:id] #Spaces version
     s3_object = Aws::S3::Object.new(
       key: hugo_packet_path,
       bucket_name: ENV['HUGO_PACKET_BUCKET'],
       client: s3_client,
     )
 
-    redirect_to s3_object.presigned_url(:get, expires_in: 1.hour.to_i)
+    redirect_to s3_object.presigned_url(
+      :get, 
+      expires_in: 10.minute.to_i, 
+    ) 
+
   end
 
   private
@@ -90,6 +89,11 @@ class HugoPacketController < ApplicationController
 
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new
+    @s3_client ||= Aws::S3::Client.new(
+      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+      endpoint: ENV['AWS_ENDPOINT'],
+      region: ENV['AWS_REGION']
+    )
   end
 end

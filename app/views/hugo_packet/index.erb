@@ -1,18 +1,11 @@
 <%#
   Copyright 2020 Steven Ensslen
   Copyright 2020 Victoria Garcia
+  Copyright 2021 Fred Bauer
 
   Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  
+  Note that this is static text, should really be moved to the i18n file
 %>
 
 <h1>Hugo Voter’s Packet <%= worldcon_year %></h1>
@@ -22,64 +15,35 @@
     <div class="col-12 col-md-12">
       <div class="l-panel">
         <p>
-          Welcome to the Hugo Voter’s Packet for <%= worldcon_year %>! While we know that you’re
-          excited to dive right into the materials, please take a moment to read
-          this brief introduction to the packet.
-        </p>
-
+          Welcome to the Hugo Voter’s Packet for <%= worldcon_year %>! Please take a moment to read this 
+          introduction before accessing the materials. 
         <p>
-          This download of materials from Hugo Award finalists is supplied free of
-          charge as a courtesy by the creators and publishers of works that are
-          nominated for the awards. The purpose is to allow those who are voting on
-          the Hugo Awards to be able to make an informed choice among the nominated
-          works. We are deeply appreciative of the publishers, authors, artists,
-          editors, and other creators who have generously provided their works to
-          this year’s Hugo Voter Packet. We also ask that you honour publishers’
-          and creators’ request that you reserve these copies for your personal use
-          only, and that you do not share these works with non-members of
-          <%= worldcon_public_name %>.
-        </p>
-
+          This download of materials from Hugo Award finalists is supplied free of charge as a courtesy by creators, publishers and studios.
+          The purpose is to allow those who are voting on the Hugo Awards to be able to make an informed choice among the finalists
+          We are deeply appreciative of the publishers, studios, authors, artists, editors, and other creators who have generously provided
+          their works to this year’s Hugo Voter Packet. We also ask that you honor publishers’ and creators’ request that you reserve these
+          copies for your personal use only, and that you do not share these works with non-members of <%= worldcon_public_name %>.
         <p>
-          We have divided the packet into categories for ease of downloading. Within
-          each category, each Finalist has their own folder that contains all of the
-          materials submitted. Sometimes, an individual finalist’s folder has further
-          sub-folders, but for the most part, we have tried to keep the nesting
-          folders to a minimum.
-        </p>
-
+          We have divided the packet into categories for ease of downloading. For each category you will see a .pdf file, which contains a list of content
+          for that category, and a .zip file, which contains the material submitted by the finalists.
         <p>
-          Some parts of the packet are quite large! Time your bandwidth usage
-          accordingly. Specifically, the Best Dramatic Presentation Short Form, Best
-          Related Work, Best Fancast, and Best Series folders are on the larger side.
-          Note that when you click on the link, the download will start
-          automatically.
-        </p>
-
+          Some parts of the packet are quite large! Time your bandwidth usage accordingly. Specifically, the Best Fancast, Best Graphic Story, Best Semiprozine,
+          and Best Series are on the larger side. Note that when you click on the link, the download will start automatically.
+        <p>  
+          For the Astounding Award and Lodestar Award, some written material uses Net Galley widgets (a widget looks like a link.)
+          These links will be in the .pdf of the work.
+          In each Table of Contents for the categories,
+          we have indicated when a work has a Net Galley widget. Net Galley is a free service that allows you to download different copies of a work.
+          You must first register for an account and then come back to the link in the .pdf and click on it to access the work. These links will expire when voting closes.
         <p>
-          The use of Net Galley widgets (a widget looks like a link) in our written
-          categories has increased this year. In each Table of Contents for the
-          categories, we have indicated when a work has a Net Galley widget. Net
-          Galley is a free service that allows you to download different copies of
-          a work. You must first register for an account and then come back to the
-          link in the packet and click on it to access the work. These links will
-          expire when voting closes.
-        </p>
-
-          <%# TODO: Update the sitch for this category %>
+          We do have materials in every category this year, including both dramatic presentation categories and Best Video Game.
+          Rather than have you download videos, we have provided links to password-protected videos online.
+          Please do not share the links or passwords. For Best Video Game, some studios have provided us with a way for you to play their finalist game;
+          you will need to read the notes for individual games to find out how to access these codes, which may be limited. 
         <p>
-          Finally, we do have some materials in our Best Dramatic Presentation: Short
-          Form this year. Since we do not usually have materials submitted in this
-          category, we wanted to make sure that you check them out!
-        </p>
-
-
-        <%# TODO: Confirm this date %>
-        <p>
-          Happy reading everyone and remember to finalize your ballot choices by
-          <%= hugo_nom_deadline %>. (Also, download your packet by then too! When voting closes,
-          the packet disappears into the ether.) If you have any problems with the
-          packet, please contact <%= email_hugo_help %>.
+          We hope you enjoy the content of the Hugo Voter Packet. Please remember to download any materials and finalize your ballot 
+          choices by November 19th, 11:59 PM PST.
+          The voter packet will be removed when voting closes. If you have any problems with the packet, please contact <%= email_hugo_help %>.
         </p>
 
         <ul class="list-group text-dark">
