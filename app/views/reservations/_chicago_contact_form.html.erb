@@ -304,17 +304,17 @@
   </fieldset>
 
   <div class="l-v-spacing-both">
-    <div class="form-group">
-      <div class="btn-group w-100">
+    <div class="form-group w-100">
+      <div class="btn-group row w-100" role="group">
         <% if @reservation.persisted? %>
-          <div class="col"><input type="submit" value="Save Details" class="btn btn-m-full-width"></div>
+          <input type="submit" value="Save Details" class="btn col btn-m-full-width">
         <% elsif @my_offer.membership.price > 0  %>
-          <div class="col"><input type="submit" name="" value="Reserve Membership and Pay" class="btn"></div>
-          <div class="col"><input type="submit" value="Pay with Cheque" class="btn" formaction="<%= reserve_with_cheque_reservations_path %>"></div>
-          <div class="col"><input type="submit" value="Add to Cart" class="btn" style="background-color:darkmagenta; color:cyan;" formaction="<%= add_to_cart_reservations_path %>"></div>
+          <input type="submit" name="" value="Reserve Membership and Pay" class="btn">
+          <input type="submit" value="Pay with Cheque" class="btn" formaction="<%= reserve_with_cheque_reservations_path %>">
+          <input type="submit" class="btn" value="Add to Cart" formaction="<%= add_to_cart_reservations_path %>">
         <% else %>
-          <div class="col"><input type="submit" value="Reserve Membership" class="btn"></div>
-          <div class="col"><input type="submit" value="Add to Cart" class="btn" style="background-color:darkmagenta; color:cyan;" formaction="<%= add_to_cart_reservations_path %>"></div>
+          <input type="submit" class="btn" value="Reserve Membership" >
+          <input type="submit" class="btn" value="Add to Cart" formaction="<%= add_to_cart_reservations_path %>">
         <% end %>
       </div>
     </div>
