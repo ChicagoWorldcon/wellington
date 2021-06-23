@@ -34,6 +34,10 @@ class CartItemLocator
     r_item.length == 1 ? r_item[0] : nil
   end
 
+  def any_cart_items_present?
+    CartItem.where(cart: our_bins).present?
+  end
+
   private
 
   def our_now_bin
@@ -42,5 +46,9 @@ class CartItemLocator
 
   def our_later_bin
     Cart.active_for_later.find_by(user: @our_user)
+  end
+
+  def our_bins
+    Cart.active.where(user: @our_user)
   end
 end

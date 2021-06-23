@@ -30,19 +30,20 @@
         <strong>Menu and Account Options</strong>
       </div>
 
-      <div class="navbar-nav d-flex flex-row">
-        <% if user_signed_in? && !support_signed_in? && ( @now_bin.present? || @later_bin.present?) %>
-            <button
-            id="cart-button"
-            type="button"
-            aria-label="Shopping Cart Button"
+      <div class="d-flex flex-row">
+        <% if show_cart_icon?(bin_present: @now_bin.present? || @later_bin.present?) %>
+            <a
+            id="cart-navigator"
+            class="nav-link"
+            aria-label="Shopping Cart Link"
             href="/cart">
               <i id="cart-icon" alt="shopping-cart"><%= show_svg('icons/cart4.svg') %></i>
-            </button>
+            </a>
         <% end %>
 
         <button
           class="navbar-toggler collapsed"
+          data-toggle="collapse"
           type="button"
           aria-controls="navbarHeader"
           aria-expanded="false"

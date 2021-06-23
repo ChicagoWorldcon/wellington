@@ -165,12 +165,12 @@ h6, .h6-like {
   font-weight: $font-weight-base;
 }
 
-#cart-button {
+#cart-navigator {
   padding: 0.25rem 0.75rem;
   font-size: 1.25rem;
   line-height: 1;
   background-color: transparent;
-  border: 1px transparent;
+  // border: 1px $mid-grey;
   border-radius: 0.25rem;
 }
 
