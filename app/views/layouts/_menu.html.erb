@@ -31,9 +31,9 @@
       </div>
 
       <div class="navbar-nav d-flex flex-row">
-        <% if user_signed_in? && !support_signed_in? %>
+        <% if user_signed_in? && !support_signed_in? && ( @now_bin.present? || @later_bin.present?) %>
             <button
-            class="navbar-toggler"
+            id="cart-button"
             type="button"
             aria-label="Shopping Cart Button"
             href="/cart">
@@ -51,9 +51,6 @@
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
-
-
-
     </div>
   </div>
 <% else %>
