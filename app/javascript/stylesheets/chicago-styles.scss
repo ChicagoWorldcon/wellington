@@ -159,10 +159,19 @@ h6, .h6-like {
 // // CART=SPECIFIC STYLES
 // // ===================
 
-#cart-icon .bi {
+#cart-icon {
   background-color: Transparent;
   color: $mid-grey;
   font-weight: $font-weight-base;
+}
+
+#cart-button {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px transparent;
+  border-radius: 0.25rem;
 }
 
 #cart-header {
