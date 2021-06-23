@@ -30,15 +30,30 @@
         <strong>Menu and Account Options</strong>
       </div>
 
-      <button
-        class="navbar-toggler collapsed"
-        type="button"
-        aria-controls="navbarHeader"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <div class="navbar-nav d-flex flex-row">
+        <% if user_signed_in? && !support_signed_in? %>
+            <button
+            class="navbar-toggler"
+            type="button"
+            aria-label="Shopping Cart Button"
+            href="/cart">
+              <i id="cart-icon" alt="shopping-cart"><%= show_svg('icons/cart4.svg') %></i>
+            </button>
+        <% end %>
+
+        <button
+          class="navbar-toggler collapsed"
+          type="button"
+          aria-controls="navbarHeader"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+
+
     </div>
   </div>
 <% else %>
