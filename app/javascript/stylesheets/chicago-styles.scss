@@ -163,17 +163,13 @@ h6, .h6-like {
   background-color: Transparent;
   border: none;
   outline: none;
+  margin: 5px;
 }
 
 #cart-icon .bi {
-  background-color: $light-blue-two;
-  color: $red;
-  height: 200% !important;
-  width: 200% !important;
-  border-style: solid;
-  border-width: 4px;
-  border-color: white;
-  margin: 5px;
+  background-color: Transparent;
+  color: $mid-grey;
+  font-weight: $font-weight-base;
 }
 
 #cart-header {
