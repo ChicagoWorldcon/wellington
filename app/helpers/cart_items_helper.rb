@@ -111,6 +111,15 @@ module CartItemsHelper
     end
   end
 
+  def show_cart_icon?(bin_present: false)
+    if user_signed_in? && !support_signed_in?
+      return true if bin_present
+      return CartItemLocator.new(our_user: current_user).any_cart_items_present?
+    end
+
+    false
+  end
+
   private
 
   def confirm_text(for_group)
