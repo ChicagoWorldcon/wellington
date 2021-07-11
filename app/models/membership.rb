@@ -96,4 +96,16 @@ class Membership < ApplicationRecord
     h_price = self.price > 0 ? self.price.format(with_currency: true) : "Free"
     "#{self.name} #{h_price}"
   end
+
+  def price_increase(new_price, start_date, end_date = nil)
+    new_record = self.dup
+    new_record.price_cents = new_price
+    new_record.active_from = start_date.to_time
+    new_record.active_to = end_date.present? ? end_date.to_time : nil
+    new_record.save
+
+    self.active_to = new_record.active_from
+    self.save
+  end
+
 end
