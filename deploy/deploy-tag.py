@@ -25,6 +25,9 @@ def main():
 
     description = opts.description if opts.description else f"Deploy {opts.docker_tag}"
 
+    with open("deploy/tag.env", "r") as fh:
+        previous_deploy = fh.read()
+
     # write the environment file
     with open("deploy/tag.env", "w") as fh:
         fh.write(f"WELLINGTON_DOCKER_TAG={opts.docker_tag}\n")
@@ -79,6 +82,10 @@ def main():
     command += ["--deployment-group-name", deployment_group]
 
     subprocess.run(command).check_returncode()
+
+    # restore the environment file
+    with open("deploy/tag.env", "w") as fh:
+        fh.write(previous_deploy)
 
 
 if __name__ == "__main__":
