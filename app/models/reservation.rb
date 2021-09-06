@@ -2,23 +2,17 @@
 
 # Copyright 2019 AJ Esler
 # Copyright 2019 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Licensed under the Apache License, Version 2.0 
+# 12-Jun-21 FNB Added check for attenting
+# 20-Jun-21 FNB Added check for comp
 
 # Reservation represents a person who holds a membership
 # Reservations have unique "membership_numbers" given out in ascending order
 # People are associated to Reservation through Claim which is a join table to User
 # Membership details like display name are associated to Reservation through Order which is a join table to Membership
+
 class Reservation < ApplicationRecord
   PAID = "paid"
   DISABLED = "disabled"
@@ -82,8 +76,13 @@ class Reservation < ApplicationRecord
     Membership.can_nominate.where(id: orders.select(:membership_id)).exists?
   end
 
+  # You can also vote if any order history had this ability
   def can_vote?
     Membership.can_vote.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def can_attend?
+    Membership.can_attend.where(id: orders.select(:membership_id)).exists?
   end
 
   def paid?

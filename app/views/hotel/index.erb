@@ -1,0 +1,30 @@
+<%#
+  Copyright 2021 Fred Bauer
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  
+  Note that this is static text, should really be moved to the i18n file
+%>
+
+<h1>Hotel Reservations <%= worldcon_year %></h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <p>
+          Please use the link below to access the hotel reservation system.
+        <p>
+          When making your reservation, include your member number in the comment field of the reservation.
+        <p>
+          Please do not share this link with others, as we need to give priority to attendees.
+        </p>
+
+        <ul class="list-group text-dark">
+              <%= link_to("Link to Hotel Reservations", hotel_path('Omni')) %>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

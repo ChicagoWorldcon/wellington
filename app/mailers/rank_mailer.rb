@@ -16,32 +16,17 @@
 # limitations under the License.
 
 class RankMailer < ApplicationMailer
-  include ApplicationHelper
+#  include ApplicationHelper
   default from: $member_services_email
 
-  def rank_ballot(reservation)
-    @wordcon_basic_greeting = worldcon_basic_greeting
-    @worldcon_year = worldcon_year
-    @retro_hugo_75_ago = retro_hugo_75_ago
-    @hugo_vote_deadline = hugo_vote_deadline
-    @worldcon_year = worldcon_year
-    @worldcon_public_name = worldcon_public_name
-    @organizers_names_for_signature = organizers_names_for_signature
-
-    @detail = reservation.active_claim.contact
-    nominated_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
-
-    builder = MemberRanksByCategory.new(
-      reservation: reservation,
-      categories: nominated_categories.order(:order, :id),
-    )
-    builder.from_reservation
-    @ranks_by_category = builder.ranks_by_category
+def rank_ballot(reservation)
+  @detail = reservation.active_claim.contact
+  @ranks = reservation.ranks.sort_by{ |rank| [rank.finalist.category.id, rank.position]}
 
     mail(
-      subject: "Your 2020 Hugo and 1945 Retro Hugo Ballot",
+      subject: "Your 2021 Hugo Ballot",
       to: reservation.user.email,
-      from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
+      from: "Hugo Awards 2021 <hugohelp@discon3.org>"
     )
   end
 

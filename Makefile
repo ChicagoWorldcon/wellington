@@ -4,16 +4,6 @@
 # Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 # default target - starts daemons and get running
 start: start-support-daemons
@@ -107,3 +97,10 @@ dc-sql:
 # lets you cd around and have a look at the project
 dc-bash:
 	docker-compose -f docker-compose-with-rails.yml exec web sh
+
+#run Adminer on port 8080 to allow direct DB access.  
+adminer:
+	docker run -p 8080:8080 -d adminer
+	@echo ""
+	@echo "access adminer on http://localhost:8080"
+	@echo "database server will be on host.docker.internal:35432 if using default postgres/docner dev config"

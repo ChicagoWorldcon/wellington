@@ -5,14 +5,27 @@
   Copyright 2021 Fred Bauer
 
   Licensed under the Apache License, Version 2.0 (the "License");
-1-Feb-21 FNB FIx CoC and Privacy policy links
+1-Feb-21 FNB Fix CoC and Privacy policy links
+7-Apr-21 FNB Add CoC affirmation text
+19-Aug-21 FNB Add COVID checkbox
 %>
 
 <%= fields_for(@contact) do |contact_form| %>
+  <b> By purchasing a membership, the member agrees to abide by our 
+    <a href="https://discon3.org/about/CoC" target="_blank" rel="noopener">Code of Conduct</a></b>.
+<p>
+  <% if ENV["COVID"] && @my_offer.can_attend?%>
+    <fieldset class="l-v-spacing">
+      <div class="form-options">
+        <%= contact_form.check_box(:covid, class: "form-control form-control-m-checkbox", id: "covid") %>
+        <label for="covid"><b>For Attending Memberships, check to indicate that you have read our COVID-19 policy, 
+        <a href="https://discon3.org/covid" target="_blank" rel="noopener">here</a></b>.</label>
+      </div>
+   <% end %>
+
   <p>
     For more information about how we handle and use your personal information, please read our
-    <a href="https://discon3.org/about/CoC/#privacy" target="_blank" rel="noopener">Privacy Policy</a> and our
-    <a href="https://discon3.org/about/CoC" target="_blank" rel="noopener">Code of Conduct</a>.
+    <a href="https://discon3.org/about/CoC/#privacy" target="_blank" rel="noopener">Privacy Policy</a>.
   </p>
 
   <% if !@reservation.persisted? && @current_memberships.present? %>

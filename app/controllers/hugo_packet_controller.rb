@@ -7,6 +7,8 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # 14-May-21 FNB modified for compatibility with Digital Ocean Spaces as a lower-cost alternative to AWS S3
 #               Should may be compatible with AWS, but not tested.
+# 19-Jun-21 FNB So, we need to allow comp members with voting rights to download the packet. Either reservation state needs to be installment and
+#               there needs to be a charge, or the reservation state needs to be paid, in which case we don't check charges.
 
 
 require "aws-sdk-s3"
@@ -78,9 +80,10 @@ class HugoPacketController < ApplicationController
       return
     end
 
-    # Just need minimum instalment to count
-    paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
-    if paid_reservations.none?(&:can_vote?)
+    # Just need minimum instalment to count, OR have a paid (i.e. comp) membership
+    paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful) 
+    if paid_reservations.none?(&:can_vote?) 
+      rdb
       flash["notice"] = "To download the Hugo Packet, please ensure one of your memberships has at least the minimum instalment and voting rights"
       redirect_to reservations_path
       return

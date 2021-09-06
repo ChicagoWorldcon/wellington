@@ -3,6 +3,7 @@
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // 24-May-21 FNB Accessability updates
+// 22-aug-21 FNB Allow only 1-7 to be input for rank
 
 <template>
   <li class="finalist-component list-group-item">
@@ -13,7 +14,8 @@
         v-model.number="finalist.rank"
         :class="{ 'text-danger': invalid }"
         @change='changeRank()'
-        @keyup='changeRank()' 
+        @keyup='changeRank()'
+        @input='check0'
       >
       <span v-bind:class="{ 'text-danger': invalid }">
         {{ finalist.name }}
@@ -70,6 +72,13 @@ export default {
   methods: {
     changeRank() {
       this.$emit('valid', this.errors.length === 0);
+    },
+    check0(event) {
+      const value = event.target.value
+      if (String(value) === '0') { this.finalist.rank = '' }
+      const validInput = new RegExp("[^1-7]",)
+      if (validInput.test(String(value))) { this.finalist.rank = '' }
+      this.$forceUpdate()
     },
   },
 };

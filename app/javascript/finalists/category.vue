@@ -3,21 +3,23 @@
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // 10-may-21 FNB added check for valid vote, because valid is not a reliable indicator.
+// 19-aug-21 FNB added sort to display finalists in id order
 <template>
   <div v-if="0 < category.finalists.length" class="category-component l-v-spacing">
     <h2>{{ category.name }}</h2>
     <ul class="list-group list-group-flush text-dark l-v-spacing">
       <finalist
-        v-for="finalist in category.finalists"
+        v-for="finalist in orderedFinalists" 
         :key="finalist.id"
         :finalist="finalist"
         :ranks="ranks"
         @valid="valid = $event"
       />
     </ul>
-
+{{ranks}}
+{{category}}
     <button
-      v-if="test(ranks)"
+      v-if="test(ranks) && valid"
       v-on:click="save(category)"
       v-bind:key="category.id"
       class="btn"
@@ -43,7 +45,12 @@ export default {
         .map((r) => parseInt(r, 10))
         .sort();
     },
+    orderedFinalists: function () {
+      return this.category.finalists.sort((a,b) => a.id-b.id)  
+    },  
   },
+
+
   components: { Finalist },
   methods: {
     save: (category) => {

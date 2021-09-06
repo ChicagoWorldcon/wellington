@@ -27,10 +27,10 @@ import 'regenerator-runtime/runtime';
 import '../stylesheets/dc-styles.scss';
 import '../channels';
 import '../sprinkles';
-import '@fortawesome/fontawesome-free/js/brands';
-import '@fortawesome/fontawesome-free/js/fontawesome';
-import '@fortawesome/fontawesome-free/js/regular';
-import '@fortawesome/fontawesome-free/js/solid';
+//import '@fortawesome/fontawesome-free/js/brands';
+//import '@fortawesome/fontawesome-free/js/fontawesome';
+//import '@fortawesome/fontawesome-free/js/regular';
+//import '@fortawesome/fontawesome-free/js/solid';
 require.context('../images', true);
 
 ujs.start();
