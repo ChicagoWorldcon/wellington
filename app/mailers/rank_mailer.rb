@@ -2,32 +2,74 @@
 
 # Copyright 2020 Steven Ensslen
 # Copyright 2020 Victoria Garcia
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
 
 class RankMailer < ApplicationMailer
 #  include ApplicationHelper
   default from: $member_services_email
 
-def rank_ballot(reservation)
-  @detail = reservation.active_claim.contact
-  @ranks = reservation.ranks.sort_by{ |rank| [rank.finalist.category.id, rank.position]}
+#  def rank_ballot(reservation)
+#     @wordcon_basic_greeting = worldcon_basic_greeting
+#     @worldcon_year = worldcon_year
+#     @retro_hugo_75_ago = retro_hugo_75_ago
+#     @hugo_vote_deadline = hugo_vote_deadline
+#     @worldcon_year = worldcon_year
+#     @worldcon_public_name = worldcon_public_name
+#     @organizers_names_for_signature = organizers_names_for_signature
 
+#     @detail = reservation.active_claim.contact
+#     ranked_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
+
+#     builder = MemberRanksByCategory.new(
+#       reservation: reservation,
+#       categories: ranked_categories.order(:order, :id),
+#     )
+#     builder.from_reservation
+#     @ranks_by_category = builder.ranks_by_category
+# #TODO fix hard coding here -FNB
+#     mail(
+#       subject: "Your 2021 Hugo Ballot",
+#       to: reservation.user.email,
+#       from: "Hugo Awards 2021 <hugohelp@discon3.org>"
+#     )
+#   end
+
+  def rank_ballot(reservation)
+     @wordcon_basic_greeting = worldcon_basic_greeting
+     @worldcon_year = worldcon_year
+     @retro_hugo_75_ago = retro_hugo_75_ago
+     @hugo_vote_deadline = hugo_vote_deadline
+     @worldcon_year = worldcon_year
+     @worldcon_public_name = worldcon_public_name
+     @organizers_names_for_signature = organizers_names_for_signature
+
+
+    @detail = reservation.active_claim.contact
+    @ranks = reservation.ranks.sort_by{ |rank| [rank.finalist.category.id, rank.position]}
+    @wordcon_basic_greeting = worldcon_basic_greeting
     mail(
       subject: "Your 2021 Hugo Ballot",
       to: reservation.user.email,
       from: "Hugo Awards 2021 <hugohelp@discon3.org>"
     )
+  end
+
+
+  def ranks_open_dc(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).merge(Membership.can_vote)
+
+    account_numbers = account_numbers_from(@reservations)
+    if account_numbers.count == 1
+      subject = "#{worldcon_public_name}: Hugo voting is now open for member #{account_numbers.first}"
+    else
+      subject = "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
+    end
+
+    mail(to: user.email, from: "#{email_hugo_help}", subject: subject)
   end
 
   def ranks_open_chicago(user:)

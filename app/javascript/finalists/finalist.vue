@@ -2,8 +2,11 @@
 // Copyright 2021 Fred Bauer
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// 24-May-21 FNB Accessability updates
+// 28-APR-21 FNB allow finalist names to contain HTML for nice formatting
+// 25-MAY-21 FNB Accessability updates
 // 22-aug-21 FNB Allow only 1-7 to be input for rank
+
+// NOTE: Changes to VUE require rails server restart!
 
 <template>
   <li class="finalist-component list-group-item">
@@ -17,8 +20,7 @@
         @keyup='changeRank()'
         @input='check0'
       >
-      <span v-bind:class="{ 'text-danger': invalid }">
-        {{ finalist.name }}
+      <span v-bind:class="{ 'text-danger': invalid }" v-html="finalist.name">
       </span>
     </div>
 

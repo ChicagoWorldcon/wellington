@@ -3,7 +3,8 @@
 // Copyright 2019 Jen Zajac (jenofdoom)
 // Copyright 2021 Fred Bauer
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 2.0
+//
 // 24-May-2021 FNB Added CSS for better contrast on _reservation_card
 
 // Place all the styles related to the Charges controller here.
@@ -43,11 +44,10 @@ $blue: #034acc;
 $charcoal: #505050;
 $header-dark: #343a40;
 $grey: #ccc;
-$light-blue: #6798f7;
+$light-blue: #6798f7; //was #6798f7
 $light-grey: #e1e1e1;
 $red: #e93f36;
 $white: #fff;
-
 
 // Specific styling for reservation cards, to allow better contrast control for accessability
 
@@ -59,6 +59,8 @@ $dark-background: $charcoal;
 $dark-text: $white;
 $dark-link: $light-blue;
 $dark-focus: $red;
+
+//referenced in reservations_helper.rb 
 
 .light-card {
   background: rgb(252, 250, 246);
@@ -91,7 +93,6 @@ $dark-focus: $red;
       outline: 1px dotted $white;
     }
     }
-  
   
 
 // Fonts
@@ -140,8 +141,8 @@ html, body {
     font-size: 15px;
 }
 body {
-    //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //For pretty background
-    background:  #771122da; //Matches darkest banner color. Solid background #a3182fda
+    //background: url("dc-bg.jpg") center top / cover no-repeat fixed $black; //For pretty background 
+    background:  #a3182fda; //#c71d38 Matches darkest banner color. Solid background
 
     // For that test environment feeling
     &.api-test-keys {
@@ -219,7 +220,6 @@ h6, .h6-like {
 .btn:hover,
 .btn:focus {
   background-color: $blue;
-  color: $white;
   -webkit-transition: background-color .2s ease-in;
   -moz-transition: background-color .2s ease-in;
   -o-transition: background-color .2s ease-in;
@@ -240,6 +240,17 @@ h6, .h6-like {
 // -------------------------------
 // LINKS
 // -------------------------------
+//from bootstrap
+// a {
+//   color: $link-color;
+//   text-decoration: $link-decoration;
+//   background-color: transparent; // Remove the gray background on active links in IE 10.
+
+//   @include hover() {
+//     color: $link-hover-color;
+//     text-decoration: $link-hover-decoration;
+//   }
+// }
 
 a {
   color: $light-blue;
@@ -466,4 +477,8 @@ footer {
 
 .card.bg-dark svg.octicon {
   fill: #fff;
+}
+
+.card.bg-neutral {
+  background : rgb(235, 189, 163);
 }

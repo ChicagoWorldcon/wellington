@@ -3,14 +3,13 @@
   Copyright 2021 Fred Bauer
 
   Licensed under the Apache License, Version 2.0 (the "License");
-  
-<p><%=@worldcon_basic_greeting.capitalize %> <%= @detail %>.</p>
+%>
+<p>Greetings <%= @detail %>!</p>
 
 <p>Greetings <%= @detail%></p>
 <p>
-Thank you for voting in the 2021 Hugo Awards, Lodestar Award, 
-and <em>Astounding</em> Award.
- </p>
+Thank you for voting for the <%= @worldcon_year %> Hugo Awards, Lodestar Award, and <em>Astounding</em> Award.
+</p>
 
 <% if !@ranks.present? %>
   <p>
@@ -35,12 +34,10 @@ and <em>Astounding</em> Award.
 
 
 <p>
-  The deadline for votes is <%= @hugo_vote_deadline %>.
-<br>
- The deadline for voting is <%= localize($hugo_closed_at.in_time_zone("Pacific Time (US & Canada)"), :format => :long) %> Pacific Daylight Time
-  (<%= localize($hugo_closed_at.in_time_zone("Eastern Time (US & Canada)"), :format => :short) %> Eastern Daylight Time,
-  <%= localize($hugo_closed_at.in_time_zone("Europe/Dublin"), :format => :short) %> Irish time,
-  and <%= localize($hugo_closed_at.in_time_zone("Wellington"), :format => :short) %> New Zealand time).
+ The deadline for voting is <%= localize($hugo_closed_at.in_time_zone("Pacific Time (US & Canada)"), :format => :long) %> Pacific Standard Time
+  (<%= localize($hugo_closed_at.in_time_zone("Eastern Time (US & Canada)"), :format => :short) %> Eastern Standard Time,
+  <%= localize($hugo_closed_at.in_time_zone("GMT"), :format => :short) %> GMT,
+  and <%= localize($hugo_closed_at.in_time_zone("Wellington"), :format => :short) %> New Zealand Daylight Time).
 </p>
 
 
@@ -51,10 +48,10 @@ and <em>Astounding</em> Award.
 </p>
 
 <p>
-  We look forward to your participation in the 2021 Hugo Awards and <%= @retro_hugo_75_ago %> Retro Hugos, and hope to see you at <%= @worldcon_public_name %>
+  Thank you for your participation in the <%= @worldcon_year %> Hugo Awards, and we hope to see you at DisCon III.
 </p>
 
 <p>
-  <%= @organizers_names_for_signature %></br>
+  <%= @organizers_names_for_signature %>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

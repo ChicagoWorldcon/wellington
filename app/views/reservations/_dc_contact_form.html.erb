@@ -24,8 +24,11 @@
    <% end %>
 
   <p>
-    For more information about how we handle and use your personal information, please read our
+  <b> By purchasing a membership, the member agrees to abide by our 
+    <a href="https://discon3.org/about/CoC" target="_blank" rel="noopener">Code of Conduct</a></b>.
+    <P>For more information about how we handle and use your personal information, please read our
     <a href="https://discon3.org/about/CoC/#privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+    <br>
   </p>
 
   <% if !@reservation.persisted? && @current_memberships.present? %>
@@ -130,7 +133,7 @@
         </div>
       </div>
       <p class="form-note form-note-m-group">
-        This is the text we will print on your badge. It will default to your preferred pame and City and
+        This is the text we will print on your badge. It will default to your preferred name and City and
         Country from your address. Both fields are modifiable.
       </p>
       <p class="form-note form-note-m-group">

@@ -4,10 +4,8 @@
 # Copyright 2020 Victoria Garcia
 # Copyright 2021 Fred Bauer
 #
-# Licensed under the Apache License, Version 2.0
-#
-# 8-Feb-21 FNB strip leading and trailing whitespace from all fields 
-#              [TODO] All forms should do this!  Other conventions, and Nominations
+# Licensed under the Apache License, Version 2.0 (the "License");
+# 8-Feb-21 FNB strip leading and trailing whitespace from all fields - implemented in application_record.rb
 
 require 'time'
 

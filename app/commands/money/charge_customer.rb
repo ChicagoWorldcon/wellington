@@ -34,7 +34,7 @@ class Money::ChargeCustomer
       reservation: reservation,
       stripe_id: token,
       amount: charge_amount,
-      comment: "Pending stripe payment",
+      comment: "Pending stripe payment"
     )
 
     check_charge_amount

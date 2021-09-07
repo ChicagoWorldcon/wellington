@@ -4,9 +4,8 @@
 # Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# xx-Jun-21 FNB better contrast on links for dark and light card
-
-
+#
+#24-May-21 FNB 
 module ReservationsHelper
   def card_classes(reservation)
     if !reservation.paid?

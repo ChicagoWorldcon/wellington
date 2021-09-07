@@ -13,7 +13,7 @@ start: start-support-daemons
 start-support-daemons: stop-support-daemons
 	echo "Mailcatcher starting on http://localhost:1080"
 	docker-compose up -d # Create and start containers
-	rake dev:bootstrap
+#	rake dev:bootstrap
 
 stop-support-daemons:
 	docker-compose stop

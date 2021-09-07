@@ -61,12 +61,12 @@ export default {
       });
     },
     test: (list) => {
-        for (let index = 0; index < list.length; index++) {
-        if (index + 1 != list[index]) {return false}
-        }
-        return true;
+      for (let index = 0; index < list.length; index++) {
+      if (index + 1 != list[index]) {return false}
+      }
+      return true;
     },
-  }, 
+  },
 };
 </script>
 
