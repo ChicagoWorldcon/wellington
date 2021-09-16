@@ -16,6 +16,6 @@
 
 class MembershipsController < ApplicationController
   def index
-    @offers = MembershipOffer.options
+    @offers = MembershipOffer.options.select(&:offer_for_purchase?)
   end
 end
