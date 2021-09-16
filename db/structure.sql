@@ -461,7 +461,8 @@ CREATE TABLE public.memberships (
     can_nominate boolean DEFAULT false NOT NULL,
     can_site_select boolean DEFAULT false NOT NULL,
     dob_required boolean DEFAULT false NOT NULL,
-    display_name character varying
+    display_name character varying,
+    private_membership_option boolean DEFAULT false NOT NULL
 );
 
 
@@ -1477,6 +1478,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210105055602'),
 ('20210224001734'),
 ('20210224034724'),
-('20210224035800');
+('20210224035800'),
+('20210916230829');
 
 

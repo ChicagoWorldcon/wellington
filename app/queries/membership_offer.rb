@@ -71,4 +71,8 @@ class MembershipOffer
   def dob_required?
     membership.dob_required?
   end
+
+  def offer_for_purchase?
+    ! membership.private_membership_option
+  end
 end

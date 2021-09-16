@@ -31,8 +31,6 @@ RSpec.describe Membership, type: :model do
 
   it { is_expected.to be_valid }
 
-
-
   describe "#active_reservations" do
     it "can access reservations directly" do
       expect(model.reservations.count).to be(1)
