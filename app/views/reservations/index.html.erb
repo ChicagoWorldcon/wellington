@@ -65,7 +65,8 @@
               <th>#</th>
               <th>Legal Name</th>
               <th>Preferred Name</th>
-              <th>Email</th>
+              <th>User Email</th>
+              <th>Contact Email</th>
               <th>Membership</th>
             </thead>
             <tbody>
@@ -75,6 +76,7 @@
                   <td><%= link_to(claim.contact&.legal_name, reservation_path(claim.reservation)) %></td>
                   <td><%= claim.contact&.preferred_name %></td>
                   <td><%= claim.user.email %></td>
+                  <td><%= claim.contact&.email %></td>
                   <td><%= claim.reservation.membership %></td>
                 </tr>
               <% end %>
