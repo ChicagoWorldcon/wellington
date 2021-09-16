@@ -76,7 +76,7 @@ group :test do
   gem 'ruby-prof-flamegraph'                          # flame graphs
   gem "test-prof", "~> 1.0"                           # test profile
   gem 'database_plumber', github: 'brrygrdn/database_plumber'
-  gem 'database_cleaner-active_record'
+  gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
 end
 
 group :development do
@@ -85,10 +85,6 @@ group :development do
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
   gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
-end
-
-group :test do
-  gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
