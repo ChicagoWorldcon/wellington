@@ -21,6 +21,7 @@ import $ from 'jquery';
 import 'datatables.net-bs4';
 import 'popper.js';
 import 'bootstrap';
+import "./clipboard";
 
 $(document).ready(() => {
   // DataTable plugin for searchable and sortable tables
