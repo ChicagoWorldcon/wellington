@@ -16,6 +16,11 @@
 
 class MembershipsController < ApplicationController
   def index
-    @offers = MembershipOffer.options.select(&:offer_for_purchase?)
+    if support_signed_in?
+      @offers = MembershipOffer.options
+    else
+      @offers = MembershipOffer.options.select(&:offer_for_purchase?)
+    end
+
   end
 end
