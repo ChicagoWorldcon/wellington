@@ -18,7 +18,7 @@
 # Token::SendLink creates and mails out a JWT token embedded in a URL
 # This presents the 'Login Link' logic that is the backbone of how a user authetnicates with the members area
 class Token::SendLink
-  TOKEN_DURATION = 30.minutes
+  TOKEN_DURATION = 60.minutes
 
   attr_reader :email
   attr_reader :secret
