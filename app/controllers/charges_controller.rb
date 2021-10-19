@@ -48,43 +48,38 @@ class ChargesController < ApplicationController
       return
     end
 
-    service = Money::ChargeCustomer.new(
-      @reservation,
-      current_user,
-      params[:stripeToken],
-      outstanding_before_charge,
+    service = Money::StartStripeCheckout.new(
+      reservation: @reservation,
+      user: current_user,
+      amount_owed: outstanding_before_charge,
       charge_amount: charge_amount,
+      success_url: stripe_checkout_success_reservation_charges_url,
+      cancel_url: stripe_checkout_cancel_reservation_charges_url,
     )
 
-    charge_successful = service.call
-    if !charge_successful
+    checkout_started = service.call
+    if !checkout_started
       flash[:error] = service.error_message
       redirect_to new_reservation_charge_path
       return
     end
 
-    trigger_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
+    redirect_to service.checkout_url
+  end
 
-    message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
-
+  def stripe_checkout_success
+    message = "Thank you for your payment"
+    if @reservation.paid?
+      message += ". Your #{@reservation.membership} membership has been paid for."
+    else
+      message += ". It may take up to an hour for your payment to be processed. Please contact support if you experience issues."
+    end
+    
     redirect_to reservations_path, notice: message
   end
 
-  private
-
-  def trigger_payment_mailer(charge, outstanding_before_charge, charge_amount)
-    if charge.reservation.instalment?
-      PaymentMailer.instalment(
-        user: current_user,
-        charge: charge,
-        outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
-      ).deliver_later
-    else
-      PaymentMailer.paid(
-        user: current_user,
-        charge: charge,
-      ).deliver_later
-    end
+  def stripe_checkout_cancel
+    redirect_to new_reservation_charge_path(@reservation)
   end
+
 end

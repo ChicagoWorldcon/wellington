@@ -17,7 +17,7 @@
 
 presupport_open = "2004-09-06".to_time
 con_announced = "2019-08-25".to_time
-price_change_1 = "2021-09-2 00:00:01 EDT".to_time
+price_change_1 = "2021-11-2 00:00:01 EDT".to_time
 
 #clean up
 Membership.delete_all

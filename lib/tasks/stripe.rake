@@ -23,8 +23,15 @@ namespace :stripe do
       puts "Ended run, #{User.in_stripe.count}/#{User.count} users synced with stripe"
     end
 
+
+    # TODO: Hard to tell if this was a one-time task for CoNZealand or a recurring maintenance bit.
+    # If the latter, this may need to be updated to be inclusive of charges made using the Stripe Checkout flow.
+    # For those, we store the *checkout session id* rather than the charge id.
+    # Checkout session ids are prefixed with `cs_` and so this code should silently ignore those.
     desc "Updates stripe descriptions to match local"
     task charges: "assert:setup" do
+      raise "I may have broken as part of a Stripe API migration! Please check comments in stripe.rake for more details."
+
       # So initially stripe charges had the description "CoNZealand Payment" which is ugly. Lets fix that.
       Charge.stripe.joins(:user).find_each do |charge|
         next unless charge.stripe_id.starts_with?("ch_")

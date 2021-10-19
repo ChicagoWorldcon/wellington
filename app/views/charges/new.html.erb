@@ -24,7 +24,7 @@
   <div class="row">
     <div class="col-12 col-lg-8">
       <div class="l-panel">
-        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config(@reservation)) do %>
+        <%= form_tag(reservation_charges_path, "id" => "charge-form") do %>
           <article>
             <div id="error_explanation"></div>
 
@@ -40,8 +40,6 @@
             </label>
           </article>
 
-          <%= hidden_field_tag(:stripeToken) %>
-          <%= hidden_field_tag(:stripeEmail) %>
           <%= hidden_field_tag(:reservation, @reservation.id) %>
           <div class="l-v-spacing-both">
             <div class="form-group">

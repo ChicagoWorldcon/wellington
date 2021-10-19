@@ -281,7 +281,8 @@ CREATE TABLE public.dc_contacts (
     share_with_future_worldcons boolean DEFAULT true,
     show_in_listings boolean DEFAULT true,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    covid boolean
 );
 
 
@@ -1275,6 +1276,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200717081753'),
 ('20200719215504'),
 ('20200720235919'),
-('20200724003813');
+('20200724003813'),
+('20210819040007');
 
 

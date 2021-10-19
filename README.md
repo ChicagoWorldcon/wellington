@@ -199,6 +199,10 @@ HOSTNAME=localhost:3000
 # Generate them here https://dashboard.stripe.com/account/apikeys
 STRIPE_PUBLIC_KEY=pk_test_zq022DcopypastatXAVMaOJT
 STRIPE_PRIVATE_KEY=sk_test_35SiP3qovcopypastaLguIyY
+# Stripe webhook secret
+# Use the Stripe CLI and `stripe listen --forward-to localhost:3000/stripe_webhook` to configure this in development.
+# For production configuration, go to https://dashboard.stripe.com/webhooks
+STRIPE_WEBHOOK_ENDPOINT_SECRET=whsec_HcopypastaS7IH3D779S
 # https://stripe.com/docs/currencies
 STRIPE_CURRENCY=NZD
 
