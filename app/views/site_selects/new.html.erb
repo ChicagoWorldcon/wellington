@@ -1,0 +1,72 @@
+<%#
+  Copyright 2021 Fred Bauer
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  
+  Note that this is static text, should really be moved to the i18n file
+%>
+
+<h1>Site Selection for the <%= worldcon_year.to_i+2 %> Worldcon</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <p>
+          In order to vote in site selection for the <%= worldcon_year.to_i+2 %> Worldcon, you must purchase an Advance Supporting Membership
+          for the eventual winner of the site selection vote.
+        <p>
+          This payment, which is also refered to as the Site Selection Fee, will give you a supporting membership in whichever Bid is selected to host the 
+          <%= worldcon_year.to_i+2 %> Worldcon.  This payment grants you a supporting membership in the winning bid, even if you choose not to vote.
+        <p>
+          Once you payment is processed, you will be given a code to write on your site selection ballot.  You may return to this page at any time to retreive your code.
+          This code is granted only to this membership.
+        <p> 
+          By making this payment, you agree that your information will be given to the winner so that they may process your supporting membership. 
+          You may later convert your supporting membership into an attending membership. 
+        <p>  
+          All site selection payments will be processed by DisCon III, but all proceeds will be given to the winning bid.  
+          The site selection fee is US$ 50.00, as agreed to by the bid teams.
+        <p>
+          Instructions for voting can be found here. 
+          Ballots can be sent via email to worldcon81ballot@discon3.org or paper mail to (include PO box). Ballots can not be changed once submitted. 
+
+        </p>
+DEBUG:: <%= @reservation%>
+        <ul class="list-group text-dark">
+              <%= link_to("Click here to pay the Site Selection Fee", hotel_path('Omni')) %>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        <%= form_tag(reservation_charges_path, "id" => "charge-form", "data-stripe" => stripe_config_site(@reservation)) do %>
+          <article>
+            <div id="error_explanation"></div>
+          </article>
+
+          <%= hidden_field_tag(:stripeToken) %>
+          <%= hidden_field_tag(:stripeEmail) %>
+          <%= hidden_field_tag(:reservation, @reservation.id) %>
+          <div class="l-v-spacing-both">
+            <div class="form-group">
+              <%= submit_tag("Pay for Site Selection", id: "site-selects-button", class: "btn btn-m-full-width") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="l-v-spacing">
+        <%= render("reservation_card", reservation: @reservation) %>
+      </div>
+    </div>
+  </div>
+</section>

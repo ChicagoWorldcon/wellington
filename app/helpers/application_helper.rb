@@ -8,6 +8,7 @@
 # Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
+# 1-Oct-21 FNB Add site seleciton
 
 module ApplicationHelper
 
@@ -37,6 +38,8 @@ module ApplicationHelper
     elsif finalists_loaded? && match = membership_right.match(/rights\.(.*)\.vote\z/)
       election_i18n_key = match[1]
       link_to description, reservation_finalist_path(reservation_id: reservation, id: election_i18n_key)
+    elsif match = membership_right.match(/site_selection/)
+      link_to description, reservation_site_selects_path(reservation_id: reservation)
     else
       description
     end

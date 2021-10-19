@@ -1,0 +1,17 @@
+This patch introduces a new required environment variable.
+It also requires production to have Stripe webhooks configured
+against the checkout.session.completed and checkout.session.expired
+events. That configuration should be completed prior to deploy.
+
+For production, webhooks can be configured using:
+https://dashboard.stripe.com/webhooks
+
+The webhook will need to point to https://PRODUCTION_HOST/stripe_webhook
+Webhook events are opt-in, so make sure to include both
+checkout.session.completed and checkout.session.expired.
+
+After configuring the webhook, you'll want to shove its signing secret
+into the STRIPE_WEBHOOK_ENDPOINT_SECRET environment variable.
+
+For local testing, you can test Stripe webhooks using the Stripe CLI
+and the stripe listen command.

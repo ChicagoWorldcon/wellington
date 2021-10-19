@@ -8,6 +8,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #
 # 13-June-21 FNB added hotel
+#  1-Oct-21 FNB added site selection tokens
 
 
 require "sidekiq/web"
@@ -58,13 +59,14 @@ Rails.application.routes.draw do
   resources :upgrades
   resources :hugo_packet, id: /[^\/]+/
   resources :hotel, id: /[^\/]+/
-
+  
   resources :reservations do
     post :reserve_with_cheque, on: :collection
     resources :charges
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
+    resources :site_selects
   end
 
   # /operator are maintenance routes for support people
