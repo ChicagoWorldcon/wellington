@@ -61,11 +61,16 @@ Rails.application.routes.draw do
 
   resources :reservations do
     post :reserve_with_cheque, on: :collection
-    resources :charges
+    resources :charges do
+      get :stripe_checkout_success, on: :collection
+      get :stripe_checkout_cancel, on: :collection
+    end
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
   end
+
+  post '/stripe_webhook', to: 'stripe_webhooks#receive'
 
   # /operator are maintenance routes for support people
   scope :operator do

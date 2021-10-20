@@ -41,56 +41,6 @@ $(document).ready(() => {
   });
 });
 
-$(document).ready(() => {
-  // Stripe form setup for accepting payments form the charges endpoints
-  const $form = $('#charge-form');
-  if ($form.length === 0) {
-    return;
-  }
-
-  const config = $form.data('stripe');
-  // n.b. Stripe is setup in a <script> tag in the layout, so should be globally available
-  // eslint-disable-next-line no-undef
-  const handler = StripeCheckout.configure({
-    key: config.key,
-    description: config.description,
-    email: config.email,
-    currency: config.currency,
-    locale: 'auto',
-    name: config.name,
-    token: (token) => {
-      $form.find('input#stripeToken').val(token.id);
-      $form.find('input#stripeEmail').val(token.email);
-      $form.submit();
-    },
-  });
-
-  document.querySelector('#reservation-button').addEventListener('click', (e) => {
-    e.preventDefault();
-
-    document.querySelector('#error_explanation').innerHtml = '';
-
-    let amount = document.querySelector('select#amount').value;
-    amount = amount.replace(/\$/g, '').replace(/,/g, '');
-
-    amount = parseInt(amount, 10);
-
-    if (Number.isNaN(amount)) {
-      // eslint-disable-next-line no-alert
-      alert("Something wen't wrong in the page. Please try refresh, and contact support if this happens again");
-    } else {
-      handler.open({
-        amount,
-      });
-    }
-  });
-
-  // Close Checkout on page navigation:
-  window.addEventListener('popstate', () => {
-    handler.close();
-  });
-});
-
 // Javascript running on the user facing hugo pages
 // If this gets complicated, consider moving to a vue.js app
 $(document).ready(() => {
