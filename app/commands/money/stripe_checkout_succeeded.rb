@@ -42,9 +42,8 @@ class Money::StripeCheckoutSucceeded
           reservation.update!(state: Reservation::INSTALMENT)
         end
       else
-        who = reservation.membership_number
-        token = who.to_s + "-RANDOM-TOKEN-NAME"
-        reservation.update!(token: token)
+        token_record = SiteToken.find_by membership_number: reservation.membership_number
+        reservation.update!(token: token_record.token)
       end
     end
 
