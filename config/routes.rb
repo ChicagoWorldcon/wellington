@@ -70,6 +70,10 @@ Rails.application.routes.draw do
     resources :nominations, id: /[^\/]+/
     resources :upgrades
     resources :site_selects
+    resources :site_charges do
+        get :stripe_checkout_success, on: :collection
+        get :stripe_checkout_cancel, on: :collection
+    end
   end
 
   post '/stripe_webhook', to: 'stripe_webhooks#receive'

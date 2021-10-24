@@ -1,0 +1,42 @@
+<%
+# Copyright 2019 AJ Esler
+# Copyright 2019 Matthew B. Gray
+# Copyright 2019 Jen Zajac (jenofdoom)
+# Copyright 2021 Fred Bauer
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# 23-Oct-21 Cloned from charges
+
+%>
+
+<h1>
+  Make a Payment for Site Selection
+</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        <%= form_tag(reservation_site_charges_path, "id" => "charge-form") do %>
+          <article>
+            <div id="error_explanation"></div>
+
+            <p>
+              You need to pay US $50.00 for Site Selection.
+            </p>
+
+          </article>
+
+          <%= hidden_field_tag(:reservation, @reservation.id) %>
+          <div class="l-v-spacing-both">
+            <div class="form-group">
+              <%= submit_tag("Pay $50.00 for site selection for Membership # #{@reservation.membership_number} ", id: "reservation-button", class: "btn btn-m-full-width") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+
+  </div>
+</section>
