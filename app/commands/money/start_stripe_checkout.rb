@@ -5,30 +5,23 @@
 # Copyright 2021 DisCon III
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 23-Oct-21 FNB add charge type to track membership vs site seleciton payments
 
 # Money::StartStripeCheckout creates a pending charge record against a User for the Stripe integrations
 # and sets them up to check out with Stripe.
 # Truthy returns mean the user can be safely sent on to the checkout flow, otherwise check #errors for failure details.
-class Money::StartStripeCheckout
-  attr_reader :reservation, :user, :charge_amount, :charge, :amount_owed, :success_url, :cancel_url
 
-  def initialize(reservation:, user:, amount_owed:, success_url:, cancel_url:, charge_amount: nil)
+class Money::StartStripeCheckout
+  attr_reader :reservation, :user, :charge_amount, :charge, :amount_owed, :success_url, :cancel_url, :site
+
+  def initialize(reservation:, user:, amount_owed:, success_url:, cancel_url:, charge_amount: nil, site: :member)
     @reservation = reservation
     @user = user
     @charge_amount = charge_amount || amount_owed
     @amount_owed = amount_owed
     @success_url = success_url
     @cancel_url = cancel_url
+    @site = site
   end
 
   def call
@@ -54,6 +47,7 @@ class Money::StartStripeCheckout
       reservation: reservation,
       stripe_id: @checkout_session.id,
       amount: charge_amount,
+      site: site,                             ##################################################
     }.merge(charge_state_params))
 
     checkout_url.present?
@@ -91,13 +85,13 @@ class Money::StartStripeCheckout
         {
           currency: ENV.fetch('STRIPE_CURRENCY'),
           amount: charge_amount.cents,
-          name: reservation.membership.to_s,
+          name: reservation.membership.to_s,                            ############### check for site == :token
           quantity: 1,
         },
       ],
       payment_method_types: [
         'card',
-        'wechat_pay',
+        'wechat_pay',                                                   ################## Alipay would go here, or anything else.
       ],
       payment_method_options: {
         wechat_pay: {
