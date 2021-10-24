@@ -14,7 +14,7 @@
 class Money::StartStripeCheckout
   attr_reader :reservation, :user, :charge_amount, :charge, :amount_owed, :success_url, :cancel_url, :site
 
-  def initialize(reservation:, user:, amount_owed:, success_url:, cancel_url:, charge_amount: nil, site: :member)
+  def initialize(reservation:, user:, amount_owed:, success_url:, cancel_url:, charge_amount: nil, site: nil)
     @reservation = reservation
     @user = user
     @charge_amount = charge_amount || amount_owed
@@ -22,6 +22,7 @@ class Money::StartStripeCheckout
     @success_url = success_url
     @cancel_url = cancel_url
     @site = site
+
   end
 
   def call
@@ -85,7 +86,7 @@ class Money::StartStripeCheckout
         {
           currency: ENV.fetch('STRIPE_CURRENCY'),
           amount: charge_amount.cents,
-          name: reservation.membership.to_s,                            ############### check for site == :token
+          name: site ? "Site Selection":reservation.membership.to_s,
           quantity: 1,
         },
       ],

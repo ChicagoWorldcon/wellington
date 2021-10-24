@@ -34,10 +34,17 @@ class Money::StripeCheckoutSucceeded
         stripe_response: json_to_hash(stripe_checkout_session),
         comment: ChargeDescription.new(charge).for_users,
       )
-      if fully_paid?
-        reservation.update!(state: Reservation::PAID)
+
+      if !charge.site
+        if fully_paid? 
+          reservation.update!(state: Reservation::PAID)
+        else
+          reservation.update!(state: Reservation::INSTALMENT)
+        end
       else
-        reservation.update!(state: Reservation::INSTALMENT)
+        who = reservation.membership_number
+        token = who.to_s + "-RANDOM-TOKEN-NAME"
+        reservation.update!(token: token)
       end
     end
 

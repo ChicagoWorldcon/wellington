@@ -55,7 +55,7 @@ class ChargesController < ApplicationController
       charge_amount: charge_amount,
       success_url: stripe_checkout_success_reservation_charges_url,
       cancel_url: stripe_checkout_cancel_reservation_charges_url,
-      site: @charge_type                                                #############################################
+      site: @charge_type                                             ############################################# should be false or nil
     )
 
     checkout_started = service.call

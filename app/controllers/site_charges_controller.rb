@@ -46,8 +46,8 @@ class SiteChargesController < ApplicationController
       user: current_user,
       amount_owed: charge_amount,
       charge_amount: charge_amount,
-      success_url: stripe_checkout_success_reservation_charges_url,
-      cancel_url: stripe_checkout_cancel_reservation_charges_url,
+      success_url: stripe_checkout_success_reservation_site_charges_url,
+      cancel_url: stripe_checkout_cancel_reservation_site_charges_url,
       site: true                                                #############################################
     )
 
@@ -73,7 +73,7 @@ class SiteChargesController < ApplicationController
   end
 
   def stripe_checkout_cancel
-    redirect_to new_reservation_charge_path(@reservation)
+    redirect_to new_reservation_site_charge_path(@reservation)
   end
 
 end

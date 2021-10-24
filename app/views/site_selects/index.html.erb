@@ -35,35 +35,17 @@
         </p>
 
   <% if @reservation.token != nil %>
-  <p><p> <b>Your site selection token is:  <%= @reservation.token %></b>
+  <p><p> <b>Your site selection token is:</b>  <%= @reservation.token %>
   <% else %>
   <p> Please do not make multiple payments, it may take up to an hour for payment to process.  Once that happens your token will be displayed here.
    If you have questions or problems, please email (insert email here)
  <%# <div class="l-v-spacing-both"> %>
         <%# <input type="submit" value="Pay for Site Selection" class="btn btn-m-full-width">   Clone from Contact form %>
     <%# </div> %>
-    <h1>
-  Make a Payment for Site Selection - Link to site_charges goes here! see reservations card link to make a payment.
+  
 <p>
-  <%= link_to("Pay US $50 for Site Selection", new_reservation_site_charge_path(@reservation)) %>
+  <b><%= link_to("Click here to pay for Site Selection", new_reservation_site_charge_path(@reservation)) %></b>
 
-</h1>
-
-<section class="l-section">
-  <div class="row">
-    <div class="col-12 col-lg-8">
-      <div class="l-panel">
-
-          <%= hidden_field_tag(:reservation, @reservation.id) %>
-          <div class="l-v-spacing-both">
-            <div class="form-group">
-              <%= submit_tag("Pay $50 for Site Selection for #{@membership} membership", id: "reservation-button", class: "btn btn-m-full-width") %>
-            </div>
-          </div>
-      </div>
-    </div>
-
-    
   </div>
 </section>
   
