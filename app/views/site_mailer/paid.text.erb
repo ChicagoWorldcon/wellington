@@ -1,0 +1,26 @@
+<%
+# Copyright 2019 Matthew B. Gray
+# Copyright 2019 Steven C Hartley
+# Copyright 2019 AJ Esler
+# Copyright 2019 Chris Rose
+# Copyright 2021 Fred Bauer
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# 24-Oct-21 FNB Cloned from payment mailer
+%>
+
+<%= @worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
+
+We've sent you this email to let you know that you've just paid for Site Selection for your membership #<%= @reservation.membership_number %>.
+
+Your site selection token, which you must include on your ballot as proof pf payment, is <%= @reservation.token %>.
+
+For ballots and other information on casting your Site Selection vote, please visit https://discon3.org/whats-on/hugo-awards-wsfs/2023-worldcon-site-selection/
+
+You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
+identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
+
+You can also access your token at any time by returning to the members area.
+
+<%= @worldcon_public_name %> - <%= $member_services_email %>
+<%= @worldcon_url_homepage %>

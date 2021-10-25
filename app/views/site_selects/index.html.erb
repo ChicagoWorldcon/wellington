@@ -12,33 +12,41 @@
   <div class="row">
     <div class="col-12 col-md-12">
       <div class="l-panel">
+  <% if @reservation.token != nil %>
+  <h3><p><p>Your site selection token is:</b>  <%= @reservation.token %>
+  </h3>
+  <p>Please enter this token on your ballot. The site selection ballots are 
+  available <a href="https://discon3.org/whats-on/hugo-awards-wsfs/2023-worldcon-site-selection/" target="_blank">here</a>
+  <p>Ballots can be sent via email to worldcon81ballot@discon3.org or paper mail to (include PO box). Ballots can not be changed once submitted. 
+  <p>If you have any questions or problems, please email <a href="mailto: siteselection@discon3.org">siteselection@discon3.org</a>
+
+  <% else %>
         <p>
           In order to vote in site selection for the <%= worldcon_year.to_i+2 %> Worldcon, you must purchase an Advance Supporting Membership
           for the eventual winner of the site selection vote.
         <p>
           This payment, which is also refered to as the Site Selection Fee, will give you a supporting membership in whichever Bid is selected to host the 
           <%= worldcon_year.to_i+2 %> Worldcon.  This payment grants you a supporting membership in the winning bid, even if you choose not to vote.
+        <p> <b>If you wish to pay by check</b> please head <a href="https://discon3.org/whats-on/hugo-awards-wsfs/2023-worldcon-site-selection/" target="_blank">here</a>
+          to download a ballot, and mail your check with the ballot.  Only pay for the site selection here if you wish to pay by Credit Card or WeChat Pay.
         <p>
           Once you payment is processed, you will be given a code to write on your site selection ballot.  You may return to this page at any time to retreive your code.
           This code is granted only to this membership.
         <p> 
           By making this payment, you agree that your information will be given to the winner so that they may process your supporting membership. 
-          You may later convert your supporting membership into an attending membership. 
+          You may later convert your supporting membership into an attending membership, at a cost determined by the winning bid. 
         <p>  
           All site selection payments will be processed by DisCon III, but all proceeds will be given to the winning bid.  
           The site selection fee is US$ 50.00, as agreed to by the bid teams.
         <p>
-          Instructions for voting can be found here. 
+          Instructions for voting, along with the ballot, can be found <a href="https://discon3.org/whats-on/hugo-awards-wsfs/2023-worldcon-site-selection/" target="_blank">here</a>. 
           Ballots can be sent via email to worldcon81ballot@discon3.org or paper mail to (include PO box). Ballots can not be changed once submitted. 
         <p>
           Once your payment has been processed, you can return to this page to see your Site Selection token, which must be entered on your ballot.
         </p>
 
-  <% if @reservation.token != nil %>
-  <p><p> <b>Your site selection token is:</b>  <%= @reservation.token %>
-  <% else %>
-  <p> Please do not make multiple payments, it may take up to an hour for payment to process.  Once that happens your token will be displayed here.
-   If you have questions or problems, please email (insert email here)
+    <p> Please do not make multiple payments, it may take up to an hour for payment to process.  Once that happens your token will be displayed here.
+   If you have questions or problems, please email <a href="mailto: siteselection@discon3.org">siteselection@discon3.org</a>
  <%# <div class="l-v-spacing-both"> %>
         <%# <input type="submit" value="Pay for Site Selection" class="btn btn-m-full-width">   Clone from Contact form %>
     <%# </div> %>

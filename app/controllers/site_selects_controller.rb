@@ -46,6 +46,16 @@ class SiteSelectsController < ApplicationController
       return
     end
   end
+
+  def trigger_site_mailer(charge, outstanding_before_charge, charge_amount)
+      SiteMailer.paid(
+        user: current_user,
+        charge: charge,
+      ).deliver_later
+  end
+
+
+
 end
 
 
@@ -109,18 +119,5 @@ end
 
 #   private
 
-#   def trigger_payment_mailer(charge, outstanding_before_charge, charge_amount)
-#     if charge.reservation.instalment?
-#       PaymentMailer.instalment(
-#         user: current_user,
-#         charge: charge,
-#         outstanding_amount: (outstanding_before_charge - charge_amount).format(with_currency: true)
-#       ).deliver_later
-#     else
-#       PaymentMailer.paid(
-#         user: current_user,
-#         charge: charge,
-#       ).deliver_later
-#     end
-#   end
+
 # end

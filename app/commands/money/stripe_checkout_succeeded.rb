@@ -16,6 +16,7 @@
 
 # Money::StripeCheckoutSucceeded updates the Charge record associated with that checkout session to indicate that the payment succeeded.
 # Truthy returns mean that everything updated correctly, otherwise check #errors for failure details.
+
 class Money::StripeCheckoutSucceeded
   attr_reader :charge, :stripe_checkout_session
 
@@ -38,17 +39,20 @@ class Money::StripeCheckoutSucceeded
       if !charge.site
         if fully_paid? 
           reservation.update!(state: Reservation::PAID)
+          trigger_payment_mailer
         else
           reservation.update!(state: Reservation::INSTALMENT)
+          trigger_payment_mailer
         end
       else
         token_record = SiteToken.find_by membership_number: reservation.membership_number
         reservation.update!(token: token_record.token)
+        trigger_site_mailer
       end
     end
 
-    trigger_payment_mailer
-
+    #  trigger_payment_mailer
+    
     return charge
   end
 
@@ -89,6 +93,13 @@ class Money::StripeCheckoutSucceeded
         charge: charge,
       ).deliver_later
     end
+  end
+
+  def trigger_site_mailer
+      SiteMailer.paid(
+        user: reservation.user,
+        charge: charge,
+      ).deliver_later
   end
 
   def reservation
