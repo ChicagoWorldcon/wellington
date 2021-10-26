@@ -2,18 +2,10 @@
 
 # Copyright 2019 AJ Esler
 # Copyright 2019 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 26-Oct-21 FNB Updated to exclude site selection payments from calculation
 
 # AmountOwedForReservation compares successful Charge records on the Reservation to the cost of a Membership
 class AmountOwedForReservation
@@ -24,7 +16,7 @@ class AmountOwedForReservation
   end
 
   def amount_owed
-    paid_so_far = reservation.charges.successful.sum(&:amount)
+    paid_so_far = Money.new(reservation.charges.where(site: nil, state: :successful).pluck('SUM(amount_cents)').sum)
     reservation.membership.price - paid_so_far
   end
 end

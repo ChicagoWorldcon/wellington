@@ -1,18 +1,10 @@
 # frozen_string_literal: true
 
 # Copyright 2021 DisCon III
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 26-Oct-21 FNB updated to differentiate between membership and site selection payments
 
 # Money::StripeCheckoutSucceeded updates the Charge record associated with that checkout session to indicate that the payment succeeded.
 # Truthy returns mean that everything updated correctly, otherwise check #errors for failure details.
@@ -73,11 +65,12 @@ class Money::StripeCheckoutSucceeded
   end
 
   def fully_paid?
-    reservation.charges.successful.sum(&:amount_cents) >= reservation.membership.price_cents
+    #reservation.charges.successful.sum(&:amount_cents) >= reservation.membership.price_cents
+    reservation.charges.where(site: nil, state: :successful).pluck('SUM(amount_cents)').sum >= reservation.membership.price_cents
   end
 
   def outstanding_amount
-    Money.new(reservation.membership.price_cents - reservation.charges.successful.sum(&:amount_cents), ENV.fetch("STRIPE_CURRENCY"))
+    Money.new(reservation.membership.price_cents - reservation.charges.where(site: nil, state: :successful).pluck('SUM(amount_cents)').sum, ENV.fetch("STRIPE_CURRENCY"))
   end
 
   def trigger_payment_mailer

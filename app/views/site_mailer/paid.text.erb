@@ -11,14 +11,14 @@
 
 <%= @worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
 
-We've sent you this email to let you know that you've just paid for Site Selection for your membership #<%= @reservation.membership_number %>.
+We've sent you this email to let you know that you've just paid for 2023 Site Selection for your membership #<%= @reservation.membership_number %>.
 
-Your site selection token, which you must include on your ballot as proof pf payment, is <%= @reservation.token %>.
+Your site selection token, which you must include on your ballot as proof of payment, is <%= @reservation.token %>.
 
 For ballots and other information on casting your Site Selection vote, please visit https://discon3.org/whats-on/hugo-awards-wsfs/2023-worldcon-site-selection/
 
 You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
-identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
+identifier "<%= @charge.stripe_id %>" and will appear to be paid to "<%= @worldcon_public_name_spaceless %>".
 
 You can also access your token at any time by returning to the members area.
 

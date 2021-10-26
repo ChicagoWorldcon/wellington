@@ -1,23 +1,16 @@
 # frozen_string_literal: true
 
 # Copyright 2020 Matthew B. Gray
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# 26-Oct-21 FNB updated charge text to account for site selection payment
 
 # ChargeDescription gives a description based on the state of the charge taking into account the time of the charge
 # The goal is that you may build desciptions based on the history of charges against a reservation
 # And to create a Charge#description with a hat tip to previous charge records
 # And so that accountants get really nice text in reports
+
 class ChargeDescription
   include ActionView::Helpers::NumberHelper
 
@@ -85,6 +78,7 @@ class ChargeDescription
   end
 
   def membership_type
+    return "Site Selection for member #{charge.reservation.membership_number} " if charge.site
     "#{charged_membership} member #{charge.reservation.membership_number}"
   end
 
@@ -96,6 +90,7 @@ class ChargeDescription
   end
 
   def upgrade_maybe
+    return if charge.site
     if orders_so_far.count > 1
       "Upgrade"
     else
