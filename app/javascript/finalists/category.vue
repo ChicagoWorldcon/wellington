@@ -16,8 +16,7 @@
         @valid="valid = $event"
       />
     </ul>
-{{ranks}}
-{{category}}
+
     <button
       v-if="test(ranks) && valid"
       v-on:click="save(category)"
