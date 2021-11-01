@@ -55,7 +55,7 @@ class ChargeDescription
 
   def payment_type
     if charge.stripe?
-      "Credit Card"
+      "Stripe"
     else
       charge.transfer.humanize
     end

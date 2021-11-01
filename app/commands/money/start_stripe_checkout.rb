@@ -3,9 +3,11 @@
 # Copyright 2019 Matthew B. Gray
 # Copyright 2019 AJ Esler
 # Copyright 2021 DisCon III
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # 23-Oct-21 FNB add charge type to track membership vs site seleciton payments
+# 1-Nov-21 FNB add description to Stripe charge creation. Should use ChargeDescription but can't get it to work so hardcoded here.
 
 # Money::StartStripeCheckout creates a pending charge record against a User for the Stripe integrations
 # and sets them up to check out with Stripe.
@@ -48,7 +50,7 @@ class Money::StartStripeCheckout
       reservation: reservation,
       stripe_id: @checkout_session.id,
       amount: charge_amount,
-      site: site,                             ##################################################
+      site: site,
     }.merge(charge_state_params))
 
     checkout_url.present?
@@ -86,19 +88,26 @@ class Money::StartStripeCheckout
         {
           currency: ENV.fetch('STRIPE_CURRENCY'),
           amount: charge_amount.cents,
-          name: site ? "Site Selection":reservation.membership.to_s,
+          name: site ? "Site Selection":reservation.membership.to_s, #deprecated
+          description: site ? "Site Selection":reservation.membership.to_s, #replaces name
           quantity: 1,
         },
       ],
       payment_method_types: [
         'card',
-        'wechat_pay',                                                   ################## Alipay would go here, or anything else.
+        'wechat_pay',         ################## Alipay would go here, or anything else. Apple and Google pay are already included.
       ],
       payment_method_options: {
         wechat_pay: {
           client: 'web',
-        }
+        },
       },
+      payment_intent_data:  {           ######## BUILD DESCRIPTION ################
+        description:  
+        charge_amount.format(with_currency: true) + " paid for " +
+        (site ? "Site Selection":reservation.membership.to_s) + " " +
+        reservation.membership_number.to_s
+      }, 
       mode: 'payment',
       customer: user.stripe_id,
       success_url: success_url,
