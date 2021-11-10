@@ -19,35 +19,52 @@
 class AmountOwedForReservation
   PAID = Reservation::PAID
 
-  attr_reader :reservation
+  attr_reader :reservation, :current_credit
 
   def initialize(reservation)
     @reservation = reservation
+    @current_credit = calculate_current_credit
   end
 
   def amount_owed
-    return Money.new(0) if fully_paid_by_cart?
+    Money.new(@reservation.membership.price_cents - @current_credit)
+  end
 
-    paid_so_far = reservation.charges.successful.sum(&:amount)
-    reservation.membership.price - paid_so_far
+  def successful_direct_charge_total
+    @reservation.charges.successful.exists? ? @reservation.charges.successful.sum(&:amount) : 0
   end
 
   def fully_paid_by_cart?
-    return false if carts_related_to_reservation.blank?
-    cents_owed_for_associated_carts <= 0
+    cart_associated? && total_cents_owed_for_related_carts == 0
   end
 
   private
+
+  def calculate_current_credit
+    successful_direct_charge_total + previous_cart_charge_credit
+  end
 
   def carts_related_to_reservation
     Cart.joins(:cart_items).where(cart_items: {holdable: @reservation})
   end
 
-  def cents_owed_for_associated_carts
+  def cart_associated?
+    @reservation.state == carts_related_to_reservation.exists?
+  end
+
+  def total_cents_owed_for_related_carts
     owed = 0
     carts_related_to_reservation.to_ary.each do |c|
       owed += CentsOwedForCartContents.new(c).owed_cents
     end
     owed
+  end
+
+  def previous_cart_charge_credit
+    return 0 unless fully_paid_by_cart?
+
+    return @reservation.last_membership_fully_paid.price_cents if  @reservation.last_membership_fully_paid.exists?
+
+    @reservation.membership.price_cents
   end
 end
