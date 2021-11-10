@@ -35,7 +35,7 @@ class AmountOwedForReservation
   end
 
   def fully_paid_by_cart?
-    cart_associated? && total_cents_owed_for_related_carts == 0
+    cart_associated? && total_cents_owed_for_related_carts <= 0
   end
 
   private
