@@ -17,9 +17,11 @@
 # UpgradeMembership command upgrades membership between two levels
 # Truthy return means upgrade was successful, otherwise check errors for explanation
 class UpgradeMembership < SetMembership
+
   def call
     check_availability
     return false if errors.any?
+    record_previous_paid_membership_memo
     super
   end
 
@@ -34,5 +36,10 @@ class UpgradeMembership < SetMembership
     if prices.none?
       errors << "#{reservation.membership} cannot upgrade to #{to_membership}"
     end
+  end
+
+  def record_previous_paid_membership_memo
+    reservation.update!(last_membership_fully_paid:  reservation.membership) if AmountOwedForReservation(reservation).amount_owed <= 0
+    reservation.reload
   end
 end
