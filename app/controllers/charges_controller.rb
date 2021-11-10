@@ -28,9 +28,7 @@ class ChargesController < ApplicationController
 
     @membership = @reservation.membership
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
-
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
-
     @price_options = price_steps.reverse.map do |price|
       [price.format, price.cents]
     end
@@ -38,9 +36,7 @@ class ChargesController < ApplicationController
 
   def create
     charge_amount = Money.new(params[:amount].to_i)
-
     outstanding_before_charge = AmountOwedForReservation.new(@reservation).amount_owed
-
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !charge_amount.in?(allowed_charge_amounts)
       flash[:error] = "Amount must be one of the provided payment amounts"
@@ -67,6 +63,10 @@ class ChargesController < ApplicationController
 
     message = "Thank you for your #{charge_amount.format} payment"
     (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
+
+    # Here's where we need to log the current membership as the last fully-paid membership
+
+
 
     redirect_to reservations_path, notice: message
   end
@@ -150,5 +150,9 @@ class ChargesController < ApplicationController
         charge: charge,
       ).deliver_later
     end
+  end
+
+  def calculate_amount_outstanding_for_reservation
+    # Calculate the amount outstanding for a single reservation based on whether there's a past, fully-paid reservation or not.
   end
 end
