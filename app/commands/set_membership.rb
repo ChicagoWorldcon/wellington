@@ -17,9 +17,9 @@
 # SetMembership is a Support user function, used to set a membership to any level and evaluate if it's been paid off yet
 # If this does fail, it's going to 500 and roll back
 class SetMembership
-  attr_reader :reservation, :to_membership, :audit_by
+  attr_reader :reservation, :to_membership, :audit_by, :amount_owing
 
-  def initialize(reservation, to:, audit_by: nil)
+  def initialize(reservation, to: nil, audit_by: nil)
     @reservation = reservation
     @to_membership = to
     @audit_by = audit_by
@@ -28,19 +28,13 @@ class SetMembership
   def call
     reservation.transaction do
       as_at = Time.now
-
       create_audit_note if audit_by.present?
       disable_existing_order(as_at)
       create_new_order(as_at)
 
       # Drop AR caches to #membership and related has_many through relations
       reservation.reload
-
-      if fully_paid?
-        reservation.update!(state: Reservation::PAID)
-      else
-        reservation.update!(state: Reservation::INSTALMENT)
-      end
+      revise_reservation_status(reservation)
     end
   end
 
@@ -52,6 +46,14 @@ class SetMembership
 
   def create_new_order(as_at)
     reservation.orders.create!(active_from: as_at, membership: to_membership)
+  end
+
+  def revise_reservation_status(our_res)
+    if fully_paid?
+      our_res.update!(state: Reservation::PAID)
+    else
+      our_res.update!(state: Reservation::INSTALMENT)
+    end
   end
 
   def create_audit_note
@@ -66,6 +68,6 @@ class SetMembership
   end
 
   def fully_paid?
-    AmountOwedForReservation.new(reservation).amount_owed <= 0
+    AmountOwedForReservation.new(@reservation).amount_owed <= 0
   end
 end
