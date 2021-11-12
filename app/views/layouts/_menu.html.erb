@@ -65,6 +65,9 @@
         <% if ENV["HOTEL_LINK"]%>
           <li> <%= link_to "Hotel Reservations", hotel_index_path %></li>
         <% end %>
+        <% if ENV["MOBILITY_LINK"]%>
+          <li> <%= link_to "Mobility Device Rentals", mobility_index_path %></li>
+        <% end %>
 
         <li><a href="<%= worldcon_url_volunteering %>">Volunteering</a></li>
         <li><a href="<%= worldcon_url_homepage %>">Back to <%= worldcon_public_name %> homepage</a></li>

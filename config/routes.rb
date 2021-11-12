@@ -9,6 +9,7 @@
 #
 # 13-June-21 FNB added hotel
 #  1-Oct-21 FNB added site selection tokens
+# 12-Nov-21 FNB added mobiltiy device rentals
 
 
 require "sidekiq/web"
@@ -59,6 +60,7 @@ Rails.application.routes.draw do
   resources :upgrades
   resources :hugo_packet, id: /[^\/]+/
   resources :hotel, id: /[^\/]+/
+  resources :mobility, id: /[^\/]+/
   
   resources :reservations do
     post :reserve_with_cheque, on: :collection
