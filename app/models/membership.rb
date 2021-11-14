@@ -53,6 +53,34 @@ class Membership < ApplicationRecord
   scope :with_nomination_rights, -> { where(can_nominate: true) }
   scope :with_voting_rights, -> { where(can_vote: true) }
 
+  # These scopes are for support/reg users, who might want to see all of the past and future memberships.
+  scope :inactive, -> { !active_at(Time.now) }
+  scope :expired, -> {
+    moment = Time.now;
+    where(
+      %{
+        #{quoted_table_name}.active_from < ?     -- where active_from is before now
+        AND #{quoted_table_name}.active_to < ?   -- and active_to is also before now
+      },
+      moment,
+      moment,
+    )
+  }
+  scope :upcoming, -> {
+    moment = Time.now;
+    where(
+      %{
+        #{quoted_table_name}.active_from > ?     -- where active_from is in the future
+        AND (
+          #{quoted_table_name}.active_to IS NULL -- and active_to is either open-ended
+          OR ? < #{quoted_table_name}.active_to  -- or is in the future
+        )
+      },
+      moment,
+      moment,
+    )
+  }
+
   def to_s
     display_name ? display_name : name.humanize
   end
@@ -95,6 +123,20 @@ class Membership < ApplicationRecord
   def name_and_price_hashcode
     h_price = self.price > 0 ? self.price.format(with_currency: true) : "Free"
     "#{self.name} #{h_price}"
+  end
+
+  def available_for_purchase?
+    active? && ! private_membership_option
+  end
+
+  def not_available_reason
+    if inactive?
+      "Expired"
+    elsif private_membership_option
+      "Special Membership"
+    else
+      "Not Available"
+    end
   end
 
   def price_increase(new_price, start_date, end_date = nil)

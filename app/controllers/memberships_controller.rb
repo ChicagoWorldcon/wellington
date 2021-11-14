@@ -18,9 +18,11 @@ class MembershipsController < ApplicationController
   def index
     if support_signed_in?
       @offers = MembershipOffer.options
+      @expired = Membership.expired
+      @upcoming = Membership.upcoming
     else
       @offers = MembershipOffer.options.select(&:offer_for_purchase?)
+      @expired = @upcoming = []
     end
-
   end
 end
