@@ -19,6 +19,7 @@ if hash tmux 2>/dev/null; then
         echo 'Tmux already has a wellington session. Run `tmux attach-session -t wellington` to see the logs'
     else
         tmux new-session -d -s wellington rails server
+        tmux split-window -t wellington -v -f 'webpack-dev-server'
         echo 'Rails started in the background. To see logs, run `tmux attach-session -t wellington`'
     fi
 else
