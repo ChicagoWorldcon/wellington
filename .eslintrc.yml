@@ -16,7 +16,7 @@ env:
   browser: true
   es6: true
 extends:
-  - 'plugin:vue/essential'
+  - "plugin:vue/essential"
   - airbnb-base
 globals:
   Atomics: readonly
@@ -27,3 +27,8 @@ parserOptions:
 plugins:
   - vue
 rules: {}
+overrides:
+  - files:
+      - "*.html.erb"
+    rules:
+      vue/comment-directive: 0
