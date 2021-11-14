@@ -23,7 +23,7 @@
   <div class="row d-flex align-items-stretch">
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-        <%= render("membership_card", offer: offer) do %>
+        <%= render("offer_card", offer: offer) do %>
           <% if offer.offer_for_purchase? %>
             <%= link_to(
               "Reserve #{offer.membership}",
