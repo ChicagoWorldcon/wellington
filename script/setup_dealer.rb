@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+d1 = Membership.new(name: "dealer-1", active_from: DateTime.now, active_to: "2022-09-10".to_time, description: "Dealer Membership, including one table", can_vote: true, can_attend: true, price_cents: 23000, can_nominate: true, can_site_select: true, dob_required: false, display_name: "Dealer (1 table)", private_membership_option: true)
+d2 = Membership.new(name: "dealer-2", active_from: DateTime.now, active_to: "2022-09-10".to_time, description: "Dealer Membership, including two tables", can_vote: true, can_attend: true, price_cents: 46000, can_nominate: true, can_site_select: true, dob_required: false, display_name: "Dealer (2 tables)", private_membership_option: true)
+da = Membership.new(name: "adult", active_from: DateTime.now, active_to: "2022-09-10".to_time, description: "Dealer Membership Additional Person", can_vote: true, can_attend: true, price_cents: 46000, can_nominate: true, can_site_select: true, dob_required: false, display_name: "Dealer Addon", private_membership_option: true)
