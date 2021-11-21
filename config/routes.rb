@@ -55,6 +55,8 @@ Rails.application.routes.draw do
   get "/login/:email/:key", to: "user_tokens#kansa_login_link", email: /[^\/]+/, key: /[^\/]+/
   resources :user_tokens, only: [:new, :show, :create], id: /[^\/]+/ do
     get :logout, on: :collection
+    get :enter, on: :collection
+    post :enter, on: :collection
   end
 
   get '/cart', to: 'cart#show', as: 'cart'

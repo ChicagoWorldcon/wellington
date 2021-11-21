@@ -20,9 +20,7 @@
 class Token::SendLink
   TOKEN_DURATION = 30.minutes
 
-  attr_reader :email
-  attr_reader :secret
-  attr_reader :path
+  attr_reader :email, :secret, :path, :shortcode
 
   def initialize(email:, secret:, path:)
     @email = email.strip
@@ -35,7 +33,9 @@ class Token::SendLink
     check_secret
 
     encode_token if errors.none?
+    save_token if errors.none?
     async_email_link if errors.none?
+    puts("Errors: #{errors}")
     errors.none?
   end
 
@@ -54,23 +54,26 @@ class Token::SendLink
   end
 
   def check_secret
-    if !secret.present?
-      errors << "cannot encode without secret"
-    end
+    errors << "cannot encode without secret" unless secret.present?
   end
 
   def encode_token
     token_data = {
       exp: (Time.now + TOKEN_DURATION).to_i,
       email: email,
-      path: path,
+      path: path
     }
     @token = JWT.encode(token_data, secret, "HS256")
   rescue JWT::EncodeError
     errors << "failed to encode JWT token"
   end
 
+  def save_token
+    temp_tok = TemporaryUserToken.create(token: @token)
+    @shortcode = temp_tok.shortcode
+  end
+
   def async_email_link
-    MembershipMailer.login_link(email: email, token: @token).deliver_later
+    MembershipMailer.login_link(email: email, token: @token, shortcode: @shortcode).deliver_later
   end
 end

@@ -742,6 +742,40 @@ ALTER SEQUENCE public.supports_id_seq OWNED BY public.supports.id;
 
 
 --
+-- Name: temporary_user_tokens; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.temporary_user_tokens (
+    id bigint NOT NULL,
+    shortcode character varying,
+    token character varying,
+    active_from timestamp without time zone NOT NULL,
+    active_to timestamp without time zone NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: temporary_user_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.temporary_user_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: temporary_user_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.temporary_user_tokens_id_seq OWNED BY public.temporary_user_tokens.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -903,6 +937,13 @@ ALTER TABLE ONLY public.reservations ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public.supports ALTER COLUMN id SET DEFAULT nextval('public.supports_id_seq'::regclass);
+
+
+--
+-- Name: temporary_user_tokens id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.temporary_user_tokens ALTER COLUMN id SET DEFAULT nextval('public.temporary_user_tokens_id_seq'::regclass);
 
 
 --
@@ -1070,6 +1111,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.supports
     ADD CONSTRAINT supports_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: temporary_user_tokens temporary_user_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.temporary_user_tokens
+    ADD CONSTRAINT temporary_user_tokens_pkey PRIMARY KEY (id);
 
 
 --
@@ -1479,6 +1528,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210224001734'),
 ('20210224034724'),
 ('20210224035800'),
-('20210916230829');
+('20210916230829'),
+('20211120232041');
 
 

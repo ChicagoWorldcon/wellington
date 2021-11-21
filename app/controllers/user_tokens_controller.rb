@@ -23,17 +23,7 @@ class UserTokensController < ApplicationController
 
   def show
     lookup_user_query = Token::LookupOrCreateUser.new(token: params[:id], secret: secret)
-    user = lookup_user_query.call
-    redirect_path = nil
-    if user.present?
-      sign_in user
-      flash[:notice] = "Logged in as #{user.email}"
-      redirect_path = lookup_user_query.path
-    else
-      error_message = lookup_user_query.errors.to_sentence.humanize
-      flash[:error] = "#{error_message}. Please send another link, or email us at #{$member_services_email}"
-    end
-    redirect_to redirect_path || root_path
+    redirect_to login_user_with(lookup_user_query)
   end
 
   def create
@@ -47,23 +37,27 @@ class UserTokensController < ApplicationController
     elsif !new_user.persisted? # ...valid and never been seen before
       new_user.save!
       sign_in(new_user)
-      flash[:notice] = %{
+      flash[:notice] = %(
         Welcome #{target_email}!
         Because this is the first time we've seen you, you're automatically signed in.
         In the future, you'll have to check your email.
-      }
+      )
       redirect_to referrer_path
       return
     end
 
+    # From here we're in the login flow for an existing user. We are going to send them a token link AND a code for the
+    # secret, and then redirect to a form where they can enter the shortcode.
     send_link_command = Token::SendLink.new(email: target_email, secret: secret, path: reservations_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{target_email} for your login link"
       flash[:notice] += " (http://localhost:1080)" if Rails.env.development?
+
+      redirect_to enter_user_tokens_path
     else
       flash[:error] = send_link_command.errors.to_sentence
+      redirect_to referrer_path
     end
-    redirect_to referrer_path
   end
 
   def kansa_login_link
@@ -80,7 +74,37 @@ class UserTokensController < ApplicationController
     redirect_to root_path
   end
 
+  def enter
+    if signed_in?
+      redirect_to reservations_path
+      return
+    end
+
+    if params[:shortcode].present?
+      lookup_query = Token::LookupUserByShortcode.new(shortcode: params[:shortcode], secret: secret)
+      destination = login_user_with(lookup_query)
+      redirect_to destination
+      lookup_query.cleanup!
+    else
+      flash[:info] = "Log in with your emailed shortcode"
+    end
+  end
+
   private
+
+  def login_user_with(query)
+    user = query.call
+    redirect_path = nil
+    if user.present?
+      sign_in user
+      flash[:notice] = "Logged in as #{user.email}"
+      redirect_path = query.path
+    else
+      error_message = query.errors.to_sentence.humanize
+      flash[:error] = "#{error_message}. Please send another link, or email us at #{$member_services_email}"
+    end
+    redirect_path || root_path
+  end
 
   # Check README.md if this fails for you
   def secret
@@ -88,18 +112,12 @@ class UserTokensController < ApplicationController
   end
 
   def referrer_path
-    if session[:return_path].present?
-      return session[:return_path]
-    end
+    return session[:return_path] if session[:return_path].present?
 
-    if !request.referrer.present?
-      return "/"
-    end
+    return "/" unless request.referrer.present?
 
     uri = URI(request.referrer)
-    if uri.query.present?
-      "#{uri.path}?#{uri.query}"
-    end
+    "#{uri.path}?#{uri.query}" if uri.query.present?
 
     uri.path
   end
