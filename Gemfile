@@ -34,7 +34,7 @@ gem "passgen"              # Password generator
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
 gem "puma", "~> 5.5"       # http server for rack
-gem 'rack-pratchett'       # say his name
+gem "rack-pratchett"       # say his name
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
@@ -45,46 +45,46 @@ gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
 group :development, :test do
-  gem "better_errors"                                  # Does what it says on the tin.
-  gem "binding_of_caller"                             # Makes it possible to use "better_errors"'s REPL, local/instance variable inspection, and pretty stack frame names
-  gem "brakeman"                                      # vulnerability and static analysis
-  gem "byebug", platforms: %i[mri mingw x64_mingw]    # Call "byebug" anywhere in the code for interactive debugging
-  gem "capybara"                                      # Adds support for Capybara system testing and selenium driver
-  gem "factory_bot_rails"                             # reusable model construction for tests
-  gem "faker"                                         # fun common strings fro testing
-  gem "guard-rspec", require: false                   # tests that re-run on save are nice
-  #gem 'meta_request'                                  # allows you to use the 'rails panel' browser extension
-  gem "pry"                                           # nicer debugger, use 'binding.pry'
-  gem "pry-byebug"                                    # adds 'step', 'next' and 'break' to pry
-  gem "rails-controller-testing"                      # adds back deprecated "assigns" and "assert_template" expectations.
-  gem "rspec-rails"                                   # testing framework
-  gem "rubocop"                                       # linting for idiomatic ruby
-  gem "rubocop-performance"                           # performance static analysis
-  gem "rubocop-rails"                                 # linting for idiomatic rails
-  gem "rubocop-rspec"                                 # linting for idiomatic rspec
-  gem "ruby_audit"                                    # checks for CVEs affecting Ruby and RubyGems
-  gem "selenium-webdriver"                            # brower based full stack testing
-  gem 'shoulda-matchers', '~> 4.0'                    # matchers for RSpec that simplify model, activerecord, and controller testing.
-  gem "simplecov"                                     # tracks test coverage
-  gem "solargraph"                                    # language server support
-  gem "stripe-ruby-mock", require: "stripe_mock"      # fake stripe responses for testing
-  gem "timecop"                                       # time travel for specs
+  gem "better_errors"                              # Does what it says on the tin.
+  gem "binding_of_caller"                          # Makes it possible to use "better_errors"'s REPL, local/instance variable inspection, and pretty stack frame names
+  gem "brakeman"                                   # vulnerability and static analysis
+  gem "byebug", platforms: %i[mri mingw x64_mingw] # Call "byebug" anywhere in the code for interactive debugging
+  gem "capybara"                                   # Adds support for Capybara system testing and selenium driver
+  gem "factory_bot_rails"                          # reusable model construction for tests
+  gem "faker"                                      # fun common strings fro testing
+  gem "guard-rspec", require: false                # tests that re-run on save are nice
+  # gem 'meta_request'                             # allows you to use the 'rails panel' browser extension
+  gem "pry"                                        # nicer debugger, use 'binding.pry'
+  gem "pry-byebug", "~> 3.9.0"                     # adds 'step', 'next' and 'break' to pry
+  gem "rails-controller-testing"                   # adds back deprecated "assigns" and "assert_template" expectations.
+  gem "rspec-rails"                                # testing framework
+  gem "rubocop"                                    # linting for idiomatic ruby
+  gem "rubocop-performance"                        # performance static analysis
+  gem "rubocop-rails"                              # linting for idiomatic rails
+  gem "rubocop-rspec"                              # linting for idiomatic rspec
+  gem "ruby_audit"                                 # checks for CVEs affecting Ruby and RubyGems
+  gem "selenium-webdriver"                         # brower based full stack testing
+  gem "shoulda-matchers", "~> 4.0"                 # matchers for RSpec that simplify model, activerecord, and controller testing.
+  gem "simplecov"                                  # tracks test coverage
+  gem "solargraph"                                 # language server support
+  gem "stripe-ruby-mock", require: "stripe_mock"   # fake stripe responses for testing
+  gem "timecop"                                    # time travel for specs
 end
 
 group :test do
-  gem 'ruby-prof'                                     # profiling tool
-  gem 'ruby-prof-flamegraph'                          # flame graphs
-  gem "test-prof", "~> 1.0"                           # test profile
-  gem 'database_plumber', github: 'brrygrdn/database_plumber'
-  gem 'database_cleaner-active_record'  # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
+  gem "database_cleaner-active_record" # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
+  gem "database_plumber", github: "brrygrdn/database_plumber"
+  gem "ruby-prof" # profiling tool
+  gem "ruby-prof-flamegraph" # flame graphs
+  gem "test-prof", "~> 1.0" # test profile
 end
 
 group :development do
   gem "listen", ">= 3.0.5", "< 3.2"       # watch and reload files when they change
+  gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
   gem "spring"                            # keeps track of files, only recompiles what's hcanged
   gem "spring-watcher-listen", "~> 2.0.0" # smarter hooks for spring, stops filessytem polling
   gem "web-console", ">= 3.3.0"           # access an IRB console on exception pages or with <%= console %> in code
-  gem "people", ">= 0.2.0"                # parse legal names if possible, using as much as we can guess about them during import
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
