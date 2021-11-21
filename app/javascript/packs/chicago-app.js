@@ -15,12 +15,12 @@
  */
 
 // Rails defaults
-// Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
 import ujs from '@rails/ujs';
 import * as activeStorage from '@rails/activestorage';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+// Register theme with webpacker, allows us to use styles with stylesheet_pack_tag
 import '../stylesheets/chicago-styles.scss';
 import '../channels';
 import '../sprinkles';
@@ -30,6 +30,7 @@ import '@fortawesome/fontawesome-free/js/brands';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/solid';
+import 'bootstrap-pincode-input/js/bootstrap-pincode-input';
 
 require.context('../images', true);
 

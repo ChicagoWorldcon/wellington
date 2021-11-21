@@ -14,9 +14,9 @@
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
 %>
 <%= @worldcon_greeting_sentence %>
 
@@ -28,6 +28,13 @@ Visiting this URL will automatically log you in, with no need for passwords or o
 the link or forward this email, as that'll allow any recipients to also access your account.
 
 This link will expire 30 minutes after it was created, but you can always create another one if you need.
+
+<% if @shortcode %>
+Alternately, if you are currently standing at the kiosk, you can enter this short code to log in where you stand. This
+code will expire in 10 minutes.
+
+<%= @shortcode %>
+<% end %>
 
 If you've got any queries or concerns, please reply to this email.
 

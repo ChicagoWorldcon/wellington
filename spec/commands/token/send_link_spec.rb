@@ -27,13 +27,20 @@ RSpec.describe Token::SendLink do
     [
       "willy_wönka@chocolate_factory.nz",
       " outer@space.net",
-      "outer@space.net ",
+      "outer@space.net "
     ].each do |email|
       it "sends for well formed email '#{email}'" do
         service = Token::SendLink.new(email: email, secret: good_secret, path: "")
         expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
         expect(service.call).to be_truthy
       end
+    end
+
+    it "stores a valid shortcode" do
+      service = Token::SendLink.new(email: good_email, secret: good_secret, path: "")
+      expect(service.call).to be_truthy
+      expect(service.errors).to be_none
+      expect(TemporaryUserToken.where(shortcode: service.shortcode)).to be_present
     end
 
     it "sends email with good path" do
@@ -48,13 +55,13 @@ RSpec.describe Token::SendLink do
       expect(service.call).to be_truthy
     end
 
-    context "with invalid inptus" do
+    context "with invalid inputs" do
       before { expect(MembershipMailer).to_not receive(:login_link) }
 
       it "fails with bad email" do
         [
           Token::SendLink.new(email: "", secret: good_secret, path: ""),
-          Token::SendLink.new(email: "hax0r", secret: good_secret, path: ""),
+          Token::SendLink.new(email: "hax0r", secret: good_secret, path: "")
         ].each do |service|
           expect(service.call).to be_falsey
           expect(service.errors).to include(/email/i)
