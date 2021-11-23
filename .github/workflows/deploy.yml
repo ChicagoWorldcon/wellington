@@ -64,7 +64,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: false
           load: true
-          target: development
+          target: test
           tags: "${{ env.CONTAINER_TEST_REPOSITORY }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
@@ -86,9 +86,17 @@ jobs:
           docker run $CONTAINER_TEST_REPOSITORY yarn check --integrity
 
       - name: Publish the deployable image
-        run: |
-          docker tag $CONTAINER_TEST_REPOSITORY $CONTAINER_DEPLOY_REPOSITORY
-          docker push $CONTAINER_DEPLOY_REPOSITORY
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          target: deploy
+          tags: "${{ env.CONTAINER_DEPLOY_REPOSITORY }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Clean up the CI testing tag
         run: |
