@@ -10,7 +10,7 @@ on:
       - ci-testing*
   create:
     tags:
-      - "releases/[1-9]+(.[0-9]+.[0-9]+)?"
+      - "release/[1-9]+(.[0-9]+.[0-9]+)?"
       - "ci/.*"
 
 jobs:
@@ -26,8 +26,8 @@ jobs:
               refs/heads/*)
                   name="${GITHUB_REF#refs/heads/}"
                   ;;
-              refs/tags/releases/*)
-                  name="${GITHUB_REF#refs/tags/releases/}"
+              refs/tags/release/*)
+                  name="${GITHUB_REF#refs/tags/release/}"
                   ;;
               refs/tags/ci/*)
                   name="prerelease-${GITHUB_REF#refs/tags/ci/}"
@@ -122,6 +122,6 @@ jobs:
           aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
 
       - name: Deploy to the target host
-        if: ${{ startsWith(github.ref, 'refs/tags/releases/') }}
+        if: ${{ startsWith(github.ref, 'refs/tags/release/') }}
         run: |
           ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.name }}" --deployment-group staging --description "@${{ github.actor }} deployed ${{ steps.extract_name.outputs.name }} to staging from the deploy action"
