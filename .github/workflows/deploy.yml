@@ -86,7 +86,7 @@ jobs:
           docker run $CONTAINER_TEST_REPOSITORY yarn check --integrity
 
       - name: Publish the deployable image
-        id: docker_build
+        id: docker_deploy
         uses: docker/build-push-action@v2
         with:
           context: ./
