@@ -1,44 +1,27 @@
 ---
-name: "Build Image for Deploy"
-
+name: "Check before deployment"
 on:
-  push:
-    branches:
-      - main
-      - staging
-      - release
-      - ci-testing*
-    tags:
-      - "releases/[1-9]+(.[0-9]+.[0-9]+)?"
+  workflow_call:
+    inputs:
+      image_tag:
+        required: true
+        type: string
+      deployment_group:
+        default: "staging"
+        required: false
+        type: string
+      secrets:
+        AWS_ACCESS_KEY_ID:
+          required: true
+        AWS_SECRET_ACCESS_KEY:
+          required: true
 
 jobs:
-  prepare:
+  deploy:
+    name: Prepare the build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Extract release name
-        shell: bash
-        run: |
-          echo "Running on ref ${{ github.ref }}"
-          case "${{ github.ref }}" in
-              refs/heads/*)
-                  name="${GITHUB_REF#refs/heads/}"
-                  ;;
-              refs/tags/releases/*)
-                  name="${GITHUB_REF#refs/tags/releases/}"
-                  ;;
-              refs/tags/*)
-                  name="prerelease-${GITHUB_REF#refs/tags/}"
-                  ;;
-              *)
-                  name="${GITHUB_REF}"
-                  ;;
-          esac
-          echo "##[set-output name=name;]${name}"
-        id: extract_name
-
       - uses: actions/checkout@v2
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -53,7 +36,7 @@ jobs:
       - name: Define the repository labels
         run: |
           echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-${{ github.sha }}" >> $GITHUB_ENV
-          echo "CONTAINER_PROD_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ steps.extract_name.outputs.name }}" >> $GITHUB_ENV
+          echo "CONTAINER_DEPLOY_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:${{ inputs.image_tag }}" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         id: buildx
@@ -95,6 +78,7 @@ jobs:
       - name: Run security tests
         if: ${{ startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/security-') }}
         run: |
+          docker pull $CONTAINER_TEST_REPOSITORY
           docker run $CONTAINER_TEST_REPOSITORY bundle update brakeman --quiet
           docker run $CONTAINER_TEST_REPOSITORY bundle exec brakeman --run-all-checks --no-pager
           docker run $CONTAINER_TEST_REPOSITORY bundle exec bundler-audit check --update
@@ -111,7 +95,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           target: deploy
-          tags: "${{ env.CONTAINER_PROD_REPOSITORY }}"
+          tags: "${{ env.CONTAINER_DEPLOY_REPOSITORY }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -119,7 +103,8 @@ jobs:
         run: |
           aws ecr batch-delete-image --repository-name wellington --image-ids imageTag=ci-${{ github.sha }}
 
-      - name: Deploy to the target host
+      - id: deploy staging branch
+        name: Deploy to the target host
         if: ${{ startsWith(github.ref, 'refs/heads/staging') }}
         run: |
-          ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.name }}" --deployment-group staging --description "@${{ github.actor }} deployed ${{ steps.extract_name.outputs.name }} to staging from the deploy action"
+          ./deploy/deploy-tag.py "${{ inputs.image_tag }}" --deployment-group "${{ inputs.deployment_group }}" --description "@${{ github.actor }} deployed ${{ inputs.image_tag }} to ${{ inputs.deployment_group}} from the deploy action"
