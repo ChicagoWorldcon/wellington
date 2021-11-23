@@ -31,7 +31,7 @@ class HugoState
 
   def closed?
     open_time = utc($nomination_opens_at)..utc($hugo_closed_at)
-    !now.in?(open_time)
+    !open_time.cover?(now)
   end
 
   private
