@@ -10,18 +10,22 @@ import sys
 def main():
     parser = argparse.ArgumentParser("deploy-tag")
     parser.add_argument("docker_tag")
+    parser.add_argument("--deployment-group", default=None)
     parser.add_argument("--description", default=None)
     opts = parser.parse_args()
 
-    try:
-        deployment_group = {
-            "dev": "dev",
-            "staging": "staging",
-            "release": "prod",
-        }[opts.docker_tag]
-    except KeyError:
-        print(f"No deployment group for {opts.docker_tag}")
-        return 0
+    if not opts.deployment_group:
+        try:
+            deployment_group = {
+                "dev": "dev",
+                "staging": "staging",
+                "release": "prod",
+            }[opts.docker_tag]
+        except KeyError:
+            print(f"No deployment group for {opts.docker_tag}")
+            return 1
+    else:
+        deployment_group = opts.deployment_group
 
     description = opts.description if opts.description else f"Deploy {opts.docker_tag}"
 
