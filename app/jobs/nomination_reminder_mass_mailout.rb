@@ -45,7 +45,7 @@ class NominationReminderMassMailout
     now = utc(DateTime.now)
     upper_bound = three_days_to_go + 15.minutes
     lower_bound = three_days_to_go - 15.minutes
-    now.in?(lower_bound...upper_bound)
+    (lower_bound...upper_bound).cover?(now)
   end
 
   def utc(datetime)
