@@ -29,15 +29,15 @@
           </h2>
 
           <p>
-            <% if @my_purcahses.count == 1 %>
+            <% if @my_purchases.count == 1 %>
               You have 1 membership
             <% else %>
-              You have <%= @my_purcahses.count %> memberships
+              You have <%= @my_purchases.count %> memberships
             <% end %>
           </p>
 
           <div class="card-columns">
-            <% @my_purcahses.find_each(batch_size: 10) do |reservation| %>
+            <% @my_purchases.find_each(batch_size: 10) do |reservation| %>
               <%= render("reservation_card", reservation: reservation) do %>
                 <% index_links(reservation).each do |link| %>
                   <p><%= link %></p>

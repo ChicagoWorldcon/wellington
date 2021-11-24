@@ -25,9 +25,9 @@ class ReservationsController < ApplicationController
   # TODO(issue #24) list all members for people not logged in
   def index
     if user_signed_in?
-      @my_purcahses = Reservation.joins(:user).where(users: {id: current_user})
-      @my_purcahses = @my_purcahses.joins(:membership)
-      @my_purcahses = @my_purcahses.includes(:charges).includes(active_claim: :contact)
+      @my_purchases = Reservation.joins(:user).where(users: { id: current_user })
+      @my_purchases = @my_purchases.joins(:membership)
+      @my_purchases = @my_purchases.includes(:charges).includes(active_claim: :contact)
     end
   end
 
