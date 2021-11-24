@@ -38,6 +38,7 @@ RSpec.describe Token::SendLink do
 
     it "stores a valid shortcode" do
       service = Token::SendLink.new(email: good_email, secret: good_secret, path: "")
+      expect(MembershipMailer).to receive_message_chain(:login_link, :deliver_later).and_return(true)
       expect(service.call).to be_truthy
       expect(service.errors).to be_none
       expect(TemporaryUserToken.where(shortcode: service.shortcode)).to be_present
