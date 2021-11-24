@@ -53,7 +53,6 @@ RSpec.describe MembershipOffer do
   end
 
   xdescribe "#self.locate_active_offer_by_hashcode(hashcode)" do
-
   end
 
   describe "#dob_required?" do
@@ -64,7 +63,7 @@ RSpec.describe MembershipOffer do
 
     context "for child" do
       let(:membership) { create(:membership, :child) }
-      it { is_expected.to equal true}
+      it { is_expected.to equal true }
     end
   end
 
