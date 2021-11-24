@@ -34,10 +34,10 @@ $(document).ready(() => {
   //$('[data-toggle=tooltip').popover();
 
   // pincode entry
-  $('.input-pincode').each(function(_) {
-    var digits = jQuery(this).data("pincode-digits") || 6;
-    jQuery(this).pincodeInput({ inputs: digits, hidedigits: false });
-  });
+  // $('.input-pincode').each(function(_) {
+  //   var digits = jQuery(this).data("pincode-digits") || 6;
+  //   jQuery(this).pincodeInput({ inputs: digits, hidedigits: false });
+  // });
 });
 
 $(document).ready(() => {

@@ -13,10 +13,7 @@
  # See the License for the specific language governing permissions and
  # limitations under the License.
 %>
-<% if @destination %>
-  <p>Thank you for signing in! Please proceed to <a href="<%= @destination %>"><%= @destination %></a> to continue.</p>
-<% else %>
-  <%= form_with method: :get do |f| %>
+  <%= form_with do |f| %>
   <div class="form-group">
     <%= f.label :shortcode, "Six-digit login token" %>
     <%= f.text_field :shortcode, class: "input-pincode" %>
@@ -24,8 +21,7 @@
   </div>
 
   <p>
-    Please enter the token you received in the login email. It will expire 10 minutes after we sent it, so please be
-    speedy.
+    Please enter the token you received in the login email. It will expire 10 minutes after
+    we sent it, so please be speedy.
   </p>
-<% end %>
 <% end %>
