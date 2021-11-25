@@ -13,7 +13,7 @@
  # See the License for the specific language governing permissions and
  # limitations under the License.
 %>
-  <%= form_with do |f| %>
+<%= form_with local: true do |f| %>
   <div class="form-group">
     <%= f.label :shortcode, "Six-digit login token" %>
     <%= f.text_field :shortcode, class: "input-pincode" %>
