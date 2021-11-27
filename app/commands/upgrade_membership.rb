@@ -39,7 +39,7 @@ class UpgradeMembership < SetMembership
   end
 
   def record_previous_paid_membership_memo
-    reservation.update!(last_membership_fully_paid:  reservation.membership) if AmountOwedForReservation(reservation).amount_owed <= 0
+    reservation.update!(last_fully_paid_membership:  reservation.membership) if AmountOwedForReservation.new(@reservation).amount_owed <= 0
     reservation.reload
   end
 end
