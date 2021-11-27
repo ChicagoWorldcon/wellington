@@ -27,7 +27,7 @@ class AmountOwedForReservation
   end
 
   def amount_owed
-    Money.new(@reservation.membership.price_cents - @current_credit)
+    Money.new(@reservation.membership.price_cents - @current_credit.to_i)
   end
 
   def successful_direct_charge_total
@@ -49,7 +49,7 @@ class AmountOwedForReservation
   end
 
   def cart_associated?
-    @reservation.state == carts_related_to_reservation.exists?
+    carts_related_to_reservation.exists?
   end
 
   def total_cents_owed_for_related_carts
@@ -62,9 +62,7 @@ class AmountOwedForReservation
 
   def previous_cart_charge_credit
     return 0 unless fully_paid_by_cart?
-
-    return @reservation.last_membership_fully_paid.price_cents if  @reservation.last_membership_fully_paid.exists?
-
+    return @reservation.last_fully_paid_membership.price_cents if  @reservation.last_fully_paid_membership.present?
     @reservation.membership.price_cents
   end
 end
