@@ -62,11 +62,12 @@ class ChargesController < ApplicationController
     trigger_reservation_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
 
     message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
+    if @reservation.paid?
+      message += ". Your #{@reservation.membership} membership has been paid for."
 
-    # Here's where we need to log the current membership as the last fully-paid membership
-
-
+      # Here's where we need to log the current membership as the last fully-paid membership
+      @reservation.last_fully_paid_membership_id = @reservation.membership.id
+    end
 
     redirect_to reservations_path, notice: message
   end
@@ -150,9 +151,5 @@ class ChargesController < ApplicationController
         charge: charge,
       ).deliver_later
     end
-  end
-
-  def calculate_amount_outstanding_for_reservation
-    # Calculate the amount outstanding for a single reservation based on whether there's a past, fully-paid reservation or not.
   end
 end
