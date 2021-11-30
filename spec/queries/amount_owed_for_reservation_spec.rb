@@ -101,8 +101,14 @@ RSpec.describe AmountOwedForReservation do
     end
   end
 
+  describe "#successful_direct_charge_total" do
+    pending
+  end
+
   describe "#fully_paid_by_cart?" do
     #TODO NOTE: This ideally should have tests of its own, but this is actually pretty thoroughly tested by #amount_owed's spec, above.
     pending
   end
+
+
 end
