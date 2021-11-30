@@ -34,11 +34,12 @@ class AmountOwedForReservation
 
   def successful_direct_charge_total
     s_dirs = @reservation.charges.successful.exists? ? @reservation.charges.successful.sum(&:amount) : 0
-    Money.new(s_dirs)
+    returnable = Money.new(s_dirs)
+    returnable
   end
 
   def fully_paid_by_cart?
-    cart_associated? && total_cents_owed_for_related_carts <= 0
+    cart_associated? && charges_for_related_carts_present? && total_cents_owed_for_related_carts <= 0
   end
 
   private
@@ -53,6 +54,13 @@ class AmountOwedForReservation
 
   def cart_associated?
     carts_related_to_reservation.exists?
+  end
+
+  def charges_for_related_carts_present?
+    carts_related_to_reservation.to_ary.each do |c|
+      return true if c.charges.successful.exists?
+    end
+    false
   end
 
   def total_cents_owed_for_related_carts
