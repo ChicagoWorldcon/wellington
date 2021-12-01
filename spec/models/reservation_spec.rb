@@ -178,8 +178,4 @@ RSpec.describe Reservation, type: :model do
       it { is_expected.to_not include("rights.hugo.vote") }
     end
   end
-
-  describe "#last_membership_paid_for" do
-    
-  end
 end
