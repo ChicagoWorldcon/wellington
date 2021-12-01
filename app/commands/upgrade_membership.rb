@@ -21,7 +21,6 @@ class UpgradeMembership < SetMembership
   def call
     check_availability
     return false if errors.any?
-    record_previous_paid_membership_memo
     super
   end
 
@@ -36,10 +35,5 @@ class UpgradeMembership < SetMembership
     if prices.none?
       errors << "#{reservation.membership} cannot upgrade to #{to_membership}"
     end
-  end
-
-  def record_previous_paid_membership_memo
-    reservation.update!(last_fully_paid_membership:  reservation.membership) if AmountOwedForReservation.new(@reservation).amount_owed <= 0
-    reservation.reload
   end
 end
