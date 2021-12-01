@@ -284,6 +284,11 @@ RSpec.describe Money::ChargeCustomer do
           expect(paids_seen).to eql(unpaid_res_cart.cart_items.count)
         end
 
+        it "updates last_fully_paid_membership for all the  reservations in the cart to " do
+          matches_seen = unpaid_res_cart.cart_items.inject(0) {|a, i| a += 1 if (i.holdable.last_fully_paid_membership == i.holdable.membership) }
+          expect(matches_seen).to eql(unpaid_res_cart.cart_items.count)
+        end
+
         it "is linked to our user" do
           expect(Charge.last.user).to eq unpaid_r_c_user
         end

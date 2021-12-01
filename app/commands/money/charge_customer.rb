@@ -87,7 +87,10 @@ class Money::ChargeCustomer
 
     ActiveRecord::Base.transaction(joinable: false, requires_new: true) do
       reservations_in_cart = ReservationsInCart.new(@buyable).reservations_gathered
-      reservations_in_cart.each {|res| res.update!(state: Reservation::PAID)}
+      reservations_in_cart.each {|res|
+        res.update!(state: Reservation::PAID)
+        res.update!(last_fully_paid_membership: res.membership)
+      }
       @buyable.update!(status: Cart::PAID, active_to: Time.now)
       @buyable.reload
     end
