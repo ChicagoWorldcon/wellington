@@ -51,6 +51,12 @@ RSpec.describe ApplyCredit do
         .from(Reservation::INSTALMENT)
     end
 
+    it "doesn't log the current membership as the last fully paid" do
+      expect { call }
+      .to_not change { reservation.reload.last_fully_paid_membership }
+      .from(nil)
+    end
+
     it "delegates to ChargeDescription" do
       test_comment = "testing account credit"
       expect(ChargeDescription)
@@ -69,6 +75,13 @@ RSpec.describe ApplyCredit do
           .to change { reservation.reload.state }
           .from(Reservation::INSTALMENT)
           .to(Reservation::PAID)
+      end
+
+      it "logs the current membership as the last fully paid" do
+        expect { call }
+          .to change { reservation.reload.last_fully_paid_membership }
+          .from(nil)
+          .to(reservation.membership)
       end
     end
   end
