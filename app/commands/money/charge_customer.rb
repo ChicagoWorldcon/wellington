@@ -99,6 +99,7 @@ class Money::ChargeCustomer
       @charge.save!
       if fully_paid?
         @buyable.update!(state: Reservation::PAID)
+        @buyable.update!(last_fully_paid_membership: @buyable.membership)
       else
         @buyable.update!(state: Reservation::INSTALMENT)
       end
