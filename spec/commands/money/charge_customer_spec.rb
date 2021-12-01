@@ -156,6 +156,12 @@ RSpec.describe Money::ChargeCustomer do
           expect(reservation).to be_instalment
         end
 
+        it "does not log the current membership as the last fully paid" do
+          expect { command.call }
+          .to_not change { reservation.reload.last_fully_paid_membership }
+          .from(nil)
+        end
+
         context "then membership pricing changes" do
           let(:price_increase) { Money.new(1_00) }
           before do
@@ -211,6 +217,13 @@ RSpec.describe Money::ChargeCustomer do
         expect { command.call }
           .to change { reservation.state }
           .from(Reservation::INSTALMENT).to(Reservation::PAID)
+      end
+
+      it "logs the current membership as last fully paid" do
+        expect { command.call }
+          .to change { reservation.last_fully_paid_membership }
+          .from(nil)
+          .to(reservation.membership)
       end
 
       it "creates a charge" do
@@ -276,7 +289,7 @@ RSpec.describe Money::ChargeCustomer do
         end
 
         it "delegates the description to our charge description service" do
-          expect(Charge.last.comment).to eq(ChargeDescription.new(Charge.last).for_cart_transactions) 
+          expect(Charge.last.comment).to eq(ChargeDescription.new(Charge.last).for_cart_transactions)
         end
       end
 
