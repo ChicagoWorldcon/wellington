@@ -27,7 +27,6 @@ RSpec.describe AmountOwedForReservation do
     context "with no charges" do
       let(:reservation) { create(:reservation, :with_order_against_membership) }
       let(:membership) { reservation.membership }
-
       it { is_expected.to eq membership.price }
     end
 
@@ -57,7 +56,7 @@ RSpec.describe AmountOwedForReservation do
       end
     end
 
-    context "with cart charges but direct charges" do
+    context "with cart charges but no direct charges" do
       let(:fully_paid_one_charge_cart) { create(:cart, :fully_paid_through_single_direct_charge)}
       let(:cart_paid_item )  { fully_paid_one_charge_cart.cart_items[0] }
       let(:reservation) { cart_paid_item.item_reservation}
@@ -100,15 +99,4 @@ RSpec.describe AmountOwedForReservation do
       end
     end
   end
-
-  describe "#successful_direct_charge_total" do
-    pending
-  end
-
-  describe "#fully_paid_by_cart?" do
-    #TODO NOTE: This ideally should have tests of its own, but this is actually pretty thoroughly tested by #amount_owed's spec, above.
-    pending
-  end
-
-
 end

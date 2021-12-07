@@ -32,17 +32,13 @@ class AmountOwedForReservation
     price - credit
   end
 
+  private
+
   def successful_direct_charge_total
     s_dirs = @reservation.charges.successful.exists? ? @reservation.charges.successful.sum(&:amount) : 0
     returnable = Money.new(s_dirs)
     returnable
-  end
-
-  def fully_paid_by_cart?
-    cart_associated? && charges_for_related_carts_present? && total_cents_owed_for_related_carts <= 0
-  end
-
-  private
+    end
 
   def calculate_current_credit
     successful_direct_charge_total + previous_cart_charge_credit
@@ -75,5 +71,9 @@ class AmountOwedForReservation
     return Money.new(0) unless fully_paid_by_cart?
     return Money.new(@reservation.last_fully_paid_membership.price_cents) if  @reservation.last_fully_paid_membership.present?
     Money.new(@reservation.membership.price_cents)
+  end
+  
+  def fully_paid_by_cart?
+    cart_associated? && charges_for_related_carts_present? && total_cents_owed_for_related_carts <= 0
   end
 end
