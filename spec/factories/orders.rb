@@ -30,5 +30,11 @@ FactoryBot.define do
         order.membership = Membership.find_by(name: :adult) || create(:membership, :adult)
       end
     end
+
+    trait :with_supporting_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = Membership.find_by(name: :supporting ) || create(:membership, :supporting)
+      end
+    end
   end
 end
