@@ -38,7 +38,8 @@ FactoryBot.define do
     kind {"membership"}
 
     transient do
-      acquirable { create(:membership, :adult)}
+      #acquirable { create(:membership, :adult)}
+      acquirable { Membership.find_by(name: :adult) || create(:membership, :adult) }
       benefitable { create(:chicago_contact)}
     end
 
@@ -49,7 +50,8 @@ FactoryBot.define do
 
     trait :with_free_membership do
       transient do
-        acquirable { create(:membership, :kidit)}
+        #acquirable { create(:membership, :kidit)}
+        acquirable { Membership.find_by(name: :kidit) || create(:membership, :kidit) }
       end
 
       after(:build) do |cart_item, evaluator|
@@ -59,8 +61,10 @@ FactoryBot.define do
 
     trait :with_expired_membership do
       transient do
-        acquirable { create(:membership, :silver_fern)}
+        #acquirable { create(:membership, :silver_fern)}
+        acquirable { Membership.find_by(name: :silver_fern) || create(:membership, :silver_fern) }
       end
+
       after(:build) do |cart_item, evaluator|
         cart_item.acquirable = evaluator.acquirable
       end
