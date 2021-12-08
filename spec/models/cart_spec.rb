@@ -349,6 +349,47 @@ RSpec.describe Cart, type: :model do
       end
     end
 
+    describe "cart supporting_res_items_fully_paid_through_single_direct_charge" do
+
+      let(:cart_supporting_fully_pd_sing_direct) { create(:cart, :supporting_res_items_fully_paid_through_single_direct_charge)}
+
+      it "is valid" do
+        expect(cart_supporting_fully_pd_sing_direct).to be_valid
+      end
+
+      it "has three cart_items" do
+        expect(cart_supporting_fully_pd_sing_direct.cart_items.count).to eql(3)
+      end
+
+      it "only has cart-items with reservations" do
+        reservs_seen = cart_supporting_fully_pd_sing_direct.cart_items.select {|i| i.item_reservation.present? }
+        expect(reservs_seen.length).to eql(cart_supporting_fully_pd_sing_direct.cart_items.count)
+      end
+
+      it "only has cart-items for supporting memberships" do
+        supporting_seen = cart_supporting_fully_pd_sing_direct.cart_items.select {|i| i.acquirable.to_s == "Supporting" }
+        expect(supporting_seen.length).to eql(cart_supporting_fully_pd_sing_direct.cart_items.count)
+      end
+
+      it "has exactly one successful charge" do
+        expect(cart_supporting_fully_pd_sing_direct.charges.successful.count).to eql(1)
+      end
+
+      it "contains no cart_items that have successful charges" do
+        scsfl_item_charge_seen = false
+        cart_supporting_fully_pd_sing_direct.cart_items.each { |i| scsfl_item_charge_seen = true if (i.holdable.present? && i.holdable.charges.present? && i.holdable.charges.successful.present?) }
+        expect(scsfl_item_charge_seen).to eql(false)
+      end
+
+      it "has successful charges that equal the combined price of the cart-items" do
+        successful_cart_charges = cart_supporting_fully_pd_sing_direct.successful_direct_charge_total
+
+        combined_cart_item_price = cart_supporting_fully_pd_sing_direct.cart_items.sum{ |i| i.acquirable.price_cents }
+
+        expect(successful_cart_charges).to eql(combined_cart_item_price)
+      end
+    end
+
     describe "cart fully_paid_through_direct_charge_and_paid_item_combo" do
       let(:cart_fully_pd_combo) { create(:cart, :fully_paid_through_direct_charge_and_paid_item_combo)}
 
