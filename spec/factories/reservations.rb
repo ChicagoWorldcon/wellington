@@ -136,7 +136,6 @@ FactoryBot.define do
     end
 
     trait :with_last_fully_paid_membership_logged do
-      with_claim_from_user
       after(:build) do |new_reservation, _evaluator|
         new_reservation.update!(last_fully_paid_membership: new_reservation.membership)
         new_reservation.reload
