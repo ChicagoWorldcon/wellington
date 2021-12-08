@@ -99,6 +99,19 @@ FactoryBot.define do
       end
     end
 
+    trait :with_unpaid_supporting_reservation do
+      transient do
+        holdable { create(:reservation, :with_order_against_supporting_membership, :with_claim_from_user, state: Reservation::DISABLED)}
+      end
+
+      after(:build) do |cart_item, evaluator|
+        cart_item.acquirable = evaluator.holdable.membership
+        cart_item.benefitable = evaluator.holdable.active_claim.contact
+        cart_item.holdable = evaluator.holdable
+        cart_item.holdable.update_attribute(:state, Reservation::INSTALMENT)
+      end
+    end
+
     trait :with_paid_reservation do
       transient do
         holdable { create(:reservation, :with_order_against_membership, :with_claim_from_user)}

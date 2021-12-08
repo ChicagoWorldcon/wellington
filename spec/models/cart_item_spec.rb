@@ -32,6 +32,7 @@ RSpec.describe CartItem, type: :model do
       :with_expired_membership,
       :with_partially_paid_reservation,
       :with_unpaid_reservation,
+      :with_unpaid_supporting_reservation,
       :with_paid_reservation,
       :unavailable,
       :unknown_kind,
@@ -165,6 +166,26 @@ RSpec.describe CartItem, type: :model do
       it "has an acquirable that is not free" do
         expect(unpaid_cart_item.acquirable).to be
         expect(unpaid_cart_item.acquirable.price_cents).to be > 0
+      end
+    end
+
+    describe "factory outputs :with_unpaid_supporting_reservation" do
+      let(:unpaid_supporting_cart_item) { create(:cart_item, :with_unpaid_supporting_reservation)}
+      let(:temp_supporting_membership) {Membership.find_by(name: :supporting) || create(:membership, :supporting)}
+
+      it "has a holdable, and that holdable has no charges" do
+        expect(unpaid_supporting_cart_item.holdable).to be
+        expect(unpaid_supporting_cart_item.holdable.charges.blank?).to eql(true)
+      end
+
+      it "has a supporting membership as its acquirable" do
+        expect(unpaid_supporting_cart_item.acquirable).to be
+        expect(unpaid_supporting_cart_item.acquirable.to_s).to eql("Supporting")
+      end
+
+      it "has an acquirable with a price that equals the price of a supporting membership" do
+        expect(unpaid_supporting_cart_item.acquirable).to be
+        expect(unpaid_supporting_cart_item.acquirable.price_cents).to eql(temp_supporting_membership.price_cents)
       end
     end
 
