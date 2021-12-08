@@ -48,6 +48,10 @@ FactoryBot.define do
       cart_item.benefitable = evaluator.benefitable
     end
 
+    trait :with_supporting_membership do
+      acquirable { Membership.find_by(name: :supporting) || create(:membership, :supporting) }
+    end
+
     trait :with_free_membership do
       transient do
         #acquirable { create(:membership, :kidit)}

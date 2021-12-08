@@ -19,6 +19,7 @@ require "rails_helper"
 RSpec.describe CartItem, type: :model do
 
   subject(:base_model) {create(:cart_item)}
+  let(:supporting_memb) {create(:membership, :supporting)}
 
   describe "#factories" do
 
@@ -26,7 +27,8 @@ RSpec.describe CartItem, type: :model do
       expect(create(:cart_item)).to be_valid
     end
 
-    [ :with_free_membership,
+    [ :with_supporting_membership,
+      :with_free_membership,
       :with_expired_membership,
       :with_partially_paid_reservation,
       :with_unpaid_reservation,
@@ -84,6 +86,23 @@ RSpec.describe CartItem, type: :model do
 
       it "has a benefitable" do
         expect(base_model.benefitable).to be
+      end
+    end
+
+    describe "factory outputs :with_supporting_membership" do
+      let(:free_cart_item) { create(:cart_item, :with_supporting_membership)}
+
+      it "has an acquirable that costs what a supporting membership costs" do
+        expect(free_cart_item.acquirable).to be
+        expect(free_cart_item.acquirable.price_cents).to eql(supporting_memb.price_cents)
+      end
+
+      it "has an acquirable called 'supporting'" do
+        expect(free_cart_item.acquirable.to_s).to eq("Supporting")
+      end
+
+      it "has an acquirable that is not expired" do
+        expect(free_cart_item.acquirable.active?).to eql(true)
       end
     end
 

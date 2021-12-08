@@ -55,6 +55,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_supporting_membership_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :with_supporting_membership, cart: new_cart)
+      end
+    end
+
     trait :with_free_items do
       after(:create) do |new_cart, _evaluator|
         create_list(:cart_item, 3, :with_free_membership, cart: new_cart)

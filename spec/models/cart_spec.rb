@@ -119,6 +119,24 @@ RSpec.describe Cart, type: :model do
       end
     end
 
+    describe "cart with_supporting_membership_items factory" do
+      let(:supporting_only_cart) { create(:cart, :with_supporting_membership_items)}
+
+      it "is valid" do
+        expect(supporting_only_cart).to be_valid
+      end
+
+      it "has at least one cart item" do
+        expect(supporting_only_cart.cart_items.count).to be > 0
+      end
+
+      it "has no items that are not supporting memberships" do
+        not_supporting_seen = false
+        supporting_only_cart.cart_items.each { |i| not_supporting_seen = true unless i.acquirable.to_s == "Supporting" }
+        expect(not_supporting_seen).to eql(false)
+      end
+    end
+
     describe "cart with_free_items factory" do
       let(:free_only_cart) { create(:cart, :with_free_items)}
 
