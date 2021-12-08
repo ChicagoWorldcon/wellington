@@ -98,5 +98,36 @@ RSpec.describe AmountOwedForReservation do
         end
       end
     end
+
+    context "when a reservation is being upgraded" do
+
+      context  "when it is being tested" do
+        let(:upgrading_membership_factory_old) { create(:reservation, :with_upgradable_membership, :with_claim_from_user) }
+        let(:upgrading_membership_factory_new) { create(:reservation, :with_upgradable_membership, :with_last_fully_paid_membership_logged) }
+        let(:supporting_membership) { create(:membership, :supporting)}
+
+        it "uses test reservations that start out with a supporting membership" do
+          expect(upgrading_membership_factory_old.membership.to_s).to eq("Supporting")
+          expect(upgrading_membership_factory_new.membership.to_s).to eq("Supporting")
+        end
+
+        it "uses test reservations that start out with either last_fully_paid_membership either nil or logged as supporting" do
+          expect(upgrading_membership_factory_old.last_fully_paid_membership).to be_nil
+          expect(upgrading_membership_factory_new.last_fully_paid_membership).to eq(upgrading_membership_factory_new.membership)
+        end
+
+        it "uses test reservations that start out with charges that equal the price of a supporting membership" do
+          expect(upgrading_membership_factory_old.charges.successful.sum(&:amount).to_i).to eql(supporting_membership.price_cents / 100)
+          expect(upgrading_membership_factory_new.charges.successful.sum(&:amount).to_i).to eql(supporting_membership.price_cents / 100)
+        end
+      end
+
+      context "when the original membership was paid for by cart" do
+
+      end
+
+      context "when the original membership was paid for directly" do
+      end
+    end
   end
 end

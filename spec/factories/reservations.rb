@@ -131,17 +131,16 @@ FactoryBot.define do
       end
     end
 
-    trait :with_upgradable_membership_purchased do
+    trait :with_upgradable_membership do
       with_order_against_supporting_membership
-      with_claim_from_user
     end
 
     trait :with_last_fully_paid_membership_logged do
+      with_claim_from_user
       after(:build) do |new_reservation, _evaluator|
         new_reservation.update!(last_fully_paid_membership: new_reservation.membership)
         new_reservation.reload
       end
     end
-
   end
 end
