@@ -69,10 +69,10 @@ class AmountOwedForReservation
 
   def previous_cart_charge_credit
     return Money.new(0) unless fully_paid_by_cart?
-    return Money.new(@reservation.last_fully_paid_membership.price_cents) if  @reservation.last_fully_paid_membership.present?
+    return Money.new(@reservation.last_fully_paid_membership.price_cents) if @reservation.last_fully_paid_membership.present?
     Money.new(@reservation.membership.price_cents)
   end
-  
+
   def fully_paid_by_cart?
     cart_associated? && charges_for_related_carts_present? && total_cents_owed_for_related_carts <= 0
   end

@@ -29,6 +29,7 @@ class SetMembership
     reservation.transaction do
       as_at = Time.now
       create_audit_note if audit_by.present?
+      log_last_fully_paid_membership
       disable_existing_order(as_at)
       create_new_order(as_at)
 
@@ -46,6 +47,20 @@ class SetMembership
 
   def create_new_order(as_at)
     reservation.orders.create!(active_from: as_at, membership: to_membership)
+  end
+
+  def log_last_fully_paid_membership
+    credit = AmountOwedForReservation.new(@reservation).current_credit.cents
+
+    last_paid_array = []
+
+    last_paid_array << @reservation.last_fully_paid_membership if @reservation.last_fully_paid_membership.present?
+    last_paid_array << @reservation.membership if @reservation.membership.price_cents <= credit
+
+    #If the current membership is less expensive than the one logged as last_fully_paid_membership, we want don't want to change the logging.
+    last_paid_array.sort_by { |membership| membership.price_cents }
+    @reservation.update!(last_fully_paid_membership: last_paid_array[0])
+    @reservation.reload
   end
 
   def revise_reservation_status(our_res)
