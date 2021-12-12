@@ -120,6 +120,27 @@ jobs:
       - test
 
     steps:
+      - name: Extract release name
+        shell: bash
+        run: |
+          echo "Running on ref ${{ github.ref }}"
+          case "${{ github.ref }}" in
+              refs/heads/*)
+                  name="${GITHUB_REF#refs/heads/}"
+                  ;;
+              refs/tags/release/*)
+                  name="${GITHUB_REF#refs/tags/release/}"
+                  ;;
+              refs/tags/ci/*)
+                  name="prerelease-${GITHUB_REF#refs/tags/ci/}"
+                  ;;
+              *)
+                  name="${GITHUB_SHA}"
+                  ;;
+          esac
+          echo "##[set-output name=name;]${name}"
+        id: extract_name
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -136,4 +157,4 @@ jobs:
       - name: Deploy to the target host
         if: ${{ startsWith(github.ref, 'refs/tags/release/') }}
         run: |
-          ./deploy/deploy-tag.py "${{ job.test.outputs.image_tag }}" --deployment-group staging --description "@${{ github.actor }} deployed ${{ job.test.outputs.image_tag }} to staging from the deploy action"
+          ./deploy/deploy-tag.py "${{ steps.extract_name.outputs.name }}" --deployment-group staging --description "@${{ github.actor }} deployed tag '${{ steps.extract_name.outputs.name }}' to staging from the deploy action"
