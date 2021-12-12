@@ -16,15 +16,9 @@
 
 FROM ruby:2.7.1-alpine as base
 
-# we need _a_ worldcon number
-ARG WORLDCON_NUMBER
-
-# and by default that'll be Chicago :)
-ENV WORLDCON_NUMBER ${WORLDCON_NUMBER:-worldcon80}
-
 RUN apk add \
-      build-base \
       freetds-dev \
+      build-base \
       git \
       less \
       netcat-openbsd \
@@ -34,12 +28,8 @@ RUN apk add \
       postgresql-dev \
       shared-mime-info \
       sqlite-dev \
-      tzdata \
-    && rm -rf /var/cache/apk/* \
-    && npm install -g yarn \
-    && gem install bundler mailcatcher
-
-# n.b, MailCatcher is incompatible with other gems in bundle
+      tzdata
+RUN npm install -g yarn
 
 WORKDIR /setup
 
@@ -51,13 +41,45 @@ ADD yarn.lock /setup/yarn.lock
 ADD package.json /setup/package.json
 RUN yarn install
 
+FROM ruby:2.7.1-alpine as deploy
+RUN apk add \
+    nodejs \
+    nodejs-npm \
+    freetds \
+    postgresql-client \
+    postgresql \
+    shared-mime-info \
+    tzdata
+RUN npm install -g yarn
+
 ADD . /app
+
 WORKDIR /app
 
-RUN mv /setup/node_modules ./node_modules \
-    && bundle exec rake assets:precompile
+# grab the gems we installed in the base
+COPY --from=base /usr/local/bundle /usr/local/bundle
 
-FROM base as development
-VOLUME /app
+# grab the node modules we installed in the base
+COPY --from=base /setup/node_modules /app/node_modules
 
+# we need _a_ worldcon number, for asset precompilation
+ARG WORLDCON_NUMBER
+
+# and by default that'll be Chicago :)
+ENV WORLDCON_NUMBER ${WORLDCON_NUMBER:-worldcon80}
+
+# precompile our assets
+RUN bundle exec rake assets:precompile
+
+# Our launcher
 CMD script/docker_web_entry.sh
+
+FROM deploy as test
+WORKDIR /app
+RUN bundle install --with test
+
+FROM deploy as development
+VOLUME /app
+WORKDIR /app
+RUN bundle install --with test,development
+RUN gem install bundler mailcatcher

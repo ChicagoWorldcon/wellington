@@ -20,8 +20,9 @@ class MembershipMailer < ApplicationMailer
   include ApplicationHelper
   default from: $member_services_email
 
-  def login_link(token:, email:)
+  def login_link(token:, email:, shortcode:)
     @token = token
+    @shortcode = shortcode
     @worldcon_public_name = worldcon_public_name
     @worldcon_greeting_sentence_excited = worldcon_greeting_sentence_excited
     @worldcon_homepage_url = worldcon_url_homepage

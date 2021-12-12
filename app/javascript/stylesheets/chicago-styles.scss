@@ -363,6 +363,16 @@ div.group-payment-confirmation h1 {
 // COMPONENTS
 // =========================================================================
 
+.hugo-description {
+  ul,
+  ol {
+    margin: 15px;
+  }
+  li {
+    padding: 5px 10px;
+  }
+}
+
 // -------------------------------
 // BUTTONS
 // -------------------------------
@@ -622,4 +632,18 @@ footer {
 
 .card {
   color: $black;
+}
+
+// ---------------------------------------------------------------------
+// Pincode Entry
+// ---------------------------------------------------------------------
+
+.pincode-input-container {
+  background-color: rgba(255, 255, 255, 0.95); /* slighly transparent white */
+  border-radius: 5px;
+  max-width: 300px;
+}
+
+.pincode-input-text {
+  color: $dark_blue;
 }

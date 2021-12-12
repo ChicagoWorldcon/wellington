@@ -23,7 +23,7 @@
   <div class="row d-flex align-items-stretch">
     <% @offers.each do |offer| %>
       <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-        <%= render("membership_card", offer: offer) do %>
+        <%= render("offer_card", offer: offer) do %>
           <% if offer.offer_for_purchase? %>
             <%= link_to(
               "Reserve #{offer.membership}",
@@ -41,4 +41,26 @@
       </div>
     <% end %>
   </div>
+  <% if @expired.present? %>
+    <h2>Expired Membership Types</h2>
+    <div class="row d-flex align-items-stretch">
+      <% @expired.each do |membership| %>
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+        <%= render("membership_card", membership: membership) do %>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+  <% end %>
+  <% if @upcoming.present? %>
+    <h2>Upcoming Membership Types</h2>
+    <div class="row d-flex align-items-stretch">
+      <% @upcoming.each do |membership| %>
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+        <%= render("membership_card", membership: membership) do %>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

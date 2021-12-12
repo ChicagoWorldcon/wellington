@@ -32,6 +32,12 @@ $(document).ready(() => {
 
   // Bootstrap popovers.
   //$('[data-toggle=tooltip').popover();
+
+  // pincode entry
+  // $('.input-pincode').each(function(_) {
+  //   var digits = jQuery(this).data("pincode-digits") || 6;
+  //   jQuery(this).pincodeInput({ inputs: digits, hidedigits: false });
+  // });
 });
 
 $(document).ready(() => {
@@ -75,8 +81,8 @@ $(document).ready(() => {
 
     // let amount = document.querySelector('select#amount').value;
     if (!Number.isInteger(amount)) {
-        amount = amount.replace(/\$/g, '').replace(/,/g, '');
-        amount = parseInt(amount, 10);
+      amount = amount.replace(/\$/g, '').replace(/,/g, '');
+      amount = parseInt(amount, 10);
     }
 
 

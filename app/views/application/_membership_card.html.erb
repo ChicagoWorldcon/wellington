@@ -16,31 +16,23 @@
 %>
 <div class="card shadow-sm h-100">
   <div class="card-header text-nowrap">
-    <h4 class="my-0"><%= offer.name %></h4>
+    <h4 class="my-0"><%= membership.display_name %></h4>
   </div>
   <div class="card-body">
-    <% if offer.description.present? %>
-      <small><%= offer.description %></small>
+    <h5 class="card-title">
+      <% if membership.price > 0 %>
+        <%= membership.price.format(with_currency: true) %>
+      <% else %>
+        Free
+      <% end %>
+    </h5>
+    <% if membership.active_from %>
+      <h5>Available From</h5>
+      <p><%= localize(membership.active_from, :format => :long) %></p>
     <% end %>
-    <h5 class="card-title"><%= offer.formatted_price %></h5>
-
-    <% if offer.membership_rights.any? %>
-      <p><%= t("rights.description") %></p>
-      <ul class="list-group list-group-flush mt-3 mb-4">
-        <% offer.membership_rights.each do |membership_right| %>
-          <li class="list-group-item">
-            <%= t(:description, scope: membership_right ) %>
-            <i class="far fa-question-circle"
-              title="<%= t(:layman, scope: membership_right, worldcon_public_name: worldcon_public_name, hugo_help_email: email_hugo_help, mailto_hugo_help: mailto_hugo_help ) %>"
-              data-toggle="tooltip"
-              aria-label="More information"
-              height="15px"
-              data-html="true"
-              data-placement="right"
-            ></i>
-          </li>
-        <% end %>
-      </ul>
+    <% if membership.active_to %>
+      <h5>Available To</h5>
+      <p><%= localize(membership.active_to, :format => :long ) %></p>
     <% end %>
   </div>
 

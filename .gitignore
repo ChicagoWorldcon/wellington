@@ -27,6 +27,7 @@
 /.vscode/*
 /.direnv
 /log/*
+/.log/
 /tmp/*
 /node_modules
 /yarn-error.log

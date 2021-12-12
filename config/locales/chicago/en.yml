@@ -88,19 +88,19 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 2022 Hugo Awards, the Lodestar Award for Best Young Adult Book, the Astounding Award
-        for Best New Writer, if, on or before 31 December 20, 11:59 PM PST
+        You may nominate for the 2022 Hugo Awards, the Lodestar Award for Best Young Adult Book, and the <i>Astounding </i> Award
+        for Best New Writer, if, on or before 31 December 2021, 11:59 PM PST:
 
-        * you are an attending or supporting member of #{convention_public_name} (the 2022 World Science Fiction Convention), or
-        * you were an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).
+          * you had an Adult, Young Adult, Teen, Child, or Supporting membership for %{worldcon_public_name} (the 2022 World Science Fiction Convention), or
+          * you had an Attending, Young Adult, or Supporting membership for DisCon III (the 2021 World Science Fiction Convention).
 
-        Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
-        one-day memberships and hall passes do not.
+        Note: Other membership types offered by DisCon III or Chicon 8 not listed above, such as Kid-in-Tow, one-day memberships, and hall passes, do not count as attending memberships that are eligible to nominate.
+
 
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Friday 13 March 2022, 11:59 PM PDT
+        All ballots must be received by Tuesday 15 March 2022, 11:59 PM PDT.
 
         How to Nominate
         ----------------------------------------
@@ -119,7 +119,7 @@ en:
         published in 2021.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
+        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>.
 
         The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
         by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}  (including those who join after 31 December 2021) will
@@ -143,7 +143,7 @@ en:
         Dramatic Presentation, Long Form/Dramatic Presentation, Short Form).
 
         For full eligibility rules, please see the
-        [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf).
+        [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2020/08/WSFS-Constitution-as-of-August-1-2020.pdf).
 
       nominate_soon:
         description: Nominate for Hugo Awards
@@ -196,7 +196,7 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 December 2021, 11:59 PM PST
+        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 December 2021, 11:59 PM PST:
 
         * you are an attending or supporting member of #{worldcon_public_name} (the 2022 World Science Fiction Convention), or
         * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).

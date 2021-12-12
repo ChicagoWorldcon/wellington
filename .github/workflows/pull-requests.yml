@@ -23,9 +23,9 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
         id: extract_name
 
-      - name: Define the repository labels
+      - name: Define the repository labels for testing
         run: |
-          echo "CONTAINER_TEST_REPOSITORY=ci-pr-${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
+          echo "CONTAINER_TEST_TAG=ci-pr-${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         id: buildx
@@ -49,17 +49,54 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: .
           builder: ${{ steps.buildx.outputs.name }}
           push: false
           load: true
-          target: development
-          tags: "${{ env.CONTAINER_TEST_REPOSITORY }}"
+          target: test
+          tags: "${{ env.CONTAINER_TEST_TAG }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Run specs
         run: |
           docker run -d --name="test-database" --hostname "postgres" -e "POSTGRES_PASSWORD=test" postgres:latest
-          docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_REPOSITORY bundle exec rake db:create db:structure:load spec
+          docker run --network "container:test-database" -e "POSTGRES_PASSWORD=test" $CONTAINER_TEST_TAG bundle exec rake db:create db:structure:load spec
+
+      - name: Persist the deploy state flag
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        if: "${{ env.AWS_ACCESS_KEY_ID != '' }}"
+        run: |
+          echo "DO_DEPLOY=yes" >> $GITHUB_ENV
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: "${{ env.DO_DEPLOY == 'yes' }}"
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        if: "${{ env.DO_DEPLOY == 'yes' }}"
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Define the repository labels
+        if: "${{ env.DO_DEPLOY == 'yes' }}"
+        run: |
+          echo "CONTAINER_TEST_REPOSITORY=${{ steps.login-ecr.outputs.registry }}/wellington:ci-pr-${{ steps.extract_name.outputs.branch }}" >> $GITHUB_ENV
+
+      - name: Deploy the tested PR image for staging later
+        id: docker_push
+        uses: docker/build-push-action@v2
+        if: "${{ env.DO_DEPLOY == 'yes' }}"
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          target: deploy
+          tags: "${{ env.CONTAINER_TEST_REPOSITORY }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache

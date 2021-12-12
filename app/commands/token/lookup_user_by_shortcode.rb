@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright 2019 Matthew B. Gray
-# Copyright 2019 Steven C Hartley
+# Copyright 2021 Chris Rose
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Token::LookupOrCreateUser is used to create new User records based on JWT tokens
-# It also whitelists paths for redirct from the token
-# This is useful because a User may end up on a Reservation form for a Membership
-# Users are allowed to see a lot before they're asked to acutally give us their details
-class Token::LookupOrCreateUser
+# Token::LookupUserByShortcode retrieves a user record by a time-limited short code that we've emailed to them.
+class Token::LookupUserByShortcode
   include Rails.application.routes.url_helpers
 
-  attr_reader :token, :secret
+  attr_reader :shortcode, :secret
 
   # PATH_LIST contains matches for paths we will allow for client redirect
   # If it's not in this list, then you're going to a default location
@@ -31,14 +27,18 @@ class Token::LookupOrCreateUser
     "/reservations"
   ].freeze
 
-  def initialize(token:, secret:)
-    @token = token
+  def initialize(shortcode:, secret:)
+    @shortcode = shortcode
     @secret = secret
   end
 
   def call
-    check_token
+    check_shortcode
     check_secret
+    return false if errors.any?
+
+    get_token_for_shortcode
+    return false if errors.any?
 
     decode_token
     return false if errors.any?
@@ -47,6 +47,10 @@ class Token::LookupOrCreateUser
     return false if errors.any?
 
     @user
+  end
+
+  def errors
+    @errors ||= []
   end
 
   def path
@@ -59,22 +63,28 @@ class Token::LookupOrCreateUser
     nil
   end
 
-  def errors
-    @errors ||= []
+  def cleanup!
+    existing = TemporaryUserToken.find_by(shortcode: @shortcode)
+    existing.delete if existing
   end
 
   private
 
-  def check_token
-    errors << "missing token" unless token.present?
+  def check_shortcode
+    errors << "missing shortcode" unless shortcode.present?
   end
 
   def check_secret
     errors << "cannot decode without secret" unless secret.present?
   end
 
+  def get_token_for_shortcode
+    stored_token = TemporaryUserToken.find_by(shortcode: shortcode)
+    @encoded_token = stored_token&.token
+  end
+
   def decode_token
-    @token = JWT.decode(token, secret, "HS256")
+    @token = JWT.decode(@encoded_token, secret, "HS256")
   rescue JWT::ExpiredSignature
     errors << "token has expired"
   rescue JWT::DecodeError

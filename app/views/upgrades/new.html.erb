@@ -34,7 +34,7 @@
 
     <div class="col-md-12 col-lg-4 mb-3">
       <div class="card shadow-sm h-100">
-        <%= render("membership_card", offer: @my_offer) do  %>
+        <%= render("offer_card", offer: @my_offer) do  %>
           <%= link_to(
             @my_offer,
             reservation_upgrades_path(offer: @my_offer.hash),

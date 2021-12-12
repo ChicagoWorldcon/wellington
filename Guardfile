@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Copyright 2020 Matthew B. Gray
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +31,7 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-# Note: The cmd option is now required due to the increasing number of ways
+# NOTE: The cmd option is now required due to the increasing number of ways
 #       rspec may be run, below are examples of the most common uses.
 #  * bundler: 'bundle exec rspec'
 #  * bundler binstubs: 'bin/rspec'
@@ -44,6 +43,8 @@
 guard :rspec, cmd: "bundle exec rspec" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
+
+  ignore %r{.*\.direnv/.*}
 
   # Feel free to open issues for suggestions and improvements
 
