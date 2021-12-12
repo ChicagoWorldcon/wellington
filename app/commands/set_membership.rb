@@ -50,10 +50,20 @@ class SetMembership
   end
 
   def log_last_fully_paid_membership
+    # We track the last_fully_paid_membership, because if
+    # a reservation was paid for via a cart, it might not have any
+    # direct charges.  And if it has no direct charges,
+    # once the originally-associated membership changes, it
+    # becomes difficult if not impossible to figure out how much
+    # a user has already paid.
+
     credit = AmountOwedForReservation.new(@reservation).current_credit.cents
 
     last_paid_array = []
 
+    # A certain number of reservations have already been
+    # purchased.  These will have a nil value for
+    # last_fully_paid_membership.
     last_paid_array << @reservation.last_fully_paid_membership if @reservation.last_fully_paid_membership.present?
     last_paid_array << @reservation.membership if @reservation.membership.price_cents <= credit
 
