@@ -71,6 +71,8 @@ class Membership < ApplicationRecord
       if can_nominate?
         rights << "rights.hugo.nominate"
       end
+
+      rights << "rights.discord"
     end
   end
 

@@ -10,6 +10,7 @@
 # 13-June-21 FNB added hotel
 #  1-Oct-21 FNB added site selection tokens
 # 12-Nov-21 FNB added mobiltiy device rentals
+# 13-nov-21 FNB discord access
 
 
 require "sidekiq/web"
@@ -72,6 +73,7 @@ Rails.application.routes.draw do
     resources :nominations, id: /[^\/]+/
     resources :upgrades
     resources :site_selects
+    resources :discord
     resources :site_charges do
         get :stripe_checkout_success, on: :collection
         get :stripe_checkout_cancel, on: :collection

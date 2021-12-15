@@ -95,7 +95,7 @@ class Money::StartStripeCheckout
       ],
       payment_method_types: [
         'card',
-        'wechat_pay',         ################## Alipay would go here, or anything else. Apple and Google pay are already included.
+       # 'wechat_pay',         ################## Alipay would go here, or anything else. Apple and Google pay are already included.
       ],
       payment_method_options: {
         wechat_pay: {

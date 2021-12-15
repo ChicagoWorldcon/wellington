@@ -6,6 +6,9 @@
 
 # ThemesController allows users to browse and work on Themes for their con without
 # needing to browse around the entire con website. From here you get a feel for how things will render
+
+#TODO probably delete this..... cloned from themes_ontroller for some reason...
+
 class SiteTokensController < ApplicationController
   LAYOUTS = "app/views/layouts"
 

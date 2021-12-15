@@ -9,6 +9,7 @@
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # 1-Oct-21 FNB Add site seleciton
+# 14-Dec-21 FNB Added end time for site selection, TODO open time.
 
 module ApplicationHelper
 
@@ -40,6 +41,8 @@ module ApplicationHelper
       link_to description, reservation_finalist_path(reservation_id: reservation, id: election_i18n_key)
     elsif match = membership_right.match(/site_selection/)
       link_to description, reservation_site_selects_path(reservation_id: reservation)
+    elsif match = membership_right.match(/discord/)
+      link_to description, reservation_discord_index_path(reservation_id: reservation)
     else
       description
     end
@@ -139,6 +142,10 @@ module ApplicationHelper
 
   def hugo_vote_deadline
     $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+  end
+
+  def site_vote_deadline
+    $site_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
   
 

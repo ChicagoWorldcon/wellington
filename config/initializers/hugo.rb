@@ -18,6 +18,8 @@
 # ENV["HUGO_VOTING_OPEN_FROM="2019-08-16T00:00:00+1200"
 # ENV["HUGO_CLOSED_AT="2020-08-02T12:00:00+1200"
 
+# 12/14/21 FNB added site time calculation
+
 class SetHugoGlobals
   RUNNING_IN_CI = ENV["GITLAB_CI_RUNNING"].present?
 
@@ -25,6 +27,7 @@ class SetHugoGlobals
     $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
     $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
     $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
+    $site_closed_at = time_from("SITE_CLOSED_AT") || 1.day.from_now
   end
 
   private

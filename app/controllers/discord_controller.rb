@@ -3,9 +3,9 @@
 # COpyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# 1-Oct-21 FNB adapted for site selection token and payment
+# 1-Oct-21 FNB adapted for discord token generation
 
-class SiteSelectsController < ApplicationController
+class DiscordController < ApplicationController
  
   #before_action :check_access!
   before_action :lookup_reservation!
@@ -19,21 +19,21 @@ class SiteSelectsController < ApplicationController
     #   bucket_name: ENV['HUGO_PACKET_BUCKET'],
     #   client: s3_client,
     # )
-    hotel_path = params[:id]        #this should likely be removed TODO
-    redirect_to ENV['HOTEL_LINK']
+    #hotel_path = params[:id]        #this should likely be removed TODO
+    #redirect_to ENV['HOTEL_LINK']
   end
 
   private
 
   def check_access!
     if !user_signed_in?
-      flash["notice"] = "Please log in to access site selection information"
+      flash["notice"] = "Please log in to access Discord information"
       redirect_to root_path
       return
     end
 
     if current_user.reservations.none?
-      flash["notice"] = "To access site selection information, please purchase a membership."
+      flash["notice"] = "To access Discord information, please purchase a membership."
       redirect_to memberships_path
       return
     end
@@ -41,7 +41,7 @@ class SiteSelectsController < ApplicationController
     # Just need minimum instalment to count
     paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
     if paid_reservations.none?(&:can_attend?)
-      flash["notice"] = "To access site selection information, please ensure one of your memberships is an attending membership."
+      flash["notice"] = "To access discord information, please ensure one of your memberships is an attending membership."
       redirect_to reservations_path
       return
     end
@@ -57,3 +57,4 @@ class SiteSelectsController < ApplicationController
 
 
 end
+

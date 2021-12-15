@@ -78,6 +78,16 @@
                 %>
               (hugo admin only)
             </p>
+                        <p>
+              Change
+              <%=
+                link_to(
+                  "Votes for #{election.i18n_key}",
+                  reservation_finalist_path(reservation_id: @reservation, id: election.i18n_key)
+                )
+                %>
+              (hugo admin only)
+            </p>
           <% end %>
         </div>
       </div>

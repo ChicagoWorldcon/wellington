@@ -48,10 +48,13 @@ class Reservation < ApplicationRecord
       # Hold these memberships in memory to avoid hitting the database a lot
       memberships_held = Membership.where(id: orders.select(:membership_id))
 
-      rights << "rights.attend" if memberships_held.any?(&:can_attend?)
-      rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?)
-
       now = DateTime.now
+     
+      rights << "rights.attend" if memberships_held.any?(&:can_attend?)
+      rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?) && now.before?($site_closed_at)
+      rights << "rights.discord"
+
+     
       if now < $nomination_opens_at
         if memberships_held.any?(&:can_nominate?)
           rights << "rights.hugo.nominate_soon"

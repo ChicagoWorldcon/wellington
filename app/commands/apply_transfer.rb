@@ -7,15 +7,11 @@
 # You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
 
 # ApplyTransfer command makes old claims to reservation inactive and sets up new claim for receiver
 # Truthy return means transfer was successful, otherwise check errors for explanation
+
 class ApplyTransfer
   attr_reader :reservation, :sender, :receiver, :errors, :audit_by
 
@@ -35,7 +31,7 @@ class ApplyTransfer
 
       note_content = "#{audit_by} tansferred ##{reservation.membership_number} from #{sender.email} to #{receiver.email}"
       sender.notes.create!(content: note_content)
-      receiver.notes.create!(content: note_content)
+      receiver.notes.create!(content: note_content)  #need to fix You cannot call create unless the parent is saved error  TODO
 
       as_at = Time.now
       old_claim.update!(active_to: as_at)

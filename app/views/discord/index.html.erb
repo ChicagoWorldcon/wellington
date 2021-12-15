@@ -1,0 +1,47 @@
+<%#
+  Copyright 2021 Fred Bauer
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  
+  Note that this is static text, should really be moved to the i18n file
+  This will display different texts, depending on if a token has been purchased or not
+%>
+
+<h1>Discord Access for DisCon III</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+
+        <p>To join our Discord server, please sign in to Discord using the Discord
+    account you would like to use for DisCon III. You can use a pre-existing DIscord login with no issues.
+        <p> If you don't have a
+    Discord account yet, please create one for yourself at <a href="https://discord.com/register">https://discord.com/register</a>
+    and follow the account creation steps there. It's not necessary to create this with the email address associated with your 
+    DisCon III membership, but if it suits, please do!  
+    <p>Then, use our server
+    invitation: 
+        <a href=<%= ENV['DISCORD_LINK']%>><%= ENV['DISCORD_LINK']%></a>
+        <p>
+
+     <p>You will arrive in a chat channel called #registration, where you should
+    enter your Discord token string: </p>
+     <p><%= DiscordUser.new(membership_number: @reservation.membership_number,email: @reservation.user.email).token %></p>
+     <p>Paste in the entire line, from "auth" all the way through the email address.
+    If it works, you will see the #rules channel appear in the left side of your
+    Discord window.  Click on the channel name in the left column to shift your
+    focus to it, and from there you can accept the Code of Conduct and enter
+    the rest of the server.
+    </p>
+  </div>
+</section>
+ 
+
+        </ul> 
+      </div>
+    </div>
+  </div>
+</section>
+
+
