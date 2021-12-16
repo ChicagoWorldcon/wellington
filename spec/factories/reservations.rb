@@ -113,12 +113,32 @@ FactoryBot.define do
       end
     end
 
+    trait :with_order_against_supporting_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_supporting_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
     trait :with_claim_from_user do
       after(:build) do |new_reservation, _evaluator|
         new_claim = build(:claim, :with_user, :with_contact,
         reservation: new_reservation
         )
         new_reservation.claims << new_claim
+      end
+    end
+
+    trait :with_upgradable_membership do
+      with_order_against_supporting_membership
+    end
+
+    trait :with_last_fully_paid_membership_logged do
+      after(:build) do |new_reservation, _evaluator|
+        new_reservation.update!(last_fully_paid_membership: new_reservation.membership)
+        new_reservation.reload
       end
     end
   end

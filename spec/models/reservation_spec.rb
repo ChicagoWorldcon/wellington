@@ -54,6 +54,27 @@ RSpec.describe Reservation, type: :model do
     end
   end
 
+  context "with upgradable membership" do
+    subject(:model) { create(:reservation, :with_upgradable_membership) }
+    let(:supporting_membership) { Membership.find_by(name: :supporting ) || create(:membership, :supporting)}
+
+    it "has Supporting as its active membership" do
+      expect(model.membership.to_s).to eq("Supporting")
+    end
+
+    it "does not have anything logged under last_fully_paid_membership" do
+      expect(model.last_fully_paid_membership).to be_nil
+    end
+  end
+
+  context "with last_fully_paid_membership logged" do
+    subject(:model) { create(:reservation, :with_upgradable_membership, :with_last_fully_paid_membership_logged) }
+
+    it "has a value for last_fully_paid_membership that matches its own active membership" do
+      expect(model.last_fully_paid_membership).to eq(model.membership)
+    end
+  end
+
   describe "#transferable?" do
     [Reservation::INSTALMENT, Reservation::PAID].each do |state|
       it "is true when #{state}" do

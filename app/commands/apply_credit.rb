@@ -32,6 +32,7 @@ class ApplyCredit
 
     if fully_paid?
       reservation.update!(state: Reservation::PAID)
+      reservation.update!(last_fully_paid_membership: @reservation.membership)
     end
 
     true

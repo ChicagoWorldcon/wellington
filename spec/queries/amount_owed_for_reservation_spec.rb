@@ -27,7 +27,6 @@ RSpec.describe AmountOwedForReservation do
     context "with no charges" do
       let(:reservation) { create(:reservation, :with_order_against_membership) }
       let(:membership) { reservation.membership }
-
       it { is_expected.to eq membership.price }
     end
 
@@ -57,7 +56,7 @@ RSpec.describe AmountOwedForReservation do
       end
     end
 
-    context "with cart charges but direct charges" do
+    context "with cart charges but no direct charges" do
       let(:fully_paid_one_charge_cart) { create(:cart, :fully_paid_through_single_direct_charge)}
       let(:cart_paid_item )  { fully_paid_one_charge_cart.cart_items[0] }
       let(:reservation) { cart_paid_item.item_reservation}
@@ -99,10 +98,110 @@ RSpec.describe AmountOwedForReservation do
         end
       end
     end
-  end
 
-  describe "#fully_paid_by_cart?" do
-    #TODO NOTE: This ideally should have tests of its own, but this is actually pretty thoroughly tested by #amount_owed's spec, above.
-    pending
+    context "when a reservation is being upgraded" do
+      let(:supporting_membership) { Membership.find_by(name: :supporting ) || create(:membership, :supporting)}
+      let(:attending_membership) { Membership.find_by(name: :adult ) || create(:membership, :adult)}
+
+      context "when the reservation was paid for directly" do
+        let(:upgrading_reservation_old_direct) { create(:reservation, :with_upgradable_membership, :with_claim_from_user) }
+        let(:upgrading_reservation_new_direct) { create(:reservation, :with_upgradable_membership, :with_claim_from_user, :with_last_fully_paid_membership_logged) }
+
+        context  "when testing" do
+          it "uses test reservations that start out with a supporting membership" do
+            expect(upgrading_reservation_old_direct.membership.to_s).to eq("Supporting")
+            expect(upgrading_reservation_new_direct.membership.to_s).to eq("Supporting")
+          end
+
+          it "uses test reservations that start out with last_fully_paid_membership either nil or logged as supporting" do
+            expect(upgrading_reservation_old_direct.last_fully_paid_membership).to be_nil
+            expect(upgrading_reservation_new_direct.last_fully_paid_membership).to eq(upgrading_reservation_new_direct.membership)
+          end
+
+          it "uses test reservations that start out with charges that equal the price of a supporting membership" do
+            expect(upgrading_reservation_old_direct.charges.successful.sum(&:amount).to_i).to eql(supporting_membership.price_cents / 100)
+
+            expect(upgrading_reservation_old_direct.charges.successful.sum(&:amount).to_i).to_not eql(attending_membership.price_cents / 100)
+
+            expect(upgrading_reservation_new_direct.charges.successful.sum(&:amount).to_i).to eql(supporting_membership.price_cents / 100)
+
+            expect(upgrading_reservation_new_direct.charges.successful.sum(&:amount).to_i).to_not eql(attending_membership.price_cents / 100)
+          end
+        end
+
+        context "when there is nothing logged under last_fully_paid_membership" do
+          context "when the original (supporting) membership is still the active membership" do
+            let(:reservation) { upgrading_reservation_old_direct }
+
+            it "returns an amount owing of zero" do
+              expect(amount_owed.cents).to eq(0)
+            end
+          end
+
+          context "when the active membership is changed to 'Adult'" do
+            before do
+              SetMembership.new(upgrading_reservation_old_direct, to: attending_membership).call
+              upgrading_reservation_old_direct.reload
+            end
+
+            let(:reservation) { upgrading_reservation_old_direct }
+
+            it "returns an amount owing equal to the difference in price between a supporting membership and an attending membership" do
+              expect(amount_owed.cents).to eq(attending_membership.price_cents - supporting_membership.price_cents)
+            end
+          end
+        end
+
+        context "when last_fully_paid_membership has a value" do
+          context "when the original (supporting) membership is still the active membership" do
+            let(:reservation) { upgrading_reservation_new_direct }
+
+            it "returns an amount owing of zero" do
+              expect(amount_owed.cents).to eq(0)
+            end
+          end
+
+          context "when the active membership is changed to 'Adult'" do
+            before do
+              SetMembership.new(upgrading_reservation_new_direct, to: attending_membership).call
+              upgrading_reservation_new_direct.reload
+            end
+
+            let(:reservation) { upgrading_reservation_new_direct }
+
+            it "returns an amount owing equal to the difference in price between a supporting membership and an attending membership" do
+              #binding.pry
+              expect(amount_owed.cents).to eq(attending_membership.price_cents - supporting_membership.price_cents)
+            end
+          end
+        end
+      end
+
+      context "when the original membership was paid for by cart" do
+        let(:reservation_cart ) { create(:cart, :supporting_res_items_fully_paid_through_single_direct_charge)}
+        let(:upgrading_reservation_from_cart) {reservation_cart.cart_items[0].item_reservation}
+
+        context "when the original (supporting) membership is still the active membership" do
+          let(:reservation) { upgrading_reservation_from_cart }
+
+          it "returns an amount owing of zero" do
+            expect(amount_owed.cents).to eq(0)
+          end
+        end
+
+        context "when the active membership is changed to 'Adult'" do
+          before do
+            SetMembership.new(upgrading_reservation_from_cart, to: attending_membership).call
+            upgrading_reservation_from_cart.reload
+          end
+
+          let(:reservation) { upgrading_reservation_from_cart }
+
+          it "Xreturns an amount owing equal to the difference in price between a supporting membership and an attending membership" do
+            expect(amount_owed.cents).to eq(attending_membership.price_cents - supporting_membership.price_cents)
+          end
+        end
+      end
+    end
   end
 end

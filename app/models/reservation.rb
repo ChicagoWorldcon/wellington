@@ -40,6 +40,9 @@ class Reservation < ApplicationRecord
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
 
+  # For use in the upgrade process, records the last fully paid membership associated with the reservation.
+  belongs_to :last_fully_paid_membership, :class_name => 'Membership', required: false
+
   # Displayed like "Adult membership #42" is based on #membership_number and Membership#name
   validates :membership_number, presence: true, uniqueness: true
 

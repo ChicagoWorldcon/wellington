@@ -38,6 +38,17 @@ launch_pricing = PriceGroup.new(
   first_worldcon: Money.new(110_00)
 )
 
+leading_winter_pricing = PriceGroup.new(
+  start_time: site_announcement - 10.days,
+  end_time: price_change_3,
+  supporting: Money.new(50_00),
+  adult: Money.new(170_00),
+  ya: Money.new(90_00),
+  teen: Money.new(70_00),
+  child: Money.new(50_00),
+  first_worldcon: Money.new(110_00)
+)
+
 ########################################################################
 # Presupport membership types
 Membership.create!(
@@ -184,4 +195,4 @@ end
 ########################################################################
 # Actual Memberships
 
-create_price_group!(launch_pricing)
+create_price_group!(leading_winter_pricing)

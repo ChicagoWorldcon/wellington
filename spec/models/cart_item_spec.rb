@@ -19,6 +19,7 @@ require "rails_helper"
 RSpec.describe CartItem, type: :model do
 
   subject(:base_model) {create(:cart_item)}
+  let(:supporting_memb) {create(:membership, :supporting)}
 
   describe "#factories" do
 
@@ -26,10 +27,12 @@ RSpec.describe CartItem, type: :model do
       expect(create(:cart_item)).to be_valid
     end
 
-    [ :with_free_membership,
+    [ :with_supporting_membership,
+      :with_free_membership,
       :with_expired_membership,
       :with_partially_paid_reservation,
       :with_unpaid_reservation,
+      :with_unpaid_supporting_reservation,
       :with_paid_reservation,
       :unavailable,
       :unknown_kind,
@@ -84,6 +87,23 @@ RSpec.describe CartItem, type: :model do
 
       it "has a benefitable" do
         expect(base_model.benefitable).to be
+      end
+    end
+
+    describe "factory outputs :with_supporting_membership" do
+      let(:free_cart_item) { create(:cart_item, :with_supporting_membership)}
+
+      it "has an acquirable that costs what a supporting membership costs" do
+        expect(free_cart_item.acquirable).to be
+        expect(free_cart_item.acquirable.price_cents).to eql(supporting_memb.price_cents)
+      end
+
+      it "has an acquirable called 'supporting'" do
+        expect(free_cart_item.acquirable.to_s).to eq("Supporting")
+      end
+
+      it "has an acquirable that is not expired" do
+        expect(free_cart_item.acquirable.active?).to eql(true)
       end
     end
 
@@ -146,6 +166,26 @@ RSpec.describe CartItem, type: :model do
       it "has an acquirable that is not free" do
         expect(unpaid_cart_item.acquirable).to be
         expect(unpaid_cart_item.acquirable.price_cents).to be > 0
+      end
+    end
+
+    describe "factory outputs :with_unpaid_supporting_reservation" do
+      let(:unpaid_supporting_cart_item) { create(:cart_item, :with_unpaid_supporting_reservation)}
+      let(:temp_supporting_membership) {Membership.find_by(name: :supporting) || create(:membership, :supporting)}
+
+      it "has a holdable, and that holdable has no charges" do
+        expect(unpaid_supporting_cart_item.holdable).to be
+        expect(unpaid_supporting_cart_item.holdable.charges.blank?).to eql(true)
+      end
+
+      it "has a supporting membership as its acquirable" do
+        expect(unpaid_supporting_cart_item.acquirable).to be
+        expect(unpaid_supporting_cart_item.acquirable.to_s).to eql("Supporting")
+      end
+
+      it "has an acquirable with a price that equals the price of a supporting membership" do
+        expect(unpaid_supporting_cart_item.acquirable).to be
+        expect(unpaid_supporting_cart_item.acquirable.price_cents).to eql(temp_supporting_membership.price_cents)
       end
     end
 

@@ -129,6 +129,10 @@ Reservation.update_all(ballot_last_mailed_at: Time.now)
 
 users_with_active_carts = User.first(users_to_create / 4)
 
+puts ""
+puts "Membership total: #{Membership.all.count}"
+puts ""
+
 now_bin_types = [:with_empty_now_bin, :with_basic_items_cart_for_now, :with_unpaid_reservations_cart_for_now, :with_partially_paid_reservations_cart_for_now, :with_paid_reservations_cart_for_now]
 
 later_bin_types = [:with_empty_later_bin, :with_basic_items_cart_for_later, :with_unpaid_reservations_cart_for_later, :with_partially_paid_reservations_cart_for_later,  :with_paid_reservations_cart_for_later]
@@ -141,7 +145,10 @@ users_with_active_carts.each.with_index(1) do |u, i|
 
   FactoryBot.build(:cart_chassis, now_type, later_type, chassis_user: u)
 end
-puts
+
+puts ""
+puts "Membership total: #{Membership.all.count}"
+puts ""
 
 users_with_paid_carts = User.last(users_to_create /5)
 paid_cart_types = [:fully_paid_through_single_direct_charge, :fully_paid_through_direct_charge_and_paid_item_combo]
@@ -152,5 +159,9 @@ users_with_paid_carts.each.with_index(1) do |u, i|
   type = paid_cart_types[rand(0.0..1.0).round()]
   FactoryBot.create(:cart, type, :paid, user: u)
 end
+
+puts ""
+puts "Membership total: #{Membership.all.count}"
+puts ""
 
 puts "finished seeding"

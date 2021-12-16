@@ -37,7 +37,6 @@ RSpec.describe UpgradeMembership do
         .to(upgrade_membership)
     end
 
-
     it "recalculates PAID state" do
       expect { call }
         .to change { reservation.reload.state }

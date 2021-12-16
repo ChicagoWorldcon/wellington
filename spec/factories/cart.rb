@@ -55,6 +55,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_supporting_membership_items do
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :with_supporting_membership, cart: new_cart)
+      end
+    end
+
     trait :with_free_items do
       after(:create) do |new_cart, _evaluator|
         create_list(:cart_item, 3, :with_free_membership, cart: new_cart)
@@ -117,6 +123,18 @@ FactoryBot.define do
 
       after(:create) do |new_cart, evaluator|
         create_list(:cart_item, 3, :with_unpaid_reservation, cart: new_cart)
+      end
+    end
+
+    trait :supporting_res_items_fully_paid_through_single_direct_charge do
+      transient do
+        supporting_price { (Membership.find_by(name: :supporting) || create(:membership, :supporting)).price_cents }
+        num_charges { 1 }
+        adult_memb_charge_cents {supporting_price * 3 }
+      end
+
+      after(:create) do |new_cart, _evaluator|
+        create_list(:cart_item, 3, :with_unpaid_supporting_reservation, cart: new_cart)
       end
     end
 

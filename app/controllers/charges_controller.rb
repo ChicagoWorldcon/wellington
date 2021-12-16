@@ -28,9 +28,7 @@ class ChargesController < ApplicationController
 
     @membership = @reservation.membership
     @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
-
     price_steps = PaymentAmountOptions.new(@outstanding_amount).amounts
-
     @price_options = price_steps.reverse.map do |price|
       [price.format, price.cents]
     end
@@ -38,9 +36,7 @@ class ChargesController < ApplicationController
 
   def create
     charge_amount = Money.new(params[:amount].to_i)
-
     outstanding_before_charge = AmountOwedForReservation.new(@reservation).amount_owed
-
     allowed_charge_amounts = PaymentAmountOptions.new(outstanding_before_charge).amounts
     if !charge_amount.in?(allowed_charge_amounts)
       flash[:error] = "Amount must be one of the provided payment amounts"
@@ -66,7 +62,12 @@ class ChargesController < ApplicationController
     trigger_reservation_payment_mailer(service.charge, outstanding_before_charge, charge_amount)
 
     message = "Thank you for your #{charge_amount.format} payment"
-    (message += ". Your #{@reservation.membership} membership has been paid for.") if @reservation.paid?
+    if @reservation.paid?
+      message += ". Your #{@reservation.membership} membership has been paid for."
+
+      # Here's where we need to log the current membership as the last fully-paid membership
+      @reservation.last_fully_paid_membership_id = @reservation.membership.id
+    end
 
     redirect_to reservations_path, notice: message
   end

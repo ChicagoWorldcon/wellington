@@ -661,7 +661,8 @@ CREATE TABLE public.reservations (
     updated_at timestamp without time zone NOT NULL,
     state character varying NOT NULL,
     membership_number integer NOT NULL,
-    ballot_last_mailed_at timestamp without time zone
+    ballot_last_mailed_at timestamp without time zone,
+    last_fully_paid_membership_id bigint
 );
 
 
@@ -1291,6 +1292,13 @@ CREATE INDEX index_ranks_on_reservation_id ON public.ranks USING btree (reservat
 
 
 --
+-- Name: index_reservations_on_last_fully_paid_membership_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reservations_on_last_fully_paid_membership_id ON public.reservations USING btree (last_fully_paid_membership_id);
+
+
+--
 -- Name: index_reservations_on_membership_number; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1402,6 +1410,14 @@ ALTER TABLE ONLY public.cart_items
 
 ALTER TABLE ONLY public.notes
     ADD CONSTRAINT fk_rails_7f2323ad43 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: reservations fk_rails_9ef0656e2d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reservations
+    ADD CONSTRAINT fk_rails_9ef0656e2d FOREIGN KEY (last_fully_paid_membership_id) REFERENCES public.memberships(id);
 
 
 --
@@ -1529,6 +1545,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210224034724'),
 ('20210224035800'),
 ('20210916230829'),
+('20211110022812'),
 ('20211120232041');
 
 

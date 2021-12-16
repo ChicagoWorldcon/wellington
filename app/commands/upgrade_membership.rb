@@ -17,6 +17,7 @@
 # UpgradeMembership command upgrades membership between two levels
 # Truthy return means upgrade was successful, otherwise check errors for explanation
 class UpgradeMembership < SetMembership
+
   def call
     check_availability
     return false if errors.any?
