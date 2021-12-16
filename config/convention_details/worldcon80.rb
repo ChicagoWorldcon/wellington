@@ -22,8 +22,12 @@ require_relative "convention"
 # you've limited to :test, :development, or :production.
 module ConventionDetails
   class Worldcon80 < ConventionDetails::Convention
-
-    attr_reader  :con_city, :con_city_previous, :con_country, :con_country_previous, :con_datews_informal_end, :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter, :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :con_url_homepage, :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering, :con_wsfs_constitution_link, :con_year, :contact_model, :registration_mailing_address, :site_theme, :translation_folder
+    attr_reader :con_city, :con_city_previous, :con_country, :con_country_previous, :con_dates_informal_end,
+                :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter,
+                :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :con_url_homepage,
+                :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering,
+                :con_wsfs_constitution_link, :con_year, :contact_model, :registration_mailing_address,
+                :site_theme, :translation_folder
 
     def initialize
       super
@@ -34,30 +38,29 @@ module ConventionDetails
       @con_dates_informal_start = "Wednesday, August 31st"
       @con_dates_informal_end = "Monday, September 5th"
       @con_greeting_basic = "greetings"
-      #FIXME: Update hugo ballot locations when we have them
+      # FIXME: Update hugo ballot locations when we have them
       @con_hugo_download_A4 = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_hugo_download_letter = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_name_public = "Chicon 8"
       @con_name_public_previous = "DisCon 3"
       @con_number = "worldcon80"
-      #FIXME: Update @con_organizers_sigs
+      # FIXME: Update @con_organizers_sigs
       @con_organizers_sigs = "Helen Montgomery & co-conspirators"
-      #FIXME: Verify ALL Chicon  Urls
       @con_url_homepage = "https://chicon.org/"
       @con_url_member_login = "https://registration.chicon.org/"
       @con_url_privacy = "https://chicon.org/privacy-policy/"
       @con_url_tos = "https://chicon.org/code-of-conduct/"
       @con_url_volunteering = "https://chicon.org/volunteers/"
-      #FIXME: After CoNZealand, update WSFS constitution link
+      # FIXME: After CoNZealand, update WSFS constitution link
       @con_wsfs_constitution_link = "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf"
       @con_year = "2022"
       @contact_model = "chicago"
-      @registration_mailing_address = <<~EOF
+      @registration_mailing_address = <<~ADDRESS
         Chicon 8 Member Services
         2020 N. California, Suite 299
         Chicago, IL 60647
         USA
-        EOF
+      ADDRESS
       @site_theme = "chicago"
       @translation_folder = "chicago"
     end
