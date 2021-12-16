@@ -38,62 +38,126 @@
 
 // https://getbootstrap.com/docs/4.0/getting-started/webpack/
 
-@import 'chicago_fonts';
-@import '~bootstrap/scss/bootstrap';
-@import '@fortawesome/fontawesome-free';
-
-// -------------------------------
-// VARIABLES
-// -------------------------------
-
 // Colours
 //// Official Chicago:
 ////// PRIMARY:
 $white: #ffffff;
 $black: #000000;
-$light-blue: #41B6E6;
-$dark_blue: #00558C;
-$red: #DA291C;
+$light-blue: #41b6e6;
+$dark_blue: #00558c;
+$red: #da291c;
+$primary: $dark_blue;
 
 ////// SECONDARY:
-$mid-grey: #BCBEC0;
-$dark-grey:  #58595B;
-$light-blue-two: #99D1EF;
-$orange: #F26522;
+$mid-grey: #bcbec0;
+$dark-grey: #58595b;
+$light-blue-two: #99d1ef;
+$orange: #f26522;
+$secondary: $black;
+$success: $light-blue-two;
 
 // Leftover CoNZealand:
 $light-grey: #e1e1e1;
 
+@import "chicago_fonts";
+@import "~bootstrap/scss/bootstrap";
+@import "@fortawesome/fontawesome-free";
+
+// -------------------------------
+// VARIABLES
+// -------------------------------
+
 // Fonts
-$font-stack: 'Metropolis', sans-serif;
+$font-stack: "Metropolis", sans-serif;
 
 // -------------------------------
 // MIXINS
 // -------------------------------
 
-
 // -------------------------------
 // THIRD PARTY
 // -------------------------------
-
-
 
 // -------------------------------
 // BASE STYLES
 // -------------------------------
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: transparent;
-    font-family: $font-stack;
+html,
+body,
+body div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  font-family: $font-stack;
 }
 html {
   -webkit-box-sizing: border-box;
@@ -104,55 +168,65 @@ html {
 *::before,
 *::after {
   -webkit-box-sizing: inherit;
-   box-sizing: inherit;
+  box-sizing: inherit;
 }
-html, body {
-    font-size: 15px;
+html,
+body {
+  font-size: 15px;
 }
 body {
-    background: url("../images/backgrounds/chicon-bg.jpg") center top / cover no-repeat fixed $dark_blue;
+  background: url("../images/backgrounds/chicon-bg.jpg") center top / cover
+    no-repeat fixed $dark_blue;
 
-    &.api-test-keys {
-        background: url("../images/backgrounds/chicon-testing-bg.jpg") center top / cover no-repeat fixed $dark_blue;
-    }
+  &.api-test-keys {
+    background: url("../images/backgrounds/chicon-testing-bg.jpg") center top /
+      cover no-repeat fixed $dark_blue;
+  }
 
-    color: $white;
-    -webkit-font-smoothing: antialiased;
+  color: $white;
+  -webkit-font-smoothing: antialiased;
 }
 
 p {
-    margin-bottom: 1em;
-    line-height: 1.5;
+  margin-bottom: 1em;
+  line-height: 1.5;
 }
-h1, .h1-like {
-    font-size: 2.4000em;
-    line-height: 1.2500em;
-    margin-bottom: 0.4167em;
+h1,
+.h1-like {
+  font-size: 2.4em;
+  line-height: 1.25em;
+  margin-bottom: 0.4167em;
 }
-h2, .h2-like {
-    font-size: 2.0000em;
-    line-height: 1.2000em;
-    margin-bottom: 0.5000em;
+h2,
+.h2-like {
+  font-size: 2em;
+  line-height: 1.2em;
+  margin-bottom: 0.5em;
 }
-h3, .h3-like {
-    font-size: 1.8667em;
-    line-height: 1.0714em;
-    margin-bottom: 0.5357em;
+h3,
+.h3-like {
+  font-size: 1.8667em;
+  line-height: 1.0714em;
+  margin-bottom: 0.5357em;
 }
-h4, .h4-like {
-    font-size: 1.4667em;
-    line-height: 1.3636em;
-    margin-bottom: 0.6818em;
+h4,
+.h4-like {
+  font-size: 1.4667em;
+  line-height: 1.3636em;
+  margin-bottom: 0.6818em;
 }
-h5, .h5-like, .big {
-    font-size: 1.4000em;
-    line-height: 1.4286em;
-    margin-bottom: 0.7143em;
+h5,
+.h5-like,
+.big {
+  font-size: 1.4em;
+  line-height: 1.4286em;
+  margin-bottom: 0.7143em;
 }
-h6, .h6-like {
-    font-size: 1.0667em;
-    line-height: 1.8750em;
-    margin-bottom: 0.9375em;
+h6,
+.h6-like {
+  font-size: 1.0667em;
+  line-height: 1.875em;
+  margin-bottom: 0.9375em;
 }
 
 // // ===================
@@ -176,7 +250,7 @@ h6, .h6-like {
 
 #cart-header {
   background-color: $light-blue;
-  color:$black;
+  color: $black;
 }
 
 .all-cart-admin-container {
@@ -202,18 +276,14 @@ div.subtotal-container > h5 {
   padding: $spacer;
 }
 
-#now-header  {
+#now-header {
   background-color: $dark-blue;
   color: $white;
 }
 
-.card-header {
-  font-size: 10px; //fallback
-  font-size: 2vmin;
-}
-
 .benefitable-card .card_header {
-  max-height: 5em; overflow-y:scroll;
+  max-height: 5em;
+  overflow-y: scroll;
   white-space: nowrap;
 }
 
@@ -248,7 +318,7 @@ div.now-items .acquirable-card .card-footer {
 }
 
 div.now-items .benefitable-card .card-footer {
-  background-color:  $light-blue-two;
+  background-color: $light-blue-two;
   color: $white;
 }
 
@@ -267,16 +337,15 @@ div.now-items .no-contents {
 }
 
 div.now-items .admin-container {
-
 }
 
 div.now-items .subtotal-container {
-  color:$orange;
+  color: $orange;
 }
 
 #later-header {
   background-color: $dark-grey;
-  color:$white;
+  color: $white;
 }
 
 div.later-items {
@@ -390,10 +459,10 @@ div.group-payment-confirmation h1 {
 .btn:focus {
   background-color: $dark_blue;
   color: $white;
-  -webkit-transition: background-color .2s ease-in;
-  -moz-transition: background-color .2s ease-in;
-  -o-transition: background-color .2s ease-in;
-  transition: background-color .2s ease-in;
+  -webkit-transition: background-color 0.2s ease-in;
+  -moz-transition: background-color 0.2s ease-in;
+  -o-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
 }
 .btn:focus {
   outline: 1px dotted $red;
@@ -402,9 +471,9 @@ div.group-payment-confirmation h1 {
   width: 100%;
 }
 .btn.btn-api-toggle-styles {
-    position: relative;
-    bottom: -2em;
-    right: -2em;
+  position: relative;
+  bottom: -2em;
+  right: -2em;
 }
 
 // -------------------------------
@@ -449,7 +518,7 @@ a:focus {
   color: $white;
   width: 100%;
   font-size: 1em;
-  padding: .2em .5em;
+  padding: 0.2em 0.5em;
 }
 .form-control:focus {
   border: 2px solid $light-blue;
@@ -459,7 +528,7 @@ a:focus {
 }
 .form-error {
   color: lighten($red, 20%);
-  margin-top: .5em;
+  margin-top: 0.5em;
 }
 .form-group {
   margin-bottom: 1.5em;
@@ -470,7 +539,7 @@ a:focus {
   margin-bottom: 1.5em;
 }
 .form-note-m-group {
-  margin-top: -.5em;
+  margin-top: -0.5em;
 }
 .form-options {
   line-height: 2.3em;
@@ -491,7 +560,7 @@ legend {
   border-bottom: 1px solid $light-blue;
   font-size: 1.2em;
   margin: 1.5em 0 1em;
-  padding: 1em 0 .25em 0;
+  padding: 1em 0 0.25em 0;
   width: 100%;
 }
 .required {
@@ -526,10 +595,10 @@ select {
 
 // Default panel
 .l-panel {
-  background: rgba(0,0,0, .7);
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
-  box-shadow: 0px 0px 5px 0px rgba(80,80,80,1);
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(80, 80, 80, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(80, 80, 80, 1);
+  box-shadow: 0px 0px 5px 0px rgba(80, 80, 80, 1);
   padding: 1.5em;
   margin-bottom: 1.5em;
 }
@@ -538,7 +607,7 @@ select {
   margin-left: 1em;
 }
 .l-panel-m-membership-types--list .h6-like {
-  margin-bottom: .3em;
+  margin-bottom: 0.3em;
 }
 .l-panel-m-membership-types--list p {
   color: $light-blue;
@@ -559,9 +628,9 @@ select {
 // -------------------------------
 
 header {
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   margin-bottom: 1.5em;
-  padding: .5em 0 1.5em;
+  padding: 0.5em 0 1.5em;
 }
 
 // -------------------------------
@@ -569,7 +638,7 @@ header {
 // -------------------------------
 
 footer {
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   padding: 1.5em 0;
   text-align: center;
 }
@@ -587,16 +656,16 @@ footer {
 // -------------------------------
 
 .l-v-spacing {
-    margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 .l-v-spacing-both {
-    margin: 1.5em 0;
+  margin: 1.5em 0;
 }
 .l-v-spacing-m-wide {
-    margin-bottom: 2.5em;
+  margin-bottom: 2.5em;
 }
 .l-v-spacing-m-wide-both {
-    margin: 2.5em 0;
+  margin: 2.5em 0;
 }
 
 // =========================================================================
@@ -609,17 +678,17 @@ footer {
   max-width: 100%;
 }
 .s-hidden {
-    display: none;
+  display: none;
 }
 .s-invisible {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 // ---------------------------------------------------------------------

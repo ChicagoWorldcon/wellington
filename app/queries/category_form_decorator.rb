@@ -38,8 +38,10 @@ class CategoryFormDecorator
     [
       "card-header", # bootstrap asks for this
       "pointer",     # visual indicator that this is clickable
-      text_colour,   # visual indicator for how 'complete' this category is
-    ].join(" ")
+      # These are styled in the main app stylesheet
+      text_colour,  # visual indicator for how 'complete' this category is
+      background    # secondary visual indicator of completeness
+    ].compact.join(" ")
   end
 
   private
@@ -51,6 +53,10 @@ class CategoryFormDecorator
     else
       "text-dark"
     end
+  end
+
+  def background
+    return "bg-success" unless count_complete == 0
   end
 
   def count_complete
