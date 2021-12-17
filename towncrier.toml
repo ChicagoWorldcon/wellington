@@ -1,0 +1,9 @@
+[tool.towncrier]
+package = "wellington"
+filename = "CHANGELOG.md"
+template = "changelog.d/towncrier_template.md"
+issue_format = "[#{issue}](https://github.com/ChicagoWorldcon/wellington/issues/{issue})"
+directory = "changelog.d"
+title_format = "## [{version}] - {project_date}\n"
+underlines = [""]
+start_string = "# Changelog\n"
