@@ -24,7 +24,6 @@ namespace :dev do
   desc "Asserts you've got everything for a running system, doesn't clobber"
   task bootstrap: ["dev:reset:structure", "dev:setup:db", "db:migrate", seed_symbol]
 
-
   desc "Runs update actions across dependencies"
   task :update do
     # Create update-deps branch, commit changes to lock files
@@ -36,6 +35,26 @@ namespace :dev do
     current_branch = `git rev-parse --abbrev-ref HEAD`.chomp
     puts "Dependencies updated. Open a MR with this link:"
     puts "https://gitlab.com/worldcon/wellington/merge_requests/new?merge_request[source_branch]=#{current_branch}&merge_request[force_remove_source_branch]=true"
+  end
+
+  task :changelog do
+    # Generate a changelog using towncrier. If you don't have it installed, there's a whole thing involved around pip
+    # and a Python virtualenv.
+    tag = `git tag --points-at HEAD`.chomp.each_line.map do |line|
+      %r{release/(.+)}.match(line) do |m|
+        m[1]
+      end
+    end.compact.last
+
+    unless tag
+      puts "There are no tags pointing at the current revision. "
+      puts "Tag this revision with `git tag release/<date>`"
+      exit 1
+    end
+
+    version = tag
+
+    run!("towncrier --name Wellington --version #{version}")
   end
 
   namespace :setup do
@@ -67,7 +86,7 @@ namespace :dev do
   end
 
   def run!(cmd)
-    if !run(cmd)
+    unless run(cmd)
       puts "Command failed: #{cmd}"
       exit(1)
     end
