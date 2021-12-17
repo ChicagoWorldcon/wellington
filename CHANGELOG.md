@@ -1,13 +1,11 @@
-# Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+This file is maintained using towncrier.
 
-
-## [Unreleased](https://gitlab.com/worldcon/wellington/compare/2.5.1...master)
+# Changelog
 
 ### Added
+
 - Emails for Hugo voting
 - Integration into The Fantasy Network for 2020 Virtual Worldcon
   [!194](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/194)
@@ -29,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Changed
+
 - Adds Hugo voting emails
   [!199](https://gitlab.com/worldcon/2020-wellington/-/merge_requests/199)
 - In development, allow Sidekiq to use redis in if you set `SIDEKIQ_REDIS_URL`
@@ -46,31 +45,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update all node modules
   [!202](https://gitlab.com/worldcon/wellington/-/merge_requests/202)
 
-
 ### Removed
+
 - Removed "Suggest for our Programme (coming soon)" and "Plan my trip(coming soon)" from CoNZealand menu
   [!203](https://gitlab.com/worldcon/wellington/-/merge_requests/203)
-
 
 ## [Tag 2.5.1 - 2020-05-30](https://gitlab.com/worldcon/wellington/compare/2.5.0...2.5.1)
 
 ### Added
+
 - Hugo Packet Download now has a counter, if downloaded or nomination rights used there's a message
   for support users near the "transfer membership" button.
   [!182](https://gitlab.com/worldcon/wellington/-/merge_requests/182)
 
 ### Changed
+
 - Development process modified to reduce docker use for rails. The README now
   covers the direnv/local rails approach
   [!181](https://gitlab.com/worldcon/wellington/-/merge_requests/181)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.5.0 - 2020-05-25](https://gitlab.com/worldcon/wellington/compare/2.4.2...2.5.0)
 
 ### Added
+
 - Hugo Packet Download
   [!101](https://gitlab.com/worldcon/wellington/-/issues/101)
   Lots of configuration for this one.
@@ -86,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      AWS_ACCESS_KEY_ID=FROM_STEP_4
      AWS_SECRET_ACCESS_KEY=FROM_STEP_4
      ```
-    [!176](https://gitlab.com/worldcon/wellington/-/merge_requests/176)
+     [!176](https://gitlab.com/worldcon/wellington/-/merge_requests/176)
 - Hugo voting dates have changed!
   ```bash
   HUGO_CLOSED_AT="2020-07-15T23:59:59+13:00"
@@ -100,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Changed
+
 - CI now only runs security-audit steps for master, or branches named security-patch
   [!178](https://gitlab.com/worldcon/wellington/-/merge_requests/178)
 - CI now only fails javascript audit if there's a CVE with a patch, or a CVE that's been out for 6 months
@@ -132,6 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!166](https://gitlab.com/worldcon/wellington/-/merge_requests/166)
 
 ### Removed
+
 - Kiosk mode is deprecated as your first login dosen't make you check your email
   [!161](https://gitlab.com/worldcon/wellington/-/merge_requests/161)
 - Set Rails 6 application defaults
@@ -140,9 +143,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Tag 2.4.2 - 2020-04-20](https://gitlab.com/worldcon/wellington/compare/2.4.1...2.4.2)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Update wording on Adult membership
   [!158](https://gitlab.com/worldcon/wellington/-/merge_requests/158)
 - Bump dev postgres from 9 to 12 for ease of use with alpine ruby
@@ -168,25 +173,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and [CVE-2020-10933](https://nvd.nist.gov/vuln/detail/CVE-2020-10933).
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.4.1 - 2020-03-06](https://gitlab.com/worldcon/wellington/compare/2.4.0...2.4.1)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Fixed a bug where hugo admins were unable to edit nominations
   [!154](https://gitlab.com/worldcon/wellington/-/merge_requests/154)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.4.0 - 2020-03-05](https://gitlab.com/worldcon/wellington/compare/2.3.2...2.4.0)
 
 ### Added
+
 - Automatic sign-in for first time users, second time users require email confirmation
   [!132](https://gitlab.com/worldcon/wellington/merge_requests/132)
   -- this may possibly replace Kiosk mode
@@ -204,6 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created basic mailers for 2 week to go reminder emails
   [!152](https://gitlab.com/worldcon/wellington/-/merge_requests/152)
   Run these with...
+
   ```ruby
   dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
   total = dublin_users.count
@@ -219,6 +228,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     HugoMailer.nominations_reminder_2_weeks_left_conzealand(email: user.email).deliver_now
   end;
   ```
+
 - Setting Hugo Admin flag on Support now allows Admins to change nominations at any time
   with audit notes [!153](https://gitlab.com/worldcon/wellington/-/merge_requests/153).
   Add it to user accounts with...
@@ -233,15 +243,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!153](https://gitlab.com/worldcon/wellington/-/merge_requests/153).
 
 ### Changed
+
 - Hugo tweaks post launch
   [!146](https://gitlab.com/worldcon/wellington/-/merge_requests/146).
   These include:
-    * Remove the title field from what you type to see the hugo form
-    * Don't let more than 5 entries be submitted for nominations
-    * Create test mailer for testing SMTP settings
-    * Update Hugo text in several areas including account text and in the form
-    * Added explicit PM to hugo nominations close time
-    * Stop support users from viewing nominations
+  - Remove the title field from what you type to see the hugo form
+  - Don't let more than 5 entries be submitted for nominations
+  - Create test mailer for testing SMTP settings
+  - Update Hugo text in several areas including account text and in the form
+  - Added explicit PM to hugo nominations close time
+  - Stop support users from viewing nominations
 - Update node dependencies
   [!146](https://gitlab.com/worldcon/wellington/-/merge_requests/146).
 - Upgrade gem dependencies
@@ -258,47 +269,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!153](https://gitlab.com/worldcon/wellington/-/merge_requests/153)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.3.2 - 2020-01-07](https://gitlab.com/worldcon/wellington/compare/2.3.1...2.3.2)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Hugo Nominations deadline now reads PDT rather than PST
   [!145](https://gitlab.com/worldcon/wellington/merge_requests/145)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.3.1 - 2020-01-05](https://gitlab.com/worldcon/wellington/compare/2.3.0...2.3.1)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Bugfix: Dublin members can now vote
   [!144](https://gitlab.com/worldcon/wellington/merge_requests/144)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.3.0 - 2020-01-04](https://gitlab.com/worldcon/wellington/compare/2.2.0...2.3.0)
 
 ### Added
+
 - Sidekiq to monitor and schedule background jobs mounted on /sidekiq
   [!139](https://gitlab.com/worldcon/wellington/merge_requests/139).
   You can get it to show up by setting your .env with these examples but a different password
+
   ```bash
   SIDEKIQ_REDIS_URL=redis://redis:6379/0
   SIDEKIQ_USER=sidekiq
   SIDEKIQ_PASSWORD=5b197341fc62d9c9bbcopypastabc7a6cbcf07329c9fe52fa55cab98e
   ```
+
   You'll need to have a redis server available, or add it to your docker-compose.yml
+
   ```yaml
   volumes:
     redis-data:
@@ -313,13 +332,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     production_worker:
       entrypoint: "script/docker_sidekiq_entry.sh"
       image: registry.gitlab.com/worldcon/wellington:stable
-      env_file:
-        production.env
+      env_file: production.env
       restart: always
       volumes:
         - type: tmpfs
           target: /app/tmp
   ```
+
 - Disable sidekiq basicauth for development by setting `SIDEKIQ_NO_PASSWORD` in your .env
   [!139](https://gitlab.com/worldcon/wellington/merge_requests/139)
   ```bash
@@ -329,6 +348,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!139](https://gitlab.com/worldcon/wellington/merge_requests/139)
 
 ### Changed
+
 - Added explicit order to Hugo Categories, migrate existing data with
   ```
   make bash
@@ -346,16 +366,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dublin imports record dublin membership number against account
 - [!143](https://gitlab.com/worldcon/wellington/merge_requests/143)
 
-
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.2.0 - 2019-12-23](https://gitlab.com/worldcon/wellington/compare/2.1.0...2.2.0)
 
 This release brings with it the basics to let our users nominate for the Hugo awards.
 
 ### Added
+
 - Added Hugos state configuration [!89](https://gitlab.com/worldcon/wellington/merge_requests/89).
   Please set these values in your .env on all environments:
   ```bash
@@ -402,6 +422,7 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   Nominations are open.
   [!137](https://gitlab.com/worldcon/wellington/merge_requests/137)
   You can run these from Rails Console with:
+
   ```ruby
   dublin_users = User.joins(reservations: :membership).where(memberships: {name: :dublin_2019});
   total = dublin_users.count
@@ -419,6 +440,7 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   ```
 
 ### Changed
+
 - We've renamed "Review Memberships" to "My Memberships" in the menu to reduce confusion
   [!89](https://gitlab.com/worldcon/wellington/merge_requests/89)
 - To reduce CSS bugs, colour rotation when you have test keys for dev/staging only affect the logo
@@ -438,13 +460,14 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   [!134](https://gitlab.com/worldcon/wellington/merge_requests/134)
 
 ### Removed
+
 - Moved yarn's OS dependent integrity check from application bootstrap to CI
   [!133](https://gitlab.com/worldcon/wellington/merge_requests/133)
-
 
 ## [Tag 2.1.0 - 2019-11-22](https://gitlab.com/worldcon/wellington/compare/2.0.0...2.1.0)
 
 ### Added
+
 - Added easy methods for checking licences in depenedencies
   [!117](https://gitlab.com/worldcon/wellington/merge_requests/117)
   ```bash
@@ -466,6 +489,7 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   ```
 
 ### Changed
+
 - Allow people to append/prepend whitespace to their email addess
   [!116](https://gitlab.com/worldcon/wellington/merge_requests/116)
 - Reduced the size of our install by moving docker base from debian to alpine
@@ -480,12 +504,13 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   [CVE-2019-18409](https://nvd.nist.gov/vuln/detail/CVE-2019-18409)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 2.0.0 - 2019-10-06](https://gitlab.com/worldcon/wellington/compare/1.6.0...2.0.0)
 
 ### Added
+
 - Rails 6 backards incompatable defaults are now enabled
   [!100](https://gitlab.com/worldcon/wellington/merge_requests/100)
 - We now use Webpacker to manage Sass assets and JavaScript compilation
@@ -496,22 +521,25 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   [!100](https://gitlab.com/worldcon/wellington/merge_requests/100)
 
 ### Changed
+
 - Nothing significant in this release
 
 ### Removed
+
 - EMAIL_PAYMENTS has been removed. Please set MEMBER_SERVICES_EMAIL in .env everywhere.
   [!100](https://gitlab.com/worldcon/wellington/merge_requests/100)
-
 
 ## [Tag 1.6.0 - 2019-10-04](https://gitlab.com/worldcon/wellington/compare/1.5.1...1.6.0)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Upgrade Rails from 5.2 to 6.0 [!99](https://gitlab.com/worldcon/wellington/merge_requests/99)
 - Upgraded project gems [!99](https://gitlab.com/worldcon/wellington/merge_requests/99)
-- Fixed a bug in development seeds where $0 memberships have a charge
+- Fixed a bug in development seeds where \$0 memberships have a charge
   [!99](https://gitlab.com/worldcon/wellington/merge_requests/99)
 - Fix typo in transfer mailer, affect vs effect
   [!100](https://gitlab.com/worldcon/wellington/merge_requests/111)
@@ -527,31 +555,35 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   and [CVE-2019-16255](https://nvd.nist.gov/vuln/detail/CVE-2019-16255)
 
 ### Removed
+
 - Removed dependency on makerb gem to reduce risk and use more core rails features.
   To maintain both html and text emails you now need to maintain two templates
   [!99](https://gitlab.com/worldcon/wellington/merge_requests/99)
 
-
 ## [Tag 1.5.1 - 2019-09-10](https://gitlab.com/worldcon/wellington/compare/1.5.0...1.5.1)
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Last minute security patch for Devise that came up just after release, patches
   [CVE-2019-16109](https://nvd.nist.gov/vuln/detail/CVE-2019-16109)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 1.5.0 - 2019-09-10](https://gitlab.com/worldcon/wellington/compare/1.4.1...1.5.0)
 
 ### Added
+
 - Kiosk mode, now we can get people to record their details to reduce time handling data entry
   [!93](https://gitlab.com/worldcon/wellington/merge_requests/93)
 
 ### Changed
+
 - Bugfix, users can now set their title on their membership [!92](https://gitlab.com/worldcon/wellington/merge_requests/92)
 - Assets are now coppied within the project for offline support [!94](https://gitlab.com/worldcon/wellington/merge_requests/94)
 - System emails are now configured globally from .env with MEMBER_SERVICES_EMAIL.
@@ -571,9 +603,9 @@ This release brings with it the basics to let our users nominate for the Hugo aw
   [!104](https://gitlab.com/worldcon/wellington/merge_requests/104)
 
 ### Removed
+
 - EMAIL_PAYMENTS has been deprecated and will be removed in the next few releases.
   [!93](https://gitlab.com/worldcon/wellington/merge_requests/93)
-
 
 ## [Tag 1.4.1 - 2019-07-22](https://gitlab.com/worldcon/wellington/compare/1.4.0...1.4.1)
 
@@ -581,14 +613,16 @@ Hotpatch, in 1.4.0 we regressed the payments mailer for instalments which no lon
 mailer.
 
 ### Added
+
 - Nothing significant in this release
 
 ### Changed
+
 - Fixed regression, instalments mailer now sends happily [!91](https://gitlab.com/worldcon/wellington/merge_requests/91)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 1.4.0 - 2019-07-22](https://gitlab.com/worldcon/wellington/compare/1.3.0...1.4.0)
 
@@ -597,6 +631,7 @@ support staff who have more fatures for adjusting memberships, and our developer
 that feels better right out of the box.
 
 ### Added
+
 - Added brakeman, ruby-audit, and bundler-audit vulnerability scanners to the build process and `make test`
   [!85](https://gitlab.com/worldcon/wellington/merge_requests/85)
 - Configurable currency, add STRIPE_CURRENCY to your .env and all prices are now in that currency
@@ -611,6 +646,7 @@ that feels better right out of the box.
   [!87](https://gitlab.com/worldcon/wellington/merge_requests/87)
 
 ### Changed
+
 - Added unique constraint to membership number data model
   [!70](https://gitlab.com/worldcon/wellington/merge_requests/70). Please check and correct duplicates with this:
   ```
@@ -624,16 +660,18 @@ that feels better right out of the box.
   [!88](https://gitlab.com/worldcon/wellington/merge_requests/88)
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 1.3.0 - 2019-06-19](https://gitlab.com/worldcon/wellington/compare/1.2.0...1.3.0)
 
 ### Added
+
 - Purchase flow changed to let you select a membership before signing in [!73](https://gitlab.com/worldcon/wellington/merge_requests/73)
 - Prominant prices, membership rights and buttons on all memberships [!73](https://gitlab.com/worldcon/wellington/merge_requests/73)
 
 ### Changed
+
 - Upgraded gems to the latest versions [!76](https://gitlab.com/worldcon/wellington/merge_requests/76)
 - Renamed Purchase to Reservation to match the domain more closely
 - Fixed charge descriptions in Stripe and in Charge comments
@@ -644,19 +682,21 @@ that feels better right out of the box.
   ```
 
 ### Removed
-- Paths to resources have changed, /purchases have moved to /reservations
 
+- Paths to resources have changed, /purchases have moved to /reservations
 
 ## [Tag 1.2.0 - 2019-06-08](https://gitlab.com/worldcon/wellington/compare/1.1.0...1.2.0)
 
 Upgraded Ruby and Rails, and support function for transferring memberships.
 
 ### Added
+
 - Turned on [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
   for the site for security hygiene
 - Support can now transfer memberships between users from a user's detail form
 
 ### Changed
+
 - Moved task `check:models` to `test:models` to keep namespaces tight
 - Run rails upgrades for 5.2 so we get the most out of our setup
 - Upgrade Ruby from 2.5.1 to 2.5.3
@@ -666,18 +706,20 @@ Upgraded Ruby and Rails, and support function for transferring memberships.
 - Fixed a bug where you could upgrade Adult to Adult memberships after the price increase
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 1.1.0 - 2019-05-22](https://gitlab.com/worldcon/wellington/compare/1.0.0...1.1.0)
 
 Some quality of life improvements for support, and general cleanup with things we learnt from our initial release.
 
 ### Added
+
 - Detection of Stripe test keys to change colours on pages to distinguish between production and test systems
 - Migrations to correct data corruption on imported timestamps
 - Customer stripe ID now recorded and reused from User model going forward
 - New rake tasks for your utility belt:
+
   ```bash
   # Copy over stripe customer details to users with
   bundle exec rake stripe:sync:customers
@@ -688,12 +730,14 @@ Some quality of life improvements for support, and general cleanup with things w
   # Detect invalid records on your systems with
   bundle exec rake test:models
   ```
+
 - CoNZealand images are now served from the project rather than GitHub to consolidate infrastructure
 - When purchasing a new membership, if you've got existing memberships you now get linked to the 'Review Memberships'
   section with a helpful message
 - Added Policy and Terms of service to CoNZealand pages
 
 ### Changed
+
 - URLs for charging a person have been updated to use Purchase for consistency
 - Fixed Kansa and Presupport import methods to set "active" correctly on older records
 - Charge descriptions in stripe now describe amount owed, type of payment, membership name and number
@@ -708,8 +752,8 @@ Some quality of life improvements for support, and general cleanup with things w
 - Developer setup steps in README should run out of the box
 
 ### Removed
-- Nothing significant in this release
 
+- Nothing significant in this release
 
 ## [Tag 1.0.0 - 2019-03-29](https://gitlab.com/worldcon/wellington/compare/af2b82ad46c69485c33de3ba317d95cedb5a2f5c...1.0.0)
 
@@ -717,6 +761,7 @@ Initial release of CoNZealand, intended to give people what they had with Kansa,
 pre supporters.
 
 ### Added
+
 - Basic forms for purchasing memberships based on CoNZealand paper forms
 - Payments, including pay by instalment
 - Upgrades between different membership types
@@ -733,8 +778,10 @@ pre supporters.
 - Membership numbers start at 100 to give room for special guests
 
 ### Changed
+
 - Kansa members were renumbered to start at 2000
 - Old Kansa login links now say "this link has expired"
 
 ### Removed
+
 - Nothing significant in this release
