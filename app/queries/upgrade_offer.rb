@@ -28,7 +28,6 @@ class UpgradeOffer
     # List options that are higher price
     options = Membership.active.where("price_cents > ?", current_membership.price_cents)
 
-
     # But don't let the name match, i.e. no upgrade adult to adult upgrade option
     options = options.where.not(name: current_membership.name)
 
@@ -84,5 +83,9 @@ class UpgradeOffer
 
   def price
     @price ||= to_membership.price - from_membership.price
+  end
+
+  def offer_for_purchase?
+    !to_membership.private_membership_option
   end
 end
