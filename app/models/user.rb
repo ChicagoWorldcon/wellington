@@ -33,9 +33,10 @@ class User < ApplicationRecord
   has_many :reservations, through: :active_claims
   has_many :carts
 
-  # See Cart's validations, one active, pending cart and one active, processing cart at a time. 
+  # See Cart's validations, one active, pending cart and one active, processing cart at a time.
   has_one  :active_pending_cart, -> () { active_pending }, class_name: "Cart"
   has_one  :active_processing_cart, -> () { active_processing }, class_name: "Cart"
+  has_one :offer_lock_date, required: false
 
 
   validates :email, presence: true, uniqueness: true
@@ -48,6 +49,20 @@ class User < ApplicationRecord
 
   def in_stripe?
     stripe_id.present?
+  end
+
+  def lock_offer
+    offer_lock_date = Time.now unless offer_lock_date.present?
+  end
+
+  def date_offer_locked
+    return -1 unless offer_lock_date.present?
+    offer_lock_date
+  end
+
+  def offer_locked?
+    return false unless offer_lock_date.present?
+    true
   end
 
   private

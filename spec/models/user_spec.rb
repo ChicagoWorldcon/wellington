@@ -37,6 +37,49 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "public instance methods" do
+    let (:locked_user){ create(:user, :with_offer_lock_date) }
+    describe "#offer_locked?" do
+      it "reports true when the record has an offer_lock_date" do
+        expect(locked_user.offer_locked?).to eq true
+      end
+
+      it "reports false when the record has an offer_lock_date" do
+        expect(user.offer_locked?).to eq false
+      end
+    end
+
+    describe "#date_offer_locked" do
+      it "reports the offer_lock_date when one is present" do
+        expect(locked_user.date_offer_locked).to #be a datetime
+        expect(locked_user.date_offer_locked).to #be nine months ago
+      end
+
+      it "reports -1 when no offer_lock_date is present" do
+        expect(user.date_offer_locked).to_not #be a datetime
+        expect(locked_user.date_offer_locked).to eq -1
+
+      end
+    end
+
+    describe "#lock_offer" do
+      context "when no offer_lock_date is initially present" do
+        it "logs the current time" do
+          expect {user.lock_offer}
+            .to change {user.offer_lock_date}
+            .from(nil)
+            .to #within ___ of time.now
+        end
+      end
+
+      context "when an offer_lock_date is already present" do
+        expect {user.lock_offer}
+          .to_not change {user.offer_lock_date}
+          .from #within ___ of nine months ago
+      end
+    end
+  end
+
   context "duplicate email addresses" do
     let(:double_up_email) { "pants-optional@perfect-underwear.co.uk" }
     let(:first_user) { create(:user, email: double_up_email) }

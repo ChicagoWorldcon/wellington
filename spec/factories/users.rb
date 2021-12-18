@@ -27,5 +27,9 @@ FactoryBot.define do
         new_user.charges << charge
       end
     end
+
+    trait :with_offer_lock_date do
+      offer_lock_date {9.months.ago}
+    end
   end
 end
