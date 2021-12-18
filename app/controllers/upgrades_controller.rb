@@ -19,28 +19,32 @@ class UpgradesController < ApplicationController
   before_action :lookup_offer, except: :index
 
   def index
-    @offers = UpgradeOffer.from(@reservation.membership)
+    all_offers = UpgradeOffer.from(@reservation.membership)
+    @offers = if support_signed_in?
+                all_offers
+              else
+                all_offers.select(&:offer_for_purchase?)
+              end
   end
 
-  def new
-  end
+  def new; end
 
   def create
     upgrader = UpgradeMembership.new(@reservation, to: @my_offer.to_membership)
-    if !upgrader.call
+    unless upgrader.call
       Rails.logger.error("Failed to upgrade #{current_user.id} to #{@reservation.membership.name}")
-      flash[:error] = %{
+      flash[:error] = %(
         Sorry. #{params[:offer]}
         from #{@reservation.membership}
         could not be upgraded at this time
-      }
+      )
       return
     end
 
-    flash[:notice] = %{
+    flash[:notice] = %(
       You've just upgraded #{@my_offer.from_membership}
       to #{@my_offer.to_membership}
-    }
+    )
     redirect_to new_reservation_charge_path(@reservation)
   end
 
@@ -51,13 +55,13 @@ class UpgradesController < ApplicationController
       offer.hash == params[:offer]
     end
 
-    if !@my_offer.present?
+    unless @my_offer.present?
       redirect_to reservations_path
-      flash[:error] = %{
+      flash[:error] = %(
         Sorry. #{params[:offer]}
         from #{@reservation.membership}
         is no longer available
-      }
+      )
     end
   end
 end
