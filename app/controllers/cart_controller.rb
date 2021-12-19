@@ -21,6 +21,7 @@ class CartController < ApplicationController
   helper ChargesHelper
 
   before_action :require_nonsupport_login
+  before_action :lookup_effective_offer_date!
   before_action :get_cart_chassis
   before_action :locate_target_item, only: [:remove_single_item, :save_item_for_later, :move_item_to_cart, :verify_single_item_availability]
 

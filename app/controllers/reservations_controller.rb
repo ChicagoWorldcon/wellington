@@ -19,8 +19,10 @@ class ReservationsController < ApplicationController
   include ThemeConcern
 
   before_action :lookup_reservation!, only: %i[show update]
+  before_action :lookup_effective_offer_date!, only: %i[new create reserve_with_cheque]
   before_action :lookup_offer, only: %i[new create reserve_with_cheque]
   before_action :setup_paperpubs, except: :index
+
 
   # TODO(issue #24) list all members for people not logged in
   def index

@@ -17,6 +17,7 @@
 class UpgradesController < ApplicationController
   before_action :lookup_reservation!
   before_action :lookup_offer, except: :index
+  before_action :lookup_effective_offer_date!
 
   def index
     @offers = UpgradeOffer.from(@reservation.membership)

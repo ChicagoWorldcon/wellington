@@ -15,6 +15,8 @@
 # limitations under the License.
 
 class MembershipsController < ApplicationController
+  before_action :lookup_effective_offer_date!
+
   def index
     if support_signed_in?
       @offers = MembershipOffer.options
@@ -22,6 +24,7 @@ class MembershipsController < ApplicationController
       @upcoming = Membership.upcoming
     else
       @offers = MembershipOffer.options.select(&:offer_for_purchase?)
+      #@locked_offers = MembershipOffer.locked_in_options(@effective_offer_date).select(&:offer_for_purchase?)
       @expired = @upcoming = []
     end
   end
