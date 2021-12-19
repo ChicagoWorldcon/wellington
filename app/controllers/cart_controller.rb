@@ -150,6 +150,7 @@ class CartController < ApplicationController
   end
 
   def verify_single_item_availability
+
     single_item_availability_check
     @cart_chassis.full_reload
     prep_bins
@@ -157,7 +158,7 @@ class CartController < ApplicationController
   end
 
   def verify_all_items_availability
-    verify_all_cart_contents
+    verify_all_cart_contents(effective_availablility_date)
     @cart_chassis.full_reload
     prep_bins
     redirect_back(fallback_location: cart_path)
@@ -245,7 +246,7 @@ class CartController < ApplicationController
   end
 
   def verify_all_cart_contents
-    veri = @cart_chassis.verify_avail_for_all_items
+    veri = @cart_chassis.verify_avail_for_all_items(effective_availablility_date)
 
     if !veri[:verified]
       if veri[:problem_items].present?
@@ -369,5 +370,9 @@ class CartController < ApplicationController
     @now_bin = @cart_chassis.now_items
     @later_bin = @cart_chassis.later_items
     @now_subtotal = @cart_chassis.purchase_subtotal
+  end
+
+  def effective_availablility_date
+    @effective_offer_date || Time.now
   end
 end

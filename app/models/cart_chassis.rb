@@ -145,15 +145,16 @@ class CartChassis
     self.now_items_count + self.later_items_count
   end
 
-  def verify_avail_for_items_for_now
-    verify_availability_of_bin_contents(now_bin: true)
+  def verify_avail_for_items_for_now(date_of_availability: null)
+    verify_availability_of_bin_contents(now_bin: true, date_of_availability: Time.now)
   end
 
-  def verify_avail_for_saved_items
-    verify_availability_of_bin_contents(now_bin: false)
+  def verify_avail_for_saved_items(date_of_availability: null)
+    verify_availability_of_bin_contents(now_bin: false, date_of_availability: Time.now)
   end
 
-  def verify_avail_for_all_items
+  def verify_avail_for_all_items(date_of_availability: null)
+    date_to_check = date_of_availability || Time.now
 
     no_now_items = @now_bin.blank? || now_items_count == 0
     no_later_items = @later_bin.blank? || later_items_count == 0
@@ -161,12 +162,12 @@ class CartChassis
 
     ver_result = {}
     if no_now_items
-      ver_result =  verify_availability_of_bin_contents(now_bin: false)
+      ver_result =  verify_availability_of_bin_contents(now_bin: false, date_of_availability: Time.now)
     elsif no_later_items
-      ver_result = verify_availability_of_bin_contents(now_bin: true)
+      ver_result = verify_availability_of_bin_contents(now_bin: true, date_of_availability: Time.now)
     else
-      now_result = verify_availability_of_bin_contents(now_bin: true)
-      later_result = verify_availability_of_bin_contents(now_bin: false)
+      now_result = verify_availability_of_bin_contents(now_bin: true, date_of_availability: Time.now)
+      later_result = verify_availability_of_bin_contents(now_bin: false, date_of_availability: Time.now)
       ver_result[:verified] = now_result[:verified] && later_result[:verified]
       ver_result[:problem_items] = now_result[:problem_items].concat(later_result[:problem_items])
     end
@@ -202,15 +203,15 @@ class CartChassis
     @later_bin ||= supply_missing_bin(LATER_BIN)
   end
 
-  def verify_availability_of_bin_contents(now_bin:)
-    bin_verifier(now_bin: now_bin, verification: AVAILABILITY)
+  def verify_availability_of_bin_contents(now_bin:, date_of_availability: Time.now)
+    bin_verifier(now_bin: now_bin, verification: AVAILABILITY, date_of_availability: date_of_availability)
   end
 
-  def verify_bin_ready_for_payment
-    bin_verifier(now_bin: purchase_bin == @now_bin, verification: PAYMENT_READY)
+  def verify_bin_ready_for_payment(date_of_availability: )
+    bin_verifier(now_bin: purchase_bin == @now_bin, verification: PAYMENT_READY, date_of_availablility: date_of_availability)
   end
 
-  def bin_verifier(now_bin:, verification: )
+  def bin_verifier(now_bin:, verification:, date_of_availability: )
     #TODO: Move this to Cart.  It makes more sense there, OO-wise
     target_bin = now_bin ? @now_bin : @later_bin
 
@@ -219,9 +220,9 @@ class CartChassis
 
     case verification
     when AVAILABILITY
-      v_lambda = -> (item) { item.item_still_available? }
+      v_lambda = -> (item) { item.item_still_available?(offer_lock_date: date_of_availability) }
     when PAYMENT_READY
-      v_lambda = -> (item) { item.item_ready_for_payment? }
+      v_lambda = -> (item) { item.item_ready_for_payment?(offer_lock_date: date_of_availability) }
     end
 
     prob_items = []
