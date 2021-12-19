@@ -22,7 +22,17 @@ class ApplicationController < ActionController::Base
     @member_services_user ||= User.find_or_create_by(email: $member_services_email)
   end
 
+  def lookup_effective_offer_date!
+    @effective_offer_date = Time.now
+
+    unless support_signed_in? || !current_user.present? || current_user.date_offer_locked <= 0
+      @effective_offer_date = current_user.date_offer_locked
+    end
+  end
+
   protected
+
+
 
   def lookup_current_cart!
     if !support_signed_in

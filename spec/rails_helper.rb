@@ -18,6 +18,7 @@
 require "spec_helper"
 require "factory_bot_rails"
 
+
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../../config/environment", __FILE__)
 
@@ -28,6 +29,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "rspec/rails"
 require "capybara/rails"
 require "shoulda-matchers"
+require "support/controller_helpers"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -84,10 +86,13 @@ RSpec.configure do |config|
   # Generator for models https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
   config.include FactoryBot::Syntax::Methods
 
+  config.include ControllerHelpers, type: :controller
   # Setup helpers for things like #login_as
   # https://github.com/plataformatec/devise/wiki/How-To:-Test-controllers-with-Rails-(and-RSpec)
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::TestHelpers, type: :controller
+
 
   include Warden::Test::Helpers
   config.before(:each) do
