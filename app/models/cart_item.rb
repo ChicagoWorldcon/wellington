@@ -161,16 +161,16 @@ class CartItem < ApplicationRecord
     end
   end
 
-  def item_ready_for_payment?
-    item_still_available? && confirm_beneficiary
+  def item_ready_for_payment?(offer_lock_date: null)
+    item_still_available?(offer_lock_date: null) && confirm_beneficiary
   end
 
   def item_reservation
     item_res = (self.holdable.present? && self.holdable.kind_of?(Reservation)) ? self.holdable : nil
   end
 
-  def item_still_available?
-    confirm_availability
+  def item_still_available?(offer_lock_date: null)
+    confirm_availability(offer_lock_date: null)
   end
 
   # def membership_cart_item_is_valid?
@@ -255,18 +255,20 @@ class CartItem < ApplicationRecord
       !self.benefitable_required? || (self.benefitable.present? && self.benefitable.valid?)
   end
 
-  def confirm_availability
+  def confirm_availability(offer_lock_date: null)
     # Note: This is currently written so as to make unavailability a
     # permanent condition. Once something has become unavailable, it
     # never becomes available again.   That, of course, is something
     # that could be changed easily later on, as requirements change.
 
+    availability_date = offer_lock_date || Time.now
+
     confirmed = (
       self.available &&
       self.acquirable_matches_memo? &&
       self.item_display_name != UNKNOWN &&
-      self.acquirable.active? &&
-      self.acquirable.valid?
+      self.acquirable.valid? &&
+      self.acquirable.active_at?(availability_date)
     )
 
     self.update_attribute(:available, confirmed)
