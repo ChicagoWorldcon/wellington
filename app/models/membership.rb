@@ -49,9 +49,11 @@ class Membership < ApplicationRecord
   scope :dob_required, -> { where(dob_required: true) }
 
   scope :order_by_price, -> { order(price_cents: :desc) }
+  scope :order_by_name, -> {order(name: :asc)}
   scope :with_attend_rights, -> { where(can_attend: true) }
   scope :with_nomination_rights, -> { where(can_nominate: true) }
   scope :with_voting_rights, -> { where(can_vote: true) }
+  scope :locked_available, ->(lock_date) { active_at(lock_date) }
 
   # These scopes are for support/reg users, who might want to see all of the past and future memberships.
   scope :inactive, -> { !active_at(Time.now) }
