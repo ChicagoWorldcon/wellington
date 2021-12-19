@@ -51,31 +51,29 @@ RSpec.describe User, type: :model do
 
     describe "#date_offer_locked" do
       it "reports the offer_lock_date when one is present" do
-        expect(locked_user.date_offer_locked).to #be a datetime
-        expect(locked_user.date_offer_locked).to #be nine months ago
+        expect(locked_user.offer_lock_date).to_not be_nil
+        expect(locked_user.date_offer_locked).to be_within(1.day).of(Time.now - 9.months)
       end
 
       it "reports -1 when no offer_lock_date is present" do
-        expect(user.date_offer_locked).to_not #be a datetime
-        expect(locked_user.date_offer_locked).to eq -1
-
+        expect(user.offer_lock_date).to be_nil
+        expect(user.date_offer_locked).to eq -1
       end
     end
 
     describe "#lock_offer" do
       context "when no offer_lock_date is initially present" do
         it "logs the current time" do
-          expect {user.lock_offer}
-            .to change {user.offer_lock_date}
-            .from(nil)
-            .to #within ___ of time.now
+          expect {user.lock_offer}.to change {user.reload.offer_lock_date}.from(nil)
+          expect(user.offer_lock_date).to be_within(1.day).of(Time.now)
         end
       end
 
       context "when an offer_lock_date is already present" do
-        expect {user.lock_offer}
-          .to_not change {user.offer_lock_date}
-          .from #within ___ of nine months ago
+        it "does not change the extant offer_lock_date" do
+          expect(locked_user.offer_lock_date).to_not be_nil
+          expect {locked_user.lock_offer}.to_not change {user.reload.offer_lock_date}
+        end
       end
     end
   end

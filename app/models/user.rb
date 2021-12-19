@@ -36,9 +36,8 @@ class User < ApplicationRecord
   # See Cart's validations, one active, pending cart and one active, processing cart at a time.
   has_one  :active_pending_cart, -> () { active_pending }, class_name: "Cart"
   has_one  :active_processing_cart, -> () { active_processing }, class_name: "Cart"
-  has_one :offer_lock_date, required: false
 
-
+  #validates :offer_lock_date, comparison: { less_than_or_equal_to: Time.now }
   validates :email, presence: true, uniqueness: true
   validates :hugo_download_counter, presence: true
 
@@ -52,16 +51,17 @@ class User < ApplicationRecord
   end
 
   def lock_offer
-    offer_lock_date = Time.now unless offer_lock_date.present?
+    return if self.offer_lock_date.present?
+    self.update_attribute(:offer_lock_date, Time.now)
   end
 
   def date_offer_locked
-    return -1 unless offer_lock_date.present?
-    offer_lock_date
+    return -1 unless self.offer_lock_date.present?
+    self.offer_lock_date
   end
 
   def offer_locked?
-    return false unless offer_lock_date.present?
+    return false unless self.offer_lock_date.present?
     true
   end
 
