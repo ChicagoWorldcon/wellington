@@ -37,7 +37,8 @@ all_memberships = Membership.all.to_a
 
 users_to_create.times do |count|
   puts "Seeding #{count} of 50 users" if count % 5 == 0
-  new_user = FactoryBot.create(:user)
+  new_user = (count % 7 == 0) ? FactoryBot.create(:user,  :with_offer_lock_date) : FactoryBot.create(:user)
+
   memberships_held = membership_distribution_averages.sample # <-- biased random number
 
   all_memberships.sample(memberships_held).each do |rando_membership|
