@@ -662,7 +662,8 @@ CREATE TABLE public.reservations (
     state character varying NOT NULL,
     membership_number integer NOT NULL,
     ballot_last_mailed_at timestamp without time zone,
-    last_fully_paid_membership_id bigint
+    last_fully_paid_membership_id bigint,
+    price_lock_date timestamp without time zone
 );
 
 
@@ -1546,6 +1547,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210224035800'),
 ('20210916230829'),
 ('20211110022812'),
-('20211120232041');
+('20211120232041'),
+('20211220112953');
 
 
