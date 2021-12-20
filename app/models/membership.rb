@@ -47,7 +47,7 @@ class Membership < ApplicationRecord
   scope :can_vote, -> { where(can_vote: true) }
 
   scope :dob_required, -> { where(dob_required: true) }
-
+  scope :order_by_name, -> { order(name: :asc, price_cents: :desc) }
   scope :order_by_price, -> { order(price_cents: :desc) }
   scope :with_attend_rights, -> { where(can_attend: true) }
   scope :with_nomination_rights, -> { where(can_nominate: true) }
@@ -149,5 +149,4 @@ class Membership < ApplicationRecord
     self.active_to = new_record.active_from
     self.save
   end
-
 end
