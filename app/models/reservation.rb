@@ -23,6 +23,8 @@ class Reservation < ApplicationRecord
   include Holdable
   include Buyable
 
+  after_create :eval_for_upgrade_price_lock
+
   PAID = "paid"
   DISABLED = "disabled"
   INSTALMENT = "instalment"
@@ -94,6 +96,30 @@ class Reservation < ApplicationRecord
     Membership.can_vote.where(id: orders.select(:membership_id)).exists?
   end
 
+  def can_site_select?
+    Membership.can_site_select.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def can_attend?
+    Membership.can_attend.where(id: orders.select(:membership_id)).exists?
+  end
+
+  def is_supporting?
+    !self.can_attend? && self.can_nominate? && self.can_vote? && self.can_site_select?
+  end
+
+  def installment_requested_by_claimant?
+    self.active_claim.requested_installment?
+  end
+
+  def set_price_lock_date
+    self.update!(price_lock_date: Time.now) if !self.price_lock_date?
+  end
+
+  def date_upgrade_prices_locked
+    self.price_lock_date
+  end
+
   def paid?
     state == PAID
   end
@@ -115,6 +141,15 @@ class Reservation < ApplicationRecord
 
   def disabled?
     state == DISABLED
+  end
+
+  def eval_for_upgrade_price_lock
+    return unless Rails.configuration.convention_details.lock_upgrade_prices_on_installment_req
+
+    return unless self.is_supporting?
+    return unless self.installment_requested_by_claimant?
+
+    set_price_lock_date
   end
 
   # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off
