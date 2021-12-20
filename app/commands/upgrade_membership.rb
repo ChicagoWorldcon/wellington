@@ -31,7 +31,7 @@ class UpgradeMembership < SetMembership
   private
 
   def check_availability
-    prices = UpgradeOffer.from(reservation.membership, target_membership: to_membership)
+    prices = UpgradeOffer.from(reservation.membership,  target_membership: to_membership, for_reservation: reservation)
     if prices.none?
       errors << "#{reservation.membership} cannot upgrade to #{to_membership}"
     end

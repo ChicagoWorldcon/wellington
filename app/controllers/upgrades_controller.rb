@@ -19,7 +19,7 @@ class UpgradesController < ApplicationController
   before_action :lookup_offer, except: :index
 
   def index
-    all_offers = UpgradeOffer.from(@reservation.membership)
+    all_offers = UpgradeOffer.from(@reservation.membership, for_reservation: @reservation)
     @offers = if support_signed_in?
                 all_offers
               else
@@ -51,7 +51,7 @@ class UpgradesController < ApplicationController
   private
 
   def lookup_offer
-    @my_offer = UpgradeOffer.from(@reservation.membership).find do |offer|
+    @my_offer = UpgradeOffer.from(@reservation.membership, for_reservation: @reservation).find do |offer|
       offer.hash == params[:offer]
     end
 
