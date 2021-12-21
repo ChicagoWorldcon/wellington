@@ -108,18 +108,6 @@ class Reservation < ApplicationRecord
     !self.can_attend? && self.can_nominate? && self.can_vote? && self.can_site_select?
   end
 
-  def installment_requested_by_claimant?
-    self.active_claim.requested_installment?
-  end
-
-  def set_price_lock_date
-    self.update!(price_lock_date: Time.now) if !self.price_lock_date?
-  end
-
-  def date_upgrade_prices_locked
-    self.price_lock_date
-  end
-
   def paid?
     state == PAID
   end
@@ -143,6 +131,10 @@ class Reservation < ApplicationRecord
     state == DISABLED
   end
 
+  def date_upgrade_prices_locked
+    self.price_lock_date
+  end
+
   def eval_for_upgrade_price_lock
     return unless Rails.configuration.convention_details.lock_upgrade_prices_on_installment_req
 
@@ -152,9 +144,23 @@ class Reservation < ApplicationRecord
     set_price_lock_date
   end
 
+
+
+
   # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off
   after_commit :gloo_sync
   def gloo_lookup_user
     active_claim&.user
+  end
+
+  private
+
+  def installment_requested_by_claimant?
+    return false unless self.active_claim.present?
+    self.active_claim.requested_installment?
+  end
+
+  def set_price_lock_date
+    self.update!(price_lock_date: Time.now) if !self.price_lock_date?
   end
 end
