@@ -49,7 +49,6 @@ class UpgradeOffer
   end
 
   def self.include_locked_in_options(curr_membership, res_to_upgrade, existing_options)
-    binding.pry
     unless (res_to_upgrade.present? && res_to_upgrade.date_upgrade_prices_locked.respond_to?(:strftime) )
       return existing_options
     end
