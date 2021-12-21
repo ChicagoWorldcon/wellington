@@ -37,6 +37,19 @@ FactoryBot.define do
       dob_required { false }
     end
 
+    trait :expired_adult do
+      name { :adult }
+      display_name { "Adult Attending" }
+      price_cents { 123_00 }
+      active_from { 1.year.ago }
+      active_to { 1.week.ago }
+      can_vote { true }
+      can_site_select { true }
+      can_nominate { true }
+      can_attend { true }
+      dob_required { false }
+    end
+
     trait :ya do
       name { :ya }
       display_name { "YA (16-25)" }

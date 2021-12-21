@@ -44,5 +44,9 @@ FactoryBot.define do
     trait :paperpubs_none do
       publication_format { ChicagoContact::PAPERPUBS_NONE }
     end
+
+    trait :requesting_installment do
+      installment_wanted { true }
+    end
   end
 end
