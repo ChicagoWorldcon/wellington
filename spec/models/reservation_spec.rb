@@ -211,40 +211,72 @@ RSpec.describe Reservation, type: :model do
 
   xdescribe "eval_for_upgrade_price_lock" do
 
-    subject(:model) { create( :reservation,
-                              :with_order_against_supporting_membership,
-                              :with_installment_request_from_claimant) }
-
     context "when there is a request for installment from the claimant" do
-      subject(:model) { create( :reservation,
+      subject(:model) { build(:reservation,
                                 :with_order_against_supporting_membership,
                                 :with_installment_request_from_claimant) }
 
       it "sets the lock" do
-  
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_within(1.day).of Time.now
+      end
 
+      it "is triggered by an after_create hook" do
+        expect {model.save}
+          .to change { model.price_lock_date }
+          .from(nil)
+      end
+
+      it "causes the current date to be logged once triggered" do
+        model.save
+        expect(model.price_lock_date).to be_within(1.day).of Time.now
       end
     end
 
     context "when there is NO request for installment from claimant" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_supporting_membership) }
+
       it "does not set the lock" do
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_nil
       end
     end
 
     context "when the membership is already adult attending" do
-      it "does not set the lock" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_adult_membership,
+                                :with_installment_request_from_claimant) }
 
+      it "does not set the lock" do
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_nil
       end
     end
 
     context "when the reservation already has a price lock date" do
-      it "does not set the lock" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_supporting_membership,
+                                :with_installment_request_from_claimant,
+                                price_lock_date: Time.now - 30.days) }
 
+      it "does not change the lock" do
+        expect(model.price_lock_date).to be_within(1.day).of (Time.now - 30.days)
+
+        expect{ model.eval_for_upgrade_price_lock }
+          .to_not change { reservation.reload.price_lock_date}
       end
     end
 
     context "when the reservation is not a new one" do
-      it "does not set the lock" do
+      subject(:model) { create (:reservation,
+                                :with_order_against_supporting_membership,
+                                :with_installment_request_from_claimant ) }
+
+      xit "does not set the lock" do
 
       end
     end
