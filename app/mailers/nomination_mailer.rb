@@ -54,13 +54,29 @@ class NominationMailer < ApplicationMailer
     @worldcon_year = worldcon_year
     @start_day_informal = start_day_informal
     @end_day_informal = end_day_informal
-    @retro_hugo_75_ago = retro_hugo_75_ago
     @mailto_hugo_help = mailto_hugo_help
     @hugo_help_email = email_hugo_help
+    @hugo_ballot_pub_month = hugo_ballot_pub_month
     @hugo_ballot_download_a4 = hugo_ballot_download_a4
     @hugo_ballot_download_letter = hugo_ballot_download_letter
-    @wsfs_constitution_link = @wsfs_constitution_link
+    @wsfs_constitution_link = wsfs_constitution_link
     @organizers_names_for_signature = organizers_names_for_signature
+  end
+
+  def nominations_notice_chicago(user:)
+    nomination_notice_chicago
+
+    @user = user
+    @reservations = user.reservations.joins(:membership).where(memberships: { name: :dublin_2019 })
+
+    @account_numbers = account_numbers_from(@reservations)
+    subject = if @account_numbers.count == 1
+                "$worldcon_public_name: Hugo Nominations are now open for account #{@account_numbers.first}"
+              else
+                "$worldcon_public_name: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
+              end
+
+    mail(to: user.email, from: $hugo_help_email, subject: subject)
   end
 
   def nominations_open_dublin(user:)
