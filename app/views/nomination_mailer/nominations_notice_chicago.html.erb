@@ -1,23 +1,24 @@
 <%#
-  Copyright 2020 Matthew B. Gray
-  Copyright 2020 Victoria Garcia
+Copyright 2020 Matthew B. Gray
+Copyright 2020 Victoria Garcia
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 %>
 <p>
-  <%= @worldcon_greeting_sentence_excited %>
   <% if @reservations.count == 1 %>
-    <%= @reservations.first.active_claim.contact %>
+    <%= @worldcon_basic_greeting %>, <%= @reservations.first.active_claim.contact %>!
+  <% else %>
+    <%= @worldcon_basic_greeting %>, Chicon 8 member!
   <% end %>
 </p>
 
@@ -27,10 +28,10 @@
 </p>
 
 <p>
-  As a member of <%= @worldcon_public_name %>, you are eligible to nominate in the 17 Hugo ballot
-  categories covering the best of the genre in the last year, for the Lodestar
-  Award for Best Young Adult Book, the <em>Astounding</em> Award for Best New Writer
-  (formerly known as the John W. Campbell Award).
+  As a member of <%= @worldcon_public_name %>, you are eligible to nominate in the
+  <%= @hugo_ballot_category_count %> Hugo ballot categories covering the best of the
+  genre in the last year, for the Lodestar Award for Best Young Adult Book, the
+  <em>Astounding</em> Award for Best New Writer (formerly known as the John W. Campbell Award).
 </p>
 
 <p>
@@ -57,7 +58,12 @@
     email address, please remember that Hugo voting and nominating rights are
     attached to a person NOT a membership, so you should only nominate once,
     for your own membership.
-
+  </p>
+<% end %>
+<% if @additional_email_addresses %>
+  <p>
+    Your account has multiple contact emails associated with it and the members,
+    and so this email has been sent to all emails connected with your account.
   </p>
 <% end %>
 <p>
