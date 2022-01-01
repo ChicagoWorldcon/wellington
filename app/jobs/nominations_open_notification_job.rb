@@ -17,7 +17,7 @@ class NominationsOpenNotificationJob < ApplicationJob
       puts "###> Sending a notification to #{user.email}:#{user.id} and related contacts"
       message = mailer.nominations_notice_chicago(user: user)
 
-      message.deliver!
+      message.deliver unless message.nil?
     end
   end
 end
