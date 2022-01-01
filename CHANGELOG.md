@@ -4,6 +4,25 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2021-12-31] - 2021-12-31
+
+### Features
+
+
+- [#122](https://github.com/ChicagoWorldcon/wellington/issues/122) Add ops tools to send nomination tasks
+  
+
+
+### Bugfixes
+
+
+- [#106](https://github.com/ChicagoWorldcon/wellington/issues/106) Using a cart to purchase supporting memberships no longer breaks upgrades (Fixed in #110)
+  
+- [#117](https://github.com/ChicagoWorldcon/wellington/issues/117) Use the same filtering in upgrade offers as in new membership offers
+  
+- [#120](https://github.com/ChicagoWorldcon/wellington/issues/120) Addressed ballot usability and content feedback
+
+
 ### Added
 
 - Emails for Hugo voting
