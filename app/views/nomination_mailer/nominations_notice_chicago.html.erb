@@ -16,34 +16,27 @@ limitations under the License.
 %>
 <p>
   <% if @reservations.count == 1 %>
-    <%= @worldcon_basic_greeting %>, <%= @reservations.first.active_claim.contact %>!
+    Greetings, <%= @reservations.first.active_claim.contact %>!
   <% else %>
-    <%= @worldcon_basic_greeting %>, Chicon 8 member!
+    Greetings, Chicon 8 member!
   <% end %>
 </p>
 
 <p>
-  We are very glad to be able to tell you that nominations for the <%= @worldcon_year %> Hugo
-  Awards are open!
+  Nominations for the <%= @worldcon_year %> Hugo Awards are now open and will remain
+  open until <%= @hugo_nom_deadline %>. Nominations for the Lodestar Award for Best
+  Young Adult Book and the <em>Astounding</em> Award for Best New Writer are also open.
 </p>
 
 <p>
-  As a member of <%= @worldcon_public_name %>, you are eligible to nominate in the
-  <%= @hugo_ballot_category_count %> Hugo ballot categories covering the best of the
-  genre in the last year, for the Lodestar Award for Best Young Adult Book, the
-  <em>Astounding</em> Award for Best New Writer (formerly known as the John W. Campbell Award).
-</p>
-
-<p>
-  To nominate online, please visit <%= link_to($hostname, $hosturl) %>,
-  enter the email address you received this email at, and request a login link.
-  After clicking the link and entering the members area, click on My Memberships
-  to access all memberships linked with that email address. Then
-  click the nominating links on your membership.
+  All <%= @previous_worldcon_public_name %> members and <%= @worldcon_public_name %> 
+  supporting and attending members who are registered before 11:59 p.m. Pacific Standard
+  Time (PST) on 31 January 2022 are eligible to nominate.
 </p>
 
 <% if @reservations.count > 1 %>
   <p>
+    Your email address has multiple memberships associated with it.
     Please note that because voting is linked to your email address, everyone whose
     memberships are linked to this email address will be able to access and change
     nominations for all those memberships. To prevent this, we recommend that you
@@ -66,65 +59,35 @@ limitations under the License.
     and so this email has been sent to all emails connected with your account.
   </p>
 <% end %>
+
 <p>
-  You can make up to five nominations in each category. Be sure to hit the save
-  button once you have made your nominations. You can save each category
-  individually, or save them all at once using the button at the bottom of the
-  ballot. You can make as many changes as you like to your nomination ballots
-  until the deadline. Your current ballot will be emailed to you an hour after
-  you stop making changes to it.
+  To access the nomination portal, please visit <%= link_to($hostname, $hosturl) %>. Then, 
+  follow these steps:
+  1. Enter the address this email was sent to and request sending a login link to you.
+  2. Click your login link in the email just sent and enter the Members' Area.
+  3. Select 'My Memberships' to access all memberships linked with that email address.
+  4. Then, select 'Nominate for Hugo Awards' under the appropriate membership.
+  5. You will then see instructions for completing the nomination ballot. You must agree to 
+  the terms by typing the full name associated with the membership into a confirmation box 
+  before you can begin entering your nominations.
 </p>
 
 <p>
-  The deadline for nominations is <%= @hugo_nom_deadline %>. Although members of <%= @previous_worldcon_public_name %> <%= @worldcon_year_before %> can nominate, only members of
-  <%= @worldcon_public_name %> will be eligible to vote on the final ballot and choose the winners
-  of the <%= @worldcon_year %> Hugo, Lodestar and <em>Astounding</em> Awards.
+  Printable versions of the WSFS Constitution and Hugo Award nominating ballot are available 
+  to download here: <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/", 
+  https://chicon.org/home/whats-happening/hugo-awards/) %>.
 </p>
 
 <p>
-  We expect to announce the final ballot in early <%= @hugo_ballot_pub_month %>, and the awards will be
+  For more information about nominating, please visit <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/", 
+  https://chicon.org/home/whats-happening/hugo-awards/) %> or email <a href="<%= @mailto_hugo_help %>"><%= @hugo_help_email %></a>
+</p>
+
+<p>
+  We expect to announce the final ballot in <%= @hugo_ballot_pub_month %>, and the awards will be
   presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= @end_day_informal %>, <%= @worldcon_year %>.
 </p>
-
-<p>
-  The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
-  you nominate whatever works and creators you have personally read or seen that
-  were your favorites from  <%= @worldcon_year_before %>.
-</p>
-
-
-<p>
-  Please contact
-  <a href="<%= @mailto_hugo_help %>"><%= @hugo_help_email %></a>
-  if you have difficulties accessing the online ballot(s), or you have any
-  other questions on the Hugo process.
-</p>
-
-<%# TODO: Deal with the stuff about progress reporting %>
-<p>
-  A printable version of the WSFS Constitution and Hugo Nominating ballot has
-  been included in the mailed-out version of Progress Report 2. You may also
-  download a printable ballot in
-
-  <%=
-    link_to(
-      "A4",
-      @hugo_ballot_download_a4,
-    )
-  %>,
-
-  or
-  <%=
-    link_to(
-      "US letter",
-      @hugo_ballot_download_letter,
-    )
-  %> sizes.
-
-  The WSFS Constitution is also available online
-  <%= link_to("here", @wsfs_constitution_link) %>.
-</p>
-
+ 
 <p>
   We look forward to your participation in the <%= @worldcon_year %> Hugo Awards, and hope to see you at <%= @worldcon_public_name %>!
 </p>
@@ -132,5 +95,8 @@ limitations under the License.
 <%# TODO: Deal with organizer names %>
 <p>
   <%= @organizers_names_for_signature %> <br>
-  Administrator and Deputy Hugo Administrators
+  Hugo Administrator and Deputy Hugo Administrator
 </p>
+
+
+<%# TODO: Deal with the stuff about progress reporting %>
