@@ -145,22 +145,17 @@ module ApplicationHelper
   end
 
   def hugo_nom_deadline
-    $voting_opens_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+    $nomination_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
   def hugo_vote_deadline
     $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
-  # FIXME: When we add the new global variable for start of Hugo voting, this should be replaced with a method that reports that date's month.
   def hugo_ballot_pub_month
-    rough_guess_month = Date._parse($hugo_closed_at.to_s)[:mon] + 1
-    rough_guess_year = Date._parse($hugo_closed_at.to_s)[:year]
-    if rough_guess_month > 12
-      rough_guess_month -= 12
-      rough_guess_year += 1
-    end
-    "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
+    month = Date._parse($voting_opens_at.to_s)[:mon]
+    year = Date._parse($voting_opens_at.to_s)[:year]
+    "#{Date::MONTHNAMES[month]} #{year}"
   end
 
   #### Public Name Helpers

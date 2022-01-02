@@ -16,9 +16,9 @@ limitations under the License.
 %>
 <p>
   <% if @reservations.count == 1 %>
-    Greetings, <%= @reservations.first.active_claim.contact %>!
+    <%= @worldcon_basic_greeting %>, <%= @reservations.first.active_claim.contact %>!
   <% else %>
-    Greetings, Chicon 8 member!
+    <%= @worldcon_basic_greeting %>, Chicon 8 member!
   <% end %>
 </p>
 
@@ -29,7 +29,7 @@ limitations under the License.
 </p>
 
 <p>
-  All <%= @previous_worldcon_public_name %> members and <%= @worldcon_public_name %> 
+  All <%= @previous_worldcon_public_name %> members and <%= @worldcon_public_name %>
   supporting and attending members who are registered before 11:59 p.m. Pacific Standard
   Time (PST) on 31 January 2022 are eligible to nominate.
 </p>
@@ -61,25 +61,27 @@ limitations under the License.
 <% end %>
 
 <p>
-  To access the nomination portal, please visit <%= link_to($hostname, $hosturl) %>. Then, 
+  To access the nomination portal, please visit <%= link_to($hostname, $hosturl) %>. Then,
   follow these steps:
-  1. Enter the address this email was sent to and request sending a login link to you.
-  2. Click your login link in the email just sent and enter the Members' Area.
-  3. Select 'My Memberships' to access all memberships linked with that email address.
-  4. Then, select 'Nominate for Hugo Awards' under the appropriate membership.
-  5. You will then see instructions for completing the nomination ballot. You must agree to 
-  the terms by typing the full name associated with the membership into a confirmation box 
-  before you can begin entering your nominations.
+  <ol>
+    <li>Enter the address this email was sent to and request sending a login link to you.</li>
+    <li>Click your login link in the email just sent and enter the Members' Area.</li>
+    <li>Select 'My Memberships' to access all memberships linked with that email address.</li>
+    <li>Then, select 'Nominate for Hugo Awards' under the appropriate membership.</li>
+    <li>You will then see instructions for completing the nomination ballot. You must agree to
+      the terms by typing the full name associated with the membership into a confirmation box
+      before you can begin entering your nominations.</li>
+  </ol>
 </p>
 
 <p>
-  Printable versions of the WSFS Constitution and Hugo Award nominating ballot are available 
-  to download here: <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/", 
+  Printable versions of the WSFS Constitution and Hugo Award nominating ballot are available
+  to download here: <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/",
   https://chicon.org/home/whats-happening/hugo-awards/) %>.
 </p>
 
 <p>
-  For more information about nominating, please visit <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/", 
+  For more information about nominating, please visit <%= link_to("https://chicon.org/home/whats-happening/hugo-awards/",
   https://chicon.org/home/whats-happening/hugo-awards/) %> or email <a href="<%= @mailto_hugo_help %>"><%= @hugo_help_email %></a>
 </p>
 
@@ -87,16 +89,12 @@ limitations under the License.
   We expect to announce the final ballot in <%= @hugo_ballot_pub_month %>, and the awards will be
   presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= @end_day_informal %>, <%= @worldcon_year %>.
 </p>
- 
+
 <p>
   We look forward to your participation in the <%= @worldcon_year %> Hugo Awards, and hope to see you at <%= @worldcon_public_name %>!
 </p>
 
-<%# TODO: Deal with organizer names %>
 <p>
-  <%= @organizers_names_for_signature %> <br>
+  Kat Jones and Nicholas Whyte
   Hugo Administrator and Deputy Hugo Administrator
 </p>
-
-
-<%# TODO: Deal with the stuff about progress reporting %>

@@ -35,7 +35,7 @@ module ConventionDetails
       @con_city_previous = "Washington, D. C."
       @con_country = "The USA"
       @con_country_previous = "The USA"
-      @con_dates_informal_start = "Wednesday, August 31st"
+      @con_dates_informal_start = "Thursday, September 1st"
       @con_dates_informal_end = "Monday, September 5th"
       @con_greeting_basic = "greetings"
       # FIXME: Update hugo ballot locations when we have them
