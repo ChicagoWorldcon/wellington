@@ -84,7 +84,12 @@ class NominationMailer < ApplicationMailer
                 "#{worldcon_public_name}: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
               end
 
-    mail(to: [user.email] + @additional_email_addresses, from: $hugo_help_email, subject: subject)
+    mail(
+      subject: subject,
+      to: [user.email] + @additional_email_addresses,
+      from: $hugo_help_email,
+      return_path: $hugo_help_email
+    )
   end
 
   def nominations_open_dublin(user:)
