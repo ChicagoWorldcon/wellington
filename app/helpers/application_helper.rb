@@ -19,10 +19,9 @@
 # limitations under the License.
 
 module ApplicationHelper
-
   include ThemeConcern
 
-  DEFUALT_NAV_CLASSES = %w(navbar navbar-dark shadow-sm).freeze
+  DEFUALT_NAV_CLASSES = %w[navbar navbar-dark shadow-sm].freeze
   MYSQL_MAX_FIELD_LENGTH = 255
 
   # The root page has an expanded menu
@@ -30,7 +29,7 @@ module ApplicationHelper
     if request.path == root_path
       DEFUALT_NAV_CLASSES
     else
-      DEFUALT_NAV_CLASSES + %w(bg-dark)
+      DEFUALT_NAV_CLASSES + %w[bg-dark]
     end.join(" ")
   end
 
@@ -52,11 +51,15 @@ module ApplicationHelper
     end
   end
 
+  def election_categories(election_i18n_key)
+    Election.find_by(i18n_key: election_i18n_key).categories
+  end
+
   def fuzzy_time(as_at)
     content_tag(
       :span,
       fuzzy_time_in_words(as_at),
-      title: as_at&.iso8601 || "Time not set",
+      title: as_at&.iso8601 || "Time not set"
     )
   end
 
@@ -81,7 +84,6 @@ module ApplicationHelper
   def worldcon_contact_form
     ApplicationHelper.theme_contact_form
   end
-
 
   #### Con City Helpers
   def worldcon_city
@@ -116,15 +118,17 @@ module ApplicationHelper
   end
 
   def worldcon_greeting_init_caps
-    self.worldcon_basic_greeting.split.map{|word| word.capitalize}.inject { |accum, w| accum.concat(" ").concat(w) }.strip
+    worldcon_basic_greeting.split.map do |word|
+      word.capitalize
+    end.inject { |accum, w| accum.concat(" ").concat(w) }.strip
   end
 
   def worldcon_greeting_sentence
-    self.worldcon_basic_greeting.capitalize.concat(".")
+    worldcon_basic_greeting.capitalize.concat(".")
   end
 
   def worldcon_greeting_sentence_excited
-    self.worldcon_basic_greeting.capitalize.concat("!")
+    worldcon_basic_greeting.capitalize.concat("!")
   end
 
   #### Hugo Info Helpers
@@ -141,22 +145,17 @@ module ApplicationHelper
   end
 
   def hugo_nom_deadline
-    $voting_opens_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+    $nomination_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
   def hugo_vote_deadline
     $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
-  # FIXME: When we add the new global variable for start of Hugo voting, this should be replaced with a method that reports that date's month.
   def hugo_ballot_pub_month
-    rough_guess_month = Date._parse($hugo_closed_at.to_s)[:mon] + 1
-    rough_guess_year = Date._parse($hugo_closed_at.to_s)[:year]
-    if (rough_guess_month > 12)
-      rough_guess_month = rough_guess_month - 12
-      rough_guess_year = rough_guess_year + 1
-    end
-    return "#{Date::MONTHNAMES[rough_guess_month]} #{rough_guess_year}"
+    month = Date._parse($voting_opens_at.to_s)[:mon]
+    year = Date._parse($voting_opens_at.to_s)[:year]
+    "#{Date::MONTHNAMES[month]} #{year}"
   end
 
   #### Public Name Helpers
@@ -165,7 +164,7 @@ module ApplicationHelper
   end
 
   def worldcon_public_name_spaceless
-    self.worldcon_public_name.remove(" ");
+    worldcon_public_name.remove(" ")
   end
 
   def previous_worldcon_public_name
@@ -178,7 +177,7 @@ module ApplicationHelper
   end
 
   def worldcon_number_digits_only
-    worldcon_number.gsub(/worldcon/i, '').to_i
+    worldcon_number.gsub(/worldcon/i, "").to_i
   end
 
   #### Organizer Signature Helpers
@@ -221,27 +220,27 @@ module ApplicationHelper
   end
 
   def worldcon_year_before
-   ((self.worldcon_year.to_i) - 1).to_s
+    (worldcon_year.to_i - 1).to_s
   end
 
   def worldcon_year_after
-   ((self.worldcon_year.to_i) + 1).to_s
+    (worldcon_year.to_i + 1).to_s
   end
 
   def retro_hugo_75_ago
-   ((self.worldcon_year.to_i) - 75).to_s
+    (worldcon_year.to_i - 75).to_s
   end
 
   def retro_hugo_50_ago
-   ((self.worldcon_year.to_i) - 50).to_s
+    (worldcon_year.to_i - 50).to_s
   end
 
   def retro_hugo_25_ago
-   ((self.worldcon_year.to_i) - 25).to_s
+    (worldcon_year.to_i - 25).to_s
   end
 
   def site_selection_year
-   ((self.worldcon_year.to_i) + 2).to_s
+    (worldcon_year.to_i + 2).to_s
   end
 
   #### Email Helpers
@@ -250,6 +249,6 @@ module ApplicationHelper
   end
 
   def mailto_hugo_help
-    "mailto:" + self.email_hugo_help
+    "mailto:" + email_hugo_help
   end
 end

@@ -38,23 +38,42 @@ namespace :dev do
   end
 
   task :changelog do
-    # Generate a changelog using towncrier. If you don't have it installed, there's a whole thing involved around pip
-    # and a Python virtualenv.
-    tag = `git tag --points-at HEAD`.chomp.each_line.map do |line|
-      %r{release/(.+)}.match(line) do |m|
-        m[1]
+    changelog
+  end
+
+  task :release do
+    raise "We can't run a release if there are staged changes." unless system("git diff --cached --quiet")
+
+    release_name = Date.today.to_s
+    releases_for_name = `git tag -l`.lines.select { |t| t =~ %r{release/#{release_name}} }.sort.map(&:chomp)
+    release_count_str = ".#{releases_for_name.size + 1}" if releases_for_name.size > 0
+    version = "#{release_name}#{release_count_str}"
+    release_tag = "release/#{version}"
+    changelog(version)
+    raise "Unable to commit the changes" unless system("git commit --no-verify --message 'Changelog for #{version}'")
+    raise "Could not tag" unless system("git tag #{release_tag}")
+    raise "Could not push" unless system("git push origin #{release_tag}")
+  end
+
+  def changelog(version = nil)
+    unless version
+      # Generate a changelog using towncrier. If you don't have it installed, there's a whole thing involved around pip
+      # and a Python virtualenv.
+      tag = `git tag --points-at HEAD`.chomp.each_line.map do |line|
+        %r{release/(.+)}.match(line) do |m|
+          m[1]
+        end
+      end.compact.last
+
+      unless tag
+        puts "There are no tags pointing at the current revision. "
+        puts "Tag this revision with `git tag release/<date>`"
+        exit 1
       end
-    end.compact.last
 
-    unless tag
-      puts "There are no tags pointing at the current revision. "
-      puts "Tag this revision with `git tag release/<date>`"
-      exit 1
+      version = tag
     end
-
-    version = tag
-
-    run!("towncrier --name Wellington --version #{version}")
+    run!("towncrier --yes --name Wellington --version #{version}")
   end
 
   namespace :setup do

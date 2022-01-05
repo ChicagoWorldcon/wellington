@@ -56,7 +56,7 @@ en:
     attend:
       description: Attend in 2022
       layman:
-        You get to fully participate in %{worldcon_public_name} in 2022, with things such as panels and
+        You get to fully participate in Chicon 8 in 2022, with things such as panels and
         streaming video to informal hangouts and late-night networking, attend award ceremonies, shop in virtual dealer
         rooms with sci-fi games/books, and much more!
 
@@ -89,9 +89,9 @@ en:
         ----------------------------------------
 
         You may nominate for the 2022 Hugo Awards, the Lodestar Award for Best Young Adult Book, and the <i>Astounding </i> Award
-        for Best New Writer, if, on or before 31 December 2021, 11:59 PM PST:
+        for Best New Writer, if, on or before 31 January 2021, 11:59 PM PST:
 
-          * you had an Adult, Young Adult, Teen, Child, or Supporting membership for %{worldcon_public_name} (the 2022 World Science Fiction Convention), or
+          * you had an Adult, Young Adult, Teen, Child, or Supporting membership for Chicon 8 (the 2022 World Science Fiction Convention), or
           * you had an Attending, Young Adult, or Supporting membership for DisCon III (the 2021 World Science Fiction Convention).
 
         Note: Other membership types offered by DisCon III or Chicon 8 not listed above, such as Kid-in-Tow, one-day memberships, and hall passes, do not count as attending memberships that are eligible to nominate.
@@ -100,7 +100,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Tuesday 15 March 2022, 11:59 PM PDT.
+        All ballots must be received by Tuesday 15 March 2022, 11:59 PM Pacific Daylight Time (UTC-7) (01:59 AM Central Daylight Time on Tuesday 15 March 2022, and 06:59 AM UTC on 16 March 2022).
 
         How to Nominate
         ----------------------------------------
@@ -112,18 +112,20 @@ en:
         “No Award” will appear automatically in every single category on the final ballot – there is no need to include
         that choice on the nomination form.
 
-        If your nominee is not well known, please provide a source where their 2021 work in that category may be
-        found. This information makes it easier for us to identify the work you intend to nominate.
-
         If you make nominations for Best Series, it will help us if you also list a volume in the series that was
         published in 2021.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>.
+        <a href="mailto:hugo-help@chicon.org">hugo-help@chicon.org</a>.
 
         The Hugo Ballot containing the nominees in each category that qualified for the final ballot will be published
-        by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}  (including those who join after 31 December 2021) will
-        be eligible to vote on the final ballot.  Please contact %{hugo_help_email} if you have questions.
+        by Chicon 8 in April 2022. Only members of Chicon 8  (including those who join after 31 Januarl 2022) will
+        be eligible to vote on the final ballot.  Please contact hugo-help@chicon.org if you have questions.
+
+        To submit your nominations, click the save buttons at the bottom of each section of the ballot, or "save
+        nominations for all categories" at the bottom of the form. Note that clicking "save nominations for all
+        categories" will close the form. You can make as many changes as you like to your nomination ballot up until the
+        deadline.
 
         Eligibility for Nominations
         ----------------------------------------
@@ -145,6 +147,10 @@ en:
         For full eligibility rules, please see the
         [WSFS Constitution](http://www.wsfs.org/wp-content/uploads/2020/08/WSFS-Constitution-as-of-August-1-2020.pdf).
 
+        For detail on works whose eligibility was extended by the DisCon III Business Meeting, please see the [full
+        printable ballot available at
+        https://chicon.org/home/whats-happening/hugo-awards/](https://chicon.org/home/whats-happening/hugo-awards/).
+
       nominate_soon:
         description: Nominate for Hugo Awards
         layman:
@@ -157,22 +163,20 @@ en:
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
           achievements of the previous year. Your membership allows you to nominate Hugo finalists in 2022 and 2023, and
-          vote for the Hugo winners of 2022, and for the Retro Hugos for 1947.
+          vote for the Hugo winners of 2022.
 
       # Dublin imports cannot vote, they get special text to nod to this
       nominate_only:
         description: Nominate for Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2022, and for the
-          Retro Hugos for 1947.
+          achievements of the previous year. Your membership allows you to nominate Hugo finalists for 2022.
 
       vote:
         description: Vote in Hugo Awards
         layman:
           The Hugo Awards are a set of literary awards given annually for the best science fiction or fantasy works and
-          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2022, and for the
-          Retro Hugos for 1947.
+          achievements of the previous year. Your membership allows you to vote for the Hugo winners of 2022.
 
     # Maps onto text from Election#i18n_key
     retro_hugo:
@@ -196,9 +200,9 @@ en:
         Eligibility to Nominate
         ----------------------------------------
 
-        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 December 2021, 11:59 PM PST:
+        You may nominate for the 1947 Retro Hugo Awards, if, on or before 31 January 2021, 11:59 PM PST:
 
-        * you are an attending or supporting member of #{worldcon_public_name} (the 2022 World Science Fiction Convention), or
+        * you are an attending or supporting member of Chicon 8 (the 2022 World Science Fiction Convention), or
         * you are an attending or supporting member of DisCon III (the 2021 World Science Fiction Convention).
 
         Note: Young Adult memberships count as attending memberships and are eligible to nominate. Child memberships,
@@ -207,7 +211,7 @@ en:
         Deadline
         ----------------------------------------
 
-        All ballots must be received by Friday 13 March 2022, 11:59 PM PDT
+        All ballots must be received by Tuesday 15 March 2022, 11:59 PM Pacific Daylight Time (UTC-7) (01:59 AM Central Daylight Time on Tuesday 15 March 2022, and 06:59 AM UTC on 16 March 2022).
 
         How to Nominate
         ----------------------------------------
@@ -226,13 +230,7 @@ en:
         published in 1944.
 
         If you have any questions about the process or need assistance with nominating, please contact us at
-        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
-
-        The Retro Hugo Ballot containing the nominees in each category that qualified for the final ballot will be
-        published by %{worldcon_public_name} in April 2022. Only members of %{worldcon_public_name}(including those who join after 31 December
-        2021) will be eligible to vote on the final ballot.  Please contact
-        <a href="%{mailto_hugo_help}">%{hugo_help_email}</a>
-        if you have questions.
+        <a href="mailto:hugo-help@chicon.org">hugo-help@chicon.org</a>
 
         Eligibility for Nominations
         ----------------------------------------

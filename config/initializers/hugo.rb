@@ -25,6 +25,7 @@ class SetHugoGlobals
   def call
     $nomination_opens_at = time_from("HUGO_NOMINATIONS_OPEN_AT") || DateTime.now
     $voting_opens_at = time_from("HUGO_VOTING_OPEN_AT") || 1.day.from_now
+    $nomination_closed_at = time_from("HUGO_NOMINATIONS_CLOSE_AT") || $voting_opens_at
     $hugo_closed_at = time_from("HUGO_CLOSED_AT") || 2.weeks.from_now
   end
 
@@ -48,7 +49,7 @@ class SetHugoGlobals
 
   def parse!(time_string, lookup)
     DateTime.parse(time_string)
-  rescue
+  rescue StandardError
     puts
     puts "Cannot parse time from #{lookup}=#{time_string}"
     puts "Please check your .env"

@@ -29,11 +29,11 @@ class NominationMailer < ApplicationMailer
     @retro_hugo_75_ago = retro_hugo_75_ago
     @organizers_names_for_signature = organizers_names_for_signature
     @detail = reservation.active_claim.contact
-    nominated_categories = Category.joins(nominations: :reservation).where(reservations: {id: reservation})
+    nominated_categories = Category.joins(nominations: :reservation).where(reservations: { id: reservation })
 
     builder = MemberNominationsByCategory.new(
       reservation: reservation,
-      categories: nominated_categories.order(:order, :id),
+      categories: nominated_categories.order(:order, :id)
     )
     builder.from_reservation
     @nominations_by_category = builder.nominations_by_category
@@ -46,7 +46,7 @@ class NominationMailer < ApplicationMailer
   end
 
   def nomination_notice_chicago
-    @worldcon_greeting_sentence_excited = worldcon_greeting_sentence_excited
+    @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
     @hugo_nom_deadline = hugo_nom_deadline
     @previous_worldcon_public_name = previous_worldcon_public_name
@@ -54,25 +54,54 @@ class NominationMailer < ApplicationMailer
     @worldcon_year = worldcon_year
     @start_day_informal = start_day_informal
     @end_day_informal = end_day_informal
-    @retro_hugo_75_ago = retro_hugo_75_ago
     @mailto_hugo_help = mailto_hugo_help
     @hugo_help_email = email_hugo_help
+    @hugo_ballot_pub_month = hugo_ballot_pub_month
     @hugo_ballot_download_a4 = hugo_ballot_download_a4
     @hugo_ballot_download_letter = hugo_ballot_download_letter
-    @wsfs_constitution_link = @wsfs_constitution_link
+    @hugo_ballot_category_count = election_categories("hugo").count
+    @wsfs_constitution_link = wsfs_constitution_link
     @organizers_names_for_signature = organizers_names_for_signature
+  end
+
+  def nominations_notice_chicago(user:)
+    nomination_notice_chicago
+
+    @user = user
+    @reservations = user.reservations.joins(:membership).where(memberships: { can_nominate: true })
+    return unless @reservations.present?
+
+    @additional_email_addresses = @reservations\
+                                  .map(&:active_claim)\
+                                  .map(&:contact)\
+                                  .map(&:email)\
+                                  .reject { |email| email == @user.email }
+
+    @account_numbers = account_numbers_from(@reservations)
+    subject = if @account_numbers.count == 1
+                "#{worldcon_public_name}: Hugo Nominations are now open for account #{@account_numbers.first}"
+              else
+                "#{worldcon_public_name}: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
+              end
+
+    mail(
+      subject: subject,
+      to: [user.email] + @additional_email_addresses,
+      from: $hugo_help_email,
+      return_path: $hugo_help_email
+    )
   end
 
   def nominations_open_dublin(user:)
     @user = user
-    @reservations = user.reservations.joins(:membership).where(memberships: {name: :dublin_2019})
+    @reservations = user.reservations.joins(:membership).where(memberships: { name: :dublin_2019 })
 
     @account_numbers = account_numbers_from(@reservations)
-    if @account_numbers.count == 1
-      subject = "CoNZealand: Hugo Nominations are now open for account #{@account_numbers.first}"
-    else
-      subject = "CoNZealand: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
-    end
+    subject = if @account_numbers.count == 1
+                "CoNZealand: Hugo Nominations are now open for account #{@account_numbers.first}"
+              else
+                "CoNZealand: Hugo Nominations are now open for accounts #{@account_numbers.to_sentence}"
+              end
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
@@ -82,11 +111,11 @@ class NominationMailer < ApplicationMailer
     @reservations = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
     account_numbers = account_numbers_from(@reservations)
-    if account_numbers.count == 1
-      subject = "CoNZealand: Hugo Nominations are now open for member #{account_numbers.first}"
-    else
-      subject = "CoNZealand: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "CoNZealand: Hugo Nominations are now open for member #{account_numbers.first}"
+              else
+                "CoNZealand: Hugo Nominations are now open for members #{account_numbers.to_sentence}"
+              end
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
@@ -95,16 +124,14 @@ class NominationMailer < ApplicationMailer
     user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    if reservations_that_can_nominate.none?
-      return
-    end
+    return if reservations_that_can_nominate.none?
 
     account_numbers = account_numbers_from(reservations_that_can_nominate)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
+              else
+                "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
@@ -115,16 +142,14 @@ class NominationMailer < ApplicationMailer
     user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    if reservations_that_can_nominate.none?
-      return
-    end
+    return if reservations_that_can_nominate.none?
 
     account_numbers = account_numbers_from(reservations_that_can_nominate)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "2 weeks to go! Hugo Award Nominating Reminder for member #{account_numbers.first}"
+              else
+                "2 weeks to go! Hugo Award Nominating Reminder for members #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
@@ -135,16 +160,14 @@ class NominationMailer < ApplicationMailer
     user = User.find_by!(email: email)
     reservations_that_can_nominate = user.reservations.joins(:membership).merge(Membership.can_nominate)
 
-    if reservations_that_can_nominate.none?
-      return
-    end
+    return if reservations_that_can_nominate.none?
 
     account_numbers = account_numbers_from(reservations_that_can_nominate)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for account #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Nominating Reminder for accounts #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "2 weeks to go! Hugo Award Nominating Reminder for account #{account_numbers.first}"
+              else
+                "2 weeks to go! Hugo Award Nominating Reminder for accounts #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
@@ -171,26 +194,24 @@ class NominationMailer < ApplicationMailer
 
     user = User.find_by!(email: email)
 
-    if user.reservations.none?
-      return
-    end
+    return if user.reservations.none?
 
     account_numbers = account_numbers_from(user.reservations)
-    conzealand = conzealand_memberships.where(reservations: {id: user.reservations}).any?
+    conzealand = conzealand_memberships.where(reservations: { id: user.reservations }).any?
 
-    if account_numbers.count == 1 && conzealand
-      subject = "Hugo Nominations Close in 3 Days! for member #{account_numbers.first}"
-    elsif conzealand
-      subject = "Hugo Nominations Close in 3 Days! for members #{account_numbers.to_sentence}"
-    elsif account_numbers.count == 1
-      subject = "Hugo Nominations Close in 3 Days! for account #{account_numbers.first}"
-    else
-      subject = "Hugo Nominations Close in 3 Days! for accounts #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1 && conzealand
+                "Hugo Nominations Close in 3 Days! for member #{account_numbers.first}"
+              elsif conzealand
+                "Hugo Nominations Close in 3 Days! for members #{account_numbers.to_sentence}"
+              elsif account_numbers.count == 1
+                "Hugo Nominations Close in 3 Days! for account #{account_numbers.first}"
+              else
+                "Hugo Nominations Close in 3 Days! for accounts #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
-    mail(to: user.email, from: "#{hugo_help_email}", subject: subject)
+    mail(to: user.email, from: hugo_help_email.to_s, subject: subject)
   end
 
   private

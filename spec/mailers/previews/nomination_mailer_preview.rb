@@ -49,14 +49,14 @@ class NominationMailerPreview < ActionMailer::Preview
   def nominations_open_chicago
     # TODO- MAKE SURE THIS WORKS
     if params[:user]
-      mailer = NominationMailer.nominations_open_chicago(
-        user: User.find_by!(email: params[:user]),
+      mailer = NominationMailer.nominations_notice_chicago(
+        user: User.find_by!(email: params[:user])
       )
       return mailer
     end
     users = User.joins(reservations: :membership).merge(Membership.can_nominate).distinct
-    chicago_users = # TODO-- WRITE THIS QUERY.
-    NominationMailer.nominations_open_chicago(user: chicago_users.sample)
+    chicago_users = users.where(memberships: { name: :adult })
+    NominationMailer.nominations_notice_chicago(user: chicago_users.sample)
   end
 
   def nominations_reminder_2_weeks_left_chicago
