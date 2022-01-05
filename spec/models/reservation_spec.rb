@@ -209,7 +209,7 @@ RSpec.describe Reservation, type: :model do
     end
   end
 
-  xdescribe "eval_for_upgrade_price_lock" do
+  describe "eval_for_upgrade_price_lock" do
 
     context "when there is a request for installment from the claimant" do
       subject(:model) { build(:reservation,
@@ -234,7 +234,7 @@ RSpec.describe Reservation, type: :model do
       end
     end
 
-    context "when there is NO request for installment from claimant" do
+    context "when there is no request for installment from claimant" do
       subject(:model) { build(:reservation,
                                 :with_order_against_supporting_membership) }
 
@@ -267,17 +267,22 @@ RSpec.describe Reservation, type: :model do
         expect(model.price_lock_date).to be_within(1.day).of (Time.now - 30.days)
 
         expect{ model.eval_for_upgrade_price_lock }
-          .to_not change { reservation.reload.price_lock_date}
+          .to_not change { model.reload.price_lock_date}
       end
     end
 
     context "when the reservation is not a new one" do
-      subject(:model) { create (:reservation,
+      subject(:model) { create(:reservation,
                                 :with_order_against_supporting_membership,
                                 :with_installment_request_from_claimant ) }
 
-      xit "does not set the lock" do
 
+      it "is not triggered by saving" do
+        model.update(price_lock_date: nil)
+
+        expect { model.save }
+          .to_not change { model.price_lock_date }
+          .from(nil)
       end
     end
   end
