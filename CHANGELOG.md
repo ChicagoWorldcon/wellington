@@ -4,6 +4,10 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-01-10] - 2022-01-10
+No significant changes.
+
+
 ## [2022-01-03.2] - 2022-01-03
 No significant changes.
 
