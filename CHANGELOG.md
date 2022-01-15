@@ -4,6 +4,14 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-01-15] - 2022-01-15
+
+### Misc
+
+
+- [#130](https://github.com/ChicagoWorldcon/wellington/issues/130)
+
+
 ## [2022-01-14] - 2022-01-14
 
 ### Features
