@@ -18,6 +18,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "mkmf" # for `find_executable`
+
 module ApplicationHelper
   include ThemeConcern
 
@@ -261,6 +263,10 @@ module ApplicationHelper
   end
 
   def wellington_dev_commit
-    `git show --pretty=%H -q` || "indeterminate"
+    if find_executable("git")
+      `git show --pretty=%H -q || echo 'indeterminate'`
+    else
+      "on a system without git"
+    end
   end
 end
