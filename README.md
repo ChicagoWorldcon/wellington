@@ -1,39 +1,33 @@
 # Worldcon Members Management
 
-Kia ora and welcome to the [Wellington](https://gitlab.com/worldcon/wellington) source code repository. This
+Kia ora and welcome to the [Wellington](https://github.com/ChicagoWorldcon/wellington) source code repository. This
 site hosts and tracks changes to code for managing Members of the [CoNZealand](https://conzealand.nz/) convention.
 
 What you'll find in this project is a series of compromises that we felt struck a balance with features and
 functionality. If you have an interest in making your convention or future conventions better do feel free to reach out
-by [raising an issue](https://gitlab.com/worldcon/wellington/issues/new) and we'll be happy to talk it over.
-
-[![pipeline status](https://gitlab.com/worldcon/wellington/badges/master/pipeline.svg)](https://gitlab.com/worldcon/wellington/commits/master)
-[![coverage report](https://gitlab.com/worldcon/wellington/badges/master/coverage.svg)](https://gitlab.com/worldcon/wellington/commits/master)
+by [raising an issue](https://github.com/ChicagoWorldcon/wellington/issues/new) and we'll be happy to talk it over.
 
 # Changelog and Versioning
 
 All notable changes to this project will be documented in [our changelog](CHANGELOG.md).
 
-We maintain published docker images for this project in our
-[container registry](https://gitlab.com/worldcon/wellington/container_registry). These track
-* all branches that ran through CI including master
-* all tags on the project which follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-* `:latest` tracks master which moves after things have gone through code review and basic testing
-* `:stable` tracks latest tags and update after a new tag is pushed
-
 # Contacting Us and Contributing
 
-You can contact us by [raising an issue](https://gitlab.com/worldcon/wellington/issues/new) in our tracker.
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-If you want it to be private, there's a checkbox that marks the issue as *confidential* which will only be visible to
+You can contact us by [raising an issue](https://github.com/ChicagoWorldcon/wellington/issues/new) in our tracker.
+
+If you want it to be private, there's a checkbox that marks the issue as _confidential_ which will only be visible to
 team members. This is particularly important if you need to disclose a security issue, please let us know in confidence
 to respect our member's privacy and rights.
 
 If you'd like to contribute, please read our [Contribution Guidelines](CONTRIBUTING.md).
 
-We've got a [Good First Issue](https://gitlab.com/worldcon/wellington/issues?label_name%5B%5D=Good+First+Issue)
+We've got a [Good First Issue](https://github.com/ChicagoWorldcon/wellington/issues?label_name%5B%5D=Good+First+Issue**
 label on issues that we feel are valuable to the project, but also a good size for people just starting out. If you're
 keen have a look at this list and leave comments on any you'd like to try.
+
+**FIXME** The instructions below here need some updating!
 
 # Getting Started
 
@@ -54,7 +48,7 @@ the tools exist for Windows, but the commands will differ somewhat (A PR to
 update that would be welcome)
 
 If you run into troubles getting any of this working, ask for help by
-[raising an issue](https://gitlab.com/worldcon/wellington/issues/new) and we'll be in touch!
+[raising an issue](https://github.com/ChicagoWorldcon/wellington/issues/new) and we'll be in touch!
 
 From here onwards, we're assuming you're comfortable running commands in your console. These commands will create and install
 files on your machine.
@@ -87,6 +81,7 @@ running `rails` commands directly) then `direnv` will be a godsend, as the
 config won't otherwise read the `.env` file.
 
 ### Install basic developer tools.
+
 1. [gnu make](https://www.gnu.org/software/make/),
 2. [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
@@ -135,17 +130,17 @@ layout node
 dotenv
 ```
 
-* **Note 1**: If you choose not to use direnv's `ruby` layout, all of the
+- **Note 1**: If you choose not to use direnv's `ruby` layout, all of the
   `rails` and `rspec` commands below need to be prefixed with `bundle exec`.
   Direnv sets up local wrappers for you on those, which you will probably find
-  a lot easier.*
+  a lot easier.\*
 
-* **Note 2**: `.env` and `.envrc` fill different roles. `.env` is a simple
+- **Note 2**: `.env` and `.envrc` fill different roles. `.env` is a simple
   KEY=VALUE file that docker will use to populate docker containers. Anything
   all of your docker containers should know goes in here. `.envrc` is for your
-  development environment. It configures  your local `GEM_PATH`, node modules,
+  development environment. It configures your local `GEM_PATH`, node modules,
   and tools. In addition, the example above sources `.env` so that running
-  `rails server` will have the same environment as the docker containers.*
+  `rails server` will have the same environment as the docker containers.\*
 
 ### Install dependencies
 
@@ -318,6 +313,8 @@ from scratch.
 
 # Running in Production
 
+**FIXME**: This is wildly out of date
+
 We're taking advantage of Gitlab's CI pipeline to build docker images. You can browse our
 [list of images](https://gitlab.com/worldcon/wellington/container_registry)
 or just follow the `:latest` tag to get things that have gone through CI and code review.
@@ -338,6 +335,7 @@ For an easy setup with SSL, conzealand uses [Caddy](https://caddyserver.com/) be
 Here's the CoNZealand compose file:
 
 `~/docker-compose`
+
 ```yaml
 # Copyright 2019 James Polley
 # Copyright 2019 Matthew B. Gray
@@ -355,7 +353,7 @@ Here's the CoNZealand compose file:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '3.6'
+version: "3.6"
 
 services:
   ingress:
@@ -378,8 +376,7 @@ services:
       - redis-data:/data
 
   production_web:
-    env_file:
-      production.env
+    env_file: production.env
     image: registry.gitlab.com/worldcon/wellington:stable
     restart: always
     volumes:
@@ -389,16 +386,14 @@ services:
   production_worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
     image: registry.gitlab.com/worldcon/wellington:stable
-    env_file:
-      production.env
+    env_file: production.env
     restart: always
     volumes:
       - type: tmpfs
         target: /app/tmp
 
   staging_web:
-    env_file:
-      staging.env
+    env_file: staging.env
     image: registry.gitlab.com/worldcon/wellington:latest
     restart: always
     volumes:
@@ -408,8 +403,7 @@ services:
   staging_worker:
     entrypoint: "script/docker_sidekiq_entry.sh"
     image: registry.gitlab.com/worldcon/wellington:latest
-    env_file:
-      production.env
+    env_file: production.env
     restart: always
     volumes:
       - type: tmpfs
@@ -424,6 +418,7 @@ Here's the Cadyfile which handles SSL termination, transparent forwarding to our
 our staging setup:
 
 `~/Cadyfile`
+
 ```
 members.conzealand.nz {
   log stdout
@@ -450,6 +445,7 @@ If you're interested in the docker image configuration options, see [abiosoft/ca
 Here's a version of our production config with production specific environment variables and obscured secrets:
 
 `production.env`
+
 ```bash
 # Used for URL generation and using compiled assets
 RAILS_ENV=production
@@ -527,9 +523,9 @@ To create a theme for your con, you'll need to:
    ```
 2. Copy your favicon into app/javascript/packs/atlantis-favicon.ico
 3. Modify app/views/layouts/atlantis.html.erb, change:
-   * stylesheet_pack_tag to point at atlantis-app
-   * javascript_pack_tag to point at atlantis-styles
-   * favicon's resolve_path_to_image should point at media/packs/atlantis-favicon.ico
+   - stylesheet_pack_tag to point at atlantis-app
+   - javascript_pack_tag to point at atlantis-styles
+   - favicon's resolve_path_to_image should point at media/packs/atlantis-favicon.ico
 4. Open `app/lib/theme_concern.rb` and change `#theme_contact_form` to include a case for atlantis
 5. Set `WORLDCON_CONTACT=atlantis` in your .env
 6. Commit your work
@@ -547,9 +543,9 @@ To create a model for your member contact form, you'll need to:
    the guide on [Active Record Migrations](https://guides.rubyonrails.org/active_record_migrations.html)
    from guides.rubyonrails.org.
 3. Update
-   * `app/models/atlantis_contact.rb` with constraints-- look at other \_contact models for reference
-   * `spec/factories/atlantis_contacts.rb` with defaults-- look at other factories in this directory for examples
-   * `spec/models/atlantis_contact_spec.rb` with tests if you've got logic in your model
+   - `app/models/atlantis_contact.rb` with constraints-- look at other \_contact models for reference
+   - `spec/factories/atlantis_contacts.rb` with defaults-- look at other factories in this directory for examples
+   - `spec/models/atlantis_contact_spec.rb` with tests if you've got logic in your model
 4. Open `./app/lib/theme_concern.rb` and modify `#theme_contact_param` with `:atlantis_contact`
 5. Copy over another con's form to get you started
    ```bash
@@ -571,6 +567,7 @@ the [Rails Migration](https://guides.rubyonrails.org/active_record_migrations.ht
 The docker registry pumps out new images all the time. Here's a make file we're using to run updates on production:
 
 `Makefile`
+
 ```make
 default: update restart clean logs
 
