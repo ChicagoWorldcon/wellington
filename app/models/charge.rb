@@ -29,22 +29,24 @@ class Charge < ApplicationRecord
   TRANSFER_CASH = "cash"
 
   belongs_to :user
-  #belongs_to :reservation
-  belongs_to :buyable, :polymorphic => true
+  # belongs_to :reservation
+  belongs_to :buyable, polymorphic: true
 
   monetize :amount_cents
 
   validates :amount, presence: true
   validates :comment, presence: true
-  validates :state, inclusion: {in: [STATE_FAILED, STATE_SUCCESSFUL, STATE_PENDING]}
+  validates :state, inclusion: { in: [STATE_FAILED, STATE_SUCCESSFUL, STATE_PENDING] }
   validates :stripe_id, presence: true, if: :stripe?
-  validates :transfer, presence: true, inclusion: {in: [TRANSFER_STRIPE, TRANSFER_CASH]}
+  validates :transfer, presence: true, inclusion: { in: [TRANSFER_STRIPE, TRANSFER_CASH] }
 
-  scope :stripe, ->() { where(transfer: TRANSFER_STRIPE) }
-  scope :cash, ->() { where(transfer: TRANSFER_CASH) }
-  scope :pending, ->() { where(state: STATE_PENDING) }
-  scope :failed, ->() { where(state: STATE_FAILED) }
-  scope :successful, ->() { where(state: STATE_SUCCESSFUL) }
+  scope :stripe, -> { where(transfer: TRANSFER_STRIPE) }
+  scope :cash, -> { where(transfer: TRANSFER_CASH) }
+  scope :pending, -> { where(state: STATE_PENDING) }
+  scope :failed, -> { where(state: STATE_FAILED) }
+  scope :successful, -> { where(state: STATE_SUCCESSFUL) }
+  scope :for_cart, -> { where(buyable_type: "Cart") }
+  scope :for_item, -> { where("buyable_type <> 'Cart'") }
 
   def stripe?
     transfer == TRANSFER_STRIPE

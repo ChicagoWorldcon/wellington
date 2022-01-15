@@ -148,6 +148,10 @@ module ApplicationHelper
     $nomination_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
+  def hugo_nom_deadline_long_form
+    $nomination_closed_at.strftime("%H:%M %p, Pacific Daylight Time (PDT, UTC-7) on %B %d, %Y")
+  end
+
   def hugo_vote_deadline
     $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end

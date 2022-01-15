@@ -11,11 +11,11 @@
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Preview all emails at http://localhost:3000/rails/mailers/payment_mailer
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ #
+ # Preview all emails at http://localhost:3000/rails/mailers/payment_mailer
 %>
 
 <%= @worldcon_basic_greeting.capitalize %>!
@@ -25,14 +25,33 @@ Your order number is <%= @order_number %>.
 
 The <%= pluralize(@item_count, 'item') %> purchased include:
 
-  <% @item_descs.each.with_index(1) do |desc, i| %>
-    <%=i%>     <%=desc %>
-  <% end %>
+<% @item_descs.each.with_index(1) do |desc, i| %>
+  <%=i%>     <%=desc %>
+<% end %>
 
 You paid <%= @charge.amount.format(with_currency: true) %> which will show up on your statement with the
 identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @worldcon_public_name_spaceless %>".
 
 You can update your details and access our services any time by returning to the members area.
+
+<% if @nominations_open %>
+Nominations for the 2022 Hugo Awards are now open and will remain open until <%= @nomination_end %>. Nominations for the Lodestar Award for Best Young Adult Book and the Astounding Award for Best New Writer are also open.
+
+Chicon 8 Supporting members and Attending members in the Adult, Young Adult, Teen, and Child classes who registered before 11:59 p.m. Pacific Standard Time (PST, UTC-8) January 31, 2022 are eligible to nominate.
+
+To access the nomination portal, please visit https://registration.chicon.org/ and follow these steps:
+
+1. Enter the e-mail address you used to register your Chicon 8 membership and request a login link be sent to you.
+2. Click your login link in the email just sent and enter the Members’ Area.
+3. Select ‘My Memberships’ to access all memberships linked with that email address.
+4. Then, select ‘Nominate for Hugo Awards’ under the appropriate membership.
+5. You will then see instructions for completing the nomination ballot. You must agree to the terms by typing the full name associated with the membership into a confirmation box before you can begin entering your nominations.
+6. You can choose up to five nominees in each category. Be sure to hit the save button once you have made your nominations. You can save each category individually, or save them all at once using the button at the bottom of the ballot. You can make as many changes as you like to your nomination ballots until the deadline. Your current ballot will be emailed to you an hour after you stop making changes to it.
+
+If you prefer a printable paper form, you can download one in US letter or A4 sizes from the Hugo nomination portal of Chicon 8’s website here: https://chicon.org/home/whats-happening/hugo-awards/.
+
+For more information about nominating, please visit https://chicon.org/home/whats-happening/hugo-awards/ or email hugo-help@chicon.org.
+<% end %>
 
 <%= @worldcon_public_name %> - <%= $member_services_email %>
 <%= @worldcon_url_homepage %>
