@@ -20,7 +20,7 @@ class Export::MembershipRow
   JOINS = {
     claim: [
       :user,
-      { reservation: :membership },
+      { reservation: :membership }
     ]
   }.freeze
 
@@ -28,10 +28,10 @@ class Export::MembershipRow
 
   HEADINGS = [
     "membership_number",
-    "email",
+    "login_email",
     "membership_name",
     "name_to_list",
-    *CONTACT_KEYS,
+    *CONTACT_KEYS
   ].freeze
 
   attr_reader :contact
@@ -49,7 +49,7 @@ class Export::MembershipRow
       contact.claim.user.email,
       reservation.membership.name,
       contact.to_s,
-      *contact_values,
+      *contact_values
     ]
   end
 end
