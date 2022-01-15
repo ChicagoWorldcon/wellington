@@ -31,6 +31,9 @@ class Export::MembershipRow
     "login_email",
     "membership_name",
     "name_to_list",
+    "reservation_status",
+    "can_nominate",
+    "can_vote",
     *CONTACT_KEYS
   ].freeze
 
@@ -49,6 +52,9 @@ class Export::MembershipRow
       contact.claim.user.email,
       reservation.membership.name,
       contact.to_s,
+      reservation.state,
+      reservation.can_nominate?,
+      reservation.can_vote?,
       *contact_values
     ]
   end
