@@ -255,4 +255,12 @@ module ApplicationHelper
   def mailto_hugo_help
     "mailto:" + email_hugo_help
   end
+
+  def wellington_tagged_version
+    ENV["WELLINGTON_DOCKER_TAG"]
+  end
+
+  def wellington_dev_commit
+    `git show --pretty=%H -q` || "indeterminate"
+  end
 end

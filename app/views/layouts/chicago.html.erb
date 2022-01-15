@@ -86,6 +86,14 @@
       <p>
         Contact <%= link_to $member_services_email, "mailto:#{$member_services_email}" %> for help with registration and this site.
       </p>
+      <p class="system-info">
+        This build of Wellington is
+        <% if wellington_tagged_version %>
+          tagged <%= wellington_tagged_version %>
+        <% else %>
+          a development version at <%= wellington_dev_commit %>
+        <% end %>
+      </p>
     </div>
   </footer>
 </body>
