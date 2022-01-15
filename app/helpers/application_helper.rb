@@ -191,6 +191,10 @@ module ApplicationHelper
     Rails.configuration.convention_details.con_organizers_sigs
   end
 
+  def hugo_administrator_names_for_signature
+    Rails.configuration.convention_details.hugo_administrator_sigs
+  end
+
   #### External URL Helpers
   def worldcon_url_homepage
     Rails.configuration.convention_details.con_url_homepage

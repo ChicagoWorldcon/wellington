@@ -24,8 +24,8 @@ module ConventionDetails
   class Worldcon80 < ConventionDetails::Convention
     attr_reader :con_city, :con_city_previous, :con_country, :con_country_previous, :con_dates_informal_end,
                 :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter,
-                :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :con_url_homepage,
-                :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering,
+                :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :hugo_administrator_sigs,
+                :con_url_homepage, :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering,
                 :con_wsfs_constitution_link, :con_year, :contact_model, :registration_mailing_address,
                 :site_theme, :translation_folder
 
@@ -42,10 +42,11 @@ module ConventionDetails
       @con_hugo_download_A4 = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_hugo_download_letter = "https://www.wsc.edu/download/downloads/id/1843/chicago_citation_style_examples_-_17th_edition.pdf"
       @con_name_public = "Chicon 8"
-      @con_name_public_previous = "DisCon 3"
+      @con_name_public_previous = "DisCon III"
       @con_number = "worldcon80"
       # FIXME: Update @con_organizers_sigs
       @con_organizers_sigs = "Helen Montgomery & co-conspirators"
+      @hugo_administrator_sigs = "Kat Jones and Nicholas Whyte"
       @con_url_homepage = "https://chicon.org/"
       @con_url_member_login = "https://registration.chicon.org/"
       @con_url_privacy = "https://chicon.org/privacy-policy/"
