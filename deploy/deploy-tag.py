@@ -2,6 +2,7 @@
 
 import argparse
 from contextlib import contextmanager
+import json
 import shlex
 import shutil
 import subprocess
@@ -98,7 +99,14 @@ def main():
 
         res = subprocess.run(command, capture_output=True)
         res.check_returncode()
-        print(res.stdout)
+        try:
+            response = json.loads(res.stdout)
+            deployment_id = response["deploymentId"]
+        except Exception:
+            print(res.stdout)
+            sys.exit(1)
+
+        subprocess.run(["aws", "deploy", "wait", "deployment-successful", "--deployment-id", deployment_id], check=True)
 
 
 if __name__ == "__main__":
