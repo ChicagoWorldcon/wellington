@@ -24,7 +24,7 @@ schedule:
   email_nomination_reports:
     cron: "10 0 * * * America/Los_Angeles" # At 00:10 every day
     class: SendNominationReports
-    enabled: false
+    enabled: true
 
   email_membership_reports:
     cron: "0 1 * * 6 America/Los_Angeles" # At 01:00 on Saturday
@@ -41,7 +41,7 @@ schedule:
   email_nomination_ballot_summaries:
     cron: "*/30 * * * * America/Los_Angeles" # Runs every half an hour
     class: SendNominationSummaries
-    enabled: false
+    enabled: true
 
   email_voting_reminder_3_days:
     cron: "0 * * * * America/Los_Angeles" # Every hour on the hour
@@ -51,4 +51,4 @@ schedule:
   email_voting_summaries:
     cron: "*/15 * * * * America/Los_Angeles" # Runs every half an hour
     class: SendRankSummaries
-    enabled: false
+    enabled: true
