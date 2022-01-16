@@ -40,7 +40,7 @@ class NominationMailer < ApplicationMailer
     @nominations_by_category = builder.nominations_by_category
 
     mail(
-      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_75_ago} Retro Hugo Nominations Ballot",
+      subject: "Your #{worldcon_year} Hugo Nominations Ballot",
       to: reservation.user.email,
       from: "Hugo Awards #{worldcon_year} <#{email_hugo_help}>"
     )
