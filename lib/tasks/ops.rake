@@ -10,8 +10,19 @@ namespace :ops do
     email = args[:email] || abort("An email is required")
     Support.create(
       email: email,
+      password: password
+    )
+    puts "Created <#{email}>"
+    puts "Password: '#{password}'"
+  end
+
+  task :add_hugo_admin, [:email] => :environment do |_t, args|
+    password = Passgen.generate
+    email = args[:email] || abort("An email is required")
+    Support.create!(
+      email: email,
       password: password,
-      confirmed_at: Time.now
+      hugo_admin: true
     )
     puts "Created <#{email}>"
     puts "Password: '#{password}'"
