@@ -27,8 +27,9 @@ class NominationMailer < ApplicationMailer
     @worldcon_public_name = worldcon_public_name
     @worldcon_year = worldcon_year
     @retro_hugo_75_ago = retro_hugo_75_ago
-    @organizers_names_for_signature = organizers_names_for_signature
+    @names_for_signature = hugo_administrator_names_for_signature
     @detail = reservation.active_claim.contact
+    @nomination_end = hugo_nom_deadline_long_form
     nominated_categories = Category.joins(nominations: :reservation).where(reservations: { id: reservation })
 
     builder = MemberNominationsByCategory.new(
@@ -39,7 +40,7 @@ class NominationMailer < ApplicationMailer
     @nominations_by_category = builder.nominations_by_category
 
     mail(
-      subject: "Your #{worldcon_year} Hugo and #{retro_hugo_75_ago} Retro Hugo Nominations Ballot",
+      subject: "Your #{worldcon_year} Hugo Nominations Ballot",
       to: reservation.user.email,
       from: "Hugo Awards #{worldcon_year} <#{email_hugo_help}>"
     )
@@ -61,7 +62,7 @@ class NominationMailer < ApplicationMailer
     @hugo_ballot_download_letter = hugo_ballot_download_letter
     @hugo_ballot_category_count = election_categories("hugo").count
     @wsfs_constitution_link = wsfs_constitution_link
-    @organizers_names_for_signature = organizers_names_for_signature
+    @names_for_signature = hugo_administrator_names_for_signature
   end
 
   def nominations_notice_chicago(user:)

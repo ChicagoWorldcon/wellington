@@ -4,6 +4,55 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-01-16] - 2022-01-16
+No significant changes.
+
+
+## [2022-01-15.6] - 2022-01-15
+
+### Misc
+
+
+- [#bugfix](https://github.com/ChicagoWorldcon/wellington/issues/bugfix)
+
+
+## [2022-01-15.5] - 2022-01-15
+No significant changes.
+
+
+## [2022-01-15.4] - 2022-01-15
+No significant changes.
+
+
+## [2022-01-15.3] - 2022-01-15
+No significant changes.
+
+
+## [2022-01-15.2] - 2022-01-15
+No significant changes.
+
+
+## [2022-01-15] - 2022-01-15
+
+### Misc
+
+
+- [#130](https://github.com/ChicagoWorldcon/wellington/issues/130)
+
+
+## [2022-01-14] - 2022-01-14
+
+### Features
+
+
+- [#129](https://github.com/ChicagoWorldcon/wellington/issues/129) renamed the user email column to `login_email`
+  added nomination and vote status to the membership report
+
+
+## [2022-01-10] - 2022-01-10
+No significant changes.
+
+
 ## [2022-01-03.2] - 2022-01-03
 No significant changes.
 

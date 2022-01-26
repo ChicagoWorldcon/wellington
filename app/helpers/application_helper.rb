@@ -18,6 +18,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require "mkmf" # for `find_executable`
+
 module ApplicationHelper
   include ThemeConcern
 
@@ -148,6 +150,10 @@ module ApplicationHelper
     $nomination_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
 
+  def hugo_nom_deadline_long_form
+    $nomination_closed_at.strftime("%H:%M %p, Pacific Daylight Time (PDT, UTC-7) on %B %d, %Y")
+  end
+
   def hugo_vote_deadline
     $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
   end
@@ -183,6 +189,10 @@ module ApplicationHelper
   #### Organizer Signature Helpers
   def organizers_names_for_signature
     Rails.configuration.convention_details.con_organizers_sigs
+  end
+
+  def hugo_administrator_names_for_signature
+    Rails.configuration.convention_details.hugo_administrator_sigs
   end
 
   #### External URL Helpers
@@ -250,5 +260,17 @@ module ApplicationHelper
 
   def mailto_hugo_help
     "mailto:" + email_hugo_help
+  end
+
+  def wellington_tagged_version
+    ENV["WELLINGTON_DOCKER_TAG"]
+  end
+
+  def wellington_dev_commit
+    if find_executable("git")
+      `git show --pretty=%H -q || echo 'indeterminate'`
+    else
+      "on a system without git"
+    end
   end
 end

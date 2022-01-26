@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Copyright 2019 AJ Esler
 # Copyright 2019 Steven C Hartley
@@ -29,6 +30,9 @@ class PaymentMailer < ApplicationMailer
     @worldcon_url_homepage = worldcon_url_homepage
     @worldcon_public_name_spaceless = worldcon_public_name_spaceless
 
+    @nominations_open = $nomination_opens_at < Time.now && Time.now < $nomination_closed_at
+    @nomination_end = hugo_nom_deadline_long_form
+
     @charge = charge
     @reservation = charge.buyable
     @contact = @reservation.active_claim.contact
@@ -39,14 +43,15 @@ class PaymentMailer < ApplicationMailer
     )
   end
 
-  def cart_paid(user:, charge:, amount:, item_count:, item_descriptions:, purchase_date:, cart_number: )
-
+  def cart_paid(user:, charge:, amount:, item_count:, item_descriptions:, purchase_date:, cart_number:)
     @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
     @worldcon_url_homepage = worldcon_url_homepage
     @worldcon_public_name_spaceless = worldcon_public_name_spaceless
 
-    #TODO:  Array of purchased items for ordered list in the view
+    @nominations_open = $nomination_opens_at < Time.now && Time.now < $nomination_closed_at
+    @nomination_end = hugo_nom_deadline_long_form
+    # TODO:  Array of purchased items for ordered list in the view
 
     @charge = charge
     @amount = amount
@@ -71,7 +76,6 @@ class PaymentMailer < ApplicationMailer
     @reservation = charge.buyable
     @contact = @reservation.active_claim.contact
     @outstanding_amount = outstanding_amount
-
 
     mail(
       to: user.email,
@@ -103,7 +107,6 @@ class PaymentMailer < ApplicationMailer
   end
 
   def cart_waiting_for_cheque(user:, item_count:, outstanding_amount:, item_descriptions:, transaction_date:, cart_number:)
-
     @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
     @worldcon_url_homepage = worldcon_url_homepage

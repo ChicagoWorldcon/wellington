@@ -400,6 +400,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    strip_attributes (1.12.0)
+      activemodel (>= 3.0, < 8.0)
     stripe (4.24.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
@@ -489,6 +491,7 @@ DEPENDENCIES
   solargraph
   spring
   spring-watcher-listen (~> 2.0.0)
+  strip_attributes
   stripe (~> 4)
   stripe-ruby-mock
   test-prof (~> 1.0)

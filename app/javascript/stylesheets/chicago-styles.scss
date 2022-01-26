@@ -56,8 +56,9 @@ $orange: #f26522;
 $secondary: $black;
 $success: $light-blue-two;
 
-// Leftover CoNZealand:
+// low-key text - generally more build-facing
 $light-grey: #e1e1e1;
+$subtle-text: $light-blue-two;
 
 @import "chicago_fonts";
 @import "~bootstrap/scss/bootstrap";
@@ -641,6 +642,10 @@ footer {
   background: rgba(0, 0, 0, 0.7);
   padding: 1.5em 0;
   text-align: center;
+}
+
+.system-info {
+  color: $subtle-text;
 }
 
 // -------------------------------

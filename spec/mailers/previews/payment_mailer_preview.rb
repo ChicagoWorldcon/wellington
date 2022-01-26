@@ -29,24 +29,24 @@ class PaymentMailerPreview < ActionMailer::Preview
 
   def paid
     PaymentMailer.paid(
-      user: Charge.last.user,
-      charge: Charge.last,
+      user: Charge.for_item.last.user,
+      charge: Charge.for_item.last
     )
   end
 
   def instalment
     PaymentMailer.instalment(
-      user: Charge.last.user,
-      charge: Charge.last,
-      outstanding_amount: 42_00,
+      user: Charge.for_item.last.user,
+      charge: Charge.for_item.last,
+      outstanding_amount: 42_00
     )
   end
 
   def waiting_for_cheque
     PaymentMailer.waiting_for_cheque(
-      user: Charge.last.user,
+      user: Charge.for_item.last.user,
       reservation: StubReservation.new("stub", 41, StubClaim.new(theme_contact_class.last)),
-      outstanding_amount: 42_00,
+      outstanding_amount: 42_00
     )
   end
 end
