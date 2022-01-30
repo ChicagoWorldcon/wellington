@@ -17,9 +17,7 @@
 # limitations under the License.
 
 # If redis not present, then just do this inline
-if ENV["SIDEKIQ_REDIS_URL"].nil?
-  require 'sidekiq/testing/inline'
-end
+require "sidekiq/testing/inline" if ENV["SIDEKIQ_REDIS_URL"].nil?
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -94,4 +92,7 @@ Rails.application.configure do
   protocal = config.force_ssl ? "https://" : "http://"
   $hostname = ENV.fetch("HOSTNAME", "localhost:3000")
   $hosturl = [protocal, $hostname].join
+
+  # allow ngrok
+  config.hosts << /[a-z0-9-]+\.ngrok\.io/
 end
