@@ -32,7 +32,7 @@ RSpec.describe TransfersController, type: :controller do
   let(:show_update_params) do
     {
       id: new_user.email,
-      reservation_id: reservation.id,
+      reservation_id: reservation.id
     }
   end
 
@@ -73,7 +73,7 @@ RSpec.describe TransfersController, type: :controller do
   describe "#create" do
     subject(:post_create) do
       post :create, params: { email: new_user.email,
-      reservation_id: reservation.id }
+                              reservation_id: reservation.id }
     end
 
     it "bounces you if you're not logged in" do
@@ -114,6 +114,23 @@ RSpec.describe TransfersController, type: :controller do
           .to(new_user)
       end
 
+      context "the user email case is different" do
+        let(:show_update_params) do
+          {
+            id: new_user.email.upcase,
+            reservation_id: reservation.id
+          }
+        end
+        it "transfers between users" do
+          puts "After setting up the user, before setting up the transfer to #{new_user.email} using #{show_update_params[:id]}"
+
+          expect { update_reservation_transfer }
+            .to change { reservation.reload.user }
+            .from(old_user)
+            .to(new_user)
+        end
+      end
+
       it "doesn't copy contact" do
         expect { update_reservation_transfer }.to_not change { old_user.reload.claims.last.conzealand_contact }
         expect(new_user.reload.claims.last.conzealand_contact).to be_nil
@@ -125,7 +142,7 @@ RSpec.describe TransfersController, type: :controller do
             id: new_user.email,
             reservation_id: reservation.id,
             plan_transfer: {
-              copy_contact: "1",
+              copy_contact: "1"
             }
           }
         end
@@ -142,7 +159,7 @@ RSpec.describe TransfersController, type: :controller do
         expect(MembershipMailer).to_not receive(:transfer)
         patch :update, params: {
           id: "invalid email",
-          reservation_id: reservation.id,
+          reservation_id: reservation.id
         }
       end
 

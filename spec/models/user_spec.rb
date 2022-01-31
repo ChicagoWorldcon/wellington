@@ -25,6 +25,14 @@ RSpec.describe User, type: :model do
     expect(build(:user, email: "harry/potter@hogwarts.net")).to_not be_valid
   end
 
+  it "should canonicalize the provided email" do
+    expect(build(:user, email: "Manual@Mail.com").email).to eq("manual@mail.com")
+  end
+
+  it "should retain the user provided email" do
+    expect(build(:user, email: "Manual@Mail.com").user_provided_email).to eq("Manual@Mail.com")
+  end
+
   # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
   # the :with_reservation trait.
   describe "user factory links" do

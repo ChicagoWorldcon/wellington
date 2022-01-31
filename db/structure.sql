@@ -791,7 +791,8 @@ CREATE TABLE public.users (
     current_sign_in_ip inet,
     last_sign_in_ip inet,
     stripe_id character varying,
-    hugo_download_counter integer DEFAULT 0 NOT NULL
+    hugo_download_counter integer DEFAULT 0 NOT NULL,
+    user_provided_email character varying
 );
 
 
@@ -1547,6 +1548,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210916230829'),
 ('20211110022812'),
 ('20211120232041'),
-('20220116010218');
+('20220116010218'),
+('20220130232402');
 
 
