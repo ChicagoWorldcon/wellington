@@ -4,6 +4,14 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-01-30] - 2022-01-30
+
+### Bugfixes
+
+
+- [#133](https://github.com/ChicagoWorldcon/wellington/issues/133) Canonicalize user emails for login
+
+
 ## [2022-01-16] - 2022-01-16
 No significant changes.
 
