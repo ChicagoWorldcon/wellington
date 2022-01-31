@@ -122,8 +122,6 @@ RSpec.describe TransfersController, type: :controller do
           }
         end
         it "transfers between users" do
-          puts "After setting up the user, before setting up the transfer to #{new_user.email} using #{show_update_params[:id]}"
-
           expect { update_reservation_transfer }
             .to change { reservation.reload.user }
             .from(old_user)

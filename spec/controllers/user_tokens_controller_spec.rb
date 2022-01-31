@@ -83,6 +83,11 @@ RSpec.describe UserTokensController, type: :controller do
     end
 
     it "doesn't say 'Email has already been taken' with upper case" do
+      # this test also sends mails.
+      expect(MembershipMailer)
+        .to receive_message_chain(:login_link, :deliver_later)
+        .and_return(true)
+
       upper_case_email = "SHOUTY_EMAIL_ADDRESS@newzealand.com"
       create(:user, email: upper_case_email)
       post :create, params: { email: upper_case_email }
