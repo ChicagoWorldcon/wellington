@@ -27,7 +27,7 @@ identifier "<%= @charge.stripe_id %>" and will appear to be going out to "<%= @w
 
 You can update your detals and access our services any time by returning to the members area.
 
-<% if @nominations_open %>
+<% if @nominations_open && @member_can_nominate %>
 Nominations for the 2022 Hugo Awards are now open and will remain open until <%= @nomination_end %>. Nominations for the Lodestar Award for Best Young Adult Book and the Astounding Award for Best New Writer are also open.
 
 Chicon 8 Supporting members and Attending members in the Adult, Young Adult, Teen, and Child classes who registered before 11:59 p.m. Pacific Standard Time (PST, UTC-8) January 31, 2022 are eligible to nominate.
