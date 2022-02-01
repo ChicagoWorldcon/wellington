@@ -56,6 +56,26 @@ class User < ApplicationRecord
     stripe_id.present?
   end
 
+  def self.find_or_initialize_by_canonical_email(email, &block)
+    find_by_email(email) || new(email: email, &block)
+  end
+
+  def self.find_or_create_by_canonical_email(email, &block)
+    find_by_email(email) || create(email: email, &block)
+  end
+
+  def self.find_or_create_by_canonical_email!(email, &block)
+    find_by_email(email) || create!(email: email, &block)
+  end
+
+  def self.find_by_email(email)
+    user   = find_by(user_provided_email: EmailAddress.normal(email))
+    user ||= find_by(user_provided_email: email)
+    user ||= find_by(email: EmailAddress.normal(email))
+    user ||= find_by(email: EmailAddress.canonical(email))
+    user
+  end
+
   private
 
   def email_address_format_valid

@@ -34,7 +34,7 @@ class Import::ChicagoBidMembers
       email = row[:email].downcase.strip
 
       # First, they get a supporting membership
-      user = User.find_or_create_by!(email: email)
+      user = User.find_or_create_by_canonical_email!(email)
       reservation = ClaimMembership.new(voter_membership, customer: user).call
       reservation.update!(state: Reservation::PAID)
 
@@ -219,7 +219,7 @@ class Import::ChicagoBidMembers
 
   def create_supporting(row)
     begin
-      user = User.find_or_create_by!(email: row[:email])
+      user = User.find_or_create_by_canonical_email!(row[:email])
       reservation = ClaimMembership.new(nonvoting_friend_membership, customer: user).call
     rescue
       p row

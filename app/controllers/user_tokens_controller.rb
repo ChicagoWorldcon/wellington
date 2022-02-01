@@ -28,13 +28,14 @@ class UserTokensController < ApplicationController
 
   def create
     target_email = params[:email]&.strip
-    new_user = User.find_or_initialize_by(email: target_email&.downcase)
+    new_user = User.find_or_initialize_by_canonical_email(EmailAddress.canonical(target_email))
 
     if !new_user.valid? # ...invalid user
       flash[:error] = new_user.errors.full_messages.to_sentence
       redirect_to referrer_path
       return
     elsif !new_user.persisted? # ...valid and never been seen before
+      new_user.user_provided_email = target_email
       new_user.save!
       sign_in(new_user)
       flash[:notice] = %(
@@ -48,7 +49,8 @@ class UserTokensController < ApplicationController
 
     # From here we're in the login flow for an existing user. We are going to send them a token link AND a code for the
     # secret, and then redirect to a form where they can enter the shortcode.
-    send_link_command = Token::SendLink.new(email: target_email, secret: secret, path: reservations_path)
+    canonical_email = EmailAddress.canonical(target_email)
+    send_link_command = Token::SendLink.new(email: canonical_email, secret: secret, path: reservations_path)
     if send_link_command.call
       flash[:notice] = "Email sent, please check #{target_email} for your login link"
       flash[:notice] += " (http://localhost:1080)" if Rails.env.development?

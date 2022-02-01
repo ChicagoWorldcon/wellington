@@ -61,7 +61,7 @@ class Import::DublinMembers
       next if row["eligibility"] != "dublin"
 
       import_email = row["EMAIL"].downcase.strip
-      import_user = User.find_or_create_by!(email: import_email)
+      import_user = User.find_or_create_by_canonical_email!(import_email)
       reservation = ClaimMembership.new(dublin_membership, customer: import_user).call
       contact = ConzealandContact.new(
         claim: reservation.active_claim,
