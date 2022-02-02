@@ -20,7 +20,7 @@
 # Silver Fern upgrading to Adult cost $50 on CoNZealand launch ($375 - $325 = $50)
 # But when prices rotated, upgrading to Adult cost $75 ($400 - $325 = $75)
 class UpgradeOffer
-  attr_reader :from_membership, :to_membership
+  attr_reader :from_membership, :to_membership, :for_reservation, :target_membership
 
   delegate :description, to: :to_membership
 
@@ -37,7 +37,8 @@ class UpgradeOffer
     # We typically order by price, but if there are multiple price-points for
     # a particular membership due to older prices being locked in, that can be
     # confusing, and ordering by name is better.
-    order_pricewise = (initial_count <= options.count)
+
+    order_pricewise = initial_count >= options.count
 
     # Don't duplicate the current membership, i.e. no offering to upgrade adult to adult
     options = options.where.not(name: current_membership.name)
@@ -46,28 +47,6 @@ class UpgradeOffer
     options = options.where(id: target_membership) if target_membership.present?
 
     order_pricewise ? self.order_options_by_price(options, current_membership) : self.order_options_by_name(options, current_membership)
-  end
-
-  def self.include_locked_in_options(curr_membership, res_to_upgrade, existing_options)
-    unless (res_to_upgrade.present? && res_to_upgrade.date_upgrade_prices_locked.respond_to?(:strftime) )
-      return existing_options
-    end
-
-    locked_in_options = Membership.active_at(res_to_upgrade.date_of_price_lock).where("price_cents > ?", curr_membership.price_cents)
-
-    existing_options.or(locked_in_options)
-  end
-
-  def self.order_options_by_name(our_options, curr_membership)
-    our_options.order_by_name.map do |membership|
-      UpgradeOffer.new(from: curr_membership, to: membership)
-    end
-  end
-
-  def self.order_options_by_price(our_options, curr_membership)
-    our_options.order_by_price.map do |membership|
-      UpgradeOffer.new(from: curr_membership, to: membership)
-    end
   end
 
   def initialize(from:, to:)
@@ -117,5 +96,29 @@ class UpgradeOffer
 
   def offer_for_purchase?
     !to_membership.private_membership_option
+  end
+
+  private
+
+  def self.include_locked_in_options(curr_membership, res_to_upgrade, existing_options)
+    unless (res_to_upgrade.present? && res_to_upgrade.date_upgrade_prices_locked.respond_to?(:strftime) )
+      return existing_options
+    end
+
+    locked_in_options = Membership.active_at(res_to_upgrade.date_upgrade_prices_locked).where("price_cents > ?", curr_membership.price_cents)
+
+    existing_options.or(locked_in_options)
+  end
+
+  def self.order_options_by_name(our_options, curr_membership)
+    our_options.order_by_name.map do |membership|
+      UpgradeOffer.new(from: curr_membership, to: membership)
+    end
+  end
+
+  def self.order_options_by_price(our_options, curr_membership)
+    our_options.order_by_price.map do |membership|
+      UpgradeOffer.new(from: curr_membership, to: membership)
+    end
   end
 end

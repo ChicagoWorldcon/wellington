@@ -39,7 +39,7 @@ FactoryBot.define do
 
     trait :expired_adult do
       name { :adult }
-      display_name { "Adult Attending" }
+      display_name { "Adult Attending Expired" }
       price_cents { 123_00 }
       active_from { 1.year.ago }
       active_to { 1.week.ago }
