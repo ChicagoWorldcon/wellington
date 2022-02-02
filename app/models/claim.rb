@@ -45,7 +45,7 @@ class Claim < ApplicationRecord
   end
 
   def requested_installment?
-    return false unless self.contact.installment_wanted?
+    return false unless self.contact && self.contact.installment_wanted?
     self.contact.installment_wanted
   end
 
