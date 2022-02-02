@@ -166,9 +166,9 @@ RSpec.describe Reservation, type: :model do
 
     context "when the membership is anything other than supporting" do
 
-      ["adult", "first", "ya", "child", "kidit"].each do |trait_str|
+      ["first", "adult", "ya", "child", "kidit"].each do |trait_str|
         it "is false when the membership is #{trait_str}"  do
-          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .is_supporting?).to be false
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).is_supporting?).to be false
         end
       end
     end
@@ -178,7 +178,7 @@ RSpec.describe Reservation, type: :model do
 
       ["supporting"].each do |trait_str|
         it "is true when the membership is #{trait_str} "  do
-          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .is_supporting?).to be true
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).is_supporting?).to be true
         end
       end
     end
@@ -222,14 +222,10 @@ RSpec.describe Reservation, type: :model do
         expect(model.price_lock_date).to be_within(1.day).of Time.now
       end
 
-      it "is triggered by an after_create hook" do
-        expect {model.save}
-          .to change { model.price_lock_date }
-          .from(nil)
-      end
-
-      it "causes the current date to be logged once triggered" do
-        model.save
+      it "is triggered after creation" do
+        model.update(price_lock_date: nil)
+        expect(model.price_lock_date).to be_nil
+        model.run_callbacks :create
         expect(model.price_lock_date).to be_within(1.day).of Time.now
       end
     end
@@ -286,8 +282,6 @@ RSpec.describe Reservation, type: :model do
       end
     end
   end
-
-
 
   describe "#has_paid_supporting?" do
     subject(:model) { create(:reservation, :with_claim_from_user) }

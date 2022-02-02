@@ -23,7 +23,7 @@ class Reservation < ApplicationRecord
   include Holdable
   include Buyable
 
-  after_create :eval_for_upgrade_price_lock
+  before_create :eval_for_upgrade_price_lock
 
   PAID = "paid"
   DISABLED = "disabled"
@@ -105,7 +105,7 @@ class Reservation < ApplicationRecord
   end
 
   def is_supporting?
-    !self.can_attend? && self.can_nominate? && self.can_vote? && self.can_site_select?
+    self.can_nominate? && self.can_vote? && self.can_site_select? && !self.can_attend?
   end
 
   def paid?
@@ -137,15 +137,11 @@ class Reservation < ApplicationRecord
 
   def eval_for_upgrade_price_lock
     return unless Rails.configuration.convention_details.lock_upgrade_prices_on_installment_req
-
     return unless self.is_supporting?
     return unless self.installment_requested_by_claimant?
-
+    return if self.price_lock_date?
     set_price_lock_date
   end
-
-
-
 
   # Sync when reservation changes as you might disable or enable rights on a reservation, or have it paid off
   after_commit :gloo_sync
@@ -161,6 +157,6 @@ class Reservation < ApplicationRecord
   end
 
   def set_price_lock_date
-    self.update!(price_lock_date: Time.now) if !self.price_lock_date?
+    self.update!(price_lock_date: Time.now)
   end
 end
