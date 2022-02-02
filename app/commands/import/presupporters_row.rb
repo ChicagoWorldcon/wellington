@@ -77,7 +77,7 @@ class Import::PresupportersRow
 
   def call
     Claim.transaction do
-      new_user = User.find_or_create_by(email: email_address)
+      new_user = User.find_or_create_by_canonical_email(email_address)
       if !new_user.valid?
         errors << new_user.errors.full_messages.to_sentence
         return false

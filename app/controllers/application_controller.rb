@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   layout theme_layout
 
   def member_services_user
-    @member_services_user ||= User.find_or_create_by(email: $member_services_email)
+    @member_services_user ||= User.find_or_create_by_canonical_email($member_services_email)
   end
 
   protected

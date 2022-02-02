@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
   before_action :lookup_reservation!, only: %i[show update]
   before_action :lookup_offer, only: %i[new create reserve_with_cheque]
   before_action :setup_paperpubs, except: :index
+  before_action :setup_contacts
 
   # TODO(issue #24) list all members for people not logged in
   def index
@@ -136,6 +137,10 @@ class ReservationsController < ApplicationController
       redirect_back(fallback_location: memberships_path)
       # redirect_to memberships_path
     end
+  end
+
+  def setup_contacts
+    @member_services_email = $member_services_email
   end
 
   def setup_paperpubs

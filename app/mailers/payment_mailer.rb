@@ -36,6 +36,7 @@ class PaymentMailer < ApplicationMailer
     @charge = charge
     @reservation = charge.buyable
     @contact = @reservation.active_claim.contact
+    @member_can_nominate = @reservation.can_nominate?
 
     mail(
       to: user.email,

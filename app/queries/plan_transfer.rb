@@ -37,7 +37,7 @@ class PlanTransfer
   end
 
   def to_user
-    User.find_or_create_by(email: new_owner)
+    User.find_or_create_by_canonical_email(new_owner)
   end
 
   def contact

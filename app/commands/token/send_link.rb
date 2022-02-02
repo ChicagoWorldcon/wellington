@@ -35,7 +35,6 @@ class Token::SendLink
     encode_token if errors.none?
     save_token if errors.none?
     async_email_link if errors.none?
-    puts("Errors: #{errors}")
     errors.none?
   end
 

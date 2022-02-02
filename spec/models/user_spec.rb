@@ -25,6 +25,36 @@ RSpec.describe User, type: :model do
     expect(build(:user, email: "harry/potter@hogwarts.net")).to_not be_valid
   end
 
+  it "should canonicalize the provided email" do
+    expect(build(:user, email: "Manual@Mail.com").email).to eq("manual@mail.com")
+  end
+
+  it "should retain the user provided email" do
+    expect(build(:user, email: "Manual@Mail.com").user_provided_email).to eq("Manual@Mail.com")
+  end
+
+  shared_examples "a canonicalized user" do
+    before(:each) do
+      create(:user, email: email)
+    end
+
+    it "can find the user" do
+      expect(User.find_or_initialize_by_canonical_email(search).persisted?).to be true
+    end
+  end
+
+  context "with a canonical input" do
+    let(:email) { "non.canonical@gmail.com" }
+    let(:search) { EmailAddress.canonical(email) }
+    it_behaves_like "a canonicalized user"
+  end
+
+  context "with a non-canonical input" do
+    let(:email) { "non.canonical@gmail.com" }
+    let(:search) { email }
+    it_behaves_like "a canonicalized user"
+  end
+
   # I felt the need to do this because factory code gets quite hairy, especially with factories calling factories from
   # the :with_reservation trait.
   describe "user factory links" do

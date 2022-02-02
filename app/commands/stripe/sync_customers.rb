@@ -24,7 +24,7 @@ class Stripe::SyncCustomers
       next if stripe_customer.id.nil?
       next if stripe_customer.email.nil?
 
-      user = User.find_or_create_by(email: stripe_customer.email.downcase)
+      user = User.find_or_create_by_canonical_email(stripe_customer.email.downcase)
 
       if user.stripe_id && user.stripe_id != stripe_customer.id
         Rails.logger.warn "#{user.email} has doppleganger in stripe, preferring #{user.stripe_id} for members area"

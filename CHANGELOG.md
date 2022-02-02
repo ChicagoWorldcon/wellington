@@ -4,6 +4,41 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-01-31.3] - 2022-01-31
+
+### Bugfixes
+
+
+- [#134](https://github.com/ChicagoWorldcon/wellington/issues/134) use the canonical form of the email everywhere we find them
+
+
+
+### Misc
+
+
+- [#71](https://github.com/ChicagoWorldcon/wellington/issues/71)
+
+
+## [2022-01-31.2] - 2022-01-31
+No significant changes.
+
+
+## [2022-01-31] - 2022-01-31
+No significant changes.
+
+
+## [2022-01-30.2] - 2022-01-30
+No significant changes.
+
+
+## [2022-01-30] - 2022-01-30
+
+### Bugfixes
+
+
+- [#133](https://github.com/ChicagoWorldcon/wellington/issues/133) Canonicalize user emails for login
+
+
 ## [2022-01-16] - 2022-01-16
 No significant changes.
 
@@ -79,16 +114,16 @@ No significant changes.
 
 
 - [#122](https://github.com/ChicagoWorldcon/wellington/issues/122) Add ops tools to send nomination tasks
-  
+
 
 
 ### Bugfixes
 
 
 - [#106](https://github.com/ChicagoWorldcon/wellington/issues/106) Using a cart to purchase supporting memberships no longer breaks upgrades (Fixed in #110)
-  
+
 - [#117](https://github.com/ChicagoWorldcon/wellington/issues/117) Use the same filtering in upgrade offers as in new membership offers
-  
+
 - [#120](https://github.com/ChicagoWorldcon/wellington/issues/120) Addressed ballot usability and content feedback
 
 
@@ -873,4 +908,3 @@ pre supporters.
 ### Removed
 
 - Nothing significant in this release
-

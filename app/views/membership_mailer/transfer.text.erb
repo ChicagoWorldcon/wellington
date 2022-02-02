@@ -13,17 +13,52 @@
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
 %>
 <%= @worldcon_greeting_sentence_excited %>
 
 You've received this email because <%= @owner_name || "somebody" %> requested to transfer
-membership #<%= @membership_number %> from "<%= @from %>" to "<%= @to %>"
-and this should now be in effect.
+membership #<%= @membership_number %>
 
-If you have any questions or concerns, please reply to this email.
+From: "<%= @from %>"
+To: "<%= @to %>"
 
-<%= @worldcon_public_name %> – <%= $member_services_email %>
+This transfer has now taken effect. Both parties will have received this email.
+
+If this transfer was performed in error, or you have questions, please reply to this email
+or email <%= $member_services_email %>.
+
+For the recipient of this transfer, at this point, you are able to access the membership
+through our registration portal at <%= reservations_url =%>
+
+
+Use your email address where it asks you to enter an email address for a login link. It can
+take up to 30 minutes for emails to be generated (although it is usually faster).
+Some email providers may inadvertently mark the email as spam, so please check your spam
+folder as well.
+
+
+Once logged-in, you'll see a menu on the left that includes the choice "My Memberships."
+Click on that.
+
+
+This will pull up a screen that has your membership details. Please review the details on
+the right that include your address, email, and other choices. At the bottom, there will be
+an option to save your changes.
+
+
+At the top of that area, there is a white box to the left. Within that box, you will find
+your options to nominate for the Hugo Awards and to do any voting once those abilities are
+turned on in the system. You will also see the option to upgrade your membership if you
+need to do so at any point in the future.
+
+
+Please let us know if you have any questions! And welcome to <%= @worldcon_public_name %>!
+
+Thank you
+
+-–
+<%= @worldcon_public_name %> - <%= $member_services_email %>
 <%= @worldcon_homepage_url %>

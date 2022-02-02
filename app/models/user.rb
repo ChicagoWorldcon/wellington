@@ -33,11 +33,17 @@ class User < ApplicationRecord
   has_many :reservations, through: :active_claims
   has_many :carts
 
-  # See Cart's validations, one active, pending cart and one active, processing cart at a time. 
-  has_one  :active_pending_cart, -> () { active_pending }, class_name: "Cart"
-  has_one  :active_processing_cart, -> () { active_processing }, class_name: "Cart"
+  # See Cart's validations, one active, pending cart and one active, processing cart at a time.
+  has_one  :active_pending_cart, -> { active_pending }, class_name: "Cart"
+  has_one  :active_processing_cart, -> { active_processing }, class_name: "Cart"
 
+  attribute :email, :canonical_email_address
+  attribute :user_provided_email, :string
 
+  def email=(email_address)
+    self[:user_provided_email] = email_address
+    self[:email] = email_address
+  end
   validates :email, presence: true, uniqueness: true
   validates :hugo_download_counter, presence: true
 
@@ -50,17 +56,33 @@ class User < ApplicationRecord
     stripe_id.present?
   end
 
+  def self.find_or_initialize_by_canonical_email(email, &block)
+    find_by_email(email) || new(email: email, &block)
+  end
+
+  def self.find_or_create_by_canonical_email(email, &block)
+    find_by_email(email) || create(email: email, &block)
+  end
+
+  def self.find_or_create_by_canonical_email!(email, &block)
+    find_by_email(email) || create!(email: email, &block)
+  end
+
+  def self.find_by_email(email)
+    user   = find_by(user_provided_email: EmailAddress.normal(email))
+    user ||= find_by(user_provided_email: email)
+    user ||= find_by(email: EmailAddress.normal(email))
+    user ||= find_by(email: EmailAddress.canonical(email))
+    user
+  end
+
   private
 
   def email_address_format_valid
     return if email.nil? # covered by presence: true
 
-    if !email.match(Devise.email_regexp)
-      errors.add(:email, "is an unsupported format")
-    end
+    errors.add(:email, "is an unsupported format") unless email.match(Devise.email_regexp)
 
-    if email.include?("/")
-      errors.add(:email, "slashes are unsupported")
-    end
+    errors.add(:email, "slashes are unsupported") if email.include?("/")
   end
 end

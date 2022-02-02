@@ -63,8 +63,8 @@ class Import::KansaMembersRow
   end
 
   def call
-    new_user = User.find_or_create_by(email: cell_for("Email Address"))
-    if !new_user.valid?
+    new_user = User.find_or_create_by_canonical_email(cell_for("Email Address"))
+    unless new_user.valid?
       errors << new_user.errors.full_messages.to_sentence
       return false
     end
