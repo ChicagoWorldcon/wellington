@@ -34,7 +34,7 @@ gem "money-rails"          # dealing with money and currency conversion in Rails
 gem "passgen"              # Password generator
 gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
-gem "puma", "~> 5.5"       # http server for rack
+gem "puma", "~> 5.6"       # http server for rack
 gem "rack-pratchett"       # say his name
 gem "rails", "~> 6.0"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
