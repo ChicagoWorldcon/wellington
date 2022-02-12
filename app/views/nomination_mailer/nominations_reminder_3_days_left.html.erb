@@ -22,7 +22,9 @@
 </p>
 
 <p>
-  Hello eligible Hugo nominator! The deadline for Hugo nominations is just about
+  Hello eligible Hugo Award nominator! The deadline for nominations for the 2022 
+  Hugo Awards, the Lodestar Award for best Young Adult Books, and the <em>Astounding</em>
+  Award for Best New Writer is just about
   3 days away. Please do not wait until the last minute to start your nominations
   - sometimes there are hiccups in the login process, and it can take our team
   some time to fix those for you. So if you plan to nominate and have not logged
@@ -32,7 +34,7 @@
 
 <p>
   To nominate online, please visit
-  <a href=<%= @member_login_url %>>the members' area</a>
+  <a href=<%= @member_login_url %>>the members' area</a>,
   enter the email address
   you received this email at, and request a login link. After clicking the link
   and entering the members area, click on My Memberships to access all
@@ -50,38 +52,34 @@
 </p>
 
 <p>
-  We expect to announce the final ballot in early <%= @hugo_ballot_pub_month %>, and the awards will be
+  We expect to announce the final ballot in <%= @hugo_ballot_pub_month %>, and the awards will be
   presented at <%= @worldcon_public_name %>, which will run from <%= @start_day_informal %> to <%= @end_day_informal %>, <%= @worldcon_year %>.
 </p>
 
 <p>
   The Hugo Awards are fan-run, fan-given, and fan-supported. We recommend that
   you nominate whatever works and creators you have personally read or seen that
-  were your favorites from <%= @worldcon_year_before %> and <%= (@retro_hugo_75_ago.to_i - 1).to_s %>
+  were your favorites from <%= @worldcon_year_before %>.
 </p>
 
 <p>
   Please contact <%= @email_hugo_help %> if you have difficulties accessing the
-  online ballot(s), or you have any other questions on the Hugo process.
+  online ballot(s), or you have any other questions on the Hugo Award process.
 </p>
 
 <p>
-  A printable version of the WSFS Constitution and Hugo Nominating ballot has
-  been included in the mailed-out version of Progress Report 2. You may also
-  download a printable ballot in
-  <a href=<%= @hugo_ballot_download_a4 %>>A4</a>,
-  or
-  <a href=<%= @hugo_ballot_download_letter %>>US letter</a>
-  sizes. The WSFS Constitution is also available online
-  <a href=<%= @wsfs_constitution_link %>>here</a>.
+  A printable version of the WSFS Constitution and Hugo Award Nominating ballot 
+  are available online 
+  <a href=<https://chicon.org/home/whats-happening/hugo-awards/>>here</a>, but
+  remember your ballot must be received by <%= @hugo_nom_deadline %>.
 </p>
 
 <p>
-  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro
-  Hugos, and hope to see you at <%= @worldcon_public_name %>!
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards, 
+  and hope to see you at <%= @worldcon_public_name %>!
 </p>
 
 <p>
   <%= @organizers_names_for_signature %><br>
-  Hugo Administrator and Deputy Hugo Administrators
+  Hugo Administrator and Deputy Hugo Administrator
 </p>
