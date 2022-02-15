@@ -149,12 +149,12 @@ class Reservation < ApplicationRecord
     active_claim&.user
   end
 
-  private
-
   def installment_requested_by_claimant?
     return false unless self.active_claim.present?
     self.active_claim.requested_installment?
   end
+
+  private
 
   def set_price_lock_date
     self.update!(price_lock_date: Time.now)
