@@ -16,25 +16,27 @@
 
 class PriceLockBackdater
   def self.call
-    qualifying_reservations = NonPricelockedReservationsWithInstallmentRequests.call
-
     puts "Searching for reservations that qualify for backdated price lock dates. \n"
+
+    qualifying_reservations = NonPricelockedReservationsWithInstallmentRequests.call
 
     if qualifying_reservations.any?
 
-      puts "Giving backdated price lock dates to #{qualifying_reservations.count} reservations.\n\n"
+      puts "Giving backdated price lock dates to #{qualifying_reservations.count} reservations:\n\n"
 
       ActiveRecord::Base.transaction do
         qualifying_reservations.each_with_index do |qual, i|
           qual.update!(price_lock_date:  qual.created_at)
-          puts "backdated the price lock date for reservation \# #{i}."
+          puts "Updated reservation \# #{i}.".indent(3)
         end
       end
 
-      puts "\n All reservations qualifying for a backdated price lock date have been updated! \n"
+      puts "\n All reservations qualifying for a backdated price lock date have been updated! \n\n"
 
     else
-      puts "No reservations that qualifed for backdated price lock dates were found!\n\n"
+
+      puts "\n No reservations that qualifed for backdated price lock dates were found!\n\n"
+      
     end
   end
 end
