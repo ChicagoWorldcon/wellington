@@ -15,7 +15,8 @@
 # limitations under the License.
 
 class NonPricelockedReservationsWithInstallmentRequests
+
   def call
-    Reservation.joins(claims: :chicago_contact).where(chicago_contacts: {installment_wanted: true}, reservations: {price_lock_date: nil}, claims: {active_from: ..Time.now}, claims: {active_to: [nil, Time.now..]})
+    Reservation.joins(claims: :chicago_contact).where(chicago_contacts: {installment_wanted: true}, reservations: {price_lock_date: nil}, claims: {active_from: ..Time.now, active_to: [nil, Time.now..]}).select('reservations.id as id, chicago_contacts.created_at as new_price_lock_date') 
   end
 end
