@@ -28,8 +28,10 @@ namespace :data do
     end
   end
 
+  desc "Assigns a price_lock_date to reservations where installment plan info has been requested"
   task backdate_reservation_price_lock_dates: :environment do
     puts "Preparing to update any reservations that qualify for backdated price lock dates. \n"
     PriceLockBackdater.call
     puts "\n Price lock date backdating process completed.\n"
   end
+end
