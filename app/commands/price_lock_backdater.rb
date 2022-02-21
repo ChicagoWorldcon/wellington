@@ -14,29 +14,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This command is run by a rake task during the migration progress.
+# It finds reservations associated with chicago_contacts who requested installment
+# plans.  The pricing structure for upgrades to such a membership is then locked
+# to the date of the request for installment.
+
 class PriceLockBackdater
-  def self.call
+  def errors
+    @errors ||= []
+  end
+
+  def call
     puts "Searching for reservations that qualify for backdated price lock dates. \n"
 
-    qualifying_reservations = NonPricelockedReservationsWithInstallmentRequests.call
+    qualifying_reservations = NonPricelockedReservationsWithInstallmentRequests.new.call
+    report_string = nil
 
     if qualifying_reservations.any?
 
-      puts "Giving backdated price lock dates to #{qualifying_reservations.count} reservations:\n\n"
+      puts "Attempting to add backdated price lock dates to #{qualifying_reservations.size} reservations:\n\n"
 
-      ActiveRecord::Base.transaction do
-        qualifying_reservations.each_with_index do |qual, i|
-          qual.update!(price_lock_date:  qual.created_at)
-          puts "Updated reservation \# #{i}.".indent(3)
+      qualifying_reservations.each_with_index do |qual, i|
+        our_reservation = Reservation.find_by(id: qual.id)
+        new_error = nil
+        new_error =  "Unable to find reservation: #{qual.id}." unless our_reservation
+
+        if !new_error
+          new_error =  "Unable to update reservation with id: #{qual.id}." unless our_reservation.update(price_lock_date:  qual.new_price_lock_date)
+          our_reservation.reload if !new_error
         end
+
+        puts "Updated reservation #{i}.".indent(5) unless new_error
+        errors << new_error if new_error
       end
 
-      puts "\n All reservations qualifying for a backdated price lock date have been updated! \n\n"
+      not_updated = errors.size
+      updated = qualifying_reservations.size - not_updated
 
+      report_string = "\n Successfully updated #{updated} reservations."
+      unless not_updated == 0
+        report_string = report_string + "  Unable to update #{not_updated} qualifying reservation(s). Problem(s) as follows:\n#{errors.join(" \n")}"
+      end
     else
-
-      puts "\n No reservations that qualifed for backdated price lock dates were found!\n\n"
-      
+      report_string = "\n No reservations that qualifed for backdated price lock dates were found!\n"
     end
+
+    puts report_string
+    return errors.empty?
   end
 end
