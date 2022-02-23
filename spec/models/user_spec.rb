@@ -34,24 +34,44 @@ RSpec.describe User, type: :model do
   end
 
   shared_examples "a canonicalized user" do
+    let(:address) { "non.canonical@gmail.com" }
+    let(:canonical) { EmailAddress.canonical(address) }
     before(:each) do
       create(:user, email: email)
     end
 
     it "can find the user" do
-      expect(User.find_or_initialize_by_canonical_email(search).persisted?).to be true
+      expect(User.find_or_initialize_by_canonical_email(canonical).persisted?).to be true
+    end
+
+    it "can find the user without creating a new one using the bare address" do
+      expect do
+        User.find_or_create_by_canonical_email(address)
+      end.not_to change { User.count }
+    end
+
+    it "can find the user without creating a new one using the canonical address" do
+      expect do
+        User.find_or_create_by_canonical_email(address)
+      end.not_to change { User.count }
+    end
+
+    it "uses the canonical email as the main" do
+      expect(User.find_by_email(canonical)).to be_present
+    end
+
+    it "stores the provided email" do
+      expect(User.find_by_user_provided_email(email)).to be_present
     end
   end
 
-  context "with a canonical input" do
-    let(:email) { "non.canonical@gmail.com" }
-    let(:search) { EmailAddress.canonical(email) }
+  context "with a canonical start" do
+    let(:email) { EmailAddress.canonical(address) }
     it_behaves_like "a canonicalized user"
   end
 
-  context "with a non-canonical input" do
-    let(:email) { "non.canonical@gmail.com" }
-    let(:search) { email }
+  context "with a non-canonical start" do
+    let(:email) { address }
     it_behaves_like "a canonicalized user"
   end
 
