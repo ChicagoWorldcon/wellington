@@ -17,21 +17,13 @@
 # Adapted from
 # https://www.ombulabs.com/blog/rails/data-migrations/three-useful-data-migrations-patterns-in-rails.html
 
-namespace :data do
-  task :migrations do
-    Rake.application.in_namespace(:data) do |namespace|
-      namespace.tasks.each do |t|
-        next if t.name == "data:migrations"
-        puts "Invoking #{t.name}:"
-        t.invoke
-      end
-    end
-  end
+namespace :data_migration do
 
-  desc "Assigns a price_lock_date to reservations where installment plan info has been requested"
-  task backdate_reservation_price_lock_dates: :environment do
-    puts "Preparing to update any reservations that qualify for backdated price lock dates. \n"
-    PriceLockBackdater.call
+  desc "Assigns a price_lock_date to Reservation instances where both (a) that field is currently set to nil, and (b) The associated Contact instance has its installment_wanted field set to 'true'"
+
+  task :backdate_reservation_price_lock_dates => :environment do
+    puts "\n Preparing to update any reservations that qualify for backdated price lock dates. \n"
+    PriceLockBackdater.new.call
     puts "\n Price lock date backdating process completed.\n"
   end
 end
