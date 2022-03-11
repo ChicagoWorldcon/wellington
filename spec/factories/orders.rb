@@ -31,6 +31,30 @@ FactoryBot.define do
       end
     end
 
+    trait :with_first_worldcon_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = Membership.find_by(name: :first) || create(:membership, :first)
+      end
+    end
+
+    trait :with_ya_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = Membership.find_by(name: :ya ) || create(:membership, :ya)
+      end
+    end
+
+    trait :with_child_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = Membership.find_by(name: :child ) || create(:membership, :child)
+      end
+    end
+
+    trait :with_kidit_membership do
+      before(:create) do |order, _evaluator|
+        order.membership = Membership.find_by(name: :kidit) || create(:membership, :kidit)
+      end
+    end
+
     trait :with_supporting_membership do
       before(:create) do |order, _evaluator|
         order.membership = Membership.find_by(name: :supporting ) || create(:membership, :supporting)

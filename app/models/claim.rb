@@ -44,6 +44,11 @@ class Claim < ApplicationRecord
     active_to.nil?
   end
 
+  def requested_installment?
+    return false unless self.contact && self.contact.installment_wanted?
+    self.contact.installment_wanted
+  end
+
   # Sync when claim changes as transfer will cause your rights or default name to change
   after_commit :gloo_sync
   def gloo_lookup_user

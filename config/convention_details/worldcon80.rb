@@ -26,7 +26,7 @@ module ConventionDetails
                 :con_dates_informal_start, :con_greeting_basic, :con_hugo_download_A4, :con_hugo_download_letter,
                 :con_name_public, :con_name_public_previous, :con_number, :con_organizers_sigs, :hugo_administrator_sigs,
                 :con_url_homepage, :con_url_member_login, :con_url_privacy, :con_url_tos, :con_url_volunteering,
-                :con_wsfs_constitution_link, :con_year, :contact_model, :registration_mailing_address,
+                :con_wsfs_constitution_link, :con_year, :contact_model, :lock_upgrade_prices_on_installment_req, :registration_mailing_address,
                 :site_theme, :translation_folder
 
     def initialize
@@ -56,6 +56,12 @@ module ConventionDetails
       @con_wsfs_constitution_link = "http://www.wsfs.org/wp-content/uploads/2019/11/WSFS-Constitution-as-of-August-19-2019.pdf"
       @con_year = "2022"
       @contact_model = "chicago"
+      # If lock_upgrade_prices_on_installment_req is set to true,
+      # the price of upgrading a supporting membership will be
+      # locked to the current date if, while making the reservation,
+      # the user checks the box on the personal info form about
+      # being interested in paying in installments.
+      @lock_upgrade_prices_on_installment_req = true
       @registration_mailing_address = <<~ADDRESS
         Chicon 8 Member Services
         2020 N. California, Suite 299

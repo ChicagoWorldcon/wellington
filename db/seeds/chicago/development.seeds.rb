@@ -160,6 +160,14 @@ users_with_paid_carts.each.with_index(1) do |u, i|
   FactoryBot.create(:cart, type, :paid, user: u)
 end
 
+
+claims_needing_installment_requests = Claim.last(10)
+claims_needing_installment_requests.each_with_index do |c, i|
+  c.contact.update_attribute(:installment_wanted, true)
+  puts "Added installment request \# #{i}"
+end
+
+
 puts ""
 puts "Membership total: #{Membership.all.count}"
 puts ""

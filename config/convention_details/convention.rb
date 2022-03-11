@@ -43,6 +43,7 @@ module ConventionDetails
     class_attribute :con_wsfs_constitution_link
     class_attribute :con_year
     class_attribute :contact_model
+    class_attribute :lock_upgrade_prices_on_installment_req
     class_attribute :registration_mailing_address
     class_attribute :site_theme
     class_attribute :translation_folder

@@ -113,6 +113,51 @@ FactoryBot.define do
       end
     end
 
+    trait :with_order_against_adult_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
+    trait :with_order_against_first_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_first_worldcon_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
+    trait :with_order_against_ya_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_ya_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
+    trait :with_order_against_child_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_child_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
+    trait :with_order_against_kidit_membership do
+      after(:build) do |new_reservation, _evaluator|
+        create(:order, :with_kidit_membership,
+        reservation: new_reservation
+      )
+        new_reservation.reload
+      end
+    end
+
     trait :with_order_against_supporting_membership do
       after(:build) do |new_reservation, _evaluator|
         create(:order, :with_supporting_membership,
@@ -122,9 +167,19 @@ FactoryBot.define do
       end
     end
 
+
     trait :with_claim_from_user do
       after(:build) do |new_reservation, _evaluator|
         new_claim = build(:claim, :with_user, :with_contact,
+        reservation: new_reservation
+        )
+        new_reservation.claims << new_claim
+      end
+    end
+
+    trait :with_installment_request_from_claimant do
+      after(:build) do |new_reservation, _evaluator|
+        new_claim = build(:claim, :with_user, :with_chicago_contact_and_installment_request,
         reservation: new_reservation
         )
         new_reservation.claims << new_claim

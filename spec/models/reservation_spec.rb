@@ -89,6 +89,200 @@ RSpec.describe Reservation, type: :model do
     end
   end
 
+  describe "#can_nominate?" do
+
+    ["adult", "first", "ya", "supporting"].each do |trait_str|
+      it "is true when the membership is #{trait_str}"  do
+        expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).can_nominate?).to be true
+      end
+    end
+
+    context "when the membership does not have nomination rights" do
+
+      ["child", "kidit"].each do |trait_str|
+        it "is false when the membership is #{trait_str}"  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).can_nominate?).to be false
+        end
+      end
+    end
+  end
+
+
+  describe "#can_vote?" do
+
+    ["adult", "first", "ya", "supporting"].each do |trait_str|
+      it "is true when the membership is #{trait_str}"  do
+        expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_vote?).to be true
+      end
+    end
+
+    context "when the membership does not have voting rights" do
+
+      ["child", "kidit"].each do |trait_str|
+        it "is false when the membership is #{trait_str} "  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_vote?).to be false
+        end
+      end
+    end
+  end
+
+  describe "can_site_select?" do
+
+    ["adult", "first", "ya", "supporting"].each do |trait_str|
+      it "is true when the membership is #{trait_str}"  do
+        expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_site_select?).to be true
+      end
+    end
+
+    context "when the membership does not have site selection rights" do
+
+      ["child", "kidit"].each do |trait_str|
+        it "is false when the membership is #{trait_str} "  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_site_select?).to be false
+        end
+      end
+    end
+  end
+
+  describe "can_attend?" do
+
+    ["adult", "first", "ya", "child", "kidit"].each do |trait_str|
+      it "is true when the membership is #{trait_str}"  do
+        expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_attend?).to be true
+      end
+    end
+
+    context "when the membership does not have attendance rights" do
+
+      ["supporting"].each do |trait_str|
+        it "is false when the membership is #{trait_str} "  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym) .can_attend?).to be false
+        end
+      end
+    end
+  end
+
+  describe "is_supporting?" do
+
+    context "when the membership is anything other than supporting" do
+
+      ["first", "adult", "ya", "child", "kidit"].each do |trait_str|
+        it "is false when the membership is #{trait_str}"  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).is_supporting?).to be false
+        end
+      end
+    end
+
+
+    context "when the membership is supporting" do
+
+      ["supporting"].each do |trait_str|
+        it "is true when the membership is #{trait_str} "  do
+          expect(build(:reservation, ("with_order_against_" + trait_str + "_membership").to_sym).is_supporting?).to be true
+        end
+      end
+    end
+  end
+
+  describe "date_upgrade_prices_locked" do
+    context "when the reservation doesn't have a price_lock_date" do
+      subject(:model) { create(:reservation) }
+
+      it "returns nil" do
+        expect(model.price_lock_date).to be_nil
+        expect(model.date_upgrade_prices_locked).to be_nil
+      end
+    end
+
+    context "when the reservation does have a price_lock_date" do
+      subject(:model) { create(:reservation) }
+
+      before do
+        model.update_attribute(:price_lock_date, Time.now)
+      end
+
+      it "returns the logged date" do
+        expect(model.price_lock_date).to_not be_nil
+        expect(model.date_upgrade_prices_locked).to be_within(1.day).of Time.now
+        expect(model.date_upgrade_prices_locked).to be_within(1.second).of model.price_lock_date
+      end
+    end
+  end
+
+  describe "eval_for_upgrade_price_lock" do
+
+    context "when there is a request for installment from the claimant" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_supporting_membership,
+                                :with_installment_request_from_claimant) }
+
+      it "sets the lock" do
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_within(1.day).of Time.now
+      end
+
+      it "is triggered after creation" do
+        model.update(price_lock_date: nil)
+        expect(model.price_lock_date).to be_nil
+        model.run_callbacks :create
+        expect(model.price_lock_date).to be_within(1.day).of Time.now
+      end
+    end
+
+    context "when there is no request for installment from claimant" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_supporting_membership) }
+
+      it "does not set the lock" do
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_nil
+      end
+    end
+
+    context "when the membership is already adult attending" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_adult_membership,
+                                :with_installment_request_from_claimant) }
+
+      it "does not set the lock" do
+        expect(model.price_lock_date).to be_nil
+        model.eval_for_upgrade_price_lock
+        expect(model.price_lock_date).to be_nil
+      end
+    end
+
+    context "when the reservation already has a price lock date" do
+      subject(:model) { build(:reservation,
+                                :with_order_against_supporting_membership,
+                                :with_installment_request_from_claimant,
+                                price_lock_date: Time.now - 30.days) }
+
+      it "does not change the lock" do
+        expect(model.price_lock_date).to be_within(1.day).of (Time.now - 30.days)
+
+        expect{ model.eval_for_upgrade_price_lock }
+          .to_not change { model.reload.price_lock_date}
+      end
+    end
+
+    context "when the reservation is not a new one" do
+      subject(:model) { create(:reservation,
+                                :with_order_against_supporting_membership,
+                                :with_installment_request_from_claimant ) }
+
+
+      it "is not triggered by saving" do
+        model.update(price_lock_date: nil)
+
+        expect { model.save }
+          .to_not change { model.price_lock_date }
+          .from(nil)
+      end
+    end
+  end
+
   describe "#has_paid_supporting?" do
     subject(:model) { create(:reservation, :with_claim_from_user) }
 
@@ -167,7 +361,6 @@ RSpec.describe Reservation, type: :model do
           it { is_expected.to include("rights.hugo.nominate") }
         end
       end
-
     end
 
     context "when voting opens" do
