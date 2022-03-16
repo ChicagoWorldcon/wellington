@@ -114,6 +114,16 @@ RSpec.describe Reservation, type: :model do
   end
 
   describe "#active_rights" do
+    before do
+      # this needs to be set to something.
+      $nomination_opens_at = 1.day.from_now
+
+      # these can all be nil for tests
+      $nomination_closed_at = nil
+      $voting_opens_at = nil
+      $hugo_closed_at = nil
+    end
+
     let(:adult_membership) { create(:membership, :adult) }
     let(:dublin_membership) { create(:membership, :dublin_2019) }
     let(:model) { create(:reservation, membership: adult_membership) }
@@ -140,7 +150,7 @@ RSpec.describe Reservation, type: :model do
 
     context "after nomination opens" do
       before do
-        $nomination_opens_at = 1.second.ago
+        $nomination_opens_at = 1.minute.ago
         $voting_opens_at = 1.day.from_now
         $hugo_closed_at = 2.days.from_now
       end
@@ -167,7 +177,19 @@ RSpec.describe Reservation, type: :model do
           it { is_expected.to include("rights.hugo.nominate") }
         end
       end
+    end
 
+    context "between the close of nominations and the start of voting" do
+      before do
+        $nomination_opens_at = 1.day.ago
+        $nomination_closed_at = 1.minute.ago
+        $voting_opens_at = 1.day.from_now
+        $hugo_closed_at = 2.days.from_now
+      end
+
+      it { is_expected.to_not include("rights.hugo.nominate_soon") }
+      it { is_expected.to_not include("rights.hugo.nominate") }
+      it { is_expected.to_not include("rights.hugo.vote") }
     end
 
     context "when voting opens" do

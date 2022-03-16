@@ -65,17 +65,21 @@ class Reservation < ApplicationRecord
       rights << "rights.attend" if memberships_held.any?(&:can_attend?)
       rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?)
 
+      nominations_end = [$nomination_closed_at, $voting_opens_at].compact.min
+
       now = DateTime.now
       if now < $nomination_opens_at
         if memberships_held.any?(&:can_nominate?)
           rights << "rights.hugo.nominate_soon"
         end
-      elsif now.between?($nomination_opens_at, $voting_opens_at)
+      elsif now.between?($nomination_opens_at, nominations_end)
         if memberships_held.any?(&:can_nominate?) && memberships_held.none?(&:can_vote?)
           rights << "rights.hugo.nominate_only"
         elsif memberships_held.any?(&:can_nominate?)
           rights << "rights.hugo.nominate"
         end
+      elsif now.between?(nominations_end, $voting_opens_at)
+        # nothing here; we don't have any rights for them
       elsif now.between?($voting_opens_at, $hugo_closed_at)
         if memberships_held.any?(&:can_vote?)
           rights << "rights.hugo.vote"
