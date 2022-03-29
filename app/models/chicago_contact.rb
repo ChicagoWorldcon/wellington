@@ -111,7 +111,7 @@ class ChicagoContact < ApplicationRecord
   end
 
   def preferred_name
-    "#{title} #{first_name} #{last_name}".strip
+    "#{preferred_first_name} #{preferred_last_name}".strip
   end
 
   def playful_nickname
