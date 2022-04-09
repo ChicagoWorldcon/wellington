@@ -4,6 +4,14 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-04-08] - 2022-04-08
+
+### Bugfixes
+
+
+- [#72](https://github.com/ChicagoWorldcon/wellington/issues/72) Added i18n text for upcoming Hugo nominations
+
+
 ## [2022-04-07] - 2022-04-07
 No significant changes.
 
