@@ -13,16 +13,16 @@ This file is maintained using towncrier.
 
 
 ## [2022-04-07] - 2022-04-07
-No significant changes.
 
+- [#146](https://github.com/ChicagoWorldcon/wellington/issues/72) Re-ordered mail global configuration to have addressed before devise
 
 ## [2022-03-28] - 2022-03-28
-No significant changes.
 
+- [#147](https://github.com/ChicagoWorldcon/wellington/issues/147) Modified the logged in operator view to use preferred names for members
 
 ## [2022-03-16] - 2022-03-16
-No significant changes.
 
+- Various text updates to the nominations emails
 
 ## [2022-01-31.3] - 2022-01-31
 No significant changes.
