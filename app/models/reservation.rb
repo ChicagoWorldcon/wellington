@@ -79,7 +79,9 @@ class Reservation < ApplicationRecord
           rights << "rights.hugo.nominate"
         end
       elsif now.between?(nominations_end, $voting_opens_at)
-        # nothing here; we don't have any rights for them
+        if memberships_held.any?(&:can_vote?)
+          rights << "rights.hugo.vote_soon"
+        end
       elsif now.between?($voting_opens_at, $hugo_closed_at)
         if memberships_held.any?(&:can_vote?)
           rights << "rights.hugo.vote"
