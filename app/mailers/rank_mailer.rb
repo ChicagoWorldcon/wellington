@@ -2,6 +2,7 @@
 
 # Copyright 2020 Steven Ensslen
 # Copyright 2020 Victoria Garcia
+# Copyright 2021 Fred Bauer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ class RankMailer < ApplicationMailer
   default from: $member_services_email
 
   def rank_ballot(reservation)
-    @wordcon_basic_greeting = worldcon_basic_greeting
+    @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_year = worldcon_year
     @retro_hugo_75_ago = retro_hugo_75_ago
     @hugo_vote_deadline = hugo_vote_deadline
@@ -29,20 +30,27 @@ class RankMailer < ApplicationMailer
     @organizers_names_for_signature = organizers_names_for_signature
 
     @detail = reservation.active_claim.contact
-    nominated_categories = Category.joins(ranks: :reservation).where(reservations: {id: reservation})
-
-    builder = MemberRanksByCategory.new(
-      reservation: reservation,
-      categories: nominated_categories.order(:order, :id),
-    )
-    builder.from_reservation
-    @ranks_by_category = builder.ranks_by_category
-
+    @ranks = reservation.ranks.sort_by { |rank| [rank.finalist.category.id, rank.position] }
+    @wordcon_basic_greeting = worldcon_basic_greeting
     mail(
-      subject: "Your 2020 Hugo and 1945 Retro Hugo Ballot",
-      to: reservation.user.email,
-      from: "Hugo Awards 2020 <hugohelp@conzealand.nz>"
+      subject: "Your 2022 Hugo Awards Ballot",
+      to: @detail.email,
+      from: "Hugo Awards 2022 <#{email_hugo_help}>"
     )
+  end
+
+  def ranks_open_dc(user:)
+    @user = user
+    @reservations = user.reservations.joins(:membership).merge(Membership.can_vote)
+
+    account_numbers = account_numbers_from(@reservations)
+    subject = if account_numbers.count == 1
+                "#{worldcon_public_name}: Hugo voting is now open for member #{account_numbers.first}"
+              else
+                "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
+              end
+
+    mail(to: user.email, from: email_hugo_help.to_s, subject: subject)
   end
 
   def ranks_open_chicago(user:)
@@ -56,7 +64,7 @@ class RankMailer < ApplicationMailer
       subject = "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
     end
 
-    mail(to: user.email, from: "#{email_hugo_help}", subject: subject)
+    mail(to: user.email, from: email_hugo_help.to_s, subject: subject)
   end
 
   def ranks_open_conzealand(user:)
@@ -115,7 +123,6 @@ class RankMailer < ApplicationMailer
 
   # Unlike the other templates the only difference in this is the subject line, hence a single mailer
   def ranks_reminder_3_days_left(email:)
-
     @worldcon_greeting_init_caps = worldcon_greeting_init_caps
     @hugo_vote_deadline = hugo_vote_deadline
     @email_hugo_help = email_hugo_help
