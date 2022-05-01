@@ -16,8 +16,7 @@
 <p><%=@worldcon_basic_greeting.capitalize %> <%= @detail %>.</p>
 
 <p>
-Thank you for voting in the <%= @worldcon_year %> Hugo Awards, Lodestar Award, <em>Astounding</em> Award
-  and the <%= @retro_hugo_75_ago %> Retro Hugo Awards.
+Thank you for voting in the <%= @worldcon_year %> Hugo Awards, Lodestar Award and the <em>Astounding</em> Award.
 </p>
 
 <% if !@ranks.present? %>
@@ -47,16 +46,15 @@ Thank you for voting in the <%= @worldcon_year %> Hugo Awards, Lodestar Award, <
 </p>
 
 <p>
-  To change your votes online, please visit <%= link_to($hostname, $hosturl) %>,
-  click on My Memberships to access all memberships linked with that email address.
-  Then click the voting links on your membership.
+  To change your votes online, please visit <%= reservation_finalists_url(@reservation) %>
 </p>
 
 <p>
-  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards and <%= @retro_hugo_75_ago %> Retro Hugos, and hope to see you at <%= @worldcon_public_name %>
+  We look forward to your participation in the <%= @worldcon_year %> Hugo Awards, and
+  we hope to see you at <%= @worldcon_public_name %>
 </p>
 
 <p>
-  <%= @organizers_names_for_signature %></br>
+  <%= @names_for_signature %></br>
   Hugo Administrator and Deputy Hugo Administrators
 </p>

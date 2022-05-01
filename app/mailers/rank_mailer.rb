@@ -27,8 +27,9 @@ class RankMailer < ApplicationMailer
     @hugo_vote_deadline = hugo_vote_deadline
     @worldcon_year = worldcon_year
     @worldcon_public_name = worldcon_public_name
-    @organizers_names_for_signature = organizers_names_for_signature
+    @names_for_signature = hugo_administrator_names_for_signature
 
+    @reservation = reservation
     @detail = reservation.active_claim.contact
     @ranks = reservation.ranks.sort_by { |rank| [rank.finalist.category.id, rank.position] }
     @wordcon_basic_greeting = worldcon_basic_greeting
@@ -58,11 +59,11 @@ class RankMailer < ApplicationMailer
     @reservations = user.reservations.joins(:membership).merge(Membership.can_vote)
 
     account_numbers = account_numbers_from(@reservations)
-    if account_numbers.count == 1
-      subject = "#{worldcon_public_name}: Hugo voting is now open for member #{account_numbers.first}"
-    else
-      subject = "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "#{worldcon_public_name}: Hugo voting is now open for member #{account_numbers.first}"
+              else
+                "#{worldcon_public_name}: Hugo voting is now open for members #{account_numbers.to_sentence}"
+              end
 
     mail(to: user.email, from: email_hugo_help.to_s, subject: subject)
   end
@@ -72,11 +73,11 @@ class RankMailer < ApplicationMailer
     @reservations = user.reservations.joins(:membership).merge(Membership.can_vote)
 
     account_numbers = account_numbers_from(@reservations)
-    if account_numbers.count == 1
-      subject = "CoNZealand: Hugo voting is now open for member #{account_numbers.first}"
-    else
-      subject = "CoNZealand: Hugo voting is now open for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "CoNZealand: Hugo voting is now open for member #{account_numbers.first}"
+              else
+                "CoNZealand: Hugo voting is now open for members #{account_numbers.to_sentence}"
+              end
 
     mail(to: user.email, from: "hugohelp@conzealand.nz", subject: subject)
   end
@@ -85,16 +86,14 @@ class RankMailer < ApplicationMailer
     user = User.find_by!(email: email)
     reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
 
-    if reservations_that_can_vote.none?
-      return
-    end
+    return if reservations_that_can_vote.none?
 
     account_numbers = account_numbers_from(reservations_that_can_vote)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Voting Reminder for member #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Voting Reminder for members #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "2 weeks to go! Hugo Award Voting Reminder for member #{account_numbers.first}"
+              else
+                "2 weeks to go! Hugo Award Voting Reminder for members #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
@@ -105,16 +104,14 @@ class RankMailer < ApplicationMailer
     user = User.find_by!(email: email)
     reservations_that_can_vote = user.reservations.joins(:membership).merge(Membership.can_vote)
 
-    if reservations_that_can_vote.none?
-      return
-    end
+    return if reservations_that_can_vote.none?
 
     account_numbers = account_numbers_from(reservations_that_can_vote)
-    if account_numbers.count == 1
-      subject = "2 weeks to go! Hugo Award Voting Reminder for account #{account_numbers.first}"
-    else
-      subject = "2 weeks to go! Hugo Award Voting Reminder for accounts #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1
+                "2 weeks to go! Hugo Award Voting Reminder for account #{account_numbers.first}"
+              else
+                "2 weeks to go! Hugo Award Voting Reminder for accounts #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
@@ -134,26 +131,24 @@ class RankMailer < ApplicationMailer
 
     user = User.find_by!(email: email)
 
-    if user.reservations.none?
-      return
-    end
+    return if user.reservations.none?
 
     account_numbers = account_numbers_from(user.reservations)
-    conzealand = conzealand_memberships.where(reservations: {id: user.reservations}).any?
+    conzealand = conzealand_memberships.where(reservations: { id: user.reservations }).any?
 
-    if account_numbers.count == 1 && conzealand
-      subject = "Hugo Voting Closes in 3 Days! for member #{account_numbers.first}"
-    elsif conzealand
-      subject = "Hugo Voting Closes in 3 Days! for members #{account_numbers.to_sentence}"
-    elsif account_numbers.count == 1
-      subject = "Hugo Voting Closes in 3 Days! for account #{account_numbers.first}"
-    else
-      subject = "Hugo Voting Closes in 3 Days! for accounts #{account_numbers.to_sentence}"
-    end
+    subject = if account_numbers.count == 1 && conzealand
+                "Hugo Voting Closes in 3 Days! for member #{account_numbers.first}"
+              elsif conzealand
+                "Hugo Voting Closes in 3 Days! for members #{account_numbers.to_sentence}"
+              elsif account_numbers.count == 1
+                "Hugo Voting Closes in 3 Days! for account #{account_numbers.first}"
+              else
+                "Hugo Voting Closes in 3 Days! for accounts #{account_numbers.to_sentence}"
+              end
 
     @details = Detail.where(claim_id: user.active_claims)
 
-    mail(to: user.email, from: "#{email_hugo_help}", subject: subject)
+    mail(to: user.email, from: email_hugo_help.to_s, subject: subject)
   end
 
   private
