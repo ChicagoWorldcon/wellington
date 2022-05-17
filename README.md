@@ -216,11 +216,16 @@ SIDEKIQ_NO_PASSWORD=true
 # 3. Create a user with programatic access that has read only access to this bucket
 # 4. Generate AWS keys for that user
 # 5. Configure on production / staging / local with the following:
+#
 # HUGO_PACKET_BUCKET=FROM_STEP_2
 # HUGO_PACKET_PREFIX=FROM_STEP_2
 # AWS_REGION=ap-southeast-2
 # AWS_ACCESS_KEY_ID=FROM_STEP_4
 # AWS_SECRET_ACCESS_KEY=FROM_STEP_4
+#
+# In addition, if you are using an alternate S3 compatible storage system
+# (like DigitalOcean's "spaces") it will need an endpoint:
+# AWS_ENDPOINT=...
 
 # Uncomment this if you're CoNZealand and need a virtual worldcon <3
 # GLOO_BASE_URL=https://api.thefantasy.network/v1

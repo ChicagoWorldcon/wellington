@@ -28,7 +28,7 @@ class HugoPacketController < ApplicationController
     end
 
     def file_name
-      key.sub(prefix + '/', '')
+      key.sub(prefix + "/", "")
     end
 
     def download_size
@@ -39,9 +39,9 @@ class HugoPacketController < ApplicationController
   before_action :check_access!
 
   def index
-    list_objects = s3_client.list_objects_v2(
+    list_objects = s3_client.list_objects(
       bucket: ENV["HUGO_PACKET_BUCKET"],
-      prefix: ENV["HUGO_PACKET_PREFIX"],
+      prefix: ENV["HUGO_PACKET_PREFIX"]
     )
 
     @packets = list_objects.contents.map do |blob|
@@ -57,8 +57,8 @@ class HugoPacketController < ApplicationController
     hugo_packet_path = [ENV["HUGO_PACKET_PREFIX"], params[:id]].join("/")
     s3_object = Aws::S3::Object.new(
       key: hugo_packet_path,
-      bucket_name: ENV['HUGO_PACKET_BUCKET'],
-      client: s3_client,
+      bucket_name: ENV["HUGO_PACKET_BUCKET"],
+      client: s3_client
     )
 
     redirect_to s3_object.presigned_url(:get, expires_in: 1.hour.to_i)
@@ -67,7 +67,7 @@ class HugoPacketController < ApplicationController
   private
 
   def check_access!
-    if !user_signed_in?
+    unless user_signed_in?
       flash["notice"] = "Please log in to download the Hugo Packet"
       redirect_to root_path
       return
@@ -82,14 +82,24 @@ class HugoPacketController < ApplicationController
     # Just need minimum instalment to count
     paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
     if paid_reservations.none?(&:can_vote?)
-      flash["notice"] = "To download the Hugo Packet, please ensure one of your memberships has at least the minimum instalment and voting rights"
+      flash["notice"] =
+        "To download the Hugo Packet, please ensure one of your memberships has at least the minimum instalment and voting rights"
       redirect_to reservations_path
-      return
+      nil
     end
   end
 
-
   def s3_client
-    @s3_client ||= Aws::S3::Client.new
+    # if we are setting the endpoint, we use a custom S3 client setup
+    @s3_client ||= if ENV["AWS_ENDPOINT"]
+                     Aws::S3::Client.new(
+                       access_key_id: ENV["AWS_ACCESS_KEY_ID"],
+                       secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
+                       endpoint: ENV["AWS_ENDPOINT"],
+                       region: ENV["AWS_REGION"]
+                     )
+                   else
+                     Aws::S3::Client.new
+                   end
   end
 end
