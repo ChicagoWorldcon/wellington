@@ -433,7 +433,8 @@ div.group-payment-confirmation h1 {
 // COMPONENTS
 // =========================================================================
 
-.hugo-description {
+.hugo-description,
+.hugo-voting-instructions {
   ul,
   ol {
     margin: 15px;
@@ -443,6 +444,16 @@ div.group-payment-confirmation h1 {
   }
 }
 
+.hugo-voting-instructions {
+  h2 {
+    text-align: center;
+  }
+
+  .deadline {
+    text-align: center;
+    font-weight: bolder;
+  }
+}
 // -------------------------------
 // BUTTONS
 // -------------------------------

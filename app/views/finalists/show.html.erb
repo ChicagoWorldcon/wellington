@@ -1,18 +1,18 @@
 <%#
-  Copyright 2020 Matthew B. Gray
-  Copyright 2020 Steven Ensslen
+Copyright 2020 Matthew B. Gray
+Copyright 2020 Steven Ensslen
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 %>
 <% if @privacy_warning.present? %>
   <div class="modal fade" id="privacy-warning" tabindex="-1" role="dialog" aria-labelledby="privacy-warning-title" aria-hidden="true">
@@ -39,6 +39,15 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
+      <div class="l-v-spacing l-panel hugo-voting-instructions">
+        <h2>ALL BALLOTS MUST BE RECEIVED BY</h2>
+        <p class="deadline"><%= hugo_vote_deadline %></p>
+        <p>You may return to this page to modify your ballot as many times as you like until the voting deadline.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
       <div class="l-v-spacing l-panel hugo-description">
         <% instructions = t(:voting, scope: [:rights, @election.i18n_key]) %>
         <%= raw markdown.render(instructions) %>
@@ -62,12 +71,12 @@
           This is based on your legal name as stated on your membership.
         </p>
         <p>
-        <input
-          id="hugo-show-form"
-          data-name="<%= @legal_name %>"
-          type="text"
-          class="form-control"
-        ></input>
+          <input
+            id="hugo-show-form"
+            data-name="<%= @legal_name %>"
+            type="text"
+            class="form-control"
+          ></input>
         </p>
 
         <p class="hugo-show-form-thanks" hidden>
