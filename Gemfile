@@ -75,7 +75,7 @@ end
 
 group :test do
   gem "database_cleaner-active_record" # Allows for cleaning out the database after running the FactoryBot.lint rake task so that the stuff it creates doesn't interfere with subsequent tests.
-  gem "database_plumber", github: "brrygrdn/database_plumber"
+  gem "database_plumber", github: "brrygrdn/database_plumber", branch: "main"
   gem "ruby-prof" # profiling tool
   gem "ruby-prof-flamegraph" # flame graphs
   gem "test-prof", "~> 1.0" # test profile
