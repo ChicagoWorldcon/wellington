@@ -17,14 +17,17 @@
     <div>
       <input
         type="text"
+        title="ranking"
         v-model.number="finalist.rank"
         :class="{ 'text-danger': invalid }"
-        @change='changeRank()'
-        @keyup='changeRank()'
-      >
-      <span v-bind:class="{ 'text-danger': invalid }">
-        {{ finalist.name }}
-      </span>
+        @change="changeRank()"
+        @keyup="changeRank()"
+        @input="validateRank"
+      />
+      <span
+        v-bind:class="{ 'text-danger': invalid }"
+        v-html="finalist.name"
+      ></span>
     </div>
 
     <p v-for="error in errors" :key="error">
@@ -35,12 +38,13 @@
 
 <script>
 export default {
-  props: ['finalist', 'ranks'],
+  props: ["finalist", "ranks"],
   computed: {
     rankSet: (vm) => vm.finalist.rank > 0,
-    rankInRange: ({ finalist }) => (
-      finalist.rank === null || finalist.rank === '' || (finalist.rank >= 1 && finalist.rank <= 7)
-    ),
+    rankInRange: ({ finalist }) =>
+      finalist.rank === null ||
+      finalist.rank === "" ||
+      (finalist.rank >= 1 && finalist.rank <= 7),
     rankAlreadySet: ({ finalist, ranks }) => {
       if (finalist.rank != null) {
         const matching = ranks.filter((rank) => rank === finalist.rank);
@@ -49,7 +53,7 @@ export default {
       return false;
     },
     ranksSmallToLarge: ({ finalist, ranks }) => {
-      if (finalist.rank === null || finalist.rank === '') {
+      if (finalist.rank === null || finalist.rank === "") {
         return true;
       }
       const expectedOffset = finalist.rank - 1;
@@ -57,26 +61,35 @@ export default {
     },
     // TODO check out validation options in vue's model
     // https://vuejs.org/v2/api/#model
-    invalid: ({ errors }) => (
-      errors.length > 0
-    ),
+    invalid: ({ errors }) => errors.length > 0,
     errors: (vm) => {
       const errors = [];
       if (vm.rankAlreadySet) {
         errors.push(`Rank ${vm.finalist.rank} is set on another finalist`);
       }
       if (!vm.rankInRange) {
-        errors.push('Out of bounds, needs to be between 1 and 7');
+        errors.push("Out of bounds, needs to be between 1 and 7");
       }
       if (errors.length === 0 && !vm.ranksSmallToLarge) {
-        errors.push('No skipping, please enter ranks 1, 2, 3...');
+        errors.push("No skipping, please enter ranks 1, 2, 3...");
       }
       return errors;
     },
   },
   methods: {
     changeRank() {
-      this.$emit('valid', this.errors.length === 0);
+      this.$emit("valid", this.errors.length === 0);
+    },
+    validateRank(event) {
+      const value = event.target.value;
+      if (String(value) === "0") {
+        this.finalist.rank = "";
+      }
+      const invalidInput = new RegExp("[^1-7]");
+      if (invalidInput.test(String(value))) {
+        this.finalist.rank = "";
+      }
+      this.$forceUpdate();
     },
   },
 };
