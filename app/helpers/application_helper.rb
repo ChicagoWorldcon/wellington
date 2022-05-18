@@ -254,7 +254,12 @@ module ApplicationHelper
   end
 
   #### Email Helpers
+  # Why this one exists is a fucking mystery to me.
   def email_hugo_help
+    hugo_help_email
+  end
+
+  def hugo_help_email
     $hugo_help_email
   end
 
