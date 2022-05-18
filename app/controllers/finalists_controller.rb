@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 # FinalistsController collects Hugo votes and shows the Hugo votes by a user
 class FinalistsController < ApplicationController
   # controller also accessed by XHR, see https://stackoverflow.com/a/43122403/7359502
@@ -28,21 +27,20 @@ class FinalistsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.html
-      format.json {
+      format.json do
         render json: {
           categories: sample_ranked_categories
         }
-      }
+      end
     end
   end
 
   def update
-
-    if ! params[:category].respond_to? :each then
-      categories = params[:category]
-    else
-      categories = [ params[:category] ]
-    end
+    categories = if !params[:category].respond_to? :each
+                   params[:category]
+                 else
+                   [params[:category]]
+                 end
 
     votes = []
     categories.each do |cat|
@@ -68,10 +66,10 @@ class FinalistsController < ApplicationController
 
       if hugo_admin_signed_in?
         @reservation.user.notes.create!(
-          content: %{
+          content: %(
             Voting form updated by hugo admin #{current_support.email}
             on behalf of member ##{@reservation.membership_number}
-          }.strip_heredoc
+          ).strip_heredoc
         )
       end
     end
@@ -84,7 +82,7 @@ class FinalistsController < ApplicationController
     position_by_finalist = @reservation.ranks.pluck(:finalist_id, :position).to_h
 
     categories_in_election.includes(:finalists).order("categories.order").map do |c|
-      finalists = c.finalists.map { |f| TransformFinalist.new(f, position_by_finalist).call }
+      finalists = c.finalists.in_created_order.map { |f| TransformFinalist.new(f, position_by_finalist).call }
       TransformCategory.new(c, finalists).call
     end
   end
@@ -94,9 +92,8 @@ class FinalistsController < ApplicationController
       {
         id: category.id,
         name: category.name,
-        finalists: finalists,
+        finalists: finalists
       }
-
     end
   end
 
@@ -105,7 +102,7 @@ class FinalistsController < ApplicationController
       {
         id: finalist.id,
         name: finalist.description,
-        rank: position_by_finalist[finalist.id],
+        rank: position_by_finalist[finalist.id]
       }
     end
   end
@@ -115,9 +112,9 @@ class FinalistsController < ApplicationController
     return true if hugo_admin_signed_in?
 
     errors = []
-    errors << "voting is not open" if !HugoState.new.has_voting_opened?
+    errors << "voting is not open" unless HugoState.new.has_voting_opened?
     errors << "signed in as support" if support_signed_in?
-    errors << "this membership doesn't have voting rights" if !@reservation.can_vote?
+    errors << "this membership doesn't have voting rights" unless @reservation.can_vote?
 
     if errors.any?
       flash[:notice] = errors.to_sentence

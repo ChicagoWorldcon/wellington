@@ -21,4 +21,6 @@ class Finalist < ApplicationRecord
   has_many :ranks
 
   validates :description, presence: true
+
+  scope :in_created_order, -> { order(created_at: :asc) }
 end
