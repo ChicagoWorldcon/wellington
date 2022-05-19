@@ -15,13 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe HugoPacketController, type: :controller do
   render_views
 
   let(:adult) { create(:membership, :adult) }
   let(:dublin) { create(:membership, :dublin_2019) }
+  let(:voting_open) { true }
 
   before do
     ENV["AWS_ACCESS_KEY_ID"] = "much-id"
@@ -29,10 +30,44 @@ RSpec.describe HugoPacketController, type: :controller do
     ENV["AWS_SECRET_ACCESS_KEY"] = "so-secret"
   end
 
+  before(:each) do
+    expect(HugoState)
+      .to receive_message_chain(:new, :has_voting_opened?)
+      .and_return(voting_open)
+  end
+
   describe "#index" do
-    context "when logged out" do
-      it "redirects with error" do
-        expect(get :index).to redirect_to(root_path)
+    context "when voting isn't open and logged in" do
+      let(:reservation) { create(:reservation, :with_claim_from_user, membership: dublin) }
+      let(:voting_open) { false }
+      before { sign_in(reservation.user) }
+
+      it "flashes that voting isn't open" do
+        get(:index)
+        expect(flash[:notice]).to match(/voting is not open/i)
+      end
+      it "redirects to the root" do
+        expect(get(:index)).to redirect_to(root_path)
+      end
+    end
+
+    context "when voting isn't open and logged out" do
+      let(:voting_open) { false }
+      it "redirects to the root" do
+        expect(get(:index)).to redirect_to(root_path)
+      end
+      it "flashes a login notice" do
+        get(:index)
+        expect(flash[:notice]).to match(/voting is not open/i)
+      end
+    end
+
+    context "when voting is open and logged out" do
+      it "redirects to the root" do
+        expect(get(:index)).to redirect_to(root_path)
+      end
+      it "flashes a login notice" do
+        get(:index)
         expect(flash[:notice]).to match(/please log in/i)
       end
     end
@@ -42,17 +77,19 @@ RSpec.describe HugoPacketController, type: :controller do
       before { sign_in(reservation.user) }
 
       it "redirects with error" do
-        expect(get :index).to redirect_to(reservations_path)
+        expect(get(:index)).to redirect_to(reservations_path)
         expect(flash[:notice]).to match(/voting rights/i)
       end
     end
 
     context "when logged with voting rights but not paid" do
-      let(:reservation) { create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult) }
+      let(:reservation) do
+        create(:reservation, :with_claim_from_user, :instalment, instalment_paid: 0, membership: adult)
+      end
       before { sign_in(reservation.user) }
 
       it "redirects with error" do
-        expect(get :index).to redirect_to(reservations_path)
+        expect(get(:index)).to redirect_to(reservations_path)
         expect(flash[:notice]).to match(/voting rights/i)
       end
     end
@@ -66,13 +103,12 @@ RSpec.describe HugoPacketController, type: :controller do
         ENV["HUGO_PACKET_PREFIX"] = "stub"
         Aws.config.update(stub_responses: true)
         Aws::S3::Client.new.stub_data(:list_objects_v2,
-          prefix: "/",
-          contents: [],
-        )
+                                      prefix: "/",
+                                      contents: [])
       end
 
       it "renders ok" do
-        expect(get :index).to have_http_status(:ok)
+        expect(get(:index)).to have_http_status(:ok)
       end
     end
   end
