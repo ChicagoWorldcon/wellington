@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 
+
 @contextmanager
 def current_deploy_tag(tag: str):
     with open("deploy/tag.env", "r") as fh:
@@ -30,6 +31,7 @@ def main():
     parser.add_argument("docker_tag")
     parser.add_argument("--deployment-group", default=None)
     parser.add_argument("--description", default=None)
+    parser.add_argument("--profile", default=None)
     opts = parser.parse_args()
 
     if not opts.deployment_group:
@@ -47,10 +49,16 @@ def main():
 
     description = opts.description if opts.description else f"Deploy {opts.docker_tag}"
 
-    with current_deploy_tag(opts.docker_tag):
+    def aws_cli(*args):
         cli = shutil.which("aws")
-        command = [
-            cli,
+        command = [cli]
+        if opts.profile:
+            command.extend(["--profile", opts.profile])
+        command.extend(args)
+        return command
+
+    with current_deploy_tag(opts.docker_tag):
+        command = aws_cli(
             "deploy",
             "push",
             "--application-name",
@@ -61,7 +69,7 @@ def main():
             ".",
             "--description",
             description,
-        ]
+        )
 
         res = subprocess.run(command, cwd="./deploy", capture_output=True)
         if res.returncode != 0:
@@ -73,7 +81,9 @@ def main():
             sys.exit(res.returncode)
 
         lines = [_.decode("utf-8") for _ in res.stdout.splitlines()]
-        deploy_command_line = [_ for _ in lines if "aws deploy create-deployment" in _][0]
+        deploy_command_line = [_ for _ in lines if "aws deploy create-deployment" in _][
+            0
+        ]
         command_parts = shlex.split(deploy_command_line)
 
         def keep(parts):
@@ -106,7 +116,16 @@ def main():
             print(res.stdout)
             sys.exit(1)
 
-        subprocess.run(["aws", "deploy", "wait", "deployment-successful", "--deployment-id", deployment_id], check=True)
+        subprocess.run(
+            aws_cli(
+                "deploy",
+                "wait",
+                "deployment-successful",
+                "--deployment-id",
+                deployment_id,
+            ),
+            check=True,
+        )
 
 
 if __name__ == "__main__":
