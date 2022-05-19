@@ -67,6 +67,12 @@ class HugoPacketController < ApplicationController
   private
 
   def check_access!
+    unless HugoState.new.has_voting_opened?
+      flash["notice"] = "voting is not open"
+      redirect_to root_path
+      return
+    end
+
     unless user_signed_in?
       flash["notice"] = "Please log in to download the Hugo Packet"
       redirect_to root_path
