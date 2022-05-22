@@ -35,6 +35,8 @@ class Export::RankCsv
 
   def stats
     Reservation.distinct.joins(:user,
-                               ranks: { category: :election }).group("elections.name").merge(Claim.active).count
+                               ranks: { finalist: {
+                                 category: :election
+                               } }).group("elections.name").merge(Claim.active).count
   end
 end

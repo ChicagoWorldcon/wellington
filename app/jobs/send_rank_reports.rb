@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class SendRankReports < ApplicationJob
+class SendRankReports
   include Sidekiq::Worker
 
   def perform

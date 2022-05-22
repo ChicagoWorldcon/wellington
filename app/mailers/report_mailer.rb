@@ -47,7 +47,7 @@ class ReportMailer < ApplicationMailer
   end
 
   def ranks_csv
-    destinations = ReportRecipient.where(report: "ranks").pluck(:email_address)
+    destinations = ReportRecipient.where(report: "rank").pluck(:email_address)
     if destinations.empty?
       puts("No ranks report recipients; skipping")
       return

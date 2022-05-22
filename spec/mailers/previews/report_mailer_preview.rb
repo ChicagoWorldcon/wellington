@@ -19,6 +19,10 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.nominations_csv
   end
 
+  def ranks_csv
+    ReportMailer.ranks_csv
+  end
+
   def memberships_csv
     ReportMailer.memberships_csv
   end
