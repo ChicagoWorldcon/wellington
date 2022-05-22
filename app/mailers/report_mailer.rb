@@ -42,7 +42,31 @@ class ReportMailer < ApplicationMailer
 
     mail(
       subject: "Nominations export #{date}",
-      to: destinations,
+      to: destinations
+    )
+  end
+
+  def ranks_csv
+    destinations = ReportRecipient.where(report: "ranks").pluck(:email_address)
+    if destinations.empty?
+      puts("No ranks report recipients; skipping")
+      return
+    end
+
+    command = Export::RankCsv.new
+    csv = command.call
+    return if csv.nil?
+
+    date = Date.today.iso8601
+    attachments["ranks-#{date}.csv"] = {
+      mime_type: "text/csv",
+      content: csv
+    }
+
+    @stats = command.stats
+    mail(
+      subject: "Ranks export #{date}",
+      to: destinations
     )
   end
 
@@ -68,17 +92,16 @@ class ReportMailer < ApplicationMailer
 
     mail(
       subject: "Memberships export #{date}",
-      to: destinations,
+      to: destinations
     )
   end
 
   private
 
   def border_styles
-    %{
+    %(
       border: 1px solid #333;
       padding: 5px 10px;
-    }
+    )
   end
-
 end

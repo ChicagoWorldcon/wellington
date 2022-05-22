@@ -30,6 +30,10 @@ schedule:
     cron: "0 1 * * 6 America/Los_Angeles" # At 01:00 on Saturday
     class: SendMembershipReports
 
+  email_rank_reports:
+    cron: "10 0 * * * America/Los_Angeles" # at 00:10 every day
+    class: SendRankReports
+
   # TODO maybe it would have been better to use this http://localhost:3000/sidekiq/scheduled
   # This job returns early if you're not close to 72 hours of nomination close
   # It runs a lot so that the reminder is timely
