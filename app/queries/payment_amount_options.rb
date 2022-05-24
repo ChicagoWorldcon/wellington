@@ -20,6 +20,7 @@
 class PaymentAmountOptions
   MIN_PAYMENT = Money.new(ENV["INSTALMENT_MIN_PAYMENT_CENTS"] || 75_00)
   PAYMENT_STEP = Money.new(ENV["INSTALMENT_PAYMENT_STEP_CENTS"] || 50_00)
+  INSTALMENT_ENABLED = !(ENV["INSTALMENT_ENABLED"].to_s.downcase == "false")
 
   attr_reader :amount_owed
 
@@ -29,6 +30,7 @@ class PaymentAmountOptions
 
   def amounts
     return [] if minimum_payment <= 0
+    return [amount_owed] unless INSTALMENT_ENABLED
 
     instalments.append(amount_owed)
   end
@@ -46,6 +48,8 @@ class PaymentAmountOptions
   end
 
   def minimum_payment
+    return amount_owed unless INSTALMENT_ENABLED
+
     amount_owed < MIN_PAYMENT ? amount_owed : MIN_PAYMENT
   end
 end
