@@ -45,9 +45,11 @@ Thank you for voting in the <%= @worldcon_year %> Hugo Awards, Lodestar Award an
   The deadline for votes is <%= @hugo_vote_deadline %>.
 </p>
 
+<% @elections.each do |e| %>
 <p>
-  To change your votes online, please visit <%= reservation_finalists_url(@reservation) %>
+  To change your <%= e.name %> votes online, please visit <%= reservation_finalist_url(@reservation, e.i18n_key) %>
 </p>
+<% end %>
 
 <p>
   Thank you for your participation in the <%= @worldcon_year %> Hugo Awards, and

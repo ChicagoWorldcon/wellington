@@ -33,6 +33,7 @@ class RankMailer < ApplicationMailer
     @detail = reservation.active_claim.contact
     @ranks = reservation.ranks.sort_by { |rank| [rank.finalist.category.id, rank.position] }
     @wordcon_basic_greeting = worldcon_basic_greeting
+    @elections = @ranks.map { |r| r.finalist.category.election }.uniq
     mail(
       subject: "Your 2022 Hugo Awards Ballot",
       to: @detail.email,
