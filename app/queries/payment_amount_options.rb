@@ -35,6 +35,10 @@ class PaymentAmountOptions
     instalments.append(amount_owed)
   end
 
+  def self.instalment_enabled
+    INSTALMENT_ENABLED
+  end
+
   private
 
   def instalments

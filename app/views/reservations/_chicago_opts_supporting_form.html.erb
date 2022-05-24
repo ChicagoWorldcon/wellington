@@ -22,7 +22,9 @@
   <label for="mail_souvenir_book">Please mail me a paper copy of the souvenir book.</label>
 </div>
 
+<% if PaymentAmountOptions.instalment_enabled %>
 <div class="form-options">
   <%= contact_form.check_box(:installment_wanted, class: "form-control form-control-m-checkbox", id: "installment_wanted") %>
   <label for="installment_wanted">I am interested in upgrading to an attending membership on an installment plan.</label>
 </div>
+<% end %>
