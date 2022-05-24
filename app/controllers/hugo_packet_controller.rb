@@ -21,7 +21,7 @@ class HugoPacketController < ApplicationController
   Packet = Struct.new(:prefix, :blob) do
     include ActionView::Helpers::NumberHelper
 
-    delegate :size, :key, to: :blob
+    delegate :size, :key, :last_modified, to: :blob
 
     def downloadable?
       size > 0

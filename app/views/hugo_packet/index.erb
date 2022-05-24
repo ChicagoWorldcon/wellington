@@ -86,7 +86,7 @@
           <% @packets.select(&:downloadable?).each do |packet| %>
             <li class="list-group-item">
               <%= link_to(packet.file_name, hugo_packet_path(packet.file_name)) %>
-              (<%= packet.download_size %>)
+              (<%= packet.download_size %>, last modified <%= packet.last_modified.to_formatted_s(:short_tz) %>)
             </li>
           <% end %>
         </ul>

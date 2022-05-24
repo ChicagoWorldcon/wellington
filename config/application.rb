@@ -75,5 +75,7 @@ module Conzealand
     # GNU Terry Pratchett
     config.middleware.use Rack::Pratchett
 
+    # Useful TZ format
+    Time::DATE_FORMATS[:short_tz] = "#{Time::DATE_FORMATS[:short]} %Z"
   end
 end
