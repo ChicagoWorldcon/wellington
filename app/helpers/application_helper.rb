@@ -154,8 +154,19 @@ module ApplicationHelper
     $nomination_closed_at.strftime("%H:%M %p, Pacific Daylight Time (PDT, UTC-7) on %B %d, %Y")
   end
 
+  def human_timezone(time_string, timezone)
+    time = time_string.in_time_zone(timezone)
+
+    if time.zone.match?(/^\w/)
+      time.zone
+    else
+      time.formatted_offset
+    end
+  end
+
   def hugo_vote_deadline
-    $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p %Z")
+    time_zone = human_timezone($hugo_closed_at.to_s, "Pacific Time (US & Canada)")
+    $hugo_closed_at.strftime("%A %-d %B %Y, %H:%M %p #{time_zone}")
   end
 
   def hugo_ballot_pub_month
