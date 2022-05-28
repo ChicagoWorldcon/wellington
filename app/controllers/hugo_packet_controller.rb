@@ -86,8 +86,12 @@ class HugoPacketController < ApplicationController
     end
 
     # Just need minimum instalment to count
-    paid_reservations = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
-    if paid_reservations.none?(&:can_vote?)
+    reservations_charged = current_user.reservations.distinct.joins(:charges).merge(Charge.successful)
+
+    # but we also accept memberships that are paid through other means
+    paid_reservations = current_user.reservations.distinct.where(state: "paid")
+
+    if paid_reservations.none?(&:can_vote?) and reservations_charged.none?(&:can_vote?)
       flash["notice"] =
         "To download the Hugo Packet, please ensure one of your memberships has at least the minimum " + 
         "instalment and voting rights. Please note that there is currently an issue affecting some " +
