@@ -31,12 +31,13 @@ class RankMailer < ApplicationMailer
 
     @reservation = reservation
     @detail = reservation.active_claim.contact
+    email = @detail.email.present? ? @detail.email : reservation.user.email
     @ranks = reservation.ranks.sort_by { |rank| [rank.finalist.category.id, rank.position] }
     @wordcon_basic_greeting = worldcon_basic_greeting
     @elections = @ranks.map { |r| r.finalist.category.election }.uniq
     mail(
       subject: "Your 2022 Hugo Awards Ballot",
-      to: @detail.email,
+      to: email,
       from: "Hugo Awards 2022 <#{email_hugo_help}>"
     )
   end
