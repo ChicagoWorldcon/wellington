@@ -28,6 +28,8 @@ class SendRankSummaries
       reservations = ReservationsWithRecentRanks.new.call
       reservations.find_each do |reservation|
         RankMailer.rank_ballot(reservation).deliver_now
+      rescue StandardError
+        puts "Unable to send the ballot update for #{reservation.active_claim.contact.hugo_name}"
       end
 
       reservations.update_all(ballot_last_mailed_at: job_started_at)
