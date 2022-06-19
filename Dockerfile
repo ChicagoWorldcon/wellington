@@ -82,4 +82,11 @@ FROM deploy as development
 VOLUME /app
 WORKDIR /app
 RUN bundle install --with test,development
-RUN gem install bundler mailcatcher
+RUN gem install bundler
+
+FROM base as mailcatcher
+VOLUME /app
+WORKDIR /app
+RUN gem install mailcatcher
+ADD script/run-mailcatcher.sh /app/script/
+CMD /app/script/run-mailcatcher.sh
