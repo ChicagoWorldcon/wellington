@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '3.7'
+version: "3.7"
 
 volumes:
   pgdata:
@@ -40,8 +40,9 @@ services:
       - "36379:6379"
 
   mail:
-    entrypoint: "mailcatcher -f --ip 0.0.0.0"
-    image: registry.gitlab.com/worldcon/wellington:latest
+    build:
+      context: .
+      target: mailcatcher
     ports:
       - "1080:1080" # Browser viewable mailbox
       - "1025:1025" # Open SMTP reciever port
