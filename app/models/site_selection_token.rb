@@ -1,0 +1,2 @@
+class SiteSelectionToken < ApplicationRecord
+end
