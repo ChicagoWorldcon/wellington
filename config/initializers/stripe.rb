@@ -17,10 +17,11 @@
 # See https://stripe.com/docs/checkout/rails
 Rails.configuration.stripe = {
   publishable_key: ENV["STRIPE_PUBLIC_KEY"],
-  secret_key: ENV["STRIPE_PRIVATE_KEY"],
+  secret_key: ENV["STRIPE_PRIVATE_KEY"]
 }
 
 Stripe.api_key = Rails.configuration.stripe[:secret_key]
+StripeEvent.signing_secret = ENV["STRIPE_SIGNING_KEY"]
 
 $stripe_test_keys = ENV["STRIPE_PRIVATE_KEY"].present? && !!ENV["STRIPE_PRIVATE_KEY"].match(/^sk_test/)
 $currency = Rails.configuration.default_currency.to_s.upcase
