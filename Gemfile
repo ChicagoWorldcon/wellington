@@ -43,6 +43,7 @@ gem "sidekiq"              # Background jobs processor
 gem "sidekiq-scheduler"    # Background jobs processor scheduler
 gem "strip_attributes"     # ActiveModel extension to remove leading and trailing spaces
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
+gem "stripe_event"         # Stripe webhook monting
 gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 

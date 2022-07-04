@@ -18,6 +18,7 @@
 
 require "sidekiq/web"
 require "sidekiq-scheduler/web"
+require "stripe_event"
 
 # For more information about routes, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
@@ -46,6 +47,8 @@ Rails.application.routes.draw do
   else
     # Not mounting /sidekiq
   end
+
+  mount StripeEvent::Engine, at: "/stripe-webhooks"
 
   # Sets routes for account management actions.
   # This order seems to matter for tests.
