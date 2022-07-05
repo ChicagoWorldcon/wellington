@@ -9,5 +9,6 @@ class CreateSiteSelectionTokens < ActiveRecord::Migration[6.1]
     end
     add_index :site_selection_tokens, :token, unique: true
     add_index :site_selection_tokens, :voter_id, unique: true
+    add_index :site_selection_tokens, %i[voter_id election], unique: true
   end
 end

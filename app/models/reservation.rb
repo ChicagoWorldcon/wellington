@@ -27,21 +27,21 @@ class Reservation < ApplicationRecord
   DISABLED = "disabled"
   INSTALMENT = "instalment"
 
-  has_many :charges, :as => :buyable
+  has_many :charges, as: :buyable
   has_many :claims
   has_many :nominations
   has_many :orders
   has_many :ranks
 
-  has_one :cart_item, :as => :holdable
-  has_one :active_claim, -> () { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
-  has_one :active_order, ->() { active }, class_name: "Order" # See Order's validations, one order active at a time
+  has_one :cart_item, as: :holdable
+  has_one :active_claim, -> { active }, class_name: "Claim" # See Claim's validations, one claim active at a time
+  has_one :active_order, -> { active }, class_name: "Order" # See Order's validations, one order active at a time
 
   has_one :membership, through: :active_order
   has_one :user, through: :active_claim
 
   # For use in the upgrade process, records the last fully paid membership associated with the reservation.
-  belongs_to :last_fully_paid_membership, :class_name => 'Membership', required: false
+  belongs_to :last_fully_paid_membership, class_name: "Membership", required: false
 
   # Displayed like "Adult membership #42" is based on #membership_number and Membership#name
   validates :membership_number, presence: true, uniqueness: true
@@ -50,11 +50,16 @@ class Reservation < ApplicationRecord
   # This state is set by commands such as ClaimMembership when price is 0, all importers and ApplyCredit
   validates :state, presence: true, inclusion: [PAID, INSTALMENT, DISABLED]
 
+  # Can have zero or more site selection tokens, but only one per election
+  has_many :token_purchases
+  has_many :site_selection_tokens, through: :token_purchases
+  validates_with SiteSelectionTokenValidator
+
   scope :disabled, -> { where(state: DISABLED) }
   scope :instalment, -> { where(state: INSTALMENT) }
   scope :paid, -> { where(state: PAID) }
 
-  # TODO FUTUREWORLDCON make this more dynamic in the database
+  # TODO: FUTUREWORLDCON make this more dynamic in the database
   # These are rights that may become visible over time, with the possibility of distinguishing between a right that's
   # currently able to be used or one that's coming soon. These also match i18n values in config/locales
   def active_rights
@@ -69,9 +74,7 @@ class Reservation < ApplicationRecord
 
       now = DateTime.now
       if now < $nomination_opens_at
-        if memberships_held.any?(&:can_nominate?)
-          rights << "rights.hugo.nominate_soon"
-        end
+        rights << "rights.hugo.nominate_soon" if memberships_held.any?(&:can_nominate?)
       elsif now.between?($nomination_opens_at, nominations_end)
         if memberships_held.any?(&:can_nominate?) && memberships_held.none?(&:can_vote?)
           rights << "rights.hugo.nominate_only"
@@ -79,13 +82,9 @@ class Reservation < ApplicationRecord
           rights << "rights.hugo.nominate"
         end
       elsif now.between?(nominations_end, $voting_opens_at)
-        if memberships_held.any?(&:can_vote?)
-          rights << "rights.hugo.vote_soon"
-        end
+        rights << "rights.hugo.vote_soon" if memberships_held.any?(&:can_vote?)
       elsif now.between?($voting_opens_at, $hugo_closed_at)
-        if memberships_held.any?(&:can_vote?)
-          rights << "rights.hugo.vote"
-        end
+        rights << "rights.hugo.vote" if memberships_held.any?(&:can_vote?)
       end
     end
   end

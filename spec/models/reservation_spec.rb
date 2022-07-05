@@ -56,7 +56,7 @@ RSpec.describe Reservation, type: :model do
 
   context "with upgradable membership" do
     subject(:model) { create(:reservation, :with_upgradable_membership) }
-    let(:supporting_membership) { Membership.find_by(name: :supporting ) || create(:membership, :supporting)}
+    let(:supporting_membership) { Membership.find_by(name: :supporting) || create(:membership, :supporting) }
 
     it "has Supporting as its active membership" do
       expect(model.membership.to_s).to eq("Supporting")
@@ -158,25 +158,6 @@ RSpec.describe Reservation, type: :model do
       it { is_expected.to_not include("rights.hugo.nominate_soon") }
       it { is_expected.to include("rights.hugo.nominate") }
       it { is_expected.to_not include("rights.hugo.vote") }
-
-      describe "for dublin supporters" do
-        let(:model) { create(:reservation, membership: dublin_membership) }
-        it { is_expected.to_not include("rights.hugo.nominate") }
-        it { is_expected.to include("rights.hugo.nominate_only") }
-
-        context "when they upgrade to supporting membership after nomination closes" do
-          let(:supporting_without_nomination) { create(:membership, :supporting, can_nominate: false) }
-
-          before do
-            upgrader = UpgradeMembership.new(model, to: supporting_without_nomination)
-            successful = upgrader.call
-            raise "couldn't upgrade membership" if !successful
-          end
-
-          it { is_expected.to be_present }
-          it { is_expected.to include("rights.hugo.nominate") }
-        end
-      end
     end
 
     context "between the close of nominations and the start of voting" do
