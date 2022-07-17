@@ -48,6 +48,8 @@ module ApplicationHelper
     elsif finalists_loaded? && match = membership_right.match(/rights\.(.*)\.vote\z/)
       election_i18n_key = match[1]
       link_to description, reservation_finalist_path(reservation_id: reservation, id: election_i18n_key)
+    elsif membership_right.match(/rights\.(site_selection)/)
+      link_to description, reservation_site_selection_tokens_path(reservation_id: reservation)
     else
       description
     end

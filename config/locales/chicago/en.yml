@@ -66,6 +66,24 @@ en:
         Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
         able to help choose where the worldcon will be hosted in 2024.
 
+      worldcon:
+        name: 2024 Worldcon
+        description: |
+          Description of election
+        voting: |
+          How to vote:
+        # just to be clear, this is a blatant abuse of the i18n system
+        price: 4000
+
+      nasfic:
+        name: 2023 NASFIC
+        description: |
+          Description of election
+        voting: |
+          How to vote:
+        # just to be clear, this is a blatant abuse of the i18n system
+        price: 4000
+
     # Maps onto text from Election#i18n_key
     hugo:
       voting: |

@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "passgen"
+require "csv"
 
 namespace :ops do
   desc "Add a new support user"
@@ -82,5 +83,17 @@ namespace :ops do
       new_disabled = Reservation.disabled.count
       puts "Disabled #{new_disabled - curr_disabled} records"
     end
+  end
+
+  task :load_tokens, %i[token_file election_name] => :environment do |_t, args|
+    token_file = args[:token_file] || abort("A token file is required")
+    election_name = args[:election_name] || abort("An election name is required")
+    tokens = CSV.read(token_file) || abort("Unable to read #{token_file}")
+    created_at = updated_at = Time.now
+    election_tokens = tokens.map do |tok|
+      { election: election_name, voter_id: tok[0], token: tok[1], created_at: created_at, updated_at: updated_at }
+    end
+
+    SiteSelectionToken.insert_all(election_tokens)
   end
 end

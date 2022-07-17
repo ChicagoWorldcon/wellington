@@ -5,4 +5,8 @@ class SiteSelectionToken < ApplicationRecord
   scope :unclaimed, -> { where.not(id: TokenPurchase.pluck(:site_selection_token_id).reject(&:nil?)) }
 
   validates :voter_id, uniqueness: { scope: :election, message: "should be unique per election" }
+
+  def self.elections
+    self.select(:election).distinct.pluck(:election)
+  end
 end
