@@ -107,6 +107,7 @@ Rails.application.routes.draw do
     resources :finalists, id: /[^\/]+/
     resources :nominations, id: /[^\/]+/
     resources :upgrades
+    resources :site_selection_tokens
   end
 
   match 'cart_items/create' => 'cart_items#create', via: :post, :as => 'create_item'
