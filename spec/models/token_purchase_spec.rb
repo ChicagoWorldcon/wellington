@@ -30,8 +30,8 @@ RSpec.describe TokenPurchase, type: :model do
 
     it "should save a purchase" do
       expect { subject }.to change {
-                              TokenPurchase.count
-                            }.by(1)
+        TokenPurchase.count
+      }.by(1)
     end
 
     it "should leave fewer available tokens" do
@@ -39,24 +39,69 @@ RSpec.describe TokenPurchase, type: :model do
     end
   end
 
-  context "when there are no tokens left for this election" do
+  context "with a token purchased" do
     before do
       @token = create(:site_selection_token)
       @purchase = TokenPurchase.for_election!(@reservation, "Election")
     end
 
-    it "should fail to purchase the next unclaimed site selection token" do
-      expect do
-        TokenPurchase.for_election!(@reservation, "Election")
-      end.to raise_error(ActiveRecord::RecordInvalid)
+    context "when there are no tokens left for this election" do
+      it "should fail to purchase the next unclaimed site selection token" do
+        expect do
+          TokenPurchase.for_election!(@reservation, "Election")
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "should leave the same number available tokens" do
+        expect do
+          TokenPurchase.for_election!(@reservation, "Election")
+        rescue ActiveRecord::RecordInvalid
+          # nothing
+        end.not_to change { SiteSelectionToken.unclaimed.count }
+      end
     end
 
-    it "should leave the same number available tokens" do
-      expect do
-        TokenPurchase.for_election!(@reservation, "Election")
-      rescue ActiveRecord::RecordInvalid
-        # nothing
-      end.not_to change { SiteSelectionToken.unclaimed.count }
+    context "when there is no payment" do
+      it "is unpaid" do
+        expect(TokenPurchase.unpaid).to include(@purchase)
+      end
+
+      it "is not paid" do
+        expect(TokenPurchase.paid).not_to include(@purchase)
+      end
+
+      it "has not been paid for" do
+        expect(@purchase.paid_for?).to be(false)
+      end
+    end
+
+    context "when there is a payment" do
+      before do
+        @purchase.save
+        @charge = TokenCharge.create!(
+          token_purchase: @purchase,
+          charge_id: "dummy_id",
+          charge_provider: "test",
+          price_cents: 40_00
+        )
+      end
+
+      it "is not unpaid" do
+        expect(TokenPurchase.unpaid).not_to include(@purchase)
+      end
+
+      it "is paid" do
+        expect(TokenPurchase.paid).to include(@purchase)
+      end
+
+      it "has been paid for" do
+        expect(@purchase.paid_for?).to be(true)
+      end
+    end
+
+    it "can be paid for" do
+      @purchase.charge_stripe!(charge_id: "stripe id", price_cents: 40_00)
+      expect(TokenPurchase.paid).to include(@purchase)
     end
   end
 end

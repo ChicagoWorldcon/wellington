@@ -824,6 +824,41 @@ ALTER SEQUENCE public.temporary_user_tokens_id_seq OWNED BY public.temporary_use
 
 
 --
+-- Name: token_charges; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.token_charges (
+    id bigint NOT NULL,
+    token_purchase_id bigint NOT NULL,
+    charge_id character varying NOT NULL,
+    charge_provider character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    price_cents integer DEFAULT 0 NOT NULL,
+    price_currency character varying DEFAULT 'USD'::character varying NOT NULL
+);
+
+
+--
+-- Name: token_charges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.token_charges_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: token_charges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.token_charges_id_seq OWNED BY public.token_charges.id;
+
+
+--
 -- Name: token_purchases; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1868,6 +1903,13 @@ ALTER TABLE ONLY public.temporary_user_tokens ALTER COLUMN id SET DEFAULT nextva
 
 
 --
+-- Name: token_charges id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.token_charges ALTER COLUMN id SET DEFAULT nextval('public.token_charges_id_seq'::regclass);
+
+
+--
 -- Name: token_purchases id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2202,6 +2244,14 @@ ALTER TABLE ONLY public.supports
 
 ALTER TABLE ONLY public.temporary_user_tokens
     ADD CONSTRAINT temporary_user_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: token_charges token_charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.token_charges
+    ADD CONSTRAINT token_charges_pkey PRIMARY KEY (id);
 
 
 --
@@ -2622,6 +2672,13 @@ CREATE UNIQUE INDEX index_supports_on_unlock_token ON public.supports USING btre
 
 
 --
+-- Name: index_token_charges_on_token_purchase_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_token_charges_on_token_purchase_id ON public.token_charges USING btree (token_purchase_id);
+
+
+--
 -- Name: index_token_purchases_on_reservation_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2948,6 +3005,14 @@ ALTER TABLE ONLY public.reservations
 
 
 --
+-- Name: token_charges fk_rails_a8b37a916f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.token_charges
+    ADD CONSTRAINT fk_rails_a8b37a916f FOREIGN KEY (token_purchase_id) REFERENCES public.token_purchases(id);
+
+
+--
 -- Name: finalists fk_rails_c29553688f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3205,6 +3270,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220116010218'),
 ('20220130232402'),
 ('20220704135810'),
-('20220704140247');
+('20220704140247'),
+('20220717154228');
 
 
