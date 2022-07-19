@@ -36,14 +36,14 @@ gem "pg"                   # postgres driver
 gem "pry-rails"            # sets pry as your rails console
 gem "puma", "~> 5.6"       # http server for rack
 gem "rack-pratchett"       # say his name
-gem "rails", "~> 6.0"      # framework for building websites <3
+gem "rails", "~> 6.1"      # framework for building websites <3
 gem "redcarpet"            # markdown parser for displaying simple markup on text
 gem "seedbank"             # For customizing seeds for all cons
 gem "sidekiq"              # Background jobs processor
 gem "sidekiq-scheduler"    # Background jobs processor scheduler
 gem "strip_attributes"     # ActiveModel extension to remove leading and trailing spaces
 gem "stripe", "~> 4"       # payment provider, locked for https://github.com/rebelidealist/stripe-ruby-mock/pull/643
-gem "stripe_event"         # Stripe webhook monting
+gem "stripe_event"         # Stripe webhook mounting
 gem "tiny_tds"             # adapters for Dave's Hugo integration
 gem "webpacker"            # a JavaScript module bundler, takes modules with dependencies and generates static assets
 
