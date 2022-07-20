@@ -4,10 +4,9 @@ class TokenPurchase < ApplicationRecord
   has_one :token_charge
 
   def self.for_election!(reservation, election)
-    SiteSelectionToken.transaction do
-      unclaimed = SiteSelectionToken.for_election(election).unclaimed.first
-      create!(reservation: reservation, site_selection_token: unclaimed)
-    end
+    unclaimed = SiteSelectionToken.for_election(election).unclaimed.first
+    return unless unclaimed.present?
+    create!(reservation: reservation, site_selection_token: unclaimed)
   end
 
   scope :unpaid, -> { where.missing(:token_charge) }
