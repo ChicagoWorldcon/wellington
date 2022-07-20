@@ -1,0 +1,48 @@
+class TokenPurchaseController < ApplicationController
+  before_action :lookup_reservation!
+  before_action :lookup_election!
+
+  def new; end
+
+  def create
+    # we check for an existing token first
+    if @reservation.site_selection_tokens.for_election(@election).present?
+      flash[:error] = "You cannot buy more than one token for a site selection. Your card has not been charged."
+      redirect_to reservation_site_selection_tokens_path
+      return
+    end
+
+    TokenPurchase.transaction do
+      @purchase = TokenPurchase.for_election!(@reservation, @election)
+      unless @purchase.present?
+        flash[:error] = "No tokens are available for #{@election_name}. Your card has not been charged."
+        raise ActiveRecord::Rollback
+      end
+
+      begin
+        stripe_customer = Stripe::Customer.create(email: params[:stripeEmail])
+        card_response = Stripe::Customer.create_source(stripe_customer.id, source: params[:stripeToken])
+        charge = Stripe::Charge.create(
+          description: "Purchase site selection token for #{@election_name}",
+          currency: $currency,
+          customer: stripe_customer.id,
+          source: card_response.id,
+          amount: @outstanding_amount.cents
+        )
+      rescue Stripe::StripeError => e
+        flash[:error] = e.message
+        raise ActiveRecord::Rollback
+      end
+      @purchase.charge_stripe!(charge_id: charge[:id], price_cents: charge[:amount])
+    end
+    redirect_to reservation_site_selection_tokens_path
+  end
+
+  private
+
+  def lookup_election!
+    @election = params[:election]
+    @election_name = t("rights.site_selection.#{@election}.name")
+    @outstanding_amount = Money.new(t("rights.site_selection.#{@election}.price"))
+  end
+end

@@ -1,50 +1,61 @@
 <%#
-  Copyright 2022 Chris Rose
+Copyright 2022 Chris Rose
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 %>
 
 <h1>Site Selection</h1>
-<section class="l-section">
-  <div class="row d-flex align-items-stretch">
-    <% @unclaimed_elections.each do |election| %>
-      <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-        <%= render("election_card", election: election) do %>
-          <%= form_tag("id" => "site-selection-#{election}") do %>
-            <%= hidden_field_tag(:stripeToken) %>
-            <%= hidden_field_tag(:stripeEmail) %>
-            <%= hidden_field_tag(:reservation, @reservation.id) %>
-            <%= hidden_field_tag(:election, election) %>
-            <input
-              type="submit" class="btn"
-              value="Purchase Token (<%= number_to_currency(t(:price, scope: "rights.site_selection.#{election}").to_i / 100 ) %>)"/>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
 
-    <% @reservation.site_selection_tokens.each do |token| %>
-      <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-        <%= render("election_card", election: token.election) do %>
-          <dl>
-            <dt>Voter ID</dt>
-            <dd><%= token.voter_id %></dd>
-            <dt>Token</dt>
-            <dd><%= token.token %></dd>
-          </dl>
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="l-panel">
+        <% if !user_signed_in? %>
+          <%= render "sign_in_notice" %>
+        <% else %>
+          <h2>Tokens for <%= @reservation.active_claim.contact %></h2>
+          <div class="row d-flex align-items-stretch">
+            <% @unclaimed_elections.each do |election| %>
+              <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+                <%= render("election_card", election: election) do %>
+                  <%= form_tag(new_reservation_token_purchase_path,
+                               "method" => "get", "id" => "site-selection-#{election}") do %>
+                    <%= hidden_field_tag(:election, election) %>
+                    <input
+                      type="submit" class="btn"
+                      value="Purchase Token (<%= number_to_currency(@prices[election] / 100) %>)"
+                    />
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% @reservation.site_selection_tokens.each do |token| %>
+              <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+                <%= render("election_card", election: token.election) do %>
+                  <dl>
+                    <dt>Voter ID</dt>
+                    <dd><%= token.voter_id %></dd>
+                    <dt>Token</dt>
+                    <dd><%= token.token %></dd>
+                  </dl>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
 </section>
