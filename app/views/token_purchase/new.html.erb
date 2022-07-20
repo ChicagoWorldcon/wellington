@@ -1,0 +1,34 @@
+<h1>
+  Purchase a voting token for <%= @election_name %>
+</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <div class="l-panel">
+        <%= form_tag(reservation_token_purchase_index_path,
+                     "id" => "charge-form",
+                     "data-stripe" => stripe_config(@reservation, @outstanding_amount.cents)) do %>
+          <article>
+            <div id="error_explanation"></div>
+
+            <p>
+              You need to pay <%= @outstanding_amount.format(with_currency: true) %> to purchase this token.
+            </p>
+
+          </article>
+
+          <%= hidden_field_tag(:stripeToken) %>
+          <%= hidden_field_tag(:stripeEmail) %>
+          <%= hidden_field_tag(:election, @election) %>
+          <%= hidden_field_tag(:reservation, @reservation.id) %>
+          <div class="l-v-spacing-both">
+            <div class="form-group">
+              <%= submit_tag("Purchase the token", id: "payment-button", class: "btn btn-m-full-width") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
