@@ -7,7 +7,7 @@ RSpec.describe TokenPurchase, type: :model do
 
   context "when there are no tokens" do
     it "should fail to purchase a token" do
-      expect { TokenPurchase.for_election!(@reservation, "Election") }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(TokenPurchase.for_election!(@reservation, "worldcon")).to be_nil
     end
   end
 
@@ -42,19 +42,17 @@ RSpec.describe TokenPurchase, type: :model do
   context "with a token purchased" do
     before do
       @token = create(:site_selection_token)
-      @purchase = TokenPurchase.for_election!(@reservation, "Election")
+      @purchase = TokenPurchase.for_election!(@reservation, "worldcon")
     end
 
     context "when there are no tokens left for this election" do
       it "should fail to purchase the next unclaimed site selection token" do
-        expect do
-          TokenPurchase.for_election!(@reservation, "Election")
-        end.to raise_error(ActiveRecord::RecordInvalid)
+        expect(TokenPurchase.for_election!(@reservation, "worldcon")).to be_nil
       end
 
       it "should leave the same number available tokens" do
         expect do
-          TokenPurchase.for_election!(@reservation, "Election")
+          TokenPurchase.for_election!(@reservation, "worldcon")
         rescue ActiveRecord::RecordInvalid
           # nothing
         end.not_to change { SiteSelectionToken.unclaimed.count }
