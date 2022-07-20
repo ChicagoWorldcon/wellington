@@ -4,6 +4,14 @@ This file is maintained using towncrier.
 
 # Changelog
 
+## [2022-07-19] - 2022-07-19
+
+### Features
+
+
+- [#148](https://github.com/ChicagoWorldcon/wellington/issues/148) Implemented site selection token purchasing
+
+
 ## [2022-05-27.2] - 2022-05-27
 No significant changes.
 
