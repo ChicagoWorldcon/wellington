@@ -21,9 +21,7 @@ class PlanTransfer
   include ActiveModel::Model
   include ActiveModel::Validations::ClassMethods
 
-  attr_accessor :new_owner
-  attr_accessor :reservation_id
-  attr_accessor :copy_contact
+  attr_accessor :new_owner, :reservation_id, :copy_contact
 
   validates :reservation_id, presence: true
   validates :new_owner, presence: true, format: Devise.email_regexp

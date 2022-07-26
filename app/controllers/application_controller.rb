@@ -25,44 +25,28 @@ class ApplicationController < ActionController::Base
   protected
 
   def lookup_current_cart!
-    if !support_signed_in
-      @cart = Cart.active_pending.find_by(user: current_user)
-    end
-    if @cart.nil?
-      head :forbidden
-    end
+    @cart = Cart.active_pending.find_by(user: current_user) unless support_signed_in
+    head :forbidden if @cart.nil?
   end
 
   def lookup_processing_cart!
-    if !support_signed_in?
-      @processing_cart = Cart.active_processing.find_by(user: current_user)
-    end
-    if @processing_cart.nil?
-      head :forbidden
-    end
+    @processing_cart = Cart.active_processing.find_by(user: current_user) unless support_signed_in?
+    head :forbidden if @processing_cart.nil?
   end
 
   def lookup_cart_for_later!
-    if !support_signed_in?
-      @processing_cart = Cart.active_for_later.find_by(user: current_user)
-    end
-    if @processing_cart.nil?
-      head :forbidden
-    end
+    @processing_cart = Cart.active_for_later.find_by(user: current_user) unless support_signed_in?
+    head :forbidden if @processing_cart.nil?
   end
 
   def lookup_reservation!
     visible_reservations = Reservation.joins(:user)
 
-    if !support_signed_in?
-      visible_reservations = visible_reservations.where(users: { id: current_user })
-    end
+    visible_reservations = visible_reservations.where(users: { id: current_user }) unless support_signed_in?
 
     @reservation = visible_reservations.find_by(id: params[:reservation_id] || params[:id])
 
-    if @reservation.nil?
-      head :forbidden
-    end
+    head :forbidden if @reservation.nil?
   end
 
   # Assumes i18n_key as id
