@@ -20,21 +20,50 @@ limitations under the License.
 <section class="l-section">
   <div class="row">
     <div class="col-12 col-md-12">
-      <div class="l-panel">
         <% if !user_signed_in? %>
-          <%= render "sign_in_notice" %>
+          <div class="l-panel">
+            <%= render "sign_in_notice" %>
+          </div>
         <% else %>
+          <h2>Voting In Site Selection</h2>
+          <p>
+            If you would like to pay by credit card to vote in site selection, you may do so either
+            by coming to the site selection table at Chicon 8 or by purchasing a voting token
+            using the links below.  This token will allow you to either vote electronically through
+            ElectionBuddy or to cast a paper ballot by mail, in person, or hand-carried to the
+            convention by a friend.  We will be monitoring the paper and electronic ballots and
+            will only count the first ballot we receive from each member.  You may vote in
+            either the 2024 Worldcon site selection, the 2023 NASFiC site selection, or both,
+            though you must purchase each voting token separately.  If you wish to pay by
+            cash, you must do so at the site selection table, and if you wish to pay by check or
+            money order, you may do so either at the table or by mailed paper ballot.  The
+            paper ballots and electronic ballots are available below the token purchase options.
+          </p>
+          <p>
+            <strong>By purchasing a voting token, you agree to give Chicon 8 permission to
+              provide your name, email address, and mailing address to the winning
+              convention.</strong>
+            Your voting token will be emailed to you at the email address you
+            have on file with Chicon 8.  Please make sure that your email address and mailing
+            address are up to date before purchasing your token.  If you purchase a token but
+            do not actually cast a ballot, we will count your vote as “No Preference” and you will
+            still be given a membership in the winning convention.  Likewise, if you cast an
+            unsigned paper ballot, we will count it as a “No Preference” vote.
+          </p>
           <h2>Tokens for <%= @reservation.active_claim.contact %></h2>
+          <div class="l-panel">
           <div class="row d-flex align-items-stretch">
             <% @unclaimed_elections.each do |election| %>
               <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-                <%= render("election_card", election: election) do %>
+                <%= render("election_card",
+                           election: election,
+                           election_info: @election_info[election]) do %>
                   <%= form_tag(new_reservation_token_purchase_path,
                                "method" => "get", "id" => "site-selection-#{election}") do %>
                     <%= hidden_field_tag(:election, election) %>
                     <input
                       type="submit" class="btn"
-                      value="Purchase Token (<%= number_to_currency(@prices[election] / 100) %>)"
+                      value="Purchase Token (<%= number_to_currency(@election_info[election][:price] / 100) %>)"
                     />
                   <% end %>
                 <% end %>
@@ -43,19 +72,74 @@ limitations under the License.
 
             <% @reservation.site_selection_tokens.each do |token| %>
               <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-                <%= render("election_card", election: token.election) do %>
+                <%= render("election_card",
+                           election: token.election,
+                           election_info: @election_info[token.election]) do %>
                   <dl>
                     <dt>Voter ID</dt>
                     <dd><%= token.voter_id %></dd>
                     <dt>Token</dt>
                     <dd><%= token.token %></dd>
                   </dl>
+                  <div class="btn btn-lg btn-block btn-primary btn-link">
+                    <a href="<%= @election_info[token.election][:link] %>">Go To Election</a>
+                  </div>
                 <% end %>
               </div>
             <% end %>
           </div>
+          </div>
+          <h2>Voting On Site</h2>
+          <p>If you wish to vote in person at Chicon 8, you will need to come to the site selection
+          table to do so.  We can either take your payment there or accept your ballot with
+          your pre-paid voting token.  The site selection table will be located in the exhibit
+          hall adjacent to the bid tables for the Worldcon and NASFiC bids to be voted on this
+          year.  Alternatively, you may have a trusted friend hand-carry your ballot to site
+          selection.  As long as your ballot is signed, we will accept it whether your friend
+          brings an original or a printed/photocopied version.  If the ballot is printed, we will
+            accept it with an electronic signature.
+          </p>
+          <p>If you wish to have a friend bring your vote to Chicon 8 but do not yet have a
+          membership, you may also fill out a membership form and have your friend take it
+            to registration (with appropriate payment) before casting your site selection ballot.
+          </p>
+          <h2>Voting By Mail</h2>
+          <p>If you wish to vote by mail, you must first purchase a membership in Chicon 8.  You
+          may then either purchase a voting token for the site selection vote(s) you wish to
+          participate in, or send a check or money order for each site selection vote you wish
+          to participate in, along with your ballot(s), to:
+            <div class="l-panel">
+              NASFiC Site Selection/Worldcon Site Selection [as applicable]<br/>
+              c/o Chicon 8<br/>
+              2020 N. California, Suite 299<br/>
+              Chicago, IL 60647<br/>
+              USA
+            </div>
+          </p>
+          <h2>Voting Electronically</h2>
+          <p>
+            If you wish to vote electronically, you must first purchase a site selection
+            token through the links above. When you do so, this page will be updated with
+            both a Site Selection ID for the appropriate election and a unique voter
+            token. You may then click on the link above to go to the appropriate
+            ElectionBuddy website for electronic site selection. There, you will enter the
+            Site Selection ID and Voter Token from this page, then have the option to rank
+            the filed bids, a write-in, No Preference, and None of the Above, just as you
+            would on a paper ballot. Please be aware that Election Buddy will not allow
+            you to fill in a rank for your last choice if you include a write-in, but
+            ranking and choosing not to rank your last choice is effectively the same.</p>
+          <h2>A Note on Write-In Votes</h2>
+          <p>
+            In order to win, a write-in bid must file its paperwork with site selection
+            before the close of voting. Regardless of whether a write-in bid is filed or
+            not, we must report first-place votes for any write-in bid to the business
+            meeting. Many fans have historically taken advantage of this by writing in
+            unique locations as their first choice in order to see that their votes actually
+            counted. If no bid has an outright majority in the first round, these write-in
+            votes for ineligible bids will be counted as their second-place votes in the
+            second round of counting
+          </p>
         <% end %>
-      </div>
     </div>
   </div>
 </section>
