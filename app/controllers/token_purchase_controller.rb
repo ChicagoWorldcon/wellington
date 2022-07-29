@@ -27,13 +27,18 @@ class TokenPurchaseController < ApplicationController
           currency: $currency,
           customer: stripe_customer.id,
           source: card_response.id,
-          amount: @outstanding_amount.cents
+          amount: @outstanding_amount.cents,
+          metadata: {
+            "product" => "site selection token",
+            "election" => @election
+          }
         )
       rescue Stripe::StripeError => e
         flash[:error] = e.message
         raise ActiveRecord::Rollback
       end
       @purchase.charge_stripe!(charge_id: charge[:id], price_cents: charge[:amount])
+      flash[:notice] = "You can now vote in the #{@election_name} election."
     end
     redirect_to reservation_site_selection_tokens_path
   end
@@ -43,6 +48,7 @@ class TokenPurchaseController < ApplicationController
   def lookup_election!
     @election = params[:election]
     @election_name = t("rights.site_selection.#{@election}.name")
-    @outstanding_amount = Money.new(t("rights.site_selection.#{@election}.price"))
+    @election_info = $site_selection_info[@election]
+    @outstanding_amount = Money.new(@election_info[:price])
   end
 end

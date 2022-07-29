@@ -69,20 +69,16 @@ en:
       worldcon:
         name: 2024 Worldcon
         description: |
-          Description of election
+          A vote to decide the location of the 2024 Worldcon. Official Bids: Glasgow 2024
         voting: |
           How to vote:
-        # just to be clear, this is a blatant abuse of the i18n system
-        price: 4000
 
       nasfic:
         name: 2023 NASFIC
         description: |
-          Description of election
+          A vote to decide the location of the 2023 NASFiC. Official Bids: Orlando 2023, Winnipeg in 2023
         voting: |
           How to vote:
-        # just to be clear, this is a blatant abuse of the i18n system
-        price: 4000
 
     # Maps onto text from Election#i18n_key
     hugo:

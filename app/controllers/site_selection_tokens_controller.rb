@@ -23,6 +23,6 @@ class SiteSelectionTokensController < ApplicationController
       owned_tokens = @reservation.site_selection_tokens
       owned_tokens.any? { |tok| tok.election == e }
     end
-    @prices = Hash[@all_elections.map { |e| [e, t("rights.site_selection.#{e}.price").to_i] }]
+    @election_info = $site_selection_info
   end
 end
