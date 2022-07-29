@@ -30,7 +30,8 @@ class TokenPurchaseController < ApplicationController
           amount: @outstanding_amount.cents,
           metadata: {
             "product" => "site selection token",
-            "election" => @election
+            "election" => @election,
+            "member_number" => @reservation.membership_number
           }
         )
       rescue Stripe::StripeError => e
