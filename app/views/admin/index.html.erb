@@ -1,0 +1,35 @@
+<h1>Admin Actions</h1>
+
+<section class="l-section">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      Various selective commands for common admin tools
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8 col-md-6 py-4">
+      <div class="l-panel">
+        <h2>Admin Links</h2>
+        <ul class="list-unstyled l-v-spacing">
+          <li><%= link_to "Membership Types", memberships_path %></li>
+          <li><%= link_to "Full Member List", reservations_path %></li>
+          <% if ENV["HUGO_PACKET_BUCKET"] %>
+            <li><%= link_to "Hugo Packet", hugo_packet_index_path %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-8 col-md-6 py-4">
+      <div class="l-panel">
+        <h2>Trigger Reports</h2>
+        <%= form_tag(admin_act_path, "id" => "trigger-report-form") do %>
+          <%= label_tag(:report_name, "Report Name") %>
+          <%= select_tag(:report_name, options_for_select(@reports, :membership), ) %>
+          <%= submit_tag("Membership Extract",
+                         id: "trigger-report",
+                         class: "btn btn-m-full-width") %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

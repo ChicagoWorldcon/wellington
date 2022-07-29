@@ -113,6 +113,8 @@ Rails.application.routes.draw do
 
   match "cart_items/create" => "cart_items#create", via: :post, :as => "create_item"
 
+  get "admin/", to: "admin#index", as: "admin"
+  post "admin/", to: "admin#act", as: "admin_act"
 
   # /operator are maintenance routes for support people
   scope :operator do

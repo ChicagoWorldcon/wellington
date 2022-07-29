@@ -73,4 +73,12 @@ class ApplicationController < ActionController::Base
   def hugo_admin_signed_in?
     support_signed_in? && current_support.hugo_admin.present?
   end
+
+  def after_sign_in_path_for(resource)
+    if resource.is_a? Support
+      admin_path
+    else
+      root_path
+    end
+  end
 end
