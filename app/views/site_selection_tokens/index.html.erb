@@ -63,7 +63,7 @@ limitations under the License.
                     <%= hidden_field_tag(:election, election) %>
                     <input
                       type="submit" class="btn"
-                      value="Purchase Token (<%= number_to_currency(@election_info[election][:price] / 100) %>)"
+                      value="Purchase Token (<%= number_to_currency(@election_info[election][:price] / 100.0) %>)"
                     />
                   <% end %>
                 <% end %>
