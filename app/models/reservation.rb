@@ -63,16 +63,18 @@ class Reservation < ApplicationRecord
   # These are rights that may become visible over time, with the possibility of distinguishing between a right that's
   # currently able to be used or one that's coming soon. These also match i18n values in config/locales
   def active_rights
+    now = DateTime.now
     [].tap do |rights|
       # Hold these memberships in memory to avoid hitting the database a lot
       memberships_held = Membership.where(id: orders.select(:membership_id))
 
       rights << "rights.attend" if memberships_held.any?(&:can_attend?)
-      rights << "rights.site_selection" if memberships_held.any?(&:can_site_select?)
+      if memberships_held.any?(&:can_site_select?)
+        rights << (now.after?($site_selection_opens_at) ? "rights.site_selection" : "rights.site_select_soon")
+      end
 
       nominations_end = [$nomination_closed_at, $voting_opens_at].compact.min
 
-      now = DateTime.now
       if now < $nomination_opens_at
         rights << "rights.hugo.nominate_soon" if memberships_held.any?(&:can_nominate?)
       elsif now.between?($nomination_opens_at, nominations_end)

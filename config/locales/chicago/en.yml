@@ -80,6 +80,12 @@ en:
         voting: |
           How to vote:
 
+    site_select_soon:
+      description: Vote in Site Selection
+      layman:
+        Sites for future Worldcons are determined by voting of the Worldcon membership. Using your membership you'll be
+        able to help choose where the worldcon will be hosted in 2024.
+
     # Maps onto text from Election#i18n_key
     hugo:
       voting: |

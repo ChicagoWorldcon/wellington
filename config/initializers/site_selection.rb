@@ -24,6 +24,8 @@ class SiteSelectionGlobals
     worldcon_price = (config_from("SITE_SELECTION_WORLDCON_PRICE") || "5000").to_i
     nasfic_price = (config_from("SITE_SELECTION_NASFIC_PRICE") || "3000").to_i
 
+    $site_selection_opens_at = time_from("SITE_SELECTION_OPENS_AT") || 1.day.ago
+
     $site_selection_info = {
       "worldcon" => {
         link: worldcon_link,
@@ -43,6 +45,11 @@ class SiteSelectionGlobals
     assert_present_on_production!(config_value, envvar)
   end
 
+  def time_from(envvar)
+    value = config_from(envvar)
+    parse!(value, envvar) if value.present?
+  end
+
   def assert_present_on_production!(config_value, lookup)
     if config_value.nil? && SITE_SELECTION_GLOBALS_NEEDED
       puts
@@ -51,6 +58,17 @@ class SiteSelectionGlobals
       puts
       exit 1
     end
+    config_value
+  end
+
+  def parse!(time_string, lookup)
+    DateTime.parse(time_string)
+  rescue StandardError
+    puts
+    puts "Cannot parse time from #{lookup}=#{time_string}"
+    puts "Please check your .env"
+    puts
+    exit 1 if !RUNNING_IN_CI && Rails.env.production?
   end
 end
 
