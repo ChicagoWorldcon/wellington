@@ -6,6 +6,7 @@ on:
     tags:
       - "release/[1-9]+(.[0-9]+.[0-9]+)?(-[a-z0-9]+)?"
       - "ci/.*"
+  workflow_dispatch:
 
 jobs:
   test:
@@ -70,7 +71,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx
 
       - name: Build the image
         id: docker_build
