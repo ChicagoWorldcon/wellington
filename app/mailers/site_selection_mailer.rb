@@ -15,7 +15,7 @@
 # limitations under the License.
 
 class SiteSelectionMailer < ApplicationMailer
-  def bought_token(reservation:, voter_id:, token:, election_info:)
+  def bought_token(reservation:, voter_id:, token:, election_name:, election_info:)
     @worldcon_basic_greeting = worldcon_basic_greeting
     @worldcon_public_name = worldcon_public_name
 
@@ -23,12 +23,13 @@ class SiteSelectionMailer < ApplicationMailer
     @voter_id = voter_id
     @token = token
     @election_info = election_info
+    @election_name = election_name
 
     mail(
       from: $site_selection_email,
       to: @contact.email,
 
-      subject: "#{election_info[:name]} token purchased"
+      subject: "#{election_name} token purchased"
     )
   end
 end

@@ -61,6 +61,7 @@ class TokenPurchaseController < ApplicationController
       reservation: @reservation,
       voter_id: @purchased_token.voter_id,
       token: @purchased_token.token,
+      election_name: @election_name,
       election_info: @election_info
     ).deliver_later
   end
