@@ -40,6 +40,9 @@ class TokenPurchaseController < ApplicationController
       end
       @purchase.charge_stripe!(charge_id: charge[:id], price_cents: charge[:amount])
       flash[:notice] = "You can now vote in the #{@election_name} election."
+
+      @purchased_token = @purchase.site_selection_token if @purchase.present?
+      trigger_site_selection_purchase_mailer(charge)
     end
     redirect_to reservation_site_selection_tokens_path
   end
@@ -51,5 +54,14 @@ class TokenPurchaseController < ApplicationController
     @election_name = t("rights.site_selection.#{@election}.name")
     @election_info = $site_selection_info[@election]
     @outstanding_amount = Money.new(@election_info[:price])
+  end
+
+  def trigger_site_selection_purchase_mailer(_charge)
+    SiteSelectionMailer.bought_token(
+      reservation: @reservation,
+      voter_id: @purchased_token.voter_id,
+      token: @purchased_token.token,
+      election_info: @election_info
+    ).deliver_later
   end
 end

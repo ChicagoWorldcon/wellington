@@ -1,0 +1,41 @@
+<%#
+Copyright 2022 Chris Rose
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+%>
+<%= @worldcon_basic_greeting.capitalize %> <%= @contact.playful_nickname %>!
+
+We’re glad to see that you’ve chosen to participate in selecting the location of
+the <%= @election_info[:name] %>.  You may cast your ballot either by sending one
+through the mail, carrying it in person to Chicon 8, having a friend carry it in
+for you, or voting online through ElectionBuddy.  If you forget to vote, we will
+treat your payment as a “No Preference” ballot, and you will still receive a
+supporting membership in the winning convention.
+
+You can find the paper ballot on our website at: https://chicon.org/home/for-members/site-selection/
+
+You can find the ElectionBuddy vote at: <%= @election_info[:link] %>
+
+Regardless of which method of voting you choose, you will need to provide your
+Voting Token.  If you vote via ElectionBuddy, you will also need your voter ID.
+
+These are as follows:
+
+Voter ID: <%= @voter_id  %>
+Voting Token: <%= @token %>
+
+Please contact us at siteselection@chicon.org if you have any questions regarding voting,
+and thank you for participating in this year’s site selection process.
+
+Warren Buff
+Site Selection Administrator

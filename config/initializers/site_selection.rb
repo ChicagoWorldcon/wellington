@@ -26,6 +26,8 @@ class SiteSelectionGlobals
 
     $site_selection_opens_at = time_from("SITE_SELECTION_OPENS_AT") || 1.day.ago
 
+    $site_selection_email = "siteselection@chicon.org"
+
     $site_selection_info = {
       "worldcon" => {
         link: worldcon_link,
