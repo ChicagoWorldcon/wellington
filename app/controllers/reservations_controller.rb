@@ -97,6 +97,8 @@ class ReservationsController < ApplicationController
         @contact = @reservation.active_claim.contact || contact_model.new
         @my_offer = MembershipOffer.new(@reservation.membership)
         @outstanding_amount = AmountOwedForReservation.new(@reservation).amount_owed
+        @notes = Note.joins(user: :claims).where(claims: { reservation_id: @reservation })
+        @rights_exhausted = RightsExhausted.new(@reservation).call
         get_payment_history
         flash[:error] = current_contact.errors.full_messages.to_sentence
         render "reservations/show"
