@@ -25,7 +25,7 @@
         <%= form_tag(admin_act_path, "id" => "trigger-report-form") do %>
           <%= label_tag(:report_name, "Report Name") %>
           <%= select_tag(:report_name, options_for_select(@reports, :membership), ) %>
-          <%= submit_tag("Membership Extract",
+          <%= submit_tag("Send Report",
                          id: "trigger-report",
                          class: "btn btn-m-full-width") %>
         <% end %>

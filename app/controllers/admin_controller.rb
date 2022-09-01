@@ -2,7 +2,7 @@ class AdminController < ApplicationController
   before_action :ensure_support_signed_in!
 
   def index
-    @reports = [["Membership", :membership], ["Ranks", :ranks]]
+    @reports = [["Membership", :membership], ["Ranks", :ranks], ["Site Selection", :siteselection]]
   end
 
   def act
@@ -14,6 +14,10 @@ class AdminController < ApplicationController
     when "ranks"
       ReportMailer.ranks_csv.deliver_later
       flash[:notice] = "Sent the rank report to the configured recipients"
+      redirect_to({ action: "index" })
+    when "siteselection"
+      ReportMailer.site_selection_csv.deliver_later
+      flash[:notice] = "Sent the site selection report to the configured recipients"
       redirect_to({ action: "index" })
     else
       head :not_found

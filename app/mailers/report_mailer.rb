@@ -96,6 +96,30 @@ class ReportMailer < ApplicationMailer
     )
   end
 
+  def site_selection_csv
+    destinations = ReportRecipient.where(report: "siteselection").pluck(:email_address)
+
+    if destinations.empty?
+      puts("No site selection recipients; skipping")
+      return
+    end
+
+    csv = Export::TokenCsv.new.call
+    return if csv.nil?
+
+    date = Date.today.iso8601
+
+    attachments["site-selection-#{date}.csv"] = {
+      mime_type: "text/csv",
+      content: csv
+    }
+
+    mail(
+      subject: "Site Selection export #{date}",
+      to: destinations
+    )
+  end
+
   private
 
   def border_styles
