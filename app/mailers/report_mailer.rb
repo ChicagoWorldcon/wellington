@@ -120,6 +120,30 @@ class ReportMailer < ApplicationMailer
     )
   end
 
+  def virtual_memberships_csv
+    destinations = ReportRecipient.where(report: "virtual").pluck(:email_address)
+
+    if destinations.empty?
+      puts("No virtual report recipients; skipping")
+      return
+    end
+
+    csv = Export::VirtualCsv.new.call
+    return if csv.nil?
+
+    date = Date.today.iso8601
+
+    attachments["virtual-members-#{date}.csv"] = {
+      mime_type: "text/csv",
+      content: csv
+    }
+
+    mail(
+      subject: "Virtual Members export #{date}",
+      to: destinations
+    )
+  end
+
   private
 
   def border_styles

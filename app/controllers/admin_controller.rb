@@ -1,27 +1,27 @@
 class AdminController < ApplicationController
   before_action :ensure_support_signed_in!
 
+  REPORTS = [
+    { name: "Membership", id: :membership, method: :memberships_csv },
+    { name: "Ranks", id: :ranks, method: :ranks_csv },
+    { name: "Site Selection", id: :siteselection, method: :site_selection_csv },
+    { name: "Virtual", id: :virtual, method: :virtual_memberships_csv }
+  ]
+
   def index
-    @reports = [["Membership", :membership], ["Ranks", :ranks], ["Site Selection", :siteselection]]
+    @reports = REPORTS.map { |r| [r[:name], r[:id]] }
   end
 
   def act
-    case params[:report_name]
-    when "membership"
-      ReportMailer.memberships_csv.deliver_later
-      flash[:notice] = "Sent the membership report to the configured recipients"
-      redirect_to({ action: "index" })
-    when "ranks"
-      ReportMailer.ranks_csv.deliver_later
-      flash[:notice] = "Sent the rank report to the configured recipients"
-      redirect_to({ action: "index" })
-    when "siteselection"
-      ReportMailer.site_selection_csv.deliver_later
-      flash[:notice] = "Sent the site selection report to the configured recipients"
-      redirect_to({ action: "index" })
-    else
+    report = REPORTS.detect { |e| e[:id] == params[:report_name].to_sym }
+    if report.nil?
       head :not_found
+      return
     end
+
+    ReportMailer.send(report[:method]).deliver_later
+    flash[:notice] = "Sent the #{report[:name]} report to the configured recipients"
+    redirect_to({ action: "index" })
   end
 
   private
