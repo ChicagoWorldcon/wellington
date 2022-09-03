@@ -70,7 +70,11 @@ class Reservation < ApplicationRecord
 
       rights << "rights.attend" if memberships_held.any?(&:can_attend?)
       if memberships_held.any?(&:can_site_select?)
-        rights << (now.after?($site_selection_opens_at) ? "rights.site_selection" : "rights.site_select_soon")
+        if now.between?($site_selection_opens_at, $site_selection_closes_at)
+          rights << "rights.site_selection"
+        elsif now.before?($site_selection_opens_at)
+          rights << "rights.site_select_soon"
+        end
       end
 
       nominations_end = [$nomination_closed_at, $voting_opens_at].compact.min

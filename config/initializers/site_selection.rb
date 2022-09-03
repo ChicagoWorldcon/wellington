@@ -25,6 +25,7 @@ class SiteSelectionGlobals
     nasfic_price = (config_from("SITE_SELECTION_NASFIC_PRICE") || "3000").to_i
 
     $site_selection_opens_at = time_from("SITE_SELECTION_OPENS_AT") || 1.day.ago
+    $site_selection_closes_at = time_from("SITE_SELECTION_CLOSES_AT") || 1.day.from_now
 
     $site_selection_email = "siteselection@chicon.org"
 
