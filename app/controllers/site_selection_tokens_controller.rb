@@ -17,6 +17,9 @@
 class SiteSelectionTokensController < ApplicationController
   before_action :lookup_reservation!
 
+  # this has to happen after the reservation is looked up
+  before_action :require_open_election!
+
   def index
     @all_elections = SiteSelectionToken.elections
     @unclaimed_elections = @all_elections.reject do |e|
@@ -24,5 +27,14 @@ class SiteSelectionTokensController < ApplicationController
       owned_tokens.any? { |tok| tok.election == e }
     end
     @election_info = $site_selection_info
+  end
+
+  private
+
+  def require_open_election!
+    unless @reservation.active_rights.include?("rights.site_selection")
+      flash[:error] = "Site selection voting is not open"
+      redirect_to reservation_path(@reservation)
+    end
   end
 end
